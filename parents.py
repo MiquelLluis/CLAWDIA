@@ -21,7 +21,8 @@ def gen_parents(signal, dictionaries, parents=None, **kwargs):
 	Genera els parents d'un senyal en un array numpy amb els diccionaris de
 	grawadile dins un dict. Si es dona el 'parents' es clavaran els valors a
 	dintre en comptes de crear un nou array per als resultats. Els kwargs es
-	passen directament a cada diccionari de grawadile.
+	passen directament a cada diccionari de grawadile. Especificar que el
+	paràmetre 'sc_lambda' és obligatori!!!
 
 	"""
 	l_window = len(signal)
@@ -41,7 +42,8 @@ def gen_parents_batch(signals, dictionaries, parents=None, normalize=False, verb
 	de numpy amb els diccionaris de grawadile dins un dict. Si es dona el
 	'parents' (l_window, n_dicos, n_signals) es clavaran els valors a dintre en
 	comptes de crear un nou array per als resultats. Els kwargs es passen
-	directament a cada diccionari de grawadile.
+	directament a cada diccionari de grawadile. Especificar que el paràmetre
+	'sc_lambda' és obligatori!!!
 
 	"""
 	l_window, n_signals = signals.shape
