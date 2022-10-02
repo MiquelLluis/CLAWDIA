@@ -1,5 +1,7 @@
 import numpy as np
 
+from . import util
+
 
 def _gen_parents_inplace(signal, dictionaries, l_window, n_dicts, parents, **kwargs):
 	for ip, (key, dico) in enumerate(dictionaries.items()):
@@ -33,7 +35,7 @@ def gen_parents(signal, dictionaries, parents=None, **kwargs):
 	return parents
 
 
-def gen_parents_batch(signals, dictionaries, parents=None, verbose=False, **kwargs):
+def gen_parents_batch(signals, dictionaries, parents=None, normalize=False, verbose=False, **kwargs):
 	"""TODO
 	Genera els parents d'un conjunt de senyals en un array (longitud, senyals)
 	de numpy amb els diccionaris de grawadile dins un dict. Si es dona el
@@ -51,7 +53,7 @@ def gen_parents_batch(signals, dictionaries, parents=None, verbose=False, **kwar
 	for isi in range(n_signals):
 		if verbose:
 			print(f"Denoising parent #{isi}...")
-		
+
 		_gen_parents_inplace(
 			signals[:,isi],
 			dictionaries,
@@ -60,5 +62,8 @@ def gen_parents_batch(signals, dictionaries, parents=None, verbose=False, **kwar
 			parents[...,isi],
 			**kwargs
 		)
+
+	if normalize:
+		util.abs_normalize(parents)
 
 	return parents
