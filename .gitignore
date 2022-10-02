@@ -137,14 +137,11 @@ dmypy.json
 # MANUAL IGNORE LIST #
 ######################
 
-data/
-tests/
-TODO.txt
+*.txt
 *.ipynb
 *.bar
 *.err
 *.out
-*.sublime-project
-*.sublime-workspace
+*.sublime*
 *.zip
 *.pdf
