@@ -1,3 +1,3 @@
 # Pipeline Claudia: Classification using Dictionary Algorithms
 
-from . import denoising
+from . import parents
