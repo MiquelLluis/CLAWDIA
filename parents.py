@@ -9,7 +9,7 @@ def _gen_parents_inplace(signal, dictionaries, l_window, n_dicts, parents, **kwa
 
 
 def _gen_parents(signal, dictionaries, l_window, n_dicts, **kwargs):
-	parents = np.empty((L_WINDOW, N_DICOS), order='F')
+	parents = np.empty((l_window, n_dicts), order='F')
 	
 	_gen_parents_inplace(signal, dictionaries, l_window, n_dicts, parents, **kwargs)
 
@@ -29,7 +29,7 @@ def gen_parents(signal, dictionaries, parents=None, **kwargs):
 	n_dicts = len(dictionaries)
 
 	if parents is None:
-		parents = _gen_parents(signal, dictionaries, l_window, n_dicts, parents=parents, **kwargs)
+		parents = _gen_parents(signal, dictionaries, l_window, n_dicts, **kwargs)
 	else:
 		_gen_parents_inplace(signal, dictionaries, l_window, n_dicts, parents, **kwargs)
 
