@@ -52,7 +52,7 @@ def gen_parents_batch(signals, dictionaries, parents=None, normalize=False, verb
 
 	for isi in range(n_signals):
 		if verbose:
-			print(f"Denoising parent #{isi}...")
+			print(f"Generating parnets of #{isi}...")
 
 		_gen_parents_inplace(
 			signals[:,isi],
