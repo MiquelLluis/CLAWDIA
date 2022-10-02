@@ -8,14 +8,6 @@ def _gen_parents_inplace(signal, dictionaries, l_window, n_dicts, parents, **kwa
 		parents[:,ip] = dico.reconstruct(signal, **kwargs)
 
 
-def _gen_parents(signal, dictionaries, l_window, n_dicts, **kwargs):
-	parents = np.empty((l_window, n_dicts), order='F')
-	
-	_gen_parents_inplace(signal, dictionaries, l_window, n_dicts, parents, **kwargs)
-
-	return parents
-
-
 def gen_parents(signal, dictionaries, parents=None, **kwargs):
 	"""TODO
 	Genera els parents d'un senyal en un array numpy amb els diccionaris de
@@ -29,9 +21,9 @@ def gen_parents(signal, dictionaries, parents=None, **kwargs):
 	n_dicts = len(dictionaries)
 
 	if parents is None:
-		parents = _gen_parents(signal, dictionaries, l_window, n_dicts, **kwargs)
-	else:
-		_gen_parents_inplace(signal, dictionaries, l_window, n_dicts, parents, **kwargs)
+		parents = np.empty((l_window, n_dicts), order='F')
+	
+	_gen_parents_inplace(signal, dictionaries, l_window, n_dicts, parents, **kwargs)
 
 	return parents
 
