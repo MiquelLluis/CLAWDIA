@@ -37,9 +37,9 @@ def gen_parents_batch(signals, dictionaries, parents=None, **kwargs):
 	"""TODO
 	Genera els parents d'un conjunt de senyals en un array (longitud, senyals)
 	de numpy amb els diccionaris de grawadile dins un dict. Si es dona el
-	'parents' es clavaran els valors a dintre en comptes de crear un nou array
-	per als resultats. Els kwargs es passen directament a cada diccionari de
-	grawadile.
+	'parents' (l_window, n_dicos, n_signals) es clavaran els valors a dintre en
+	comptes de crear un nou array per als resultats. Els kwargs es passen
+	directament a cada diccionari de grawadile.
 
 	"""
 	l_window, n_signals = signals.shape
@@ -54,7 +54,7 @@ def gen_parents_batch(signals, dictionaries, parents=None, **kwargs):
 			dictionaries,
 			l_window,
 			n_dicts,
-			parents[:,isi],
+			parents[...,isi],
 			**kwargs
 		)
 
