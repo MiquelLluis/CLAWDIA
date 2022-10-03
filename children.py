@@ -35,28 +35,33 @@ def omp_singlematch_batch(signals, dictionary, **kwargs):
     `c_atoms[i] = 0`.
 
     """
-    # Ommit null signals if any.
-    has_nulls = False
+    n_signals = len(signals)
     mask_null = np.all(signals==0, axis=0, keepdims=True)
-    if mask_null.any():
+    n_null = np.sum(mask_null)
+
+    # Ommit null signals if any.
+    if n_null > 0:
         i_null = mask_null.nonzero()
         mask_nonull = ~mask_null
         signals_ = signals[mask_nonull]
-        has_nulls = True
     else:
         signals_ = signals
 
-    i_atoms, c_atoms = _omp_singlematch_batch(signals_, dictionary, **kwargs)
+    if n_null < n_signals:
+        i_atoms, c_atoms = _omp_singlematch_batch(signals_, dictionary, **kwargs)
 
-    if has_nulls:
-        i_atoms_partial = i_atoms
-        c_atoms_partial = c_atoms
-
-        i_atoms = np.zeros(len(signals))
+        if n_null > 0:
+            i_atoms_partial = i_atoms
+            c_atoms_partial = c_atoms
+            i_atoms = np.zeros(n_signals)
+            c_atoms = np.zeros_like(i_atoms)
+            i_atoms[mask_nonull] = i_atoms_partial
+            c_atoms[mask_nonull] = c_atoms_partial
+    
+    # All null (zeros) signals.
+    else:
+        i_atoms = np.zeros(n_signals)
         c_atoms = np.zeros_like(i_atoms)
-
-        i_atoms[mask_nonull] = i_atoms_partial
-        c_atoms[mask_nonull] = c_atoms_partial
 
     return i_atoms, c_atoms
 
