@@ -67,6 +67,7 @@ def gen_index_children_batch(parents, dictionaries, dict_order=None, out=None, v
             c_atoms.reshape(n_dicos, -1, order='F')
         ]
         if verbose:
-            print(f"Children lost:", np.sum(c_atoms==0))
+            _lost = np.sum(c_atoms==0)
+            print(f"Children generated with '{kdc}': {len(c_atoms)} (lost: {_lost})")
 
     return i_children
