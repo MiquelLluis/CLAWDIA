@@ -35,7 +35,7 @@ def omp_singlematch_batch(signals, dictionary, **kwargs):
     `c_atoms[i] = 0`.
 
     """
-    n_signals = len(signals)
+    n_signals = signals.shape[1]
     mask_null = np.all(signals==0, axis=0)
     n_null = np.sum(mask_null)
 
