@@ -4,6 +4,28 @@ import numpy as np
 import sklearn
 
 
+def _omp_singlematch_batch(signals, dictionary, **kwargs):
+    """TODO
+    Troba els indexs `i_atoms` amb els seus coeficients `c_atoms` dels àtoms
+    de `dictionary` més pareguts a cada senyal en `signals` gastant l'OMP.
+    Compte: Aquesta versió força un únic àtom per senyal i diccionari.
+    Aquells senyals per als que l'OMP no convergisca tindràn coeficient
+    `c_atoms[i] = 0`.
+
+    """
+    codes = sklearn.decomposition.sparse_encode(
+        signals.T,
+        dictionary.T,
+        algorithm='omp',
+        n_nonzero_coefs=1,
+        **kwargs
+    ).T
+    i_atoms = np.argmax(np.abs(codes), axis=0)
+    c_atoms = np.ravel(codes[i_atoms,np.indices(i_atoms.shape)])
+
+    return i_atoms, c_atoms
+
+
 def omp_singlematch_batch(signals, dictionary, **kwargs):
     """TODO
     Troba els indexs `i_atoms` amb els seus coeficients `c_atoms` dels àtoms
@@ -21,16 +43,10 @@ def omp_singlematch_batch(signals, dictionary, **kwargs):
         mask_nonull = ~mask_null
         signals_ = signals[mask_nonull]
         has_nulls = True
+    else:
+        signals_ = signals
 
-    codes = sklearn.decomposition.sparse_encode(
-        signals_.T,
-        dictionary.T,
-        algorithm='omp',
-        n_nonzero_coefs=1,
-        **kwargs
-    ).T
-    i_atoms = np.argmax(np.abs(codes), axis=0)
-    c_atoms = np.ravel(codes[i_atoms,np.indices(i_atoms.shape)])
+    i_atoms, c_atoms = _omp_singlematch_batch(signals_, dictionary, **kwargs)
 
     if has_nulls:
         i_atoms_partial = i_atoms
