@@ -14,9 +14,13 @@ def omp_singlematch_batch(signals, dictionary, **kwargs):
 
     """
     # Ommit null signals if any.
+    has_nulls = False
     mask_null = np.all(signals==0, axis=0, keepdims=True)
-    i_null = mask_null.nonzero()
-    signals_ = signals[~mask_null]
+    if mask_null.any():
+        i_null = mask_null.nonzero()
+        mask_nonull = ~mask_null
+        signals_ = signals[mask_nonull]
+        has_nulls = True
 
     codes = sklearn.decomposition.sparse_encode(
         signals_.T,
@@ -28,15 +32,15 @@ def omp_singlematch_batch(signals, dictionary, **kwargs):
     i_atoms = np.argmax(np.abs(codes), axis=0)
     c_atoms = np.ravel(codes[i_atoms,np.indices(i_atoms.shape)])
 
-    if mask_null.any():
+    if has_nulls:
         i_atoms_partial = i_atoms
         c_atoms_partial = c_atoms
 
         i_atoms = np.zeros(len(signals))
         c_atoms = np.zeros_like(i_atoms)
 
-        i_atoms[~mask_null] = i_atoms_partial
-        c_atoms[~mask_null] = c_atoms_partial
+        i_atoms[mask_nonull] = i_atoms_partial
+        c_atoms[mask_nonull] = c_atoms_partial
 
     return i_atoms, c_atoms
 
