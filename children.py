@@ -89,7 +89,7 @@ def gen_index_children_batch(parents, dictionaries, dict_order=None, out=None, v
         dict_order = {key: i for i, key in enumerate(dictionaries)}
 
     if out is None:
-        i_children = np.empty((2, n_dicos, n_signals), order='F')
+        i_children = np.empty((2, n_dicos, n_dicos, n_signals), order='F')
     else:
         i_children = out
 
