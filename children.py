@@ -36,14 +36,13 @@ def omp_singlematch_batch(signals, dictionary, **kwargs):
 
     """
     n_signals = len(signals)
-    mask_null = np.all(signals==0, axis=0, keepdims=True)
+    mask_null = np.all(signals==0, axis=0)
     n_null = np.sum(mask_null)
 
     # Ommit null signals if any.
     if n_null > 0:
-        i_null = mask_null.nonzero()
         mask_nonull = ~mask_null
-        signals_ = signals[mask_nonull]
+        signals_ = signals[:,mask_nonull]
     else:
         signals_ = signals
 
