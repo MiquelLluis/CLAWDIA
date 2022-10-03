@@ -42,6 +42,8 @@ def gen_index_children_batch(parents, dictionaries, dict_order=None, out=None, v
 		Si s'introdueix, es gastarà per mapejar l'ordre en que s'introdueixen
 		els children de cada diccionari dins `i_children`. Si no,
 		s'introdueixen amb l'ordre que l'interpret de python esculla.
+	**kwargs:
+		Passat a la funció `sklearn.decomposition.sparse_encode`.
 
 	"""
 	l_window, n_dicos, n_signals = parents.shape
