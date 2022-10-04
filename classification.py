@@ -1,5 +1,7 @@
 import numpy as np
 
+import grawadile
+
 
 def classificate_tree(parents, children, labels=None, nc_val=-1):
     """TODO
