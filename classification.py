@@ -58,5 +58,40 @@ def classificate_tree(parents, children, labels=None, nc_val=-1):
     return label
 
 
-def classificate_batch_indexed(parents, i_children, dataset, **kwargs):
-    pass
+def classificate_batch_indexed(parents, i_children, dataset, labels=None, **kwargs):
+    """TODO
+
+    Classifica un conjunt de senyals (conjunt d'arbres parents-children) donat
+    els seus parents i els índexs dels children apuntant al dataset.
+
+    parents: 3d-array(l_signals, n_labels, n_signals)
+    i_children: 3d-array(n_labels, n_labels, n_signals)
+        I.e. un índex referent al dataset, per cada label de children per cada
+        label de parents per cada senyal.
+    dataset: dict( key: 2d-array(l_signals, n_signals) )
+        Nota: Les key no tenen per què ser igual a les labels, però en
+        aquest cas s'assumirà que l'ordre de `dataset.values()` es correspòn
+        amb el de `labels`.
+    labels: array_like, optional
+        Label names sorted. If None, `dataset.keys()` will be used instead.
+        S'ha d'acomplir `len(labels) == dataset.shape[1]`.
+    **kwargs: arguments de `classificate_tree`.
+
+    """
+    l_signals, n_labels, n_signals = parents.shape
+    if labels is None:
+        labels = np.asarray(dataset.keys())
+
+    # Children tree for each signal.
+    children_isi = np.empty((l_signals, n_labels, n_labels), order='F')
+    # Classification results.
+    y_labels = np.empty(n_signals, dtype=labels.dtype)
+
+    for isi in range(n_signals):
+        parents_isi = parents[...,isi]
+        for i, data in enumerate(dataset.values()):
+            children_isi[:,i] = data[:,i_children[i]]
+
+        y_labels[isi] = classificate_tree(parents_isi, children_isi, labels=labels, **kwargs)
+
+    return y_labels
