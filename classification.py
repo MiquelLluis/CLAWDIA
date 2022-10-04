@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def classificate_signal(parents, children, labels=None, nc_val=-1):
+def classificate_tree(parents, children, labels=None, nc_val=-1):
     """TODO
 
     Quan tinga clar el procediment comentar-lo detalladament.
