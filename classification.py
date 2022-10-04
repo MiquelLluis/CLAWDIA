@@ -45,11 +45,9 @@ def classificate_signal(parents, children, labels=None, nc_val=-1):
 
     # If all losses are >= 1 then all are discarded.
     if losses[i_label] >= 1:
-        print('lost by all lossers')
         i_label = nc_val
     # If there are multiple minimums, mark it as not classified.
     elif np.sum(losses == losses[i_label]) > 1:
-        print('lost by multiple minimums:', losses)
         i_label = nc_val
 
     if labels is not None:
