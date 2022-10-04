@@ -41,18 +41,20 @@ def classificate_signal(parents, children, labels=None, nc_val=-1):
             products[ic] *= 1 - grawadile.estimators.ssim(p, c)
 
     losses = products + discards
-    label = np.argmin(losses)
+    i_label = np.argmin(losses)
 
     # If all losses are >= 1 then all are discarded.
-    if losses[label] >= 1:
+    if losses[i_label] >= 1:
         print('lost by all lossers')
-        label = nc_val
+        i_label = nc_val
     # If there are multiple minimums, mark it as not classified.
-    elif np.sum(losses == losses[label]) > 1:
+    elif np.sum(losses == losses[i_label]) > 1:
         print('lost by multiple minimums:', losses)
-        label = nc_val
+        i_label = nc_val
 
     if labels is not None:
-    	label = labels[label]
+    	label = labels[i_label]
+    else:
+    	label = i_label
     
     return label
