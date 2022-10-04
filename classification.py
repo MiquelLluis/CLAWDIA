@@ -56,3 +56,7 @@ def classificate_signal(parents, children, labels=None, nc_val=-1):
     	label = i_label
     
     return label
+
+
+def classificate_batch_indexed(parents, i_children, dataset, **kwargs):
+    pass
