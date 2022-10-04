@@ -89,8 +89,10 @@ def classificate_batch_indexed(parents, i_children, dataset, labels=None, **kwar
 
     for isi in range(n_signals):
         parents_isi = parents[...,isi]
+        # Reconstruct selected children's tree:
         for i, data in enumerate(dataset.values()):
-            children_isi[:,i] = data[:,i_children[i]]
+            mask = i_children[i,:,isi]
+            children_isi[:,i,:] = data[:,mask]
 
         y_labels[isi] = classificate_tree(parents_isi, children_isi, labels=labels, **kwargs)
 
