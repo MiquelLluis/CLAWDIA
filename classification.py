@@ -38,7 +38,7 @@ def classificate_signal(parents, children, labels=None, nc_val=-1):
             continue
         for ic in range(n_labels):
             c = children[:,ic,ip]
-            products[ic] *= 1 - grawadile.estimators.ssim(p, c)
+            products[ic] *= grawadile.estimators.issim(p, c)
 
     losses = products + discards
     i_label = np.argmin(losses)
