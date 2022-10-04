@@ -26,9 +26,6 @@ def classificate_signal(parents, children, labels=None, nc_val=-1):
 
     """
     n_labels = parents.shape[1]
-    if children.shape[1] != children.shape[2]:
-        raise ValueError("the number of children per parent should be the same as the number of parents")
-
     products = np.ones(n_labels)
     discards = np.zeros(n_labels)
 
