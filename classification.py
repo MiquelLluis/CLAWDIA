@@ -1,6 +1,6 @@
 import numpy as np
 
-import grawadile
+from . import estimators
 
 
 def classificate_tree(parents, children, labels=None, nc_val=-1):
