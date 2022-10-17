@@ -316,9 +316,8 @@ class DictionarySpams:
             return np.sum(np.abs(rec))
 
         result = util.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
-        result['code'] = code
 
-        return (rec, result) if full_output else rec
+        return (rec, code, result) if full_output else rec
 
     def _check_initial_parameters(self, signal_pool):
         # Explicit initial dictionary.
