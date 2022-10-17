@@ -20,7 +20,7 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
 	"""TODO
 
 	Mètode de bisecció adaptat a una funció f(x) tal que
-		f(x) != 0    	x <= x0  i
+		f(x)  > 0    	x <= x0,
 		f(x) == 0       x  > x0,
 	o viceversa. Un dels dos extrems del límite [a, b] ha de ser f(x) = 0.
 	Algorisme basat en la funció de bisecció `scipy.optimize.bisect`.
@@ -30,8 +30,8 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
 	fb = f(b, *args)
 	solver_stats = {'funcalls': 2}
 	if fa*fb != 0:
-		raise ValueError("There isn't a boundary point yielding f(x)=0")
-	if fa < fb:
+		raise ValueError("There isn't a boundary point in the 0 zone")
+	if fa == 0:
 		a, b = b, a
 		fa, fb = fb, fa
 	
