@@ -25,6 +25,15 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
 	o viceversa. Un dels dos extrems del límite [a, b] ha de ser f(x) = 0.
 	Algorisme basat en la funció de bisecció `scipy.optimize.bisect`.
 
+	Result
+	------
+	solver_stats: dict
+		'x': Solution.
+		'f': Value of f(x).
+		'converged': bool.
+		'niters': Number of iterations performed.
+		'funcalls': Number of times `f` was evaluated.
+
 	"""
 	fa = f(a, *args)
 	fb = f(b, *args)
@@ -47,10 +56,12 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
 			solver_stats['converged'] = True
 			solver_stats['niters'] = i+1
 			solver_stats['x'] = xm
+			solver_stats['f'] = fm
 			return solver_stats
 
 	solver_stats['converged'] = False
 	solver_stats['niters'] = i+1
 	solver_stats['x'] = a
+	solver_stats['f'] = fa
 	
 	return solver_stats
