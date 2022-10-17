@@ -77,9 +77,6 @@ class DictionarySpams:
     random_state : int, optional
         Seed used for random sampling.
 
-    sc_lambda : float, optional
-        Regularization parameter of the sparse coding transformation.
-
     trained : bool, False by default
         Flag indicating whether dict_init is an already trained dictionary.
 
@@ -117,8 +114,8 @@ class DictionarySpams:
     """
     def __init__(self, dict_init=None, signal_pool=None, wave_pos=None, p_size=None, d_size=None,
                  lambda1=None, batch_size=64, identifier='', l2_normed=True, allow_allzeros=True,
-                 n_iter=None, n_train=None, patch_min=1, random_state=None, sc_lambda=None,
-                 trained=False, ignore_completeness=False, mode_traindl=0, mode_lasso=2):
+                 n_iter=None, n_train=None, patch_min=1, random_state=None, trained=False,
+                 ignore_completeness=False, mode_traindl=0, mode_lasso=2):
         self.dict_init = dict_init
         self.components = dict_init
         self.wave_pos = wave_pos
@@ -134,7 +131,6 @@ class DictionarySpams:
         self.n_train = n_train
         self.patch_min = patch_min
         self.random_state = random_state
-        self.sc_lambda = sc_lambda
         self.trained = trained
         self.ignore_completeness = ignore_completeness
         self.mode_traindl = mode_traindl
@@ -230,7 +226,7 @@ class DictionarySpams:
         else:
             self.t_train = tac - tic
 
-    def _reconstruct(self, signal, step, keepdims=True, **kwargs):
+    def _reconstruct(self, signal, sc_lambda, step=1, keepdims=True, **kwargs):
         patches = patches_1d.extract_patches_1d(
             signal,
             patch_size=self.p_size,
@@ -240,7 +236,7 @@ class DictionarySpams:
         code = spams.lasso(
             patches,
             D=self.components,
-            lambda1=self.sc_lambda,
+            lambda1=sc_lambda,
             mode=self.mode_lasso,
             **kwargs
         )
@@ -250,7 +246,7 @@ class DictionarySpams:
 
         return signal_rec, code
 
-    def reconstruct(self, signal, sc_lambda=None, step=1, normed=True, with_code=False, **kwargs):
+    def reconstruct(self, signal, sc_lambda, step=1, normed=True, with_code=False, **kwargs):
         """Reconstruct a signal as a sparse combination of dictionary atoms.
 
         Uses the 'lasso' function of SPAMS to solve the Lasso problem. By
@@ -263,9 +259,8 @@ class DictionarySpams:
         signal : ndarray
             Sample to be reconstructed.
 
-        sc_lambda : float, optional
+        sc_lambda : float
             Regularization parameter of the sparse coding transformation.
-            It is not needed if already specified at initialization.
 
         step : int, 1 by default
             Sample interval between each patch extracted from signal.
@@ -299,12 +294,7 @@ class DictionarySpams:
         else:
             keepdims = True  # Return a 2d-array
 
-        if sc_lambda is not None:
-            self.sc_lambda = sc_lambda
-        elif self.sc_lambda is None:
-            raise TypeError("'sc_lambda' not specified")
-
-        signal_rec, code = self._reconstruct(signal, step, keepdims=keepdims, **kwargs)
+        signal_rec, code = self._reconstruct(signal, step, sc_lambda, keepdims=keepdims, **kwargs)
 
         if normed and signal_rec.any():
             norm = np.max(np.abs(signal_rec))
@@ -320,8 +310,7 @@ class DictionarySpams:
 
         # Function to be bisected.
         def fun(sc_lambda):
-            self.sc_lambda = sc_lambda
-            rec = self._reconstruct(margins, step, **kwargs_lasso)
+            rec = self._reconstruct(margins, sc_lambda, step, **kwargs_lasso)
             return np.sum(np.abs(rec))
 
 
