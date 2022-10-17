@@ -303,16 +303,17 @@ class DictionarySpams:
 
         return (signal_rec, code) if with_code else signal_rec
 
-    def reconstruct_auto(self, signal, zero_marg, lambda_lims=None, step=1, normed=True,
+    def reconstruct_auto(self, signal, zero_marg, lambda_lims, step=1, normed=True,
                          with_code=False, kwargs_bisect={}, kwargs_lasso={}):
         # Margins of the signals to be zeroed, shape (2, zero_marg).
         margins = np.stack([signal[:zero_marg], signal[-zero_marg:]], axis=-1)
 
         # Function to be bisected.
         def fun(sc_lambda):
-            rec = self._reconstruct(margins, sc_lambda, step, **kwargs_lasso)
+            rec, _ = self._reconstruct(margins, sc_lambda, step, **kwargs_lasso)
             return np.sum(np.abs(rec))
 
+        result = util.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
 
     def _check_initial_parameters(self, signal_pool):
         # Explicit initial dictionary.
