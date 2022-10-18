@@ -294,7 +294,7 @@ class DictionarySpams:
         else:
             keepdims = True  # Return a 2d-array
 
-        signal_rec, code = self._reconstruct(signal, step, sc_lambda, keepdims=keepdims, **kwargs)
+        signal_rec, code = self._reconstruct(signal, sc_lambda, step, keepdims=keepdims, **kwargs)
 
         if normed and signal_rec.any():
             norm = np.max(np.abs(signal_rec))
