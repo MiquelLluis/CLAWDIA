@@ -313,7 +313,7 @@ class DictionarySpams:
 
         """
         # Margins of the signals to be zeroed, shape (2, zero_marg).
-        margins = np.stack([signal[:zero_marg], signal[-zero_marg:]], axis=-1)
+        margins = np.asfortranarray(np.stack([signal[:zero_marg], signal[-zero_marg:]], axis=-1))
         # Function to be bisected.
         def fun(sc_lambda):
             rec, _ = self._reconstruct(margins, sc_lambda, step, **kwargs_lasso)
