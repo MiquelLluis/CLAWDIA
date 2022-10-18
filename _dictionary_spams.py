@@ -5,6 +5,7 @@ import numpy as np
 import spams
 
 from . import patches_1d
+from . import util
 
 
 # Remove warning from OpenMP, present in older versions of python-spams.
