@@ -11,8 +11,10 @@ def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, rando
           generate another random window position until the l2 norm is != 0.
     
     """
-    if signals.ndim != 2:
-        raise ValueError("'signals' must be a 2d-array")
+    if signals.ndim > 2:
+        raise ValueError("'signals' must be 2d-array at most")
+    if signals.ndim == 1:
+        signals = signals[None,:]
 
     rng = np.random.default_rng(random_state)
     l_signals, n_signals = signals.shape
