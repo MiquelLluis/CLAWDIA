@@ -91,7 +91,7 @@ def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, rando
     return patches
 
 
-def reconstruct_from_patches_1d(patches, step, keepdims=False):
+def reconstruct_from_patches_1d(patches, step):
     l_patches, n_patches = patches.shape
     total_len = (n_patches - 1) * step + l_patches
     
@@ -103,4 +103,4 @@ def reconstruct_from_patches_1d(patches, step, keepdims=False):
     normalizer[i*step+l_patches:] = 1
     reconstructed /= normalizer
 
-    return reconstructed if not keepdims else reconstructed.reshape(-1,1)
+    return reconstructed

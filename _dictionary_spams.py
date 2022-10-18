@@ -227,7 +227,7 @@ class DictionarySpams:
         else:
             self.t_train = tac - tic
 
-    def _reconstruct(self, signal, sc_lambda, step=1, keepdims=True, **kwargs):
+    def _reconstruct(self, signal, sc_lambda, step=1, **kwargs):
         patches = patches_1d.extract_patches_1d(
             signal,
             patch_size=self.p_size,
@@ -243,7 +243,7 @@ class DictionarySpams:
         )
         patches = self.components @ code
 
-        signal_rec = patches_1d.reconstruct_from_patches_1d(patches, step, keepdims=keepdims)
+        signal_rec = patches_1d.reconstruct_from_patches_1d(patches, step)
 
         return signal_rec, code
 
