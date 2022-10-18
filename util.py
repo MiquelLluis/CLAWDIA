@@ -20,8 +20,8 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
 	"""TODO
 
 	Troba x0 pel mètode de bisecció adaptat a una funció f(x) tal que
-		f(x)  > 0    	x <= x0,
-		f(x) == 0       x  > x0,
+		f(x)  > 0    	x  < x0,
+		f(x) == 0       x >= x0,
 	o viceversa. Un dels dos extrems del límite [a, b] ha de ser f(x) = 0.
 	Algorisme basat en la funció de bisecció `scipy.optimize.bisect`.
 
@@ -52,7 +52,8 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
 		solver_stats['funcalls'] += 1
 		if fm != 0:
 			a = xm
-		if abs(dm) < xtol + rtol*abs(xm):
+			fa = fm
+		elif abs(dm) < xtol + rtol*abs(xm):
 			solver_stats['converged'] = True
 			solver_stats['niters'] = i+1
 			solver_stats['x'] = xm
