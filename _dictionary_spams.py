@@ -326,7 +326,7 @@ class DictionarySpams:
         result = util.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
         rec, code = self._reconstruct(signal, result['x'], step, **kwargs_lasso)
 
-        if normed:
+        if normed and rec.any():
             norm = np.max(np.abs(rec))
             rec /= norm
             code /= norm
