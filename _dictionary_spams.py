@@ -305,6 +305,13 @@ class DictionarySpams:
 
     def reconstruct_auto(self, signal, zero_marg, lambda_lims, step=1, normed=True,
                          full_output=False, kwargs_bisect={}, kwargs_lasso={}):
+        """TODO
+
+        Reconstrueix un únic senyal buscant per bisecció la lambda que minimitza
+        el senyal reconstruit als margens del senyal, la mida dels quals ve
+        determinada per 'zero_marg'.
+
+        """
         # Margins of the signals to be zeroed, shape (2, zero_marg).
         margins = np.stack([signal[:zero_marg], signal[-zero_marg:]], axis=-1)
         # Function to be bisected.
