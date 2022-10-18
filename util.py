@@ -19,7 +19,7 @@ def abs_normalize(array, axis=0):
 def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
 	"""TODO
 
-	Mètode de bisecció adaptat a una funció f(x) tal que
+	Troba x0 pel mètode de bisecció adaptat a una funció f(x) tal que
 		f(x)  > 0    	x <= x0,
 		f(x) == 0       x  > x0,
 	o viceversa. Un dels dos extrems del límite [a, b] ha de ser f(x) = 0.
