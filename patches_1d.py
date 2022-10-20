@@ -7,12 +7,17 @@ def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, rando
                        step=1, l2_normed=False, patch_min=1, allow_allzeros=True):
     """TODO:
 
-      allow_allzeros: when extracting random patches, if False and l2_normed=True,
-          generate another random window position until the l2 norm is != 0.
+    signals: ndarray
+        If 2d-array must be in fortran order with shape (l_signal, n_signals).
+
+    allow_allzeros: when extracting random patches, if False and l2_normed=True,
+        generate another random window position until the l2 norm is != 0.
     
     """
-    if signals.ndim != 2:
-        raise ValueError("'signals' must be a 2d-array")
+    if signals.ndim > 2:
+        raise ValueError("'signals' must be 2d-array at most")
+    if signals.ndim == 1:
+        signals = signals[:,None]
 
     rng = np.random.default_rng(random_state)
     l_signals, n_signals = signals.shape
@@ -86,7 +91,7 @@ def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, rando
     return patches
 
 
-def reconstruct_from_patches_1d(patches, step, keepdims=False):
+def reconstruct_from_patches_1d(patches, step):
     l_patches, n_patches = patches.shape
     total_len = (n_patches - 1) * step + l_patches
     
@@ -98,4 +103,4 @@ def reconstruct_from_patches_1d(patches, step, keepdims=False):
     normalizer[i*step+l_patches:] = 1
     reconstructed /= normalizer
 
-    return reconstructed if not keepdims else reconstructed.reshape(-1,1)
+    return reconstructed

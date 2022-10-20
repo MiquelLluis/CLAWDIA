@@ -19,19 +19,28 @@ def abs_normalize(array, axis=0):
 def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
 	"""TODO
 
-	Mètode de bisecció adaptat a una funció f(x) tal que
-		f(x) != 0    	x <= x0  i
-		f(x) == 0       x  > x0,
+	Troba x0 pel mètode de bisecció adaptat a una funció f(x) tal que
+		f(x)  > 0    	x  < x0,
+		f(x) == 0       x >= x0,
 	o viceversa. Un dels dos extrems del límite [a, b] ha de ser f(x) = 0.
 	Algorisme basat en la funció de bisecció `scipy.optimize.bisect`.
+
+	Result
+	------
+	solver_stats: dict
+		'x': Solution.
+		'f': Value of f(x).
+		'converged': bool.
+		'niters': Number of iterations performed.
+		'funcalls': Number of times `f` was evaluated.
 
 	"""
 	fa = f(a, *args)
 	fb = f(b, *args)
 	solver_stats = {'funcalls': 2}
 	if fa*fb != 0:
-		raise ValueError("There isn't a boundary point yielding f(x)=0")
-	if fa < fb:
+		raise ValueError("There isn't a boundary point in the 0 zone")
+	if fa == 0:
 		a, b = b, a
 		fa, fb = fb, fa
 	
@@ -43,14 +52,18 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
 		solver_stats['funcalls'] += 1
 		if fm != 0:
 			a = xm
-		if abs(dm) < xtol + rtol*abs(xm):
+			fa = fm
+		elif abs(dm) < xtol + rtol*abs(xm):
 			solver_stats['converged'] = True
 			solver_stats['niters'] = i+1
 			solver_stats['x'] = xm
+			solver_stats['f'] = fm
 			return solver_stats
 
+	# Not converged
 	solver_stats['converged'] = False
 	solver_stats['niters'] = i+1
 	solver_stats['x'] = a
+	solver_stats['f'] = fa
 	
 	return solver_stats
