@@ -288,14 +288,8 @@ class DictionarySpams:
         """
         if not isinstance(signal, np.ndarray):
             raise TypeError("'signal' must be a numpy array")
-        
-        if signal.ndim == 1:
-            signal = signal.reshape(-1, 1)  # to column vector
-            keepdims = False  # Return a 1d-array
-        else:
-            keepdims = True  # Return a 2d-array
 
-        signal_rec, code = self._reconstruct(signal, sc_lambda, step, keepdims=keepdims, **kwargs)
+        signal_rec, code = self._reconstruct(signal, sc_lambda, step, **kwargs)
 
         if normed and signal_rec.any():
             norm = np.max(np.abs(signal_rec))
