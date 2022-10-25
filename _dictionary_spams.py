@@ -304,6 +304,29 @@ class DictionarySpams:
 
         return (signal_rec, code) if with_code else signal_rec
 
+    def reconstruct_batch(self, signals, sc_lambda, out=None, step=1, normed=True, **kwargs):
+        """TODO
+
+        Reconstruct multiple signals, each one as a sparse combination of
+        dictionary atoms.
+
+        """
+        if out is None:
+            out = np.empty_like(signals)
+        n_signals = signals.shape[1]
+
+        for i in range(n_signals):
+            out[:,i] = self.reconstruct(
+                signals[:,i],
+                sc_lambda, 
+                step=step,
+                normed=normed,
+                with_code=False,
+                **kwargs
+            )
+
+        return out
+
     def reconstruct_auto(self, signal, zero_marg, lambda_lims, step=1, normed=True,
                          full_output=False, kwargs_bisect={}, kwargs_lasso={}):
         """TODO
