@@ -83,4 +83,4 @@ def gen_parents_auto_batch(signals, dictionaries, parents=None, normalize=False,
 	if normalize:
 		util.abs_normalize(parents)
 
-	return (parents, lambdas)
+	return (parents, lambdas) if parents is None else lambdas
