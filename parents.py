@@ -8,7 +8,7 @@ def _gen_parents_inplace(signal, dictionaries, sc_lambda, out, **kwargs_dico):
 		out[:,ip] = dico.reconstruct(signal, sc_lambda, **kwargs_dico)
 
 
-def _gen_parents_inplace_auto(signal, dictionaries, out, **kwargs_dico):
+def _gen_parents_auto_inplace(signal, dictionaries, out, **kwargs_dico):
 	for ip, (key, dico) in enumerate(dictionaries.items()):
 		out[:,ip] = dico.reconstruct_auto(signal, **kwargs_dico)
 
@@ -46,7 +46,7 @@ def gen_parents_batch(signals, dictionaries, sc_lambda, parents=None, normalize=
 	return parents
 
 
-def gen_parents_batch_auto(signals, dictionaries, parents=None, normalize=False, verbose=False,
+def gen_parents_auto_batch(signals, dictionaries, parents=None, normalize=False, verbose=False,
 						   **kwargs_dico):
 	"""TODO
 	
@@ -67,7 +67,7 @@ def gen_parents_batch_auto(signals, dictionaries, parents=None, normalize=False,
 	for isi in range(n_signals):
 		if verbose:
 			print(f"Generating parents of #{isi}...")
-		_gen_parents_inplace_auto(
+		_gen_parents_auto_inplace(
 			signals[:,isi],
 			dictionaries,
 			parents[...,isi],
