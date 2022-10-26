@@ -3,7 +3,7 @@ import numpy as np
 from . import util
 
 
-def _gen_parents_inplace(signal, dictionaries, l_window, n_dicts, out, **kwargs):
+def _gen_parents_inplace(signal, dictionaries, sc_lambda, l_window, n_dicts, out, **kwargs):
 	for ip, (key, dico) in enumerate(dictionaries.items()):
 		out[:,ip] = dico.reconstruct(signal, **kwargs)
 
@@ -28,7 +28,7 @@ def gen_parents(signal, dictionaries, out=None, **kwargs):
 	return out
 
 
-def gen_parents_batch(signals, dictionaries, out=None, normalize=False, verbose=False, **kwargs):
+def gen_parents_batch(signals, dictionaries, sc_lambda, out=None, normalize=False, verbose=False, **kwargs):
 	"""TODO
 	Genera els parents d'un conjunt de senyals en un array (longitud, senyals)
 	de numpy amb els diccionaris de grawadile dins un dict. Si es dona el
@@ -51,6 +51,7 @@ def gen_parents_batch(signals, dictionaries, out=None, normalize=False, verbose=
 		_gen_parents_inplace(
 			signals[:,isi],
 			dictionaries,
+			sc_lambda,
 			l_window,
 			n_dicts,
 			out[...,isi],
