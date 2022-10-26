@@ -33,8 +33,7 @@ def gen_parents_batch(signals, dictionaries, sc_lambda, out=None, normalize=Fals
 	de numpy amb els diccionaris de grawadile dins un dict. Si es dona el
 	'out' (l_window, n_dicos, n_signals) es clavaran els valors a dintre en
 	comptes de crear un nou array per als resultats. Els kwargs es passen
-	directament a cada diccionari de grawadile. Especificar que el paràmetre
-	'sc_lambda' és obligatori!!!
+	directament a cada diccionari de grawadile.
 
 	"""
 	l_window, n_signals = signals.shape
