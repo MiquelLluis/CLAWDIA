@@ -77,7 +77,6 @@ def gen_parents_auto_batch(signals, dictionaries, parents=None, normalize=False,
 			signals[:,isi],
 			dictionaries,
 			parents[...,isi],
-			return_lambdas=True,
 			**kwargs_dico
 		)
 
