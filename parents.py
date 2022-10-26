@@ -13,27 +13,6 @@ def _gen_parents_inplace_auto(signal, dictionaries, out, **kwargs):
 		out[:,ip] = dico.reconstruct_auto(signal, **kwargs)
 
 
-def gen_parents(signal, dictionaries, sc_lambda=None, out=None, **kwargs):
-	"""TODO
-	Genera els parents d'un senyal en un array numpy amb els diccionaris de
-	grawadile dins un dict. Si es dona el 'out' es clavaran els valors a
-	dintre en comptes de crear un nou array per als resultats. Els kwargs es
-	passen directament a cada diccionari de grawadile.
-
-	"""
-	if out is None:
-		l_window = len(signal)
-		n_dicts = len(dictionaries)
-		out = np.empty((l_window, n_dicts), order='F')
-	
-	if sc_lambda is None:
-		_gen_parents_inplace(signal, dictionaries, out, **kwargs)
-	else:
-		_gen_parents_inplace(signal, dictionaries, sc_lambda, out, **kwargs)
-
-	return out
-
-
 def gen_parents_batch(signals, dictionaries, sc_lambda=None, out=None, normalize=False, verbose=False, **kwargs):
 	"""TODO
 	Genera els parents d'un conjunt de senyals en un array (longitud, senyals)
