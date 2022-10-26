@@ -68,11 +68,12 @@ def gen_parents_auto_batch(signals, dictionaries, parents=None, normalize=False,
 
 	if parents is None:
 		parents = np.empty((l_window, n_dicts, n_signals), order='F')
+	lambdas = np.empty((n_dicts, n_signals), order='F')
 
 	for isi in range(n_signals):
 		if verbose:
 			print(f"Generating parents of #{isi}...")
-		lambdas = _gen_parents_auto_inplace(
+		lambdas[:,isi] = _gen_parents_auto_inplace(
 			signals[:,isi],
 			dictionaries,
 			parents[...,isi],
