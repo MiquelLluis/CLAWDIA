@@ -17,10 +17,9 @@ def gen_parents(signal, dictionaries, out=None, **kwargs):
 	paràmetre 'sc_lambda' és obligatori!!!
 
 	"""
-	l_window = len(signal)
-	n_dicts = len(dictionaries)
-
 	if out is None:
+		l_window = len(signal)
+		n_dicts = len(dictionaries)
 		out = np.empty((l_window, n_dicts), order='F')
 	
 	_gen_parents_inplace(signal, dictionaries, out, **kwargs)
