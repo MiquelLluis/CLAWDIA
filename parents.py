@@ -27,7 +27,7 @@ def gen_parents(signal, dictionaries, sc_lambda=None, out=None, **kwargs):
 		out = np.empty((l_window, n_dicts), order='F')
 	
 	if sc_lambda is None:
-		_gen_parents_inplace(signal, dictionaries out, **kwargs)
+		_gen_parents_inplace(signal, dictionaries, out, **kwargs)
 	else:
 		_gen_parents_inplace(signal, dictionaries, sc_lambda, out, **kwargs)
 
