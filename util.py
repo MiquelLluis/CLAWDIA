@@ -15,8 +15,6 @@ def abs_normalize(array, axis=0):
 	    array /= np.max(np.abs(array), axis=axis, keepdims=True)
 	    np.nan_to_num(array, copy=False)
 
-	return array
-
 
 def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
 	"""TODO
