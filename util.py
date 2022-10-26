@@ -55,7 +55,7 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
 		if fm != 0:
 			a = xm
 			fa = fm
-		elif abs(dm) < xtol + rtol*abs(xm):
+		if abs(dm) < xtol + rtol*abs(xm):
 			solver_stats['converged'] = True
 			solver_stats['niters'] = i+1
 			solver_stats['x'] = a
