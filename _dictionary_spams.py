@@ -326,19 +326,16 @@ class DictionarySpams:
         """TODO
 
         Reconstrueix un únic senyal buscant per bisecció la lambda que minimitza
-        el senyal reconstruit als margens del senyal, la mida dels quals ve
+        el senyal reconstruit al marge esquerre del senyal, la mida dels quals ve
         determinada per 'zero_marg'.
 
         """
         # Margins of the signals to be zeroed
-        margins = (signal[:zero_marg], signal[-zero_marg:])
+        margin = signal[:zero_marg]
         # Function to be bisected.
         def fun(sc_lambda):
-            res = 0
-            for x in margins:
-                rec, _ = self._reconstruct(x, sc_lambda, step, **kwargs_lasso)
-                res += np.sum(np.abs(rec))
-            return res
+            rec, _ = self._reconstruct(margin, sc_lambda, step, **kwargs_lasso)
+            return np.sum(np.abs(rec))
 
         result = util.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
         rec, code = self._reconstruct(signal, result['x'], step, **kwargs_lasso)
