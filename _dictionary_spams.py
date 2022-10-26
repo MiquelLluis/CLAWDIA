@@ -321,7 +321,7 @@ class DictionarySpams:
 
         return out
 
-    def reconstruct_auto(self, signal, zero_marg, lambda_lims, step=1, normed=True,
+    def reconstruct_auto(self, signal, *, zero_marg, lambda_lims, step=1, normed=True,
                          full_output=False, kwargs_bisect={}, kwargs_lasso={}):
         """TODO
 
