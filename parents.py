@@ -3,7 +3,7 @@ import numpy as np
 from . import util
 
 
-def _gen_parents_inplace(signal, dictionaries, sc_lambda, l_window, n_dicts, out, **kwargs):
+def _gen_parents_inplace(signal, dictionaries, sc_lambda, out, **kwargs):
 	for ip, (key, dico) in enumerate(dictionaries.items()):
 		out[:,ip] = dico.reconstruct(signal, **kwargs)
 
@@ -23,7 +23,7 @@ def gen_parents(signal, dictionaries, out=None, **kwargs):
 	if out is None:
 		out = np.empty((l_window, n_dicts), order='F')
 	
-	_gen_parents_inplace(signal, dictionaries, l_window, n_dicts, out, **kwargs)
+	_gen_parents_inplace(signal, dictionaries, out, **kwargs)
 
 	return out
 
@@ -52,8 +52,6 @@ def gen_parents_batch(signals, dictionaries, sc_lambda, out=None, normalize=Fals
 			signals[:,isi],
 			dictionaries,
 			sc_lambda,
-			l_window,
-			n_dicts,
 			out[...,isi],
 			**kwargs
 		)
