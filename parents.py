@@ -46,7 +46,6 @@ def gen_parents_batch(signals, dictionaries, sc_lambda, out=None, normalize=Fals
 	for isi in range(n_signals):
 		if verbose:
 			print(f"Generating parents of #{isi}...")
-
 		_gen_parents_inplace(
 			signals[:,isi],
 			dictionaries,
