@@ -3,14 +3,19 @@ import numpy as np
 from . import util
 
 
-def _gen_parents_inplace(signal, dictionaries, sc_lambda, out, **kwargs_dico):
+def _gen_parents_inplace(signal, dictionaries, sc_lambda, parents, **kwargs_dico):
 	for ip, (key, dico) in enumerate(dictionaries.items()):
-		out[:,ip] = dico.reconstruct(signal, sc_lambda, **kwargs_dico)
+		parents[:,ip] = dico.reconstruct(signal, sc_lambda, **kwargs_dico)
 
 
-def _gen_parents_auto_inplace(signal, dictionaries, out, **kwargs_dico):
+def _gen_parents_auto_inplace(signal, dictionaries, parents, **kwargs_dico):
+	lambdas = []
 	for ip, (key, dico) in enumerate(dictionaries.items()):
-		out[:,ip] = dico.reconstruct_auto(signal, **kwargs_dico)
+		result = dico.reconstruct_auto(signal, full_output=True, **kwargs_dico)
+		parents[:,ip] = result[0]
+		lambdas.append(result[2]['x'])
+
+	return lambdas
 
 
 def gen_parents_batch(signals, dictionaries, sc_lambda, parents=None, normalize=False,
@@ -67,14 +72,15 @@ def gen_parents_auto_batch(signals, dictionaries, parents=None, normalize=False,
 	for isi in range(n_signals):
 		if verbose:
 			print(f"Generating parents of #{isi}...")
-		_gen_parents_auto_inplace(
+		lambdas = _gen_parents_auto_inplace(
 			signals[:,isi],
 			dictionaries,
 			parents[...,isi],
+			return_lambdas=True,
 			**kwargs_dico
 		)
 
 	if normalize:
 		util.abs_normalize(parents)
 
-	return parents
+	return (parents, lambdas)
