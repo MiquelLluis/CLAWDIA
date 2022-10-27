@@ -109,7 +109,7 @@ def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=Fa
     return i_children
 
 
-def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=None, verbose=False, **kwargs):
+def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=None, **kwargs):
     """TODO
 
     Torna els índex de cada senyal dins `dictionaries` que més s'assembla a
@@ -166,8 +166,5 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
             i_atoms.reshape(n_labels, -1, order='F'),
             c_atoms.reshape(n_labels, -1, order='F')
         ]
-        if verbose:
-            _lost = np.sum(c_atoms==0)
-            print(f"Children generated with '{kdc}': {len(c_atoms)} (lost: {_lost})")
 
     return i_children
