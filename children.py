@@ -153,6 +153,13 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
     dict_lambdas = dictionaries_set['lambdas']
 
     parents_flat = parents.reshape(l_window, -1, order='F')
+    lambdas_flat = lambdas.ravel(order='F')
+
+    # Map each signal to its corresponding set of dictionaries which were made
+    # with the closest lambda of reconstruction.
+    is2d = []
+    for lambda_ in lambdas_flat:
+        is2d.append(np.argmin(np.abs(dict_lambdas - lambda_)))
 
     if labels is None:
         labels = {key: i for i, key in enumerate(dictionaries[0])}
