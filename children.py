@@ -63,7 +63,7 @@ def omp_singlematch_batch(signals, dictionary, **kwargs):
     return i_atoms, c_atoms
 
 
-def pick_children_batch(parents, dictionaries, dict_order=None, out=None, verbose=False, **kwargs):
+def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=False, **kwargs):
     """TODO
     Troba els indexs `i_atoms` amb els seus coeficients `c_atoms` dels àtoms
     de `dictionary` més pareguts a cada pare en `parents` gastant l'OMP.
@@ -72,7 +72,7 @@ def pick_children_batch(parents, dictionaries, dict_order=None, out=None, verbos
 
     parents: 3d-array (l_window, n_dictionaries, n_signals)
     dictionaries: dict( key: 2d-array(l_window, n_atoms) )
-    dict_order: dict( key: int )
+    labels: dict( key: int )
         Si s'introdueix, es gastarà per mapejar l'ordre en que s'introdueixen
         els children de cada diccionari dins `i_children`. Si no,
         s'introdueixen amb l'ordre que l'interpret de python esculla.
@@ -87,8 +87,8 @@ def pick_children_batch(parents, dictionaries, dict_order=None, out=None, verbos
 
     parents_flat = parents.reshape(l_window, -1, order='F')
 
-    if dict_order is None:
-        dict_order = {key: i for i, key in enumerate(dictionaries)}
+    if labels is None:
+        labels = {key: i for i, key in enumerate(dictionaries)}
 
     if out is None:
         i_children = np.empty((2, n_dicos, n_dicos, n_signals), order='F')
@@ -96,7 +96,7 @@ def pick_children_batch(parents, dictionaries, dict_order=None, out=None, verbos
         i_children = out
 
     for kdc, dico in dictionaries.items():
-        idc = dict_order[kdc]
+        idc = labels[kdc]
         i_atoms, c_atoms = omp_singlematch_batch(parents_flat, dico, **kwargs)
         i_children[:,idc] = [
             i_atoms.reshape(n_dicos, -1, order='F'),
@@ -109,7 +109,7 @@ def pick_children_batch(parents, dictionaries, dict_order=None, out=None, verbos
     return i_children
 
 
-def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, dict_order=None, verbose=False, **kwargs):
+def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=None, verbose=False, **kwargs):
     """TODO
 
     Torna els índex de cada senyal dins `dictionaries` que més s'assembla a
@@ -137,8 +137,8 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, dict_orde
 
     parents_flat = parents.reshape(l_window, -1, order='F')
 
-    if dict_order is None:
-        dict_order = {key: i for i, key in enumerate(dictionaries)}
+    if labels is None:
+        labels = {key: i for i, key in enumerate(dictionaries)}
 
     if out is None:
         i_children = np.empty((2, n_dicos, n_dicos, n_signals), order='F')
@@ -146,7 +146,7 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, dict_orde
         i_children = out
 
     for kdc, dico in dictionaries.items():
-        idc = dict_order[kdc]
+        idc = labels[kdc]
         i_atoms, c_atoms = omp_singlematch_batch(parents_flat, dico, **kwargs)
         i_children[:,idc] = [
             i_atoms.reshape(n_dicos, -1, order='F'),
