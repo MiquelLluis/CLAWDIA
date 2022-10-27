@@ -109,13 +109,28 @@ def pick_children_batch(parents, dictionaries, dict_order=None, out=None, verbos
     return i_children
 
 
-def pick_children_autolambda_batch(parents, lambdas, dictionaries, dict_order=None, verbose=False, **kwargs):
+def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, dict_order=None, verbose=False, **kwargs):
     """TODO
 
     Torna els índex de cada senyal dins `dictionaries` que més s'assembla a
     cadascún dels `parents` tenint en compte la lambda (dins `lambdas`) a les
     que s'han reconstruit.
-    
+
+    PARAMETERS
+    ----------
+    parents: array, shape (length, no. labels, no. signals)
+
+    lambdas: array, shape (no. labels, no. signals)
+
+    dictionaries_set: dict
+        'lambdas': array-like
+            List of lambdas at with each dictionary in 'dictionaries' was
+            reconstructed.
+        'dictionaries': array-like
+            List of `dict()` of dictionaries, so that each value is a
+            dict(label: 2d-array(length, no. atoms)).
+
+
     """
     l_window, n_dicos, n_signals = parents.shape
     assert n_dicos == len(dictionaries)
