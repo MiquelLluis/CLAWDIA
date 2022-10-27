@@ -154,10 +154,7 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
     if labels is None:
         labels = {key: i for i, key in enumerate(dictionaries)}
 
-    if out is None:
-        i_children = np.empty((2, n_labels, n_labels, n_signals), order='F')
-    else:
-        i_children = out
+    i_children = np.empty((2, n_labels, n_labels, n_signals), order='F')
 
     for kdc, dico in dictionaries.items():
         idc = labels[kdc]
