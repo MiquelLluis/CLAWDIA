@@ -149,10 +149,13 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
     l_window, n_labels, n_signals = parents.shape
     assert n_labels == len(labels)
 
+    dictionaries = dictionaries_set['dictionaries']
+    dict_lambdas = dictionaries_set['lambdas']
+
     parents_flat = parents.reshape(l_window, -1, order='F')
 
     if labels is None:
-        labels = {key: i for i, key in enumerate(dictionaries)}
+        labels = {key: i for i, key in enumerate(dictionaries[0])}
 
     i_children = np.empty((2, n_labels, n_labels, n_signals), order='F')
 
