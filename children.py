@@ -130,7 +130,21 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
             List of `dict()` of dictionaries, so that each value is a
             dict(label: 2d-array(length, no. atoms)).
 
+    labels: dict( label: int )
+        If given, will be the order of the dictionaries (within each lambda)
+        in which each children's coordinate will be assigned.
+        If None, the order will be the default when accessing each 
+        dictionaries[lambda].
 
+    **kwargs:
+        Passed to `sklearn.decomposition.sparse_encode`.
+
+    RETURNS
+    -------
+    i_children: 2d-array, shape (2, no. labels, no. labels, no. signals)
+        Each pair of values in `index=0` is the coordinates of the selected
+        atom, (labels[wf], ind. atom)
+    
     """
     l_window, n_labels, n_signals = parents.shape
     assert n_labels == len(labels)
