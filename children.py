@@ -63,7 +63,7 @@ def omp_singlematch_batch(signals, dictionary, **kwargs):
     return i_atoms, c_atoms
 
 
-def gen_index_children_batch(parents, dictionaries, dict_order=None, out=None, verbose=False, **kwargs):
+def pick_children_batch(parents, dictionaries, dict_order=None, out=None, verbose=False, **kwargs):
     """TODO
     Troba els indexs `i_atoms` amb els seus coeficients `c_atoms` dels àtoms
     de `dictionary` més pareguts a cada pare en `parents` gastant l'OMP.
