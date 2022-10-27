@@ -11,9 +11,9 @@ def classificate_tree(parents, children, labels=None, nc_val=-1):
     PARAMETERS
     ----------
     parents: array_like, (samples, n_parents)
-        Parent waveforms whose indices coincide to their respective morphological
-        families (labels). Each parent waveform will have associated
-        `n_parents` children.
+        Parent waveforms whose indices coincide to their respective
+        morphological families (labels). Each parent waveform will have
+        associated `n_parents` children.
     children: array_like, (samples, n_children, n_parents)
         Reconstructions associated with parent waveforms.
     labels: array_like, optional

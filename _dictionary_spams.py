@@ -109,8 +109,9 @@ class DictionarySpams:
     [1]: SPAMS (for python), (http://spams-devel.gforge.inria.fr/), last
     accessed in october 2018.
 
-    [2]: SciPy's Optimization tools, (https://docs.scipy.org/doc/scipy/reference/optimize.html),
-    last accessed in February 2022.
+    [2]: SciPy's Optimization tools,
+    (https://docs.scipy.org/doc/scipy/reference/optimize.html), last accessed
+    in February 2022.
 
     """
     def __init__(self, dict_init=None, signal_pool=None, wave_pos=None, p_size=None, d_size=None,
@@ -325,9 +326,9 @@ class DictionarySpams:
                          full_output=False, kwargs_bisect={}, kwargs_lasso={}):
         """TODO
 
-        Reconstrueix un únic senyal buscant per bisecció la lambda que minimitza
-        el senyal reconstruit al marge esquerre del senyal, la mida dels quals ve
-        determinada per 'zero_marg'.
+        Reconstrueix un únic senyal buscant per bisecció la lambda que
+        minimitza el senyal reconstruit al marge esquerre del senyal, la mida
+        dels quals ve determinada per 'zero_marg'.
 
         """
         # Margins of the signals to be zeroed

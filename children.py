@@ -107,3 +107,38 @@ def pick_children_batch(parents, dictionaries, dict_order=None, out=None, verbos
             print(f"Children generated with '{kdc}': {len(c_atoms)} (lost: {_lost})")
 
     return i_children
+
+
+def pick_children_autolambda_batch(parents, lambdas, dictionaries, dict_order=None, verbose=False, **kwargs):
+    """TODO
+
+    Torna els índex de cada senyal dins `dictionaries` que més s'assembla a
+    cadascún dels `parents` tenint en compte la lambda (dins `lambdas`) a les
+    que s'han reconstruit.
+    
+    """
+    l_window, n_dicos, n_signals = parents.shape
+    assert n_dicos == len(dictionaries)
+
+    parents_flat = parents.reshape(l_window, -1, order='F')
+
+    if dict_order is None:
+        dict_order = {key: i for i, key in enumerate(dictionaries)}
+
+    if out is None:
+        i_children = np.empty((2, n_dicos, n_dicos, n_signals), order='F')
+    else:
+        i_children = out
+
+    for kdc, dico in dictionaries.items():
+        idc = dict_order[kdc]
+        i_atoms, c_atoms = omp_singlematch_batch(parents_flat, dico, **kwargs)
+        i_children[:,idc] = [
+            i_atoms.reshape(n_dicos, -1, order='F'),
+            c_atoms.reshape(n_dicos, -1, order='F')
+        ]
+        if verbose:
+            _lost = np.sum(c_atoms==0)
+            print(f"Children generated with '{kdc}': {len(c_atoms)} (lost: {_lost})")
+
+    return i_children
