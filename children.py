@@ -132,8 +132,8 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
 
 
     """
-    l_window, n_dicos, n_signals = parents.shape
-    assert n_dicos == len(dictionaries)
+    l_window, n_labels, n_signals = parents.shape
+    assert n_labels == len(labels)
 
     parents_flat = parents.reshape(l_window, -1, order='F')
 
@@ -141,7 +141,7 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
         labels = {key: i for i, key in enumerate(dictionaries)}
 
     if out is None:
-        i_children = np.empty((2, n_dicos, n_dicos, n_signals), order='F')
+        i_children = np.empty((2, n_labels, n_labels, n_signals), order='F')
     else:
         i_children = out
 
@@ -149,8 +149,8 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
         idc = labels[kdc]
         i_atoms, c_atoms = omp_singlematch_batch(parents_flat, dico, **kwargs)
         i_children[:,idc] = [
-            i_atoms.reshape(n_dicos, -1, order='F'),
-            c_atoms.reshape(n_dicos, -1, order='F')
+            i_atoms.reshape(n_labels, -1, order='F'),
+            c_atoms.reshape(n_labels, -1, order='F')
         ]
         if verbose:
             _lost = np.sum(c_atoms==0)
