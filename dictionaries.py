@@ -31,7 +31,7 @@ def load(file):
     for key, value in dico_raw.items():
         # Restore all 0d-array to their former types
         if value.ndim == 0:
-            dico_raw[key] = value.item()
+            value = value.item()
         setattr(dico, key, value)
 
     return dico
