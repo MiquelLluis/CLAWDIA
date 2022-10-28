@@ -379,11 +379,3 @@ class DictionarySpams:
         # None of the above.
         else:
             raise ValueError("either 'dict_init' or 'signal_pool' must be provided")
-
-
-def load():
-    pass
-
-
-def save(file, dico):
-    np.savez(file, **vars(dico))

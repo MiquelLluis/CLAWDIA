@@ -11,3 +11,14 @@ except ImportError:
 #     from ._dictionary_sklearn import DictionarySklearn
 # except ImportError:
 #     warnings.warn("scikit-learn not installed, 'DictionarySklearn' won't be available", ImportWarning)
+
+
+#______________________________________________________________________________
+# Functions only tested with instances of DictionarySpams.
+
+def load(file):
+    pass
+
+
+def save(file, dico):
+    np.savez(file, **vars(dico))
