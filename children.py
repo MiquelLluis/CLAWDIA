@@ -2,9 +2,32 @@ import numpy as np
 import sklearn
 
 
+def _omp_singlematch(signal, dictionary, **kwargs):
+    """TODO
+    Torna l'índex `i_atom` amb el seu coeficient `c_atom` de l'àtom
+    de `dictionary` més paregut al senyal `signal` gastant l'OMP.
+    Compte: Aquesta versió força un únic àtom.
+    Aquells senyals per als que l'OMP no convergisca tindràn coeficient
+    `c_atoms[i] = 0`.
+
+    """
+    signal = signal[None,:]
+    code = sklearn.decomposition.sparse_encode(
+        signal,
+        dictionary.T,
+        algorithm='omp',
+        n_nonzero_coefs=1,
+        **kwargs
+    ).ravel()
+    i_atom = np.argmax(np.abs(code))
+    c_atom = code[i_atom]
+
+    return i_atom, c_atom
+
+
 def _omp_singlematch_batch(signals, dictionary, **kwargs):
     """TODO
-    Troba els indexs `i_atoms` amb els seus coeficients `c_atoms` dels àtoms
+    Torna els indexs `i_atoms` amb els seus coeficients `c_atoms` dels àtoms
     de `dictionary` més pareguts a cada senyal en `signals` gastant l'OMP.
     Compte: Aquesta versió força un únic àtom per senyal i diccionari.
     Aquells senyals per als que l'OMP no convergisca tindràn coeficient
