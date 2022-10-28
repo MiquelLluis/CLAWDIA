@@ -1,4 +1,3 @@
-import os
 import time
 
 import numpy as np
@@ -10,6 +9,7 @@ from . import util
 
 # Remove warning from OpenMP, present in older versions of python-spams.
 if not '__version__' in dir(spams) or spams.__version__ <= '2.6.5.4':
+    import os
     os.environ['KMP_WARNINGS'] = 'FALSE'
 
 
