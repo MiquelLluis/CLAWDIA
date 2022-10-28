@@ -30,7 +30,7 @@ def load(file):
     # Restore the state of the dictionary
     for key, value in dico_raw.items():
         # Restore all 0d-array to their former types
-        if d.ndim == 0:
+        if value.ndim == 0:
             dico_raw[key] = value.item()
         setattr(dico, key, value)
 
