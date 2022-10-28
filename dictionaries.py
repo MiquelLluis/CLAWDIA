@@ -1,6 +1,8 @@
 """Try to import all available dictionaries."""
 import warnings
 
+import numpy as np
+
 
 try:
     from ._dictionary_spams import DictionarySpams
