@@ -1,3 +1,5 @@
+import itertools as it
+
 import numpy as np
 import sklearn
 
@@ -88,10 +90,10 @@ def omp_singlematch_batch(signals, dictionary, **kwargs):
 
 def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=False, **kwargs):
     """TODO
-    Troba els indexs `i_atoms` amb els seus coeficients `c_atoms` dels àtoms
-    de `dictionary` més pareguts a cada pare en `parents` gastant l'OMP.
-    Aquells pares per als que l'OMP no convergisca tindràn coeficient
-    `c_atoms[i] = 0`.
+    
+    Torna els index de l'arbre children corresponent a cada parent en `parents`
+    i diccionari en `dictionaries`. Cada index apunta a un àtom del diccionari
+    corresponent.
 
     parents: 3d-array (l_window, n_dictionaries, n_signals)
     dictionaries: dict( key: 2d-array(l_window, n_atoms) )
@@ -177,6 +179,7 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
 
     parents_flat = parents.reshape(l_window, -1, order='F')
     lambdas_flat = lambdas.ravel(order='F')
+    n_parents = parents_flat.shape[1]
 
     # Map each signal to its corresponding set of dictionaries which were made
     # with the closest lambda of reconstruction.
@@ -187,14 +190,10 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
     if labels is None:
         labels = {key: i for i, key in enumerate(dictionaries[0])}
 
-    i_children = np.empty((2, n_labels, n_labels, n_signals), order='F')
+    i_children = np.empty((2, n_labels, n_parents), order='F')
 
-    for kdc, dico in dictionaries.items():
-        idc = labels[kdc]
-        i_atoms, c_atoms = omp_singlematch_batch(parents_flat, dico, **kwargs)
-        i_children[:,idc] = [
-            i_atoms.reshape(n_labels, -1, order='F'),
-            c_atoms.reshape(n_labels, -1, order='F')
-        ]
+    for ip in range(n_parents):
+        parent = parents[ip]
+        i_children[:,ip] = 
 
     return i_children
