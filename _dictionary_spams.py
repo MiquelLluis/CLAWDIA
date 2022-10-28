@@ -385,5 +385,5 @@ def load():
     pass
 
 
-def save():
-    pass
+def save(file, dico):
+    np.savez(file, **vars(dico))
