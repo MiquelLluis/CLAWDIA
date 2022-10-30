@@ -4,7 +4,7 @@ import numpy as np
 import sklearn
 
 
-def _omp_singlematch(signal, dictionary, **kwargs):
+def _omp_singlematch(signal, dictionary, kwargs_omp):
     """TODO
     Torna l'índex `i_atom` amb el seu coeficient `c_atom` de l'àtom
     de `dictionary` més paregut al senyal `signal` gastant l'OMP.
@@ -19,7 +19,7 @@ def _omp_singlematch(signal, dictionary, **kwargs):
         dictionary.T,
         algorithm='omp',
         n_nonzero_coefs=1,
-        **kwargs
+        **kwargs_omp
     ).ravel()
     i_atom = np.argmax(np.abs(code))
     c_atom = code[i_atom]
@@ -27,7 +27,7 @@ def _omp_singlematch(signal, dictionary, **kwargs):
     return i_atom, c_atom
 
 
-def _omp_singlematch_batch(signals, dictionary, **kwargs):
+def _omp_singlematch_batch(signals, dictionary, kwargs_omp):
     """TODO
     Torna els indexs `i_atoms` amb els seus coeficients `c_atoms` dels àtoms
     de `dictionary` més pareguts a cada senyal en `signals` gastant l'OMP.
@@ -41,7 +41,7 @@ def _omp_singlematch_batch(signals, dictionary, **kwargs):
         dictionary.T,
         algorithm='omp',
         n_nonzero_coefs=1,
-        **kwargs
+        **kwargs_omp
     ).T
     i_atoms = np.argmax(np.abs(codes), axis=0)
     c_atoms = np.ravel(codes[i_atoms,np.indices(i_atoms.shape)])
@@ -49,7 +49,7 @@ def _omp_singlematch_batch(signals, dictionary, **kwargs):
     return i_atoms, c_atoms
 
 
-def omp_singlematch_batch(signals, dictionary, **kwargs):
+def omp_singlematch_batch(signals, dictionary, **kwargs_omp):
     """TODO
     Troba els indexs `i_atoms` amb els seus coeficients `c_atoms` dels àtoms
     de `dictionary` més pareguts a cada senyal en `signals` gastant l'OMP.
@@ -70,7 +70,7 @@ def omp_singlematch_batch(signals, dictionary, **kwargs):
         signals_ = signals
 
     if n_null < n_signals:
-        i_atoms, c_atoms = _omp_singlematch_batch(signals_, dictionary, **kwargs)
+        i_atoms, c_atoms = _omp_singlematch_batch(signals_, dictionary, kwargs_omp)
 
         if n_null > 0:
             i_atoms_partial = i_atoms
@@ -88,7 +88,14 @@ def omp_singlematch_batch(signals, dictionary, **kwargs):
     return i_atoms, c_atoms
 
 
-def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=False, **kwargs):
+def _pick_children_from_parent(parent, dictionaries, kwargs_omp):
+    """TODO
+
+    """
+    pass
+
+
+def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=False, **kwargs_omp):
     """TODO
     
     Torna els index de l'arbre children corresponent a cada parent en `parents`
@@ -103,7 +110,7 @@ def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=Fa
         s'introdueixen amb l'ordre que l'interpret de python esculla.
     out: 4d-array (2, n_dictionaries, n_dictionaries, n_signals), optional
         Eixida inplace opcional.
-    **kwargs:
+    **kwargs_omp:
         Passat a la funció `sklearn.decomposition.sparse_encode`.
 
     """
@@ -122,7 +129,7 @@ def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=Fa
 
     for kdc, dico in dictionaries.items():
         idc = labels[kdc]
-        i_atoms, c_atoms = omp_singlematch_batch(parents_flat, dico, **kwargs)
+        i_atoms, c_atoms = omp_singlematch_batch(parents_flat, dico, **kwargs_omp)
         i_children[:,idc] = [
             i_atoms.reshape(n_dicos, -1, order='F'),
             c_atoms.reshape(n_dicos, -1, order='F')
@@ -134,7 +141,7 @@ def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=Fa
     return i_children
 
 
-def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, **kwargs):
+def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, **kwargs_omp):
     """TODO
 
     Torna els índex de cada senyal dins `dictionaries` que més s'assembla a
@@ -161,8 +168,8 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, **kwargs)
         If None, the order will be the default when accessing each 
         dictionaries[lambda].
 
-    **kwargs:
-        Passed to `sklearn.decomposition.sparse_encode`.
+    **kwargs_omp:
+        Passed to OMP's method of `sklearn.decomposition.sparse_encode`.
 
     RETURNS
     -------
@@ -196,10 +203,12 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, **kwargs)
         # Map each parent to its corresponding set of dictionaries which were made
         # with the closest lambda of reconstruction.
         lambda_parent = lambdas_flat[ip]
-        i_dicset[ip] = np.argmin(np.abs(lambdas_dict - lambda_parent))
+        i_dicos = np.argmin(np.abs(lambdas_dict - lambda_parent))
         # Current set of dictionaries to use whose lambda of reconstruction is
         # closest to the parent.
-        dicos_clas = dictionaries[i_dicset[ip]]
-        i_children[:,ip] = 
+        dicos_clas = dictionaries[i_dicos]
+        
+        i_children[:,ip] = _pick_children_from_parent(parent, dicos_clas, kwargs_omp)
+        i_dicset[ip] = i_dicos
 
     return i_children
