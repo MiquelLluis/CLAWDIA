@@ -134,7 +134,7 @@ def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=Fa
     return i_children
 
 
-def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=None, **kwargs):
+def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, **kwargs):
     """TODO
 
     Torna els índex de cada senyal dins `dictionaries` que més s'assembla a
@@ -148,12 +148,12 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
     lambdas: array, shape (no. labels, no. signals)
 
     dictionaries_set: dict
-        'lambdas': array-like
-            List of lambdas at with each dictionary in 'dictionaries' was
-            reconstructed.
         'dictionaries': array-like
             List of `dict()` of dictionaries, so that each value is a
             dict(label: 2d-array(length, no. atoms)).
+        'lambdas': array-like
+            List of lambdas at with each dictionary set in 'dictionaries' was
+            reconstructed.
 
     labels: dict( label: int )
         If given, will be the order of the dictionaries (within each lambda)
@@ -166,34 +166,40 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, labels=No
 
     RETURNS
     -------
-    i_children: 2d-array, shape (2, no. labels, no. labels, no. signals)
-        Each pair of values in `index=0` is the coordinates of the selected
-        atom, (labels[wf], ind. atom)
+    i_children: 3d-array, shape (no. labels, no. labels, no. signals)
+        Each value is the index of the selected atom inside its corresponding
+        dictionary, indicated by the lambda of its parent in `i_dicset`.
+    i_dicset: 2d-array, shape (no.labels, no. signals)
+        The index of the set of dictionaries inside `dictionaries` produced
+        with the closest lambda of reconstruction to each parent in `parents`,
+        which is indicated in `lambdas`.
     
     """
     l_window, n_labels, n_signals = parents.shape
-    assert n_labels == len(labels)
+    # if labels is None:
+    #     labels = {key: i for i, key in enumerate(dictionaries[0])}
+    # assert n_labels == len(labels)
 
     dictionaries = dictionaries_set['dictionaries']
-    dict_lambdas = dictionaries_set['lambdas']
+    lambdas_dict = dictionaries_set['lambdas']
 
     parents_flat = parents.reshape(l_window, -1, order='F')
     lambdas_flat = lambdas.ravel(order='F')
     n_parents = parents_flat.shape[1]
 
-    # Map each signal to its corresponding set of dictionaries which were made
-    # with the closest lambda of reconstruction.
-    is2d = []
-    for lambda_ in lambdas_flat:
-        is2d.append(np.argmin(np.abs(dict_lambdas - lambda_)))
-
-    if labels is None:
-        labels = {key: i for i, key in enumerate(dictionaries[0])}
-
-    i_children = np.empty((2, n_labels, n_parents), order='F')
+    # Will be reshaped afterwards
+    i_children = np.empty((n_labels, n_parents), order='F')
+    i_dicset = np.empty(n_parents)
 
     for ip in range(n_parents):
-        parent = parents[ip]
+        parent = parents_flat[ip]
+        # Map each parent to its corresponding set of dictionaries which were made
+        # with the closest lambda of reconstruction.
+        lambda_parent = lambdas_flat[ip]
+        i_dicset[ip] = np.argmin(np.abs(lambdas_dict - lambda_parent))
+        # Current set of dictionaries to use whose lambda of reconstruction is
+        # closest to the parent.
+        dicos_clas = dictionaries[i_dicset[ip]]
         i_children[:,ip] = 
 
     return i_children
