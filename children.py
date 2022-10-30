@@ -111,7 +111,7 @@ def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=Fa
     out: 4d-array (2, n_dictionaries, n_dictionaries, n_signals), optional
         Eixida inplace opcional.
     **kwargs_omp:
-        Passat a la funció `sklearn.decomposition.sparse_encode`.
+        Passed to OMP's method of `sklearn.decomposition.sparse_encode`.
 
     """
     l_window, n_dicos, n_signals = parents.shape
