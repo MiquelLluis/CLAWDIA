@@ -29,11 +29,6 @@ def _omp_singlematch(signal, dictionary, kwargs_omp):
 
 def _omp_singlematch_batch(signals, dictionary, kwargs_omp):
     """TODO
-    Torna els indexs `i_atoms` amb els seus coeficients `c_atoms` dels àtoms
-    de `dictionary` més pareguts a cada senyal en `signals` gastant l'OMP.
-    Compte: Aquesta versió força un únic àtom per senyal i diccionari.
-    Aquells senyals per als que l'OMP no convergisca tindràn coeficient
-    `c_atoms[i] = 0`.
 
     """
     codes = sklearn.decomposition.sparse_encode(
@@ -207,7 +202,7 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, **kwargs_
         # Current set of dictionaries to use whose lambda of reconstruction is
         # closest to the parent.
         dicos_clas = dictionaries[i_dicos]
-        
+
         i_children[:,ip] = _pick_children_from_parent(parent, dicos_clas, kwargs_omp)
         i_dicset[ip] = i_dicos
 
