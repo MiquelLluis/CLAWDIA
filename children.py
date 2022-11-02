@@ -86,8 +86,16 @@ def omp_singlematch_batch(signals, dictionary, **kwargs_omp):
 def _pick_children_from_parent(parent, dictionaries, kwargs_omp):
     """TODO
 
+    A partir d'un `parent` torna la branca de children en forma d'índex.
+
     """
-    pass
+    n_labels = len(dictionaries)
+    children = np.empty(n_labels)
+    for ic in range(n_labels):
+        d = dictionaries[ic]
+        children[ic], _ = _omp_singlematch(parent, d, kwargs_omp)
+
+    return children
 
 
 def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=False, **kwargs_omp):
