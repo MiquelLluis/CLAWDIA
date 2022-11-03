@@ -215,4 +215,4 @@ def pick_children_autolambda_batch(parents_dict, dictionaries_set, **kwargs_omp)
         i_children[:,ip] = _pick_children_from_parent(parent, dicos_clas, kwargs_omp)
         i_dicset[ip] = i_dicos
 
-    return i_children
+    return i_children, i_dicset
