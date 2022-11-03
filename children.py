@@ -199,8 +199,8 @@ def pick_children_autolambda_batch(parents_dict, dictionaries_set, **kwargs_omp)
     lambdas_dict = dictionaries_set['lambdas']
 
     # Will be reshaped afterwards
-    i_children = np.empty((n_labels, n_parents), order='F')
-    i_dicset = np.empty(n_parents)
+    i_children = np.empty((n_labels, n_parents), dtype=int, order='F')
+    i_dicset = np.empty(n_parents, dtype=int)
 
     for ip in range(n_parents):
         parent = parents_flat[:,ip]
