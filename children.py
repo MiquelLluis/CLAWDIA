@@ -154,8 +154,8 @@ def pick_children_autolambda_batch(parents_dict, dictionaries_set, **kwargs_omp)
     PARAMETERS
     ----------
     parents_dict: dict
-        'parents': array, shape (length, no. labels, no. signals)
-        'lambdas': array, shape (no. labels, no. signals)
+        'parents': 3d-array, shape (length, no. labels, no. signals)
+        'lambdas': 2d-array, shape (no. labels, no. signals)
 
     dictionaries_set: dict
         'dictionaries': array-like
@@ -186,7 +186,7 @@ def pick_children_autolambda_batch(parents_dict, dictionaries_set, **kwargs_omp)
     
     """
     parents = parents_dict['parents']
-    l_window, n_labels, _ = parents.shape
+    l_window, n_labels, n_signals = parents.shape
     parents_flat = parents.reshape(l_window, -1, order='F')
     lambdas_flat = parents_dict['lambdas'].ravel(order='F')
     n_parents = parents_flat.shape[1]
@@ -214,5 +214,9 @@ def pick_children_autolambda_batch(parents_dict, dictionaries_set, **kwargs_omp)
 
         i_children[:,ip] = _pick_children_from_parent(parent, dicos_clas, kwargs_omp)
         i_dicset[ip] = i_dicos
+
+    # Reshape to the tree shape: (children, parents, signals)
+    i_children = i_children.reshape(n_labels, n_labels, n_signals, order='F')
+    i_dicset = i_dicset.reshape(n_labels, n_signals, order='F')
 
     return i_children, i_dicset
