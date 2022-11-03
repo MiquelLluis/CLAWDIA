@@ -91,8 +91,8 @@ def _pick_children_from_parent(parent, dictionaries, kwargs_omp):
     """
     n_labels = len(dictionaries)
     children = np.empty(n_labels)
-    for ic in range(n_labels):
-        d = dictionaries[ic]
+    for ic, wf in enumerate(dictionaries):
+        d = dictionaries[wf]
         children[ic], _ = _omp_singlematch(parent, d, kwargs_omp)
 
     return children
