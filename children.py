@@ -186,18 +186,17 @@ def pick_children_autolambda_batch(parents_dict, dictionaries_set, **kwargs_omp)
     
     """
     parents = parents_dict['parents']
-    lambdas = parents_dict['lambdas']
-    l_window, n_labels, n_signals = parents.shape
+    l_window, n_labels, _ = parents.shape
+    parents_flat = parents.reshape(l_window, -1, order='F')
+    lambdas_flat = parents_dict['lambdas'].ravel(order='F')
+    n_parents = parents_flat.shape[1]
+
     # if labels is None:
     #     labels = {key: i for i, key in enumerate(dictionaries[0])}
     # assert n_labels == len(labels)
 
     dictionaries = dictionaries_set['dictionaries']
     lambdas_dict = dictionaries_set['lambdas']
-
-    parents_flat = parents.reshape(l_window, -1, order='F')
-    lambdas_flat = lambdas.ravel(order='F')
-    n_parents = parents_flat.shape[1]
 
     # Will be reshaped afterwards
     i_children = np.empty((n_labels, n_parents), order='F')
