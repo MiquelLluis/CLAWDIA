@@ -159,7 +159,7 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, **kwargs_
 
     dictionaries_set: dict
         'dictionaries': array-like
-            List of `dict()` of dictionaries, so that each value is a
+            List of `dict()` of dictionaries, so that each item is a
             dict(label: 2d-array(length, no. atoms)).
         'lambdas': array-like
             List of lambdas at with each dictionary set in 'dictionaries' was
