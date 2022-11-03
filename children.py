@@ -203,7 +203,7 @@ def pick_children_autolambda_batch(parents_dict, dictionaries_set, **kwargs_omp)
     i_dicset = np.empty(n_parents)
 
     for ip in range(n_parents):
-        parent = parents_flat[ip]
+        parent = parents_flat[:,ip]
         # Map each parent to its corresponding set of dictionaries which were made
         # with the closest lambda of reconstruction.
         lambda_parent = lambdas_flat[ip]
