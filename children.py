@@ -144,7 +144,7 @@ def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=Fa
     return i_children
 
 
-def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, **kwargs_omp):
+def pick_children_autolambda_batch(parents_dict, dictionaries_set, **kwargs_omp):
     """TODO
 
     Torna els índex de cada senyal dins `dictionaries` que més s'assembla a
@@ -153,9 +153,9 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, **kwargs_
 
     PARAMETERS
     ----------
-    parents: array, shape (length, no. labels, no. signals)
-
-    lambdas: array, shape (no. labels, no. signals)
+    parents_dict: dict
+        'parents': array, shape (length, no. labels, no. signals)
+        'lambdas': array, shape (no. labels, no. signals)
 
     dictionaries_set: dict
         'dictionaries': array-like
@@ -185,6 +185,8 @@ def pick_children_autolambda_batch(parents, lambdas, dictionaries_set, **kwargs_
         which is indicated in `lambdas`.
     
     """
+    parents = parents_dict['parents']
+    lambdas = parents_dict['lambdas']
     l_window, n_labels, n_signals = parents.shape
     # if labels is None:
     #     labels = {key: i for i, key in enumerate(dictionaries[0])}
