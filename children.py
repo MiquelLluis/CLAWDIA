@@ -1,7 +1,7 @@
 import itertools as it
 
 import numpy as np
-import sklearn
+import sklearn.decomposition
 
 
 def _omp_singlematch(signal, dictionary, kwargs_omp):
