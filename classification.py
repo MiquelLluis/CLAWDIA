@@ -60,7 +60,7 @@ def classificate_tree(parents, children, labels=None, nc_val=-1):
     return label
 
 
-def classificate_batch_indexed(parents, i_children, dataset, labels=None, **kwargs):
+def classificate_batch_indexed(parents, i_children, dataset, labels=None, nc_val=-1):
     """TODO
 
     Classifica un conjunt de senyals (conjunt d'arbres parents-children) donat
@@ -77,7 +77,8 @@ def classificate_batch_indexed(parents, i_children, dataset, labels=None, **kwar
     labels: array_like, optional
         Label names sorted. If None, `dataset.keys()` will be used instead.
         S'ha d'acomplir `len(labels) == dataset.shape[1]`.
-    **kwargs: arguments de `classificate_tree`.
+    nc_val: int, -1 by default
+        Value assigned to the non classified signals.
 
     """
     l_signals, n_labels, n_signals = parents.shape
@@ -96,6 +97,6 @@ def classificate_batch_indexed(parents, i_children, dataset, labels=None, **kwar
             mask = i_children[i,:,isi]
             children_isi[:,i,:] = data[:,mask]
 
-        y_labels[isi] = classificate_tree(parents_isi, children_isi, labels=labels, **kwargs)
+        y_labels[isi] = classificate_tree(parents_isi, children_isi, labels=labels, nc_val=nc_val)
 
     return y_labels
