@@ -51,7 +51,7 @@ def gen_parents_batch(signals, dictionaries, sc_lambda, parents=None, normalize=
 	return parents
 
 
-def gen_parents_auto_batch(signals, dictionaries, parents=None, normalize=False, verbose=False,
+def gen_parents_auto_batch(signals, dictionaries, parents=None, l2_normed=False, verbose=False,
 						   **kwargs_dico):
 	"""TODO
 	
@@ -80,7 +80,7 @@ def gen_parents_auto_batch(signals, dictionaries, parents=None, normalize=False,
 			**kwargs_dico
 		)
 
-	if normalize:
-		util.abs_normalize(parents)
+	if l2_normed:
+		util.l2_normalize(parents)
 
 	return (parents, lambdas) if parents is None else lambdas
