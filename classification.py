@@ -60,11 +60,11 @@ def classificate_tree(parents, children, labels=None, nc_val=-1):
     return label
 
 
-def classificate_batch_indexed(parents, i_children, dataset, labels=None, nc_val=-1):
+def classificate_batch_indexed(parents, i_children, dictionaries, labels, nc_val=-1):
     """TODO
 
     Classifica un conjunt de senyals (conjunt d'arbres parents-children) donat
-    els seus parents i els índexs dels children apuntant al dataset.
+    els seus parents i els índexs dels children apuntant als diccionaris i tal.
 
     parents: 3d-array(l_signals, n_labels, n_signals)
     i_children: 3d-array(n_labels, n_labels, n_signals)
@@ -74,29 +74,39 @@ def classificate_batch_indexed(parents, i_children, dataset, labels=None, nc_val
         Nota: Les key no tenen per què ser igual a les labels, però en
         aquest cas s'assumirà que l'ordre de `dataset.values()` es correspòn
         amb el de `labels`.
-    labels: array_like, optional
-        Label names sorted. If None, `dataset.keys()` will be used instead.
-        S'ha d'acomplir `len(labels) == dataset.shape[1]`.
     nc_val: int, -1 by default
         Value assigned to the non classified signals.
 
     """
     l_signals, n_labels, n_signals = parents.shape
-    if labels is None:
-        labels = np.asarray(dataset.keys())
+    children_i = np.empty((l_signals, n_labels, n_labels), order='F')
 
-    # Children tree for each signal.
-    children_isi = np.empty((l_signals, n_labels, n_labels), order='F')
-    # Classification results.
-    y_labels = np.empty(n_signals, dtype=labels.dtype)
+    y_pred = np.empty_like(y_true)
+    for i in range(n_signals):
+        parents_i = parents[...,i]
+        dataset = _build_dataset_from_dictionaries(i_dicset, dictionaries, labels)
+        _rebuild_children_tree_inplace(i_children[...,i], dataset, children_i)
+        y_pred[i] = claudia.classification.classificate_tree(parents_i, children_i, nc_val=nc_val)
 
-    for isi in range(n_signals):
-        parents_isi = parents[...,isi]
-        # Reconstruct selected children's tree:
-        for i, data in enumerate(dataset.values()):
-            mask = i_children[i,:,isi]
-            children_isi[:,i,:] = data[:,mask]
+    return y_pred
 
-        y_labels[isi] = classificate_tree(parents_isi, children_isi, labels=labels, nc_val=nc_val)
 
-    return y_labels
+def _build_dataset_from_dictionaries(indices, dictionaries, labels):
+    dataset = {}
+    for ilab, lab in enumerate(labels):
+        i_dict = indices[ilab,i]
+        dataset[lab] = dictionaries[i_dict][lab]
+
+    return dataset
+
+
+def _rebuild_children_tree_inplace(indices, dataset, out=None):
+    if out is None:
+        l, n = next(iter(dataset.values())).shape
+        out = np.empty((l, n, n), order='F')
+
+    for ilab, lab in enumerate(dataset):
+        mask = indices[ilab]
+        out[:,ilab,:] = dataset[lab][:,mask]
+
+    return out
