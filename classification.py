@@ -60,16 +60,21 @@ def classificate_tree(parents, children, labels=None, nc_val=-1):
     return label
 
 
-def classificate_batch_indexed(parents, i_children, dictionaries, labels, nc_val=-1):
+def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1):
     """TODO
 
     Classifica un conjunt de senyals (conjunt d'arbres parents-children) donat
     els seus parents i els índexs dels children apuntant als diccionaris i tal.
 
     parents: 3d-array(l_signals, n_labels, n_signals)
-    i_children: 3d-array(n_labels, n_labels, n_signals)
-        I.e. un índex referent al dataset, per cada label de children per cada
-        label de parents per cada senyal.
+    indices: dict
+        'dictionaries':  3d-array (n_labels, n_labels, n_signals)
+            I.e. un índex referent al dataset per cada label de children per cada
+            label de parents per cada senyal a classificar.
+        'atoms': 2d-array (n_labels, n_signals)
+            I.e. un índex referent a l'àtom dins el seu corresponent dataset
+            indicat a `indices['dictionaries']` per cada label de parent per
+            cada senyal a classificar.
     dataset: dict( key: 2d-array(l_signals, n_signals) )
         Nota: Les key no tenen per què ser igual a les labels, però en
         aquest cas s'assumirà que l'ordre de `dataset.values()` es correspòn
@@ -82,12 +87,14 @@ def classificate_batch_indexed(parents, i_children, dictionaries, labels, nc_val
     """
     l_signals, n_labels, n_signals = parents.shape
     children_i = np.empty((l_signals, n_labels, n_labels), order='F')
+    i_dicset = indices['dictionaries']
+    i_atoms = indices['atoms']
 
     y_pred = np.empty(n_signals, dtype=int)
     for i in range(n_signals):
         parents_i = parents[...,i]
         dataset = _build_dataset_from_dictionaries(i_dicset, dictionaries, labels)
-        _rebuild_children_tree_inplace(i_children[...,i], dataset, children_i)
+        _rebuild_children_tree_inplace(i_atoms[...,i], dataset, children_i)
         y_pred[i] = claudia.classification.classificate_tree(parents_i, children_i, nc_val=nc_val)
 
     return y_pred
