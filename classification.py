@@ -40,7 +40,7 @@ def classificate_tree(parents, children, labels=None, nc_val=-1):
             continue
         for ic in range(n_labels):
             c = children[:,ic,ip]
-            products[ic] *= grawadile.estimators.issim(p, c)
+            products[ic] *= estimators.issim(p, c)
 
     losses = products + discards
     i_label = np.argmin(losses)
