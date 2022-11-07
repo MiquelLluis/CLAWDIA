@@ -51,7 +51,7 @@ def gen_parents_batch(signals, dictionaries, sc_lambda, parents=None, normalize=
 	return parents
 
 
-def gen_parents_auto_batch(signals, dictionaries, parents=None, l2_normed=False, verbose=False,
+def gen_parents_auto_batch(signals, dictionaries, parents=None, l2_normed=True, verbose=False,
 						   **kwargs_dico):
 	"""TODO
 	
