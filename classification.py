@@ -74,6 +74,8 @@ def classificate_batch_indexed(parents, i_children, dictionaries, labels, nc_val
         Nota: Les key no tenen per què ser igual a les labels, però en
         aquest cas s'assumirà que l'ordre de `dataset.values()` es correspòn
         amb el de `labels`.
+    labels: iterable
+        Iterable-like list of labels.
     nc_val: int, -1 by default
         Value assigned to the non classified signals.
 
