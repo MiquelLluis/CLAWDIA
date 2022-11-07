@@ -93,7 +93,7 @@ def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1
     y_pred = np.empty(n_signals, dtype=int)
     for i in range(n_signals):
         parents_i = parents[...,i]
-        dataset = _build_dataset_from_dictionaries(i_dicset, dictionaries, labels)
+        dataset = _build_dataset_from_dictionaries(i_dicset[:,i], dictionaries, labels)
         _rebuild_children_tree_inplace(i_atoms[...,i], dataset, children_i)
         y_pred[i] = claudia.classification.classificate_tree(parents_i, children_i, nc_val=nc_val)
 
@@ -103,7 +103,7 @@ def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1
 def _build_dataset_from_dictionaries(indices, dictionaries, labels):
     dataset = {}
     for ilab, lab in enumerate(labels):
-        i_dict = indices[ilab,i]
+        i_dict = indices[ilab]
         dataset[lab] = dictionaries[i_dict][lab]
 
     return dataset
