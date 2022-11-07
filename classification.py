@@ -68,17 +68,13 @@ def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1
 
     parents: 3d-array(l_signals, n_labels, n_signals)
     indices: dict
-        'dictionaries':  3d-array (n_labels, n_labels, n_signals)
+        'atoms':  3d-array (n_labels, n_labels, n_signals)
             I.e. un índex referent al dataset per cada label de children per cada
             label de parents per cada senyal a classificar.
-        'atoms': 2d-array (n_labels, n_signals)
+        'dictionaries': 2d-array (n_labels, n_signals)
             I.e. un índex referent a l'àtom dins el seu corresponent dataset
             indicat a `indices['dictionaries']` per cada label de parent per
             cada senyal a classificar.
-    dataset: dict( key: 2d-array(l_signals, n_signals) )
-        Nota: Les key no tenen per què ser igual a les labels, però en
-        aquest cas s'assumirà que l'ordre de `dataset.values()` es correspòn
-        amb el de `labels`.
     labels: iterable
         Iterable-like list of labels.
     nc_val: int, -1 by default
