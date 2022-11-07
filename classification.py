@@ -95,7 +95,7 @@ def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1
         parents_i = parents[...,i]
         dataset = _build_dataset_from_dictionaries(i_dicset[:,i], dictionaries, labels)
         _rebuild_children_tree_inplace(i_atoms[...,i], dataset, children_i)
-        y_pred[i] = claudia.classification.classificate_tree(parents_i, children_i, nc_val=nc_val)
+        y_pred[i] = classificate_tree(parents_i, children_i, nc_val=nc_val)
 
     return y_pred
 
