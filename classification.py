@@ -83,7 +83,7 @@ def classificate_batch_indexed(parents, i_children, dictionaries, labels, nc_val
     l_signals, n_labels, n_signals = parents.shape
     children_i = np.empty((l_signals, n_labels, n_labels), order='F')
 
-    y_pred = np.empty_like(y_true)
+    y_pred = np.empty(n_signals, dtype=int)
     for i in range(n_signals):
         parents_i = parents[...,i]
         dataset = _build_dataset_from_dictionaries(i_dicset, dictionaries, labels)
