@@ -106,4 +106,4 @@ def _reconstruct_children_tree_inplace(i_dicset, i_children, dictionaries, label
         for ic, c_lab in enumerate(labels):
             dico = dicos[c_lab]
             i_child = i_atoms_children[ic]
-            children_i[:,ic,ip] = dico[:,i_child]
+            out[:,ic,ip] = dico[:,i_child]
