@@ -113,7 +113,7 @@ def _rebuild_children_tree_inplace(indices, dataset, out=None):
 
     # For each parent
     for ilab, lab in enumerate(dataset):
-        mask = indices[ilab]
-        out[:,ilab,:] = dataset[lab][:,mask]
+        i_children = indices[:,ilab]  # list of indices
+        out[:,ilab,:] = dataset[lab][:,i_children]
 
     return out
