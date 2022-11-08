@@ -82,7 +82,7 @@ def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1
 
     """
     l_signals, n_labels, n_signals = parents.shape
-    children_i = np.empty((l_signals, n_labels, n_labels), order='F')
+    children_i = np.empty((l_signals, n_labels, n_labels), order='F')  # For each signal
     i_dicset = indices['dictionaries']
     i_atoms = indices['atoms']
 
