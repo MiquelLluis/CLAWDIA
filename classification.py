@@ -116,6 +116,6 @@ def _rebuild_children_tree_inplace(indices, dataset, out=None):
         # For each child
         for ic, c_lab in enumerate(dataset):
             ic_dataset = indices[ic,ip]
-            out[:,ic,ip] = dataset[c_lab][:,ic_dataset]
+            out[:,ic,ip] = dataset[p_lab][:,ic_dataset]
 
     return out
