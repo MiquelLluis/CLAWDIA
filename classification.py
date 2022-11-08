@@ -111,6 +111,7 @@ def _rebuild_children_tree_inplace(indices, dataset, out=None):
         l, n = next(iter(dataset.values())).shape
         out = np.empty((l, n, n), order='F')
 
+    # For each parent
     for ilab, lab in enumerate(dataset):
         mask = indices[ilab]
         out[:,ilab,:] = dataset[lab][:,mask]
