@@ -84,21 +84,25 @@ def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1
     l_signals, n_labels, n_signals = parents.shape
     children_i = np.empty((l_signals, n_labels, n_labels), order='F')  # For each signal
     y_pred = np.empty(n_signals, dtype=int)
-    for isi in range(n_signals):
-        parents_i = parents[...,isi]
-        _reconstruct_children_tree_inplace(indices, dictionaries, labels, children_i)
-        y_pred[isi] = classificate_tree(parents_i, children_i, nc_val=nc_val)
+    for i in range(n_signals):
+        parents_i = parents[...,i]
+        _reconstruct_children_tree_inplace(
+            indices['i_dicset'][:,i],
+            indices['i_children'][...,i],
+            dictionaries,
+            labels,
+            children_i
+        )
+        y_pred[i] = classificate_tree(parents_i, children_i, nc_val=nc_val)
 
     return y_pred
 
 
-def _reconstruct_children_tree_inplace(indices, dictionaries, labels, out):
-    i_dicset = indices['i_dicset']
-    i_children = indices['i_children']
+def _reconstruct_children_tree_inplace(i_dicset, i_children, dictionaries, labels, out):
     for ip, p_lab in enumerate(labels):
-        i_dic_set_p = i_dicset[ip,isi]
+        i_dic_set_p = i_dicset[ip]
         dicos = dictionaries[i_dic_set_p]
-        i_atoms_children = i_children[:,ip,isi]
+        i_atoms_children = i_children[:,ip]
         for ic, c_lab in enumerate(labels):
             dico = dicos[c_lab]
             i_child = i_atoms_children[ic]
