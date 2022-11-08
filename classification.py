@@ -87,12 +87,12 @@ def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1
     i_children = indices['i_children']
 
     y_pred = np.empty(n_signals, dtype=int)
-    for i in range(n_signals):
+    for isi in range(n_signals):
         # parents_i = parents[...,i]
         # dataset = _build_dataset_from_dictionaries(i_dicset[:,i], dictionaries, labels)
         # _rebuild_children_tree_inplace(i_children[...,i], dataset, out=children_i)
         for ip, p_lab in enumerate(labels):
-            pp = parents[:,ip,i]
+            pp = parents[:,ip,isi]
             i_dic_set_p = i_dicset[ip,isi]
             dicos = dictionaries[i_dic_set_p]
             i_atoms_children = i_children[:,ip,isi]
