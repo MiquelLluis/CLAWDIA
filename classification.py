@@ -102,7 +102,7 @@ def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1
                 children_i[:,ic,ip] = dico[:,i_child]
 
 
-        y_pred[i] = classificate_tree(parents_i, children_i, nc_val=nc_val)
+        y_pred[isi] = classificate_tree(parents_i, children_i, nc_val=nc_val)
 
     return y_pred
 
