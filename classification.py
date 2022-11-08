@@ -98,6 +98,7 @@ def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1
 
 def _build_dataset_from_dictionaries(indices, dictionaries, labels):
     dataset = {}
+    # For each parent
     for ilab, lab in enumerate(labels):
         i_dict = indices[ilab]
         dataset[lab] = dictionaries[i_dict][lab]
