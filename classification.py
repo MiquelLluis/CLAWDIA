@@ -112,8 +112,10 @@ def _rebuild_children_tree_inplace(indices, dataset, out=None):
         out = np.empty((l, n, n), order='F')
 
     # For each parent
-    for ilab, lab in enumerate(dataset):
-        i_children = indices[:,ilab]  # list of indices
-        out[:,ilab,:] = dataset[lab][:,i_children]
+    for ip, p_lab in enumerate(dataset):
+        # For each child
+        for ic, c_lab in enumerate(dataset):
+            ic_dataset = indices[ic,ip]
+            out[:,ic,ip] = dataset[c_lab][:,ic_dataset]
 
     return out
