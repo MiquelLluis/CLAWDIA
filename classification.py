@@ -89,33 +89,33 @@ def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1
     y_pred = np.empty(n_signals, dtype=int)
     for i in range(n_signals):
         parents_i = parents[...,i]
-        dataset = _build_dataset_from_dictionaries(i_dicset[:,i], dictionaries, labels)
-        _rebuild_children_tree_inplace(i_children[...,i], dataset, out=children_i)
+        # dataset = _build_dataset_from_dictionaries(i_dicset[:,i], dictionaries, labels)
+        # _rebuild_children_tree_inplace(i_children[...,i], dataset, out=children_i)
         y_pred[i] = classificate_tree(parents_i, children_i, nc_val=nc_val)
 
     return y_pred
 
 
-def _build_dataset_from_dictionaries(indices, dictionaries, labels):
-    dataset = {}
-    # For each parent
-    for ilab, lab in enumerate(labels):
-        i_dicset = indices[ilab]
-        dataset[lab] = dictionaries[i_dicset][lab]
+# def _build_dataset_from_dictionaries(indices, dictionaries, labels):
+#     dataset = {}
+#     # For each parent
+#     for ilab, lab in enumerate(labels):
+#         i_dicset = indices[ilab]
+#         dataset[lab] = dictionaries[i_dicset][lab]
 
-    return dataset
+#     return dataset
 
 
-def _rebuild_children_tree_inplace(indices, dataset, out=None):
-    if out is None:
-        l, n = next(iter(dataset.values())).shape
-        out = np.empty((l, n, n), order='F')
+# def _rebuild_children_tree_inplace(indices, dataset, out=None):
+#     if out is None:
+#         l, n = next(iter(dataset.values())).shape
+#         out = np.empty((l, n, n), order='F')
 
-    # For each parent
-    for ip, p_lab in enumerate(dataset):
-        # For each child
-        for ic, c_lab in enumerate(dataset):
-            ic_dataset = indices[ic,ip]
-            out[:,ic,ip] = dataset[p_lab][:,ic_dataset]
+#     # For each parent
+#     for ip, p_lab in enumerate(dataset):
+#         # For each child
+#         for ic, c_lab in enumerate(dataset):
+#             ic_dataset = indices[ic,ip]
+#             out[:,ic,ip] = dataset[p_lab][:,ic_dataset]
 
-    return out
+#     return out
