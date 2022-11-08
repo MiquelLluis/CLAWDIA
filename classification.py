@@ -83,14 +83,14 @@ def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1
     """
     l_signals, n_labels, n_signals = parents.shape
     children_i = np.empty((l_signals, n_labels, n_labels), order='F')  # For each signal
-    i_dicset = indices['dictionaries']
-    i_atoms = indices['atoms']
+    i_dicset = indices['i_dicset']
+    i_children = indices['i_children']
 
     y_pred = np.empty(n_signals, dtype=int)
     for i in range(n_signals):
         parents_i = parents[...,i]
         dataset = _build_dataset_from_dictionaries(i_dicset[:,i], dictionaries, labels)
-        _rebuild_children_tree_inplace(i_atoms[...,i], dataset, children_i)
+        _rebuild_children_tree_inplace(i_children[...,i], dataset, children_i)
         y_pred[i] = classificate_tree(parents_i, children_i, nc_val=nc_val)
 
     return y_pred
