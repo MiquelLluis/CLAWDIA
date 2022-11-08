@@ -100,8 +100,8 @@ def _build_dataset_from_dictionaries(indices, dictionaries, labels):
     dataset = {}
     # For each parent
     for ilab, lab in enumerate(labels):
-        i_dict = indices[ilab]
-        dataset[lab] = dictionaries[i_dict][lab]
+        i_dicset = indices[ilab]
+        dataset[lab] = dictionaries[i_dicset][lab]
 
     return dataset
 
