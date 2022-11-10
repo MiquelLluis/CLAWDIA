@@ -86,7 +86,12 @@ def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, rando
 
     # Normalize each patch to its L2 norm
     if l2_normed:
-        patches /= np.linalg.norm(patches, axis=0)
+        coefs = np.linalg.norm(patches, axis=0)
+        # Ignore x/0 and 0/0 cases
+        with np.errstate(divide='ignore', invalid='ignore'):
+            patches /= coefs
+        patches = np.nan_to_num(patches)
+        return patches, coefs
 
     return patches
 
