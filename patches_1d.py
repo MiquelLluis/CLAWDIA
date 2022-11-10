@@ -4,7 +4,8 @@ import numpy as np
 
 
 def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, random_state=None,
-                       step=1, l2_normed=False, patch_min=1, allow_allzeros=True):
+                       step=1, l2_normed=False, return_norm_coefs=False, patch_min=1,
+                       allow_allzeros=True):
     """TODO:
 
     signals: ndarray
@@ -91,9 +92,8 @@ def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, rando
         with np.errstate(divide='ignore', invalid='ignore'):
             patches /= coefs
         patches = np.nan_to_num(patches)
-        return patches, coefs
 
-    return patches
+    return patches, coefs if return_norm_coefs else patches
 
 
 def reconstruct_from_patches_1d(patches, step):
