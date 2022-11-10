@@ -229,11 +229,12 @@ class DictionarySpams:
             self.t_train = tac - tic
 
     def _reconstruct(self, signal, sc_lambda, step=1, **kwargs):
-        patches = patches_1d.extract_patches_1d(
+        patches, norms = patches_1d.extract_patches_1d(
             signal,
             patch_size=self.p_size,
             step=step,
-            l2_normed=False
+            l2_normed=True,
+            return_norm_coefs=True
         )
         code = spams.lasso(
             patches,
@@ -242,7 +243,7 @@ class DictionarySpams:
             mode=self.mode_lasso,
             **kwargs
         )
-        patches = self.components @ code
+        patches = (self.components @ code) * norms
 
         signal_rec = patches_1d.reconstruct_from_patches_1d(patches, step)
 
