@@ -144,7 +144,7 @@ def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=Fa
     return i_children
 
 
-def pick_children_autolambda_batch(parents_dict, dictionaries_set, **kwargs_omp):
+def pick_children_autolambda_batch(parents_dict, dictionaries_set, verbose=False, **kwargs_omp):
     """TODO
 
     Torna els índex de cada senyal dins `dictionaries` que més s'assembla a
@@ -203,6 +203,9 @@ def pick_children_autolambda_batch(parents_dict, dictionaries_set, **kwargs_omp)
     i_dicset = np.empty(n_parents, dtype=int)
 
     for ip in range(n_parents):
+        if verbose:
+            print(f"constructing children tree from parent ({ip}/{n_parents})...")
+
         parent = parents_flat[:,ip]
         # Map each parent to its corresponding set of dictionaries which were made
         # with the closest lambda of reconstruction.
