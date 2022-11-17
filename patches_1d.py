@@ -93,7 +93,7 @@ def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, rando
             patches /= coefs
         patches = np.nan_to_num(patches)
 
-    return patches, coefs if return_norm_coefs else patches
+    return (patches, coefs) if return_norm_coefs else patches
 
 
 def reconstruct_from_patches_1d(patches, step):
