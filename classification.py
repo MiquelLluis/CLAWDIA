@@ -1,6 +1,6 @@
 import numpy as np
 
-import grawadile
+from . import estimators
 
 
 def classificate_tree(parents, children, labels=None, nc_val=-1):
@@ -11,9 +11,9 @@ def classificate_tree(parents, children, labels=None, nc_val=-1):
     PARAMETERS
     ----------
     parents: array_like, (samples, n_parents)
-        Parent waveforms whose indices coincide to their respective morphological
-        families (labels). Each parent waveform will have associated
-        `n_parents` children.
+        Parent waveforms whose indices coincide to their respective
+        morphological families (labels). Each parent waveform will have
+        associated `n_parents` children.
     children: array_like, (samples, n_children, n_parents)
         Reconstructions associated with parent waveforms.
     labels: array_like, optional
@@ -40,7 +40,7 @@ def classificate_tree(parents, children, labels=None, nc_val=-1):
             continue
         for ic in range(n_labels):
             c = children[:,ic,ip]
-            products[ic] *= grawadile.estimators.issim(p, c)
+            products[ic] *= estimators.issim(p, c)
 
     losses = products + discards
     i_label = np.argmin(losses)
@@ -60,42 +60,50 @@ def classificate_tree(parents, children, labels=None, nc_val=-1):
     return label
 
 
-def classificate_batch_indexed(parents, i_children, dataset, labels=None, **kwargs):
+def classificate_batch_indexed(parents, indices, dictionaries, labels, nc_val=-1):
     """TODO
 
     Classifica un conjunt de senyals (conjunt d'arbres parents-children) donat
-    els seus parents i els índexs dels children apuntant al dataset.
+    els seus parents i els índexs dels children apuntant als diccionaris i tal.
 
     parents: 3d-array(l_signals, n_labels, n_signals)
-    i_children: 3d-array(n_labels, n_labels, n_signals)
-        I.e. un índex referent al dataset, per cada label de children per cada
-        label de parents per cada senyal.
-    dataset: dict( key: 2d-array(l_signals, n_signals) )
-        Nota: Les key no tenen per què ser igual a les labels, però en
-        aquest cas s'assumirà que l'ordre de `dataset.values()` es correspòn
-        amb el de `labels`.
-    labels: array_like, optional
-        Label names sorted. If None, `dataset.keys()` will be used instead.
-        S'ha d'acomplir `len(labels) == dataset.shape[1]`.
-    **kwargs: arguments de `classificate_tree`.
+    indices: dict
+        'atoms':  3d-array (n_labels, n_labels, n_signals)
+            I.e. un índex referent al dataset per cada label de children per cada
+            label de parents per cada senyal a classificar.
+        'dictionaries': 2d-array (n_labels, n_signals)
+            I.e. un índex referent a l'àtom dins el seu corresponent dataset
+            indicat a `indices['dictionaries']` per cada label de parent per
+            cada senyal a classificar.
+    labels: iterable
+        Iterable-like list of labels.
+    nc_val: int, -1 by default
+        Value assigned to the non classified signals.
 
     """
     l_signals, n_labels, n_signals = parents.shape
-    if labels is None:
-        labels = np.asarray(dataset.keys())
+    children_i = np.empty((l_signals, n_labels, n_labels), order='F')  # For each signal
+    y_pred = np.empty(n_signals, dtype=int)
+    for i in range(n_signals):
+        parents_i = parents[...,i]
+        _reconstruct_children_tree_inplace(
+            indices['i_dicset'][:,i],
+            indices['i_children'][...,i],
+            dictionaries,
+            labels,
+            children_i
+        )
+        y_pred[i] = classificate_tree(parents_i, children_i, nc_val=nc_val)
 
-    # Children tree for each signal.
-    children_isi = np.empty((l_signals, n_labels, n_labels), order='F')
-    # Classification results.
-    y_labels = np.empty(n_signals, dtype=labels.dtype)
+    return y_pred
 
-    for isi in range(n_signals):
-        parents_isi = parents[...,isi]
-        # Reconstruct selected children's tree:
-        for i, data in enumerate(dataset.values()):
-            mask = i_children[i,:,isi]
-            children_isi[:,i,:] = data[:,mask]
 
-        y_labels[isi] = classificate_tree(parents_isi, children_isi, labels=labels, **kwargs)
-
-    return y_labels
+def _reconstruct_children_tree_inplace(i_dicset, i_children, dictionaries, labels, out):
+    for ip, p_lab in enumerate(labels):
+        i_dic_set_p = i_dicset[ip]
+        dicos = dictionaries[i_dic_set_p]
+        i_atoms_children = i_children[:,ip]
+        for ic, c_lab in enumerate(labels):
+            dico = dicos[c_lab]
+            i_child = i_atoms_children[ic]
+            out[:,ic,ip] = dico[:,i_child]

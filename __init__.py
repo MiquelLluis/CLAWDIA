@@ -6,5 +6,6 @@ mitjançant algorismes de Dictionary Learning.
 """
 from . import children
 from . import classification
+from . import dictionaries
 from . import parents
 from . import util
