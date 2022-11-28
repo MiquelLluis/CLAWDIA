@@ -27,7 +27,7 @@ def l2_normalize(array, axis=0):
         np.nan_to_num(array, copy=False)
 
 
-def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
+def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbose=False):
     """TODO
 
     Troba x0 pel mètode de bisecció adaptat a una funció f(x) tal que
@@ -59,6 +59,8 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100):
     
     dm = b - a
     for i in range(maxiter):
+        if verbose:
+            print(f"iteration {i}...")
         dm *= 0.5
         xm = a + dm
         fm = f(xm, *args)
