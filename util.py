@@ -59,10 +59,10 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     
     dm = b - a
     for i in range(maxiter):
-        if verbose:
-            print(f"iteration {i}...")
         dm *= 0.5
         xm = a + dm
+        if verbose:
+            print(f" iteration {i}, evaluating f({xm}) ...")
         fm = f(xm, *args)
         solver_stats['funcalls'] += 1
         if fm != 0:
