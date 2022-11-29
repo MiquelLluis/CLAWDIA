@@ -3,6 +3,7 @@ import time
 import numpy as np
 import spams
 
+from ._dictionary_base import _DictionaryBase
 from . import patches_1d
 from . import util
 
@@ -13,7 +14,7 @@ if not '__version__' in dir(spams) or spams.__version__ <= '2.6.5.4':
     os.environ['KMP_WARNINGS'] = 'FALSE'
 
 
-class DictionarySpams:
+class DictionarySpams(_DictionaryBase):
     """Mini-Batch Dictionary Learning interface for SPAMS-python.
 
     Set of utilities for dictionary learning and sparse encoding using the
@@ -248,106 +249,6 @@ class DictionarySpams:
         signal_rec = patches_1d.reconstruct_from_patches_1d(patches, step)
 
         return signal_rec, code
-
-    def reconstruct(self, signal, sc_lambda, step=1, normed=True, with_code=False, **kwargs):
-        """Reconstruct a signal as a sparse combination of dictionary atoms.
-
-        Uses the 'lasso' function of SPAMS to solve the Lasso problem. By
-        default it solves:
-            min_{alpha} 0.5||x-Dalpha||_2^2 + lambda1||alpha||_1
-                                        + 0.5 lambda2||alpha||_2^2
-
-        Parameters
-        ----------
-        signal : ndarray
-            Sample to be reconstructed.
-
-        sc_lambda : float
-            Regularization parameter of the sparse coding transformation.
-
-        step : int, 1 by default
-            Sample interval between each patch extracted from signal.
-            Determines the number of patches to be extracted. 1 by default.
-
-        normed : boolean, True by default
-            Normalize the result to the maximum absolute value.
-
-        with_code : boolean, False by default.
-            If True, also returns the coefficients array.
-
-        **kwargs
-            Passed directly to 'spams.trainDL', see [1].
-
-        Returns
-        -------
-        signal_rec : array
-            Reconstructed signal.
-
-        code : array(p_size, d_size), optional
-            Transformed data, encoded as a sparse combination of atoms.
-            Returned when 'with_code' is True.
-
-        """
-        if not isinstance(signal, np.ndarray):
-            raise TypeError("'signal' must be a numpy array")
-
-        signal_rec, code = self._reconstruct(signal, sc_lambda, step, **kwargs)
-
-        if normed and signal_rec.any():
-            norm = np.max(np.abs(signal_rec))
-            signal_rec /= norm
-            code /= norm
-
-        return (signal_rec, code) if with_code else signal_rec
-
-    def reconstruct_batch(self, signals, sc_lambda, out=None, step=1, normed=True, **kwargs):
-        """TODO
-
-        Reconstruct multiple signals, each one as a sparse combination of
-        dictionary atoms.
-
-        """
-        if out is None:
-            out = np.empty_like(signals)
-        n_signals = signals.shape[1]
-
-        for i in range(n_signals):
-            out[:,i] = self.reconstruct(
-                signals[:,i],
-                sc_lambda, 
-                step=step,
-                normed=normed,
-                with_code=False,
-                **kwargs
-            )
-
-        return out
-
-    def reconstruct_auto(self, signal, *, zero_marg, lambda_lims, step=1, normed=True,
-                         full_output=False, kwargs_bisect={}, kwargs_lasso={}):
-        """TODO
-
-        Reconstrueix un únic senyal buscant per bisecció la lambda que
-        minimitza el senyal reconstruit al marge esquerre del senyal, la mida
-        dels quals ve determinada per 'zero_marg'.
-
-        """
-        # Margins of the signals to be zeroed
-        margin = signal[:zero_marg]
-        # Function to be bisected.
-        def fun(sc_lambda):
-            rec, _ = self._reconstruct(margin, sc_lambda, step, **kwargs_lasso)
-            return np.sum(np.abs(rec))
-
-        result = util.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
-        rec, code = self._reconstruct(signal, result['x'], step, **kwargs_lasso)
-
-        if normed and rec.any():
-            norm = np.max(np.abs(rec))
-            rec /= norm
-            code /= norm
-
-        return (rec, code, result) if full_output else rec
 
     def _check_initial_parameters(self, signal_pool):
         # Explicit initial dictionary.
