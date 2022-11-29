@@ -51,7 +51,7 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     fa = f(a, *args)
     fb = f(b, *args)
     solver_stats = {'funcalls': 2}
-    if fa*fb != 0:
+    if (fa*fb != 0) or (fa == fb == 0):
         raise ValueError("There isn't a boundary point in the 0 zone")
     if fa == 0:
         a, b = b, a
