@@ -109,13 +109,18 @@ class _DictionaryBase(ABC):
             rec, _ = self._reconstruct(margin, sc_lambda, step, **kwargs_rec)
             return np.sum(np.abs(rec))
 
-        result = util.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
-        rec, code = self._reconstruct(signal, result['x'], step, **kwargs_rec)
-
-        if normed and rec.any():
-            norm = np.max(np.abs(rec))
-            rec /= norm
-            code /= norm
+        try:
+            result = util.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
+        except util.BoundaryError:
+            rec = np.zeros_like(signal)
+            code = None
+            result = {'x': np.min(lambda_lims), 'f': 0., 'converged': False, 'niters': 0, 'funcalls': 2}
+        else:
+            rec, code = self._reconstruct(signal, result['x'], step, **kwargs_rec)
+            if normed and rec.any():
+                norm = np.max(np.abs(rec))
+                rec /= norm
+                code /= norm
 
         return (rec, code, result) if full_output else rec
 

@@ -5,6 +5,10 @@ _xtol = 2e-12
 _rtol = 8.881784197001252e-16
 
 
+class BoundaryError(ValueError):
+    pass
+
+
 def abs_normalize(array, axis=0):
     """TODO
     Normalitza inplace un array ignorant els errors de divissió entre 0 i
@@ -52,7 +56,7 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     fb = f(b, *args)
     solver_stats = {'funcalls': 2}
     if (fa*fb != 0) or (fa == fb == 0):
-        raise ValueError("There isn't a boundary point in the 0 zone")
+        raise BoundaryError("There isn't a boundary point in the 0 zone")
     if fa == 0:
         a, b = b, a
         fa, fb = fb, fa
