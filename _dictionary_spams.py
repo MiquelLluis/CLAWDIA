@@ -229,6 +229,16 @@ class DictionarySpams(_DictionaryBase):
         else:
             self.t_train = tac - tic
 
+    def save(self, file):
+        vars_ = vars(self)
+        if not self.trained:
+            # Hardcoded to avoid silent bugs in the future
+            to_remove = ('lambda1', 'n_train', 't_train')
+            for attr in to_remove:
+                vars_.pop(attr)
+
+        np.savez(file, **vars_)
+
     def _reconstruct(self, signal, sc_lambda, step=1, **kwargs):
         patches, norms = patches_1d.extract_patches_1d(
             signal,

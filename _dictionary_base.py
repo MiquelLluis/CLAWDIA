@@ -124,5 +124,6 @@ class _DictionaryBase(ABC):
 
         return (rec, code, result) if full_output else rec
 
+    @abstractmethod
     def save(self, file):
-        np.savez(file, **vars(self))
+        pass
