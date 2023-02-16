@@ -110,6 +110,9 @@ def overlap(x, y, psd, at, window=('tukey', 0.5)):
     x = np.asarray(x)
     y = np.asarray(y)
     wei = lambda a, b: _weighted_inner(a, b, psd, at, window)
-    overlap = wei(x, y) / np.sqrt(wei(x, x) * wei(y, y))
+
+    with np.errstate(divide='ignore', invalid='ignore'):
+        overlap = wei(x, y) / np.sqrt(wei(x, x) * wei(y, y))
+        np.nan_to_num(overlap, copy=False)
 
     return overlap
