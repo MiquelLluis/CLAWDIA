@@ -116,3 +116,9 @@ def overlap(x, y, psd, at, window=('tukey', 0.5)):
         np.nan_to_num(overlap, copy=False)
 
     return overlap
+
+
+def ioverlap(x, y, psd, at, window=('tukey', 0.5)):
+    """Compute `1 - Overlap()`."""
+
+    return 1 - overlap(x, y, psd, at, window=window)
