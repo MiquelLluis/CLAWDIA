@@ -236,6 +236,11 @@ class DictionarySpams(_DictionaryBase):
             for attr in to_remove:
                 vars_.pop(attr)
 
+        if self.wave_pos is None:
+            vars_.pop('wave_pos')
+        if self.random_state is None:
+            vars_.pop('random_state')
+
         np.savez(file, **vars_)
 
     def _reconstruct(self, signal, sc_lambda, step=1, **kwargs):
