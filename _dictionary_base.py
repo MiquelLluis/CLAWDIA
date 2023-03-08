@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 import time
 
 import numpy as np
@@ -13,15 +12,14 @@ if not '__version__' in dir(spams) or spams.__version__ <= '2.6.5.4':
     os.environ['KMP_WARNINGS'] = 'FALSE'
 
 
-class _DictionaryBase(ABC):
+class _DictionaryBase:
     """Base class of the dictionaries.
 
     TODO
 
     """
-    @abstractmethod 
     def _reconstruct(self, sc_lambda, step, **kwargs):
-        pass
+        raise NotImplementedError
 
     def reconstruct(self, signal, sc_lambda, step=1, normed=True, with_code=False, **kwargs):
         """Reconstruct a signal as a sparse combination of dictionary atoms.
@@ -123,6 +121,5 @@ class _DictionaryBase(ABC):
 
         return (rec, code, result) if full_output else rec
 
-    @abstractmethod
     def save(self, file):
-        pass
+        raise NotImplementedError
