@@ -230,16 +230,18 @@ class DictionarySpams(_DictionaryBase):
 
     def save(self, file):
         vars_ = vars(self)
-        if not self.trained:
-            # Hardcoded to avoid silent bugs in the future
-            to_remove = ('lambda1', 'n_train', 't_train')
-            for attr in to_remove:
-                vars_.pop(attr)
+        to_remove = []
 
+        if not self.trained:
+            # To avoid silent bugs in the future
+            to_remove += ['lambda1', 'n_train', 't_train']
         if self.wave_pos is None:
-            vars_.pop('wave_pos')
+            to_remove.append('wave_pos')
         if self.random_state is None:
-            vars_.pop('random_state')
+            to_remove.append('random_state')
+
+        for attr in to_remove:
+            vars_.pop(attr)
 
         np.savez(file, **vars_)
 
