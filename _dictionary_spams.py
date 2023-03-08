@@ -4,7 +4,6 @@ import numpy as np
 import spams
 
 from ._dictionary_base import _DictionaryBase
-from . import patches_1d
 from . import util
 
 
@@ -57,7 +56,7 @@ class DictionarySpams(_DictionaryBase):
         If True, normalize atoms to their L2-Norm.
 
     allow_allzeros : bool, True by default
-        Kwarg to pass to patches_1d.extract_patches_1d if initializing the
+        Kwarg to pass to util.extract_patches_1d if initializing the
         dictionary from a signal_pool.
 
     n_iter : int, optional
@@ -147,7 +146,7 @@ class DictionarySpams(_DictionaryBase):
 
         # Get the initial atoms from a set of signals.
         else:
-            self.dict_init = patches_1d.extract_patches_1d(
+            self.dict_init = util.extract_patches_1d(
                 signal_pool,
                 self.p_size,
                 wave_pos=self.wave_pos,
@@ -240,7 +239,7 @@ class DictionarySpams(_DictionaryBase):
         np.savez(file, **vars_)
 
     def _reconstruct(self, signal, sc_lambda, step=1, **kwargs):
-        patches, norms = patches_1d.extract_patches_1d(
+        patches, norms = util.extract_patches_1d(
             signal,
             patch_size=self.p_size,
             step=step,
@@ -256,7 +255,7 @@ class DictionarySpams(_DictionaryBase):
         )
         patches = (self.components @ code) * norms
 
-        signal_rec = patches_1d.reconstruct_from_patches_1d(patches, step)
+        signal_rec = util.reconstruct_from_patches_1d(patches, step)
 
         return signal_rec, code
 

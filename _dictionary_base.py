@@ -4,7 +4,6 @@ import time
 import numpy as np
 import spams
 
-from . import patches_1d
 from . import util
 
 
