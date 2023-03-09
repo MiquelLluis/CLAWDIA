@@ -1,4 +1,5 @@
 import time
+import warnings
 
 import numpy as np
 import spams
@@ -107,7 +108,11 @@ class _DictionaryBase:
             return np.sum(np.abs(rec))
 
         try:
-            result = util.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
+            with warnings.catch_warnings():
+                # Ignore specific warning from extract_patches since here we do
+                # not care about reconstructing the entire strain (margin).
+                warnings.filterwarnings("ignore", message="'signals' cannot be fully divided into patches.*")
+                result = util.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
         except util.BoundaryError:
             rec = np.zeros_like(signal)
             code = None
