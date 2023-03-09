@@ -90,15 +90,51 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     return solver_stats
 
 
-def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, random_state=None,
-                       step=1, l2_normed=False, return_norm_coefs=False, patch_min=1,
-                       allow_allzeros=True):
-    """TODO:
+def extract_patches(signals, *, patch_size, n_patches=None, random_seed=None,
+                    step=1, limits=None, patch_min=1, l2_normed=False, return_norm_coefs=False,
+                    allow_allzeros=True):
+    """Extract patches (all possible or randomly selected) from the input 'signals'.
 
+    Note that if randomly selected, it is not prevented to repeat patches.
+
+    PARAMETERS
+    ----------
     signals: ndarray
         If 2d-array must be in fortran order with shape (l_signal, n_signals).
 
-    allow_allzeros: when extracting random patches, if False and l2_normed=True,
+    patch_size: int
+        Length of the patches to extract.
+
+    limits: ndarray, optional
+        Limit(s) in 'signals' such that:
+            ```
+            i0, i1 = limits[i_signal]
+            signal = signals[i0:i1,i_signal]
+            ```.
+
+    patch_min: int, optional
+        When 'limits' are given, patch_min is the minimum samples inside the limits to be
+        included in the extracted patches. Defaults to 1.
+
+    n_patches: int, optional
+        Total number of patches to extract. If None (default) extract the maximum amount.
+
+    random_seed: {None, int, array_like[ints], SeedSequence, BitGenerator, Generator}, optional
+        Given to 'numpy.random.default_rng(random_seed)'.
+
+    step: int, optional
+        Minimum windowing step (separation between patches).
+
+    l2_normed: bool, optional
+        If True will norm each patch to its L2 norm. False by default.
+
+    return_norm_coefs: bool, optional
+        If True, return also the coefficients used to normalize the signals (useful for when the
+        'signals' are from a windowed signal that will be reassembled afterwards).
+        False by default.
+
+    allow_allzeros: bool, optional
+        When extracting random patches, if False and l2_normed=True,
         generate another random window position until the l2 norm is != 0.
     
     """
@@ -107,10 +143,12 @@ def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, rando
     if signals.ndim == 1:
         signals = signals[:,None]
 
-    rng = np.random.default_rng(random_state)
+    # Compute the maximum patches per signal that can be obtained with the given 'step'
+    # ignoring the limits:
+    rng = np.random.default_rng(random_seed)
     l_signals, n_signals = signals.shape
-    max_pps = (l_signals - patch_size) / step + 1  # Maximum patches per signal
-    if not max_pps.is_integer() and wave_pos is None:
+    max_pps = (l_signals - patch_size) / step + 1
+    if not max_pps.is_integer() and limits is None and signals.ndim == 1:
         warnings.warn(
             "'signals' cannot be fully divided into patches, the last"
             f" {(max_pps-1)*step % step:.0f} bins of each signal will be left out",
@@ -118,15 +156,15 @@ def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, rando
         )
     max_pps = int(max_pps)
 
-    # Compute the maximum number of patches that can be extracted and the
-    # limits from where to extract patches for each signal.
-    if wave_pos is None:
+    # Compute the maximum TOTAL number of patches and the limits from where to extract
+    # patches for each signal.
+    if limits is None:
         window_limits = [(0, l_signals-patch_size+1)] * n_signals
         max_patches = max_pps * n_signals
     else:
         window_limits = []
         max_patches = 0
-        for p0, p1 in wave_pos:
+        for p0, p1 in limits:
             p0 += patch_min - patch_size
             p1 -= patch_min
             if p0 < 0:
@@ -155,22 +193,15 @@ def extract_patches_1d(signals, patch_size, wave_pos=None, n_patches=None, rando
                 patches[:,k] = signals[j:j+patch_size,i]
                 k += 1
     # Extract a limited number of patches randomly selected.
-    # <---
-    elif l2_normed and not allow_allzeros:
-        for k in range(n_patches):
-            i = rng.integers(0, n_signals)
-            j = rng.integers(*window_limits[i])
-            signal_aux = signals[j:j+patch_size,i]
+    for k in range(n_patches):
+        i = rng.integers(0, n_signals)
+        j = rng.integers(*window_limits[i])
+        signal_aux = signals[j:j+patch_size,i]
+        if not allow_allzeros:
             while not signal_aux.any():
                 j = rng.integers(*window_limits[i])
                 signal_aux = signals[j:j+patch_size,i]
-            patches[:,k] = signal_aux
-    else:
-        for k in range(n_patches):
-            i = rng.integers(0, n_signals)
-            j = rng.integers(*window_limits[i])
-            patches[:,k] = signals[j:j+patch_size,i]
-    # --->
+        patches[:,k] = signal_aux
 
     # Normalize each patch to its L2 norm
     if l2_normed:
