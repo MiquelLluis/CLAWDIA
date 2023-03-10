@@ -92,7 +92,7 @@ class _DictionaryBase:
         return out
 
     def reconstruct_auto(self, signal, *, zero_marg, lambda_lims, step=1, normed=True,
-                         full_output=False, kwargs_bisect={}, kwargs_rec={}):
+                         full_output=False, kwargs_bisect={}, kwargs_lasso={}):
         """TODO
 
         Reconstrueix un únic senyal buscant per bisecció la lambda que
@@ -104,7 +104,7 @@ class _DictionaryBase:
         margin = signal[:zero_marg]
         # Function to be bisected.
         def fun(sc_lambda):
-            rec, _ = self._reconstruct(margin, sc_lambda, step, **kwargs_rec)
+            rec, _ = self._reconstruct(margin, sc_lambda, step, **kwargs_lasso)
             return np.sum(np.abs(rec))
 
         try:
@@ -118,7 +118,7 @@ class _DictionaryBase:
             code = None
             result = {'x': np.min(lambda_lims), 'f': 0., 'converged': False, 'niters': 0, 'funcalls': 2}
         else:
-            rec, code = self._reconstruct(signal, result['x'], step, **kwargs_rec)
+            rec, code = self._reconstruct(signal, result['x'], step, **kwargs_lasso)
             if normed and rec.any():
                 norm = np.max(np.abs(rec))
                 rec /= norm

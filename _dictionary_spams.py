@@ -245,7 +245,7 @@ class DictionarySpams(_DictionaryBase):
 
         np.savez(file, **vars_)
 
-    def _reconstruct(self, signal, sc_lambda, step=1, **kwargs):
+    def _reconstruct(self, signal, sc_lambda, step=1, **kwargs_lasso):
         patches, norms = util.extract_patches(
             signal,
             patch_size=self.p_size,
@@ -258,7 +258,7 @@ class DictionarySpams(_DictionaryBase):
             D=self.components,
             lambda1=sc_lambda,
             mode=self.mode_lasso,
-            **kwargs
+            **kwargs_lasso
         )
         patches = (self.components @ code) * norms
 
