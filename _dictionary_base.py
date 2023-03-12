@@ -2,8 +2,10 @@ import time
 import warnings
 
 import numpy as np
+import scipy.optimize
 import spams
 
+from . import estimators
 from . import util
 
 
@@ -125,6 +127,20 @@ class _DictionaryBase:
                 code /= norm
 
         return (rec, code, result) if full_output else rec
+
+    def optimum_reconstruct(self, signal, *, reference, step=1, normed=True,
+                            kwargs_minimize, kwargs_lasso):
+        rec = None
+        def fun(l_rec):
+            """Function to be minimized."""
+            nonlocal rec
+            rec = self.reconstruct(signal, l_rec, step=step, normed=normed, **kwargs_lasso)
+            return estimators.issim(rec, reference)
+        result = scipy.optimize.minimize_scalar(fun, **kwargs_minimize)
+        l_opt = result['x']
+        loss = result['fun']
+
+        return rec, l_opt, loss
 
     def save(self, file):
         raise NotImplementedError
