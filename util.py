@@ -193,15 +193,16 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_seed=None,
                 patches[:,k] = signals[j:j+patch_size,i]
                 k += 1
     # Extract a limited number of patches randomly selected.
-    for k in range(n_patches):
-        i = rng.integers(0, n_signals)
-        j = rng.integers(*window_limits[i])
-        signal_aux = signals[j:j+patch_size,i]
-        if not allow_allzeros:
-            while not signal_aux.any():
-                j = rng.integers(*window_limits[i])
-                signal_aux = signals[j:j+patch_size,i]
-        patches[:,k] = signal_aux
+    else:
+        for k in range(n_patches):
+            i = rng.integers(0, n_signals)
+            j = rng.integers(*window_limits[i])
+            signal_aux = signals[j:j+patch_size,i]
+            if not allow_allzeros:
+                while not signal_aux.any():
+                    j = rng.integers(*window_limits[i])
+                    signal_aux = signals[j:j+patch_size,i]
+            patches[:,k] = signal_aux
 
     # Normalize each patch to its L2 norm
     if l2_normed:
