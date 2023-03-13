@@ -129,16 +129,25 @@ class _DictionaryBase:
         return (rec, code, result) if full_output else rec
 
     def optimum_reconstruct(self, signal, *, reference, step=1, normed=True,
-                            kwargs_minimize, kwargs_lasso):
+                            kwargs_minimize, kwargs_lasso, verbose=False):
+        aa = 10
+        bb = 2  # max(issim) x 2 as the minimu value for the auxiliar line function.
         rec = None
         def fun(l_rec):
             """Function to be minimized."""
             nonlocal rec
             rec = self.reconstruct(signal, l_rec, step=step, normed=normed, **kwargs_lasso)
-            return estimators.issim(rec, reference)
+            if rec.any():
+                loss = estimators.issim(rec, reference)
+            else:
+                loss = aa * l_rec + bb
+            return loss
         result = scipy.optimize.minimize_scalar(fun, **kwargs_minimize)
         l_opt = result['x']
         loss = result['fun']
+
+        if verbose:
+            print("Iterations performed:", result['nit'])
 
         return rec, l_opt, loss
 
