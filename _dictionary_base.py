@@ -128,15 +128,60 @@ class _DictionaryBase:
 
         return (rec, code, result) if full_output else rec
 
-    def optimum_reconstruct(self, signal, *, reference, step=1, normed=True,
-                            kwargs_minimize, kwargs_lasso, verbose=False):
+    def optimum_reconstruct(self, strain, *, reference, kwargs_minimize, kwargs_lasso,
+                            step=1, normed=True, verbose=False):
+        """Find the best reconstruction of a signal w.r.t. a reference.
+
+        Find the lambda which produces a reconstruction of the
+        input 'strain' closest to the given 'reference', comparing them with
+        the SSIM estimator. The search is performed by the SciPy's function
+        'minimize_scalar' with bounds.
+
+        PARAMETERS
+        ----------
+        strain: ndarray
+            Input strain to be reconstructed (and optimized).
+
+        reference: ndarray
+            Reference strain which to compare the reconstruction to.
+
+        kwargs_minimize: dict
+            Passed to SciPy's `minimize_scalar(**kwargs_minimize)`.
+
+        kwargs_lasso: dict
+            Passed to Python-Spams' `lasso(**kwargs_lasso)`.
+
+        step: int, optional
+            Separation in samples between each window into which the input
+            strain is split up to be reconstructed by the dictionary. Defaults
+            to 1.
+
+        normed: bool, optional
+            If True, returns the signal normed to its maximum absolute amplitude.
+
+        verbose: bool, optional
+            Print info about the minimization results. False by default.
+
+        RETURNS
+        -------
+        rec: ndarray
+            Optimum reconstruction found.
+
+        l_opt: float
+            Optimum value for lambda.
+
+        loss: float
+            ISSIM (1 - SSIM) between the optimized reconstruction and the
+            reference.
+
+        """
         aa = 10
         bb = 2  # max(issim) x 2 as the minimu value for the auxiliar line function.
         rec = None
         def fun(l_rec):
             """Function to be minimized."""
             nonlocal rec
-            rec = self.reconstruct(signal, l_rec, step=step, normed=normed, **kwargs_lasso)
+            rec = self.reconstruct(strain, l_rec, step=step, normed=normed, **kwargs_lasso)
             if rec.any():
                 loss = estimators.issim(rec, reference)
             else:
