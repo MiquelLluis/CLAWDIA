@@ -193,6 +193,8 @@ class _DictionaryBase:
 
         if verbose:
             print("Iterations performed:", result['nit'])
+            print("Lambda optimized:", l_opt)
+            print("Final loss:", loss)
 
         return rec, l_opt, loss
 
