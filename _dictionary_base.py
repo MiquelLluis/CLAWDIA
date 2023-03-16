@@ -192,9 +192,23 @@ class _DictionaryBase:
         loss = result['fun']
 
         if verbose:
-            print("Iterations performed:", result['nit'])
-            print("Lambda optimized:", l_opt)
-            print("Final loss:", loss)
+            success = result['success']
+            print(
+                "Optimization results:\n"
+                f"> Minimization success: {success}"
+            )
+            if not success:
+                print(
+                    "  Reason\n"
+                    "  ------\n"
+                    result['message'] + "\n"
+                    "  ------"
+                )
+            print(
+                f"> Lambda optimized: {l_opt}\n"
+                f"> Iterations performed: {result['nit']}\n"
+                f"> Final loss: {loss}"
+            )
 
         return rec, l_opt, loss
 
