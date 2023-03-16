@@ -201,7 +201,7 @@ class _DictionaryBase:
                 print(
                     "  Reason\n"
                     "  ------\n"
-                    result['message'] + "\n"
+                    + result['message'] + "\n"
                     "  ------"
                 )
             print(
