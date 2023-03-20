@@ -176,7 +176,7 @@ class _DictionaryBase:
 
         """
         aa = 10
-        bb = 2  # max(issim) x 2 as the minimu value for the auxiliar line function.
+        bb = 10  # max(issim) x bb as the minimu value for the auxiliar line function.
         rec = None
         def fun(l_rec):
             """Function to be minimized."""
