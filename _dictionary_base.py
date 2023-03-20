@@ -178,9 +178,10 @@ class _DictionaryBase:
         aa = 10
         bb = 10  # max(issim) x bb as the minimu value for the auxiliar line function.
         rec = None
-        def fun(l_rec):
+        def fun(l_rec_log):
             """Function to be minimized."""
             nonlocal rec
+            l_rec = 10 ** l_rec_log  # Opitimizes lambda in log. space!
             rec = self.reconstruct(strain, l_rec, step=step, normed=normed, **kwargs_lasso)
             if rec.any():
                 loss = estimators.issim(rec, reference)
@@ -188,7 +189,7 @@ class _DictionaryBase:
                 loss = aa * l_rec + bb
             return loss
         result = scipy.optimize.minimize_scalar(fun, **kwargs_minimize)
-        l_opt = result['x']
+        l_opt = 10 ** result['x']
         loss = result['fun']
 
         if verbose:
