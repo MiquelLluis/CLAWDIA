@@ -129,7 +129,7 @@ class _DictionaryBase:
         return (rec, code, result) if full_output else rec
 
     def optimum_reconstruct(self, strain, *, reference, kwargs_minimize, kwargs_lasso,
-                            step=1, normed=True, verbose=False):
+                            step=1, limits=None, normed=True, verbose=False):
         """Find the best reconstruction of a signal w.r.t. a reference.
 
         Find the lambda which produces a reconstruction of the
@@ -156,6 +156,10 @@ class _DictionaryBase:
             strain is split up to be reconstructed by the dictionary. Defaults
             to 1.
 
+        limits: list or tuple, optional
+            Indices of limits to where compute the loss between the
+            reconstruction and the reference strain.
+
         normed: bool, optional
             If True, returns the signal normed to its maximum absolute amplitude.
 
@@ -178,16 +182,23 @@ class _DictionaryBase:
         aa = 10
         bb = 10  # max(issim) x bb as the minimu value for the auxiliar line function.
         rec = None
+        if limits is None:
+            sl = slice(None)
+        else:
+            sl = slice(*limits)
+        reference_ = reference[sl]
+
         def fun(l_rec_log):
             """Function to be minimized."""
             nonlocal rec
             l_rec = 10 ** l_rec_log  # Opitimizes lambda in log. space!
             rec = self.reconstruct(strain, l_rec, step=step, normed=normed, **kwargs_lasso)
             if rec.any():
-                loss = estimators.issim(rec, reference)
+                loss = estimators.issim(rec[sl], reference_)
             else:
                 loss = aa * l_rec + bb
             return loss
+
         result = scipy.optimize.minimize_scalar(fun, **kwargs_minimize)
         l_opt = 10 ** result['x']
         loss = result['fun']
