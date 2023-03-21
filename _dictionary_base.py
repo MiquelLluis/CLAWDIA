@@ -156,7 +156,7 @@ class _DictionaryBase:
             strain is split up to be reconstructed by the dictionary. Defaults
             to 1.
 
-        limits: list or tuple, optional
+        limits: array-like, optional
             Indices of limits to where compute the loss between the
             reconstruction and the reference strain.
 
