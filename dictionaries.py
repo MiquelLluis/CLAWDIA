@@ -38,4 +38,9 @@ def load(file):
 
 
 def save(file, dico):
-    np.savez(file, **vars(dico))
+    """TODO
+
+    Just call to the dictionary's save method.
+
+    """
+    dico.save(file)

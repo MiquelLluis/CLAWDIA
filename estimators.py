@@ -1,4 +1,7 @@
 import numpy as np
+import scipy as sp
+import scipy.signal
+import scipy.interpolate
 
 
 def mse(x, y):
@@ -40,3 +43,82 @@ def softmax(x, axis=None):
     """Softmax probability distribution."""
     coefs = np.exp(x)
     return coefs / coefs.sum(axis=axis, keepdims=True)
+
+
+def _weighted_inner(x, y, psd, at, window):
+    """Compute the (x|y) between two signals as described in Ref.
+    
+    Note: The coefficients are ommited since they cancel themselve in the overlap computation.
+    
+    x, y: array
+        Signals to compare.
+    
+    psd: 2d-array
+        PSD to weight the overlap, will be linearly interpolated to the right frequencies.
+        psd[0] = frequencies
+        psd[1] = psd samples
+    
+    Ref: Eq. 12, DOI: 10.48550/arxiv.2210.06194
+    
+    """    
+    ns = len(x)
+    if ns != len(y):
+        raise ValueError("both 'x' and 'y' must be of the same length")
+    window = sp.signal.windows.get_window(window, ns)
+    
+    # rFFT
+    hx = np.fft.rfft(x * window)
+    hy = np.fft.rfft(y * window)
+    ff = np.fft.rfftfreq(ns, d=at)
+
+    # Lowest and highest frequency cut-off taken from the given psd
+    f_min, f_max = psd[0][[0,-1]]
+    i_min = np.argmax(ff >= f_min)
+    i_max = np.argmax(ff <= f_max)
+    if i_max == 0:
+        i_max = len(ff)
+    hx = hx[i_min:i_max]
+    hy = hy[i_min:i_max]
+    ff = ff[i_min:i_max]
+    af = ff[1]
+    
+    # Compute (x|y)
+    psd_interp = sp.interpolate.interp1d(*psd, bounds_error=True)(ff)
+    xy = np.sum((hx*hy.conj() + hx.conj()*hy) / psd_interp).real
+    
+    return xy
+
+
+def overlap(x, y, psd, at, window=('tukey', 0.5)):
+    """Compute the Overlap between two signals:
+        Ov = (x|y) / sqrt((x|x) · (y|y))
+
+    x, y: array
+        Signals to compare.
+
+    psd: 2d-array
+        PSD to weight the overlap, will be linearly interpolated to the right frequencies.
+        psd[0] = frequencies
+        psd[1] = psd samples
+
+    at: float
+        Time step, inverse of sampling rate of 'x' and 'y'.
+    
+    Ref: Badger C. et al., 2022 (10.48550/arxiv.2210.06194)
+    
+    """
+    x = np.asarray(x)
+    y = np.asarray(y)
+    wei = lambda a, b: _weighted_inner(a, b, psd, at, window)
+
+    with np.errstate(divide='ignore', invalid='ignore'):
+        overlap = wei(x, y) / np.sqrt(wei(x, x) * wei(y, y))
+        np.nan_to_num(overlap, copy=False)
+
+    return overlap
+
+
+def ioverlap(x, y, psd, at, window=('tukey', 0.5)):
+    """Compute `1 - Overlap()`."""
+
+    return 1 - overlap(x, y, psd, at, window=window)

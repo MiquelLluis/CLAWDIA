@@ -126,6 +126,7 @@ def pick_children_batch(parents, dictionaries, labels=None, out=None, verbose=Fa
         labels = {key: i for i, key in enumerate(dictionaries)}
 
     if out is None:
+        # shape: 2, children, parents, signals
         i_children = np.empty((2, n_dicos, n_dicos, n_signals), order='F')
     else:
         i_children = out
