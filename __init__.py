@@ -4,8 +4,6 @@ TODO! Pipeline de classificació de senyals de detectors d'ones gravitacionals
 mitjançant algorismes de Dictionary Learning.
 
 """
-from . import children
-from . import classification
 from . import dictionaries
 from . import parents
 from . import util
