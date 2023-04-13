@@ -4,7 +4,7 @@ import warnings
 import numpy as np
 import scipy.optimize
 import spams
-import tqdm
+from tqdm import tqdm
 
 from . import estimators
 from . import util
