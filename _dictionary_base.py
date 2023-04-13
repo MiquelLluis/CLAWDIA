@@ -4,6 +4,7 @@ import warnings
 import numpy as np
 import scipy.optimize
 import spams
+import tqdm
 
 from . import estimators
 from . import util
@@ -70,7 +71,8 @@ class _DictionaryBase:
 
         return (signal_rec, code) if with_code else signal_rec
 
-    def reconstruct_batch(self, signals, sc_lambda, out=None, step=1, normed=True, **kwargs):
+    def reconstruct_batch(self, signals, sc_lambda, out=None, step=1, normed=True,
+                          verbose=True, **kwargs):
         """TODO
 
         Reconstruct multiple signals, each one as a sparse combination of
@@ -81,7 +83,10 @@ class _DictionaryBase:
             out = np.empty_like(signals)
         n_signals = signals.shape[1]
 
-        for i in range(n_signals):
+        loop = range(n_signals)
+        if verbose:
+            loop = tqdm(loop)
+        for i in loop:
             out[:,i] = self.reconstruct(
                 signals[:,i],
                 sc_lambda, 
