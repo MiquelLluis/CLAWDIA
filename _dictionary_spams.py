@@ -325,11 +325,52 @@ class DictionarySpams:
         Reconstruct multiple signals, each one as a sparse combination of
         dictionary atoms.
 
+        WARNING: Only viable for small 'signals' set, it is really memory
+        expensive (all patches are stored in a single array in memory).
+
         WARNING: 'out' deprecated, left for backwards compatibility but will
         be ignored if given.
 
         """
         out = self._reconstruct_batch(signals, sc_lambda=sc_lambda, step=step, **kwargs)
+
+        if normed and out.any():
+            with np.errstate(divide='ignore', invalid='ignore'):
+                out /= np.max(np.abs(out), axis=0, keepdims=True)
+            np.nan_to_num(out, copy=False)
+
+        return out
+
+    def reconstruct_minibatch(self, signals, *, sc_lambda, step=1, batchsize=4, normed=True,
+                              verbose=True, **kwargs):
+        """TODO
+
+        Reconstruct multiple signals, each one as a sparse combination of
+        dictionary atoms. Minibatch version.
+
+        """
+        n_signals = signals.shape[1]
+        n_minibatch = n_signals // batchsize
+        out = np.empty_like(signals)
+        loop = range(n_minibatch)
+        if verbose:
+            loop = tqdm(loop)
+        
+        for ibatch in loop:
+            i0 = ibatch * batchsize
+            i1 = i0 + batchsize
+            minibatch = signals[:,i0:i1]
+            out[:,i0:i1] = self._reconstruct_batch(
+                minibatch, sc_lambda=sc_lambda, step=step, **kwargs
+            )
+        # If 'n_signals' was not divisible by 'batchsize' reconstruct the
+        # remaining signals:
+        if i1 < n_signals:
+            i0 = i1
+            minibatch = signals[:,i0:]
+            out[:,i0:] = self._reconstruct_batch(
+                minibatch, sc_lambda=sc_lambda, step=step, **kwargs
+            )
 
         if normed and out.any():
             with np.errstate(divide='ignore', invalid='ignore'):
