@@ -1,4 +1,3 @@
-import json
 import warnings
 
 import numpy as np
@@ -229,37 +228,5 @@ def reconstruct_from_patches_1d(patches, step):
     reconstructed /= normalizer
 
     return reconstructed
-
-
-def load_json(file):
-    """Load the parameter file in JSON format, allowing comments with C format.
-
-    PARAMETERS
-    ----------
-    file: str or `.read()`-supporting text/binary file.
-
-    RETURNS
-    -------
-    params: dict
-
-    """
-    try:
-        lines = file.readlines()
-    except AttributeError:
-        with open(file) as f:
-            lines = f.readlines()
-
-    # Filter comments.
-    buffer = ''
-    for line in lines:
-        if (i := line.find('// ')) != -1:
-            line = line[:i] + '\n'
-        buffer += line
-
-    # Parse file
-    params = json.loads(buffer)
-
-    return params
-
 
 FINISHED = f"\n\n{''.join(chr(x) for x in (9995,128524,128076))}"
