@@ -298,6 +298,26 @@ class DictionarySpams:
 
         return (signal_rec, code) if with_code else signal_rec
 
+    def _reconstruct_batch(self, strains, *, sc_lambda, step=1, **kwargs):
+        ls, ns = strains.shape
+
+        patches, norms = util.extract_patches(
+            strains, patch_size=self.p_size, step=step, l2_normed=True, return_norm_coefs=True
+        )
+        codes = spams.lasso(
+            patches, D=self.components, lambda1=sc_lambda, mode=self.mode_lasso, **kwargs
+        )
+        patches = (self.components @ codes) * norms
+        
+        lp = patches.shape[0]
+        np_ = patches.shape[1] // ns  # Number of patches per strain
+        patches = patches.reshape(lp, np_, ns, order='F')
+        reconstructions = np.empty_like(strains)
+        for i in range(ns):
+            reconstructions[:,i] = util.reconstruct_from_patches_1d(patches[...,i], step)
+
+        return reconstructions
+
     def reconstruct_batch(self, signals, sc_lambda, out=None, step=1, normed=True,
                           verbose=True, **kwargs):
         """TODO
@@ -305,23 +325,16 @@ class DictionarySpams:
         Reconstruct multiple signals, each one as a sparse combination of
         dictionary atoms.
 
-        """
-        if out is None:
-            out = np.empty_like(signals)
-        n_signals = signals.shape[1]
+        WARNING: 'out' deprecated, left for backwards compatibility but will
+        be ignored if given.
 
-        loop = range(n_signals)
-        if verbose:
-            loop = tqdm(loop)
-        for i in loop:
-            out[:,i] = self.reconstruct(
-                signals[:,i],
-                sc_lambda, 
-                step=step,
-                normed=normed,
-                with_code=False,
-                **kwargs
-            )
+        """
+        out = self._reconstruct_batch(signals, sc_lambda=sc_lambda, step=step, **kwargs)
+
+        if normed and out.any():
+            with np.errstate(divide='ignore', invalid='ignore'):
+                out /= np.max(np.abs(out), axis=0, keepdims=True)
+            np.nan_to_num(out, copy=False)
 
         return out
 
