@@ -363,6 +363,10 @@ class DictionarySpams:
             out[:,i0:i1] = self._reconstruct_batch(
                 minibatch, sc_lambda=sc_lambda, step=step, **kwargs
             )
+        if n_minibatch == 0:
+            # In case there was no point in using a minibatch:
+            i1 = 0
+
         # If 'n_signals' was not divisible by 'batchsize' reconstruct the
         # remaining signals:
         if i1 < n_signals:
