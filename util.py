@@ -1,5 +1,7 @@
 import warnings
 
+from gwpy.frequencies import FrequencySeries
+from gwpy.timeseries import TimeSeries
 import numpy as np
 
 
@@ -315,3 +317,48 @@ def inject_batch(strain_set, *, background, snr, psd, at, limits=None, offset=0,
         )
 
     return set_injected
+
+
+def whiten(strain, *, asd, sf, **kwargs):
+    """
+
+    PARAMETERS
+    ----------
+    **kwargs: extra arguments passed to gwpy.timeseries.Timeseries.whiten()
+
+    """
+    if not isinstance(asd, FrequencySeries):
+        asd = FrequencySeries(asd[1], frequencies=asd[0])
+    frame = TimeSeries(strain, sample_rate=sf)
+    strain_w = frame.whiten(asd=asd, **kwargs).value
+
+    return strain_w
+
+
+def whiten_batch(set_strain, *, l_window, asd, sf, normed=True, **kwargs):
+    """
+
+    PARAMETERS
+    ----------
+    l_window: int
+        Target (final) strain length. When `l_window < set_strain.shape[1]',
+        the cropping window is centered.
+
+    **kwargs: extra arguments passed to gwpy.timeseries.Timeseries.whiten()
+
+    """
+    if not isinstance(asd, FrequencySeries):
+        asd = FrequencySeries(asd[1], frequencies=asd[0])
+    n_strains = len(set_strain)
+    i0 = (set_strain.shape[1] - l_window) // 2
+    i1 = i0 + l_window
+    
+    set_whitened = np.empty((n_strains, l_window))
+    for i in range(n_strains):
+        strain_w = whiten(set_strain[i], asd=asd, sf=sf, **kwargs)
+        set_whitened[i] = strain_w[i0:i1]
+
+    if normed:
+        set_whitened /= np.max(np.abs(set_whitened), axis=1, keepdims=True)
+
+    return set_whitened
