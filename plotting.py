@@ -1,5 +1,6 @@
 import itertools as it
 
+import matplotlib as mpl
 from matplotlib import pyplot as plt
 import numpy as np
 
@@ -61,3 +62,19 @@ def plot_spams_dictionary(array, **plot_kw):
     fig.tight_layout()
     
     return fig
+
+
+def plot_spec_of(strain, figsize=(10,5), sf=4096, window='hann', vmin=None, vmax=None):
+    fig, ax = plt.subplots(figsize=figsize)
+    ff, tt, spec = sp.signal.spectrogram(
+        strain,
+        fs=sf,
+        window=window,
+        nperseg=256,
+        nfft=2*sf,
+        noverlap=256-32
+    )
+    norm = mpl.colors.LogNorm(clip=False, vmin=vmin, vmax=vmax)
+    pcm = ax.pcolormesh(tt, ff, spec, norm=norm)
+
+    return fig, spec, pcm
