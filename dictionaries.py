@@ -1,9 +1,7 @@
-import warnings
-
 import numpy as np
 
 from ._dictionary_spams import DictionarySpams
-from .dictol import LRSDL
+from ._dictionary_dictol import train_lrsdl
 
 
 def load(file):
