@@ -96,3 +96,31 @@ def train_lrsdl(X, *, y_true, l_atoms, step, iterations, init_kwargs, offset=0,
     dico.fit(X_filtered.T, y_filtered, iterations=iterations, verbose=verbose)
 
     return dico
+
+
+def predict_lrsdl(X, dico, *, threshold=0, offset=0, with_losses=False):
+    """
+
+    Parameters
+    ----------
+    threshold: float, optional
+        Loss threshold ABOVE which signals will be marked as "unknown" class,
+        which corresponds to the label value -1.
+        Zero by default, all signals will be classified.
+
+    offset: int, optional
+        Index i0 at which to crop the input signals X.
+        The i1 will be `offset + l_atoms`. By default 0.
+
+    """
+    # Cut signals to dico's length and discard the rest:
+    i0 = offset
+    i1 = i0 + dico.D.shape[0]
+    X_cut = X[:,i0:i1]
+    X_cut /= np.linalg.norm(X_cut, axis=1, keepdims=True)
+    y_pred, E = dico.predict(X_cut.T, loss_mat=True)  # E: losses of all strains, shape (class, strain)
+    losses = np.min(E, axis=0)
+    discarded = losses >= threshold
+    y_pred[discarded] = -1
+
+    return (y_pred, losses) if with_losses else y_pred
