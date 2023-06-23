@@ -47,3 +47,17 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
         return fig
     except NameError:
         return None
+
+
+def plot_spams_dictionary(array, **plot_kw):    
+    l = array.shape[1]
+    c = int(np.sqrt(l))
+    fig, axs = plt.subplots(ncols=c, nrows=c, **plot_kw)
+    for i in range(c**2):
+        ax = axs[i//c,i%c]
+        ax.plot(array[:,i], lw=1)
+        ax.axis('off')
+    fig.subplots_adjust(wspace=0, hspace=0)
+    fig.tight_layout()
+    
+    return fig
