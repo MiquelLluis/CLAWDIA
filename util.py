@@ -1,6 +1,6 @@
 import warnings
 
-from gwpy.frequencies import FrequencySeries
+from gwpy.frequencyseries import FrequencySeries
 from gwpy.timeseries import TimeSeries
 import numpy as np
 
