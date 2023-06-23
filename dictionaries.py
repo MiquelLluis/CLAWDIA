@@ -1,21 +1,15 @@
-"""Try to import all available dictionaries."""
 import warnings
 
 import numpy as np
 
-try:
-    from ._dictionary_spams import DictionarySpams
-except ImportError:
-    warnings.warn("spams-python not found, 'DictionarySpams' won't be available", ImportWarning)
+from ._dictionary_spams import DictionarySpams
+from .dictol import LRSDL
 
-
-#______________________________________________________________________________
-# Load and save functions.
 
 def load(file):
     """TODO
 
-    Only tested with DictionarySpams!
+    WARNING: Only tested with DictionarySpams!
 
     """
     dico_raw = dict(np.load(file))
@@ -35,6 +29,8 @@ def save(file, dico):
     """TODO
 
     Just call to the dictionary's save method.
+
+    WARNING: Only works with DictionarySpams!
 
     """
     dico.save(file)
