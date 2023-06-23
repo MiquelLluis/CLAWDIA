@@ -230,3 +230,88 @@ def reconstruct_from_patches_1d(patches, step):
     return reconstructed
 
 FINISHED = f"\n\n{''.join(chr(x) for x in (9995,128524,128076))}"
+
+
+def inject(strain, *, background, snr, psd, at, limits=None, offset=0, window=('tukey',0.5)):
+    """Inject a strain into a background strain.
+
+    PARAMETERS
+    ----------
+    strain: array
+        Strain to be injected.
+
+    background: array
+        Background strain where to inject the `strain` to.
+        Should be `len(background) => len(strain)`.
+
+    limits: array-like (size=2), optional
+        Initial and final position of 'strain'. Useful when the actual signal
+        is zero-padded.
+    
+    offset: int
+        Index position in 'background' where to begin the injection.
+    
+    **kwargs: passed to snr()
+
+    RETURNS
+    -------
+    injected: array
+        Injected strain with `len(injected) == len(background)`.
+
+    """
+    if limits is None:
+        strain_ = strain_
+    else:
+        strain_ = strain[slice(*limits)]
+    snr0 = compute_snr(strain_, psd=psd, at=at, window=window)
+    i0 = offset
+    i1 = i0 + len(strain_)
+    injected = background.copy()
+    injected[i0:i1] += strain_ * snr/snr0
+
+    return injected
+
+
+def inject_batch(strain_set, *, background, snr, psd, at, limits=None, offset=0,
+                 window=('tukey',0.5)):
+    """Inject a batch of strains into a background strain.
+
+    PARAMETERS
+    ----------
+    strain_set: 2d-array (#-strains, length)
+        Set of strains to be injected.
+
+    background: array
+        First or background strain where to inject the `inject_strain` to.
+        Should be `len(background) => strain_set.shape[1]`.
+
+    limits: 2d-array (#-strains, 2), optional
+        Initial and final position of each strain in 'strain_set'. Useful when
+        the actual signals are zero-padded.
+    
+    offset: int
+        Index position in 'background' where to begin the injection.
+        By default the injection is performed at the beginning.
+    
+    **kwargs: passed to snr()
+
+    RETURNS
+    -------
+    set_injected: 2d-array (length, #-strains)
+        Injected strains with `injected.shape == background.shape`.
+
+    """
+    l_s = len(background)  # length of the final strains
+    n_s = len(strain_set)  # number of strains to inject
+    if limits is None:
+        limits = [None] * n_s
+
+    set_injected = np.empty((n_s, l_s))
+    for i in range(n_s):
+        to_inject = strain_set[i]
+        set_injected[i] = inject(
+            to_inject, background=background, snr=snr, psd=psd, at=at, limits=limits[i],
+            offset=offset, window=window
+        )
+
+    return set_injected
