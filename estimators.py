@@ -122,3 +122,35 @@ def ioverlap(x, y, psd, at, window=('tukey', 0.5)):
     """Compute `1 - Overlap()`."""
 
     return 1 - overlap(x, y, psd, at, window=window)
+
+
+def compute_snr(strain, *, psd, at, window=('tukey',0.5)):
+    """Signal to Noise Ratio."""
+
+    # rFFT
+    strain = np.asarray(strain)
+    ns = len(strain)
+    if isinstance(window, tuple):
+        window = sp.signal.windows.get_window(window, ns)
+    else:
+        window = np.asarray(window)
+    hh = np.fft.rfft(strain * window)
+    ff = np.fft.rfftfreq(ns, d=at)
+    af = ff[1]
+
+    # Lowest and highest frequency cut-off taken from the given psd
+    f_min, f_max = psd[0][[0,-1]]
+    i_min = np.argmax(ff >= f_min)
+    i_max = np.argmax(ff <= f_max)
+    # If max(psd[0]) > max(ff) do not cut off
+    if i_max == 0:
+        i_max = len(hh)
+    hh = hh[i_min:i_max]
+    ff = ff[i_min:i_max]
+
+    # SNR
+    psd_interp = sp.interpolate.interp1d(*psd, bounds_error=True)(ff)
+    sum_ = np.sum(np.abs(hh)**2 / psd_interp)
+    snr = np.sqrt(4 * at**2 * af * sum_)
+
+    return snr
