@@ -391,3 +391,12 @@ def extract_samples_from_frame(frame, *, framedb, tl_window, tl_margin, labels):
         set_labels[i] = labels[dbi.mechanism]
 
     return set_windows, set_labels
+
+
+def sort_dataset(dataset, *, by, axis=0):
+    """Return the sorted version of the 'dataset' along 'axis' w.r.t. 'by'."""
+    
+    i_sorted = np.argsort(by)
+    set_sorted = dataset[i_sorted]
+
+    return set_sorted, i_sorted
