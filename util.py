@@ -362,3 +362,32 @@ def whiten_batch(set_strain, *, l_window, asd, sf, normed=True, **kwargs):
         set_whitened /= np.max(np.abs(set_whitened), axis=1, keepdims=True)
 
     return set_whitened
+
+
+def extract_samples_from_frame(frame, *, framedb, tl_window, tl_margin, labels):
+    """
+    Parameters
+    ----------
+    frame: gwpy.timeseries.TimeSeries
+
+    framedb: pandas.DataFrame
+        Selected gps times to extract. Must have a 'framedb.mechanism' field
+        corresponding to its label in 'labels'.
+
+    labels: dict
+    
+    """
+    sf = frame.sample_rate.value
+    n_window = len(framedb)
+    l_window = int(tl_window * sf)
+    set_windows = np.empty((n_window, l_window), dtype=float)
+    set_labels = np.empty(n_window, dtype=int)
+
+    for i in range(n_window):
+        dbi = framedb.iloc[i]
+        t0 = dbi.time - tl_margin
+        t1 = t0 + tl_window
+        set_windows[i] = frame.crop(t0, t1)
+        set_labels[i] = labels[dbi.mechanism]
+
+    return set_windows, set_labels
