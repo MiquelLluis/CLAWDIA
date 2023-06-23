@@ -1,7 +1,7 @@
 import numpy as np
 
 from ._dictionary_spams import DictionarySpams
-from ._dictionary_dictol import train_lrsdl
+from ._dictionary_dictol import train_lrsdl, predict_lrsdl
 
 
 def load(file):
