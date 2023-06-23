@@ -1,6 +1,6 @@
 import numpy as np
 
-from dictol import LRSDL
+from .dictol import LRSDL
 
 from . import util
 
