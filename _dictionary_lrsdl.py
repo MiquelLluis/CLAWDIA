@@ -1,10 +1,10 @@
+from dictol.LRSDL import LRSDL as _LRSDL
 import numpy as np
 
-from . import dictol
 from . import util
 
 
-class LRSDL(dictol.LRSDL):
+class LRSDL(_LRSDL):
     def predict(self, Y, loss_mat=False):
         N = Y.shape[1]
         E = np.zeros((self.num_classes, N))
