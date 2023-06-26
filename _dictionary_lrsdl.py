@@ -1,13 +1,7 @@
-from dictol.LRSDL import LRSDL as _LRSDL
+from dictol.LRSDL import LRSDL
 import numpy as np
 
 from . import util
-
-
-class LRSDL(_LRSDL):
-    def save(self, file):
-        vars_ = vars(self)
-        np.savez(file, **vars_)
 
 
 def train_lrsdl(X, *, y_true, l_atoms, step, iterations, init_kwargs, offset=0,
