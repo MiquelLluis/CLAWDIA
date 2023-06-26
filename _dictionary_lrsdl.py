@@ -1,8 +1,30 @@
 import numpy as np
 
-from .dictol import LRSDL
-
+from . import dictol
 from . import util
+
+
+class LRSDL(dictol.LRSDL):
+    def predict(self, Y, loss_mat=False):
+        N = Y.shape[1]
+        E = np.zeros((self.num_classes, N))
+        for c in range(self.num_classes):
+            # Dc in D only
+            Dc_ = get_block_col(self.D, c, self.D_range)
+            # Dc in D and D0
+            Dc = np.hstack((Dc_, self.D0)) if self.k0 > 0 else Dc_
+            lasso = optimize.Lasso(Dc, lambd=self.lambd)
+            lasso.fit(Y)
+            Xc = lasso.solve()
+            residual_matrix = Y - np.dot(Dc, Xc)
+            E[c, :] = 0.5*np.sum(residual_matrix*residual_matrix, axis=0) +\
+                self.lambd*np.sum(np.abs(Xc), axis=0)
+        pred = np.argmin(E, axis=0) + 1
+        return (pred, E) if loss_mat else pred
+    
+    def save(self, file):
+        vars_ = vars(self)
+        np.savez(file, **vars_)
 
 
 def train_lrsdl(X, *, y_true, l_atoms, step, iterations, init_kwargs, offset=0,
