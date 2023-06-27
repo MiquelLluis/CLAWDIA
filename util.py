@@ -4,6 +4,8 @@ from gwpy.frequencyseries import FrequencySeries
 from gwpy.timeseries import TimeSeries
 import numpy as np
 
+from . import estimators
+
 
 _xtol = 2e-12
 _rtol = 8.881784197001252e-16
@@ -263,7 +265,7 @@ def inject(strain, *, background, snr, psd, at, limits=None, offset=0, window=('
         strain_ = strain_
     else:
         strain_ = strain[slice(*limits)]
-    snr0 = compute_snr(strain_, psd=psd, at=at, window=window)
+    snr0 = estimators.snr(strain_, psd=psd, at=at, window=window)
     i0 = offset
     i1 = i0 + len(strain_)
     injected = background.copy()

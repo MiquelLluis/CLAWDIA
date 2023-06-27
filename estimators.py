@@ -124,7 +124,7 @@ def ioverlap(x, y, psd, at, window=('tukey', 0.5)):
     return 1 - overlap(x, y, psd, at, window=window)
 
 
-def compute_snr(strain, *, psd, at, window=('tukey',0.5)):
+def snr(strain, *, psd, at, window=('tukey',0.5)):
     """Signal to Noise Ratio."""
 
     # rFFT
