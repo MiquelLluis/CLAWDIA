@@ -1,0 +1,42 @@
+# Global (constant) parameters:
+sf: 4096        # Sample frequency.
+labels:         # Signal categories.
+    Chi: -1
+    Mag: 1
+    Neu: 2
+    Nox: 3
+tl_window: 2.0
+tl_margin: 0.2  # Background noise before the beginning of the injection.
+channel: L1:STRAIN
+offset: 819      # Index where to start the crop of strains.
+threshold_loss: 1
+numThreads: 32
+
+whitening:
+    normed: true
+    # GWPy's 'whiten()' parameters:
+    fftlength: 2
+    overlap: 0.0625  # 256 samples in our SF (seconds).
+    window: [tukey, 0.5]
+
+# Denoising kwargs for util.whiten_batch:
+denoising:
+    sc_lambda: 0.1
+    step: 16
+    normed: true
+    verbose: true
+    numThreads: 32
+
+# INPUT Files
+f_frame: IO/input/frame.gwf
+f_frame_db: IO/input/gpstimes_and_labels.csv
+f_asd: IO/input/frame_asd.txt
+f_dico_den: IO/input/dico_denoising.npz
+f_dico_clas: IO/input/dico_classification.npz
+
+# OUTPUT Files
+f_strains_whitened: IO/output/preproc1_strains_whitened.npz
+f_strains_denoised: IO/output/preproc2_strains_denoised.npz
+f_y_pred: IO/output/y_pred.npz
+f_f1_score: IO/output/f1_score.txt
+f_confusion_matrix: IO/output/confusion_matrix.txt
