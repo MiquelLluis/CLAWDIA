@@ -1,7 +1,7 @@
 import numpy as np
 
 from ._dictionary_spams import DictionarySpams
-from ._dictionary_lrsdl import LRSDL, train_lrsdl, predict_lrsdl
+from ._dictionary_lrsdl import DictionaryLRSDL
 
 
 def load(file):
@@ -9,7 +9,7 @@ def load(file):
 
     if 'lambd2' in dico_raw:
         # Initialize LRSDL instance
-        dico = LRSDL(
+        dico = DictionaryLRSDL(
             lambd=dico_raw.pop('lambd'), lambd2=dico_raw.pop('lambd2'), eta=dico_raw.pop('eta'),
             k=dico_raw.pop('k'), k0=dico_raw.pop('k0'), updateX_iters=dico_raw.pop('updateX_iters'),
             updateD_iters=dico_raw.pop('updateD_iters')
