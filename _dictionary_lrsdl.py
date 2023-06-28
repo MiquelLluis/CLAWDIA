@@ -20,6 +20,9 @@ class DictionaryLRSDL(LRSDL):
         y_true: array-like
             Labels of samples in X, with `len(y_true) == X.shape[0]`.
 
+        l_atoms: int
+            Lenght of the atoms of the dictionary.
+
         step: int
             For splitting strains in X into the specified 'l_atoms' in order to
             generate the training patches.
@@ -41,7 +44,6 @@ class DictionaryLRSDL(LRSDL):
 
         """
         X_crop = X[:,offset:]
-        l_atoms = D.shape[0]
 
         n_x, l_x = X_crop.shape
         n_wps = int((l_x - l_atoms) / step + 1)  # Number of windows per strain
