@@ -4,7 +4,7 @@ from gwpy.timeseries import TimeSeries
 from gwpy.frequencyseries import FrequencySeries
 import numpy as np
 
-from . import util
+from . import lib
 
 
 # Current steps to leave outside Claudia (or for future added steps):

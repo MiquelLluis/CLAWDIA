@@ -7,4 +7,4 @@ mitjançant algorismes de Dictionary Learning.
 from . import dictionaries
 from . import estimators
 from . import parents
-from . import util
+from . import lib

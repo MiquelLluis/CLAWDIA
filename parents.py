@@ -1,6 +1,6 @@
 import numpy as np
 
-from . import util
+from . import lib
 
 
 def _gen_parents_inplace(signal, dictionaries, sc_lambda, parents, **kwargs_dico):
@@ -46,7 +46,7 @@ def gen_parents_batch(signals, dictionaries, sc_lambda, parents=None, normalize=
 		)
 
 	if normalize:
-		util.abs_normalize(parents)
+		lib.abs_normalize(parents)
 
 	return parents
 
@@ -81,6 +81,6 @@ def gen_parents_auto_batch(signals, dictionaries, parents=None, l2_normed=True, 
 		)
 
 	if l2_normed:
-		util.l2_normalize(parents)
+		lib.l2_normalize(parents)
 
 	return (parents, lambdas) if parents is None else lambdas

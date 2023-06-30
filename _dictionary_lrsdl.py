@@ -1,7 +1,7 @@
 from dictol.LRSDL import LRSDL
 import numpy as np
 
-from . import util
+from . import lib
 
 
 class DictionaryLRSDL(LRSDL):
@@ -52,7 +52,7 @@ class DictionaryLRSDL(LRSDL):
         # Split X -> X_windowed:
         X_windowed = np.empty((n_x, n_wps, l_atoms), dtype=float)
         for ix in range(n_x):
-            X_windowed[ix] = util.extract_patches(X_crop[ix].T, patch_size=l_atoms, step=step).T
+            X_windowed[ix] = lib.extract_patches(X_crop[ix].T, patch_size=l_atoms, step=step).T
         
         # Filter windows: Discard those which their L2-norm is lower than the
         # specified by the relative threshold:

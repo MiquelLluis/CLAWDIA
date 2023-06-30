@@ -7,7 +7,7 @@ import spams
 from tqdm import tqdm
 
 from . import estimators
-from . import util
+from . import lib
 
 
 # Remove warning from OpenMP, present in older versions of python-spams.
@@ -59,7 +59,7 @@ class DictionarySpams:
         If True, normalize atoms to their L2-Norm.
 
     allow_allzeros : bool, True by default
-        Kwarg to pass to util.extract_patches if initializing the
+        Kwarg to pass to lib.extract_patches if initializing the
         dictionary from a signal_pool.
 
     n_iter : int, optional
@@ -149,7 +149,7 @@ class DictionarySpams:
 
         # Get the initial atoms from a set of signals.
         else:
-            self.dict_init = util.extract_patches(
+            self.dict_init = lib.extract_patches(
                 signal_pool,
                 self.p_size,
                 limits=self.wave_pos,
@@ -232,7 +232,7 @@ class DictionarySpams:
             self.t_train = tac - tic
 
     def _reconstruct_single(self, signal, sc_lambda, step=1, **kwargs_lasso):
-        patches, norms = util.extract_patches(
+        patches, norms = lib.extract_patches(
             signal,
             patch_size=self.p_size,
             step=step,
@@ -248,7 +248,7 @@ class DictionarySpams:
         )
         patches = (self.components @ code) * norms
 
-        signal_rec = util.reconstruct_from_patches_1d(patches, step)
+        signal_rec = lib.reconstruct_from_patches_1d(patches, step)
 
         return signal_rec, code
 
@@ -301,7 +301,7 @@ class DictionarySpams:
     def _reconstruct_batch(self, strains, *, sc_lambda, step=1, **kwargs):
         ls, ns = strains.shape
 
-        patches, norms = util.extract_patches(
+        patches, norms = lib.extract_patches(
             strains, patch_size=self.p_size, step=step, l2_normed=True, return_norm_coefs=True
         )
         codes = spams.lasso(
@@ -314,7 +314,7 @@ class DictionarySpams:
         patches = patches.reshape(lp, np_, ns, order='F')
         reconstructions = np.empty_like(strains)
         for i in range(ns):
-            reconstructions[:,i] = util.reconstruct_from_patches_1d(patches[...,i], step)
+            reconstructions[:,i] = lib.reconstruct_from_patches_1d(patches[...,i], step)
 
         return reconstructions
 
@@ -404,8 +404,8 @@ class DictionarySpams:
                 # Ignore specific warning from extract_patches since here we do
                 # not care about reconstructing the entire strain (margin).
                 warnings.filterwarnings("ignore", message="'signals' cannot be fully divided into patches.*")
-                result = util.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
-        except util.BoundaryError:
+                result = lib.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
+        except lib.BoundaryError:
             rec = np.zeros_like(signal)
             code = None
             result = {'x': np.min(lambda_lims), 'f': 0., 'converged': False, 'niters': 0, 'funcalls': 2}
