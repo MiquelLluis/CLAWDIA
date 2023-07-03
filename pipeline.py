@@ -21,21 +21,16 @@ class Pipeline:
         self.dico_clas = dico_clas
         self.dico_clas_params = dico_clas_params
 
-    def __call__(self, strains, with_losses=False):
-        # if strains.shape[1] != dico_clas.D.shape[0]:
-        #     raise ValueError(
-        #         "the length of the strains must be equal to the length of the atoms"
-        #         " of the classification dictionary"
-        #     )
-
+    def __call__(self, strains, with_losses=False, with_preprocessed=False):
         chewed = self._preprocess(strains)
         results = self._predict(chewed, with_losses=with_losses)
+        if with_preprocessed:
+            results += (chewed,)
         return results
 
     def _preprocess(self, strains):
         # Denoise + norm
         pps = self.dico_den.reconstruct_minibatch(strains.T, normed=True, **self.dico_den_params).T
-        # assert pps.shape[1] == self.dico_clas.D.shape[0], "issue when windowing signal with the given length and step"
         return pps
 
     def _predict(self, strains, with_losses=False):
