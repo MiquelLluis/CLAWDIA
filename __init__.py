@@ -7,5 +7,4 @@ mitjançant algorismes de Dictionary Learning.
 from . import dictionaries
 from . import estimators
 from . import lib
-from . import parents
 from . import pipeline
