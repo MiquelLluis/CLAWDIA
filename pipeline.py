@@ -7,50 +7,37 @@ import numpy as np
 from . import lib
 
 
-# Current steps to leave outside Claudia (or for future added steps):
-#------------------------------------------------------------------------------
-
-# INPUT
-# - Extract windows from frame
-# - Whiten(asd) + crop + norm
-
-# OUTPUT
-# - Denoised strains (optional)
-# - Prediction vector
-# - F1 score
-# - Confusion matrix
-
-
-# Current steps to include:
-#------------------------------------------------------------------------------
-
-# INPUT:
-# - Strains: ndarray
-#       > Length = atoms' length!!!
-# - Dictionaries
-
-# Preprocessing:
-# - Denoise + norm
-
-# Classification:
-# - DictionaryLRSDL.predict labels
-
-#------------------------------------------------------------------------------
-
-
-
 class Pipeline:
-    def __init__(self):
+    def __init__(self, *, dico_den, dico_den_params, dico_clas, dico_clas_params):
+        if dico_den.components.shape[0] > dico_clas.D.shape[0]:
+            raise ValueError(
+                "the length of the atoms of the denoising dictionary must be shorter"
+                " or equal to the length of the atoms of the classification dictionary"
+            )
+
         # Load settings and dictionaries.
-        pass
+        self.dico_den = dico_den
+        self.dico_den_params = dico_den_params
+        self.dico_clas = dico_clas
+        self.dico_clas_params = dico_clas_params
 
-    def __call__(self, strains):
-        # Complete list of steps of the pipeline.
-        pass
+    def __call__(self, strains, with_losses=False):
+        # if strains.shape[1] != dico_clas.D.shape[0]:
+        #     raise ValueError(
+        #         "the length of the strains must be equal to the length of the atoms"
+        #         " of the classification dictionary"
+        #     )
 
-    def _preprocess(self):
-        # Can be extended by inheriting Pipeline.
-        pass
+        chewed = self._preprocess(strains)
+        results = self._predict(chewed, with_losses=with_losses)
+        return results
 
-    def _predict(self):
-        pass
+    def _preprocess(self, strains):
+        # Denoise + norm
+        pps = self.dico_den.reconstruct_minibatch(strains.T, normed=True, **self.dico_den_params).T
+        # assert pps.shape[1] == self.dico_clas.D.shape[0], "issue when windowing signal with the given length and step"
+        return pps
+
+    def _predict(self, strains, with_losses=False):
+        results = self.dico_clas.predict(strains, with_losses=with_losses, **self.dico_clas_params)
+        return results
