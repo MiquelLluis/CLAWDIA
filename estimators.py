@@ -9,6 +9,11 @@ def mse(x, y):
     return np.mean((x-y)**2) / len(x)
 
 
+def medse(x, y):
+    """Median Squared Error."""
+    return np.median((x-y)**2)
+
+
 def ssim(x, y):
     """Structural similarity index."""  # TODO: Doc més
     mux = x.mean()
