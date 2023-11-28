@@ -6,7 +6,7 @@ import scipy.interpolate
 
 def mse(x, y):
     """Mean Squared Error."""
-    return np.mean((x-y)**2)
+    return np.mean((x-y)**2) / len(x)
 
 
 def ssim(x, y):
