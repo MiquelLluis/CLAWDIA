@@ -13,9 +13,10 @@ def ssim(x, y):
     """Structural similarity index."""  # TODO: Doc més
     mux = x.mean()
     muy = y.mean()
-    sx2 = x.var()
-    sy2 = y.var()
-    sxy = np.cov(x, y, ddof=0)[0, 1]
+    cov_mat = np.cov(x, y, ddof=0)
+    sx2 = cov_mat[0, 0]
+    sy2 = cov_mat[1, 1]
+    sxy = cov_mat[0, 1]
     l_ = 1
     c1 = (0.01*l_) ** 2
     c2 = (0.03*l_) ** 2
