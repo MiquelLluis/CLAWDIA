@@ -35,11 +35,6 @@ def dssim(x, y):
     return (1 - ssim(x, y)) / 2
 
 
-def issim(x, y):
-    """Inverse (also invented) structural similarity."""
-    return 1 - ssim(x, y)
-
-
 def residual(x, y):
     """Norm of the difference between 'x' and 'y'."""
     return np.linalg.norm(x - y)
