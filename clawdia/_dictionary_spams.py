@@ -84,6 +84,10 @@ class DictionarySpams:
     trained : bool, False by default
         Flag indicating whether dict_init is an already trained dictionary.
 
+    ignore_completeness : bool, optional
+        If set to True and the dictionary is not overcomplete, no error will be
+        raised.
+
     mode_traindl : int, 0 by default
         Refer to [1] for more information.
 
