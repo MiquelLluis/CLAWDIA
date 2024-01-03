@@ -24,7 +24,7 @@ class DictionarySpams:
 
     Parameters
     ----------
-    dict_init : 2d-array(p_size, d_size), optional
+    dict_init : 2d-array(a_length, d_size), optional
         Atoms of the initial dictionary.
         If None, 'signal_pool' must be given.
 
@@ -37,8 +37,8 @@ class DictionarySpams:
         the atoms for the initial dictionary.
         If None, the whole array will be used.
 
-    p_size : int, optional
-        Atom length (patch size).
+    a_length : int, optional
+        Atoms' length (patch size).
         If 'signal_pool' is not None, must be given.
 
     d_size : int, optional
@@ -92,10 +92,10 @@ class DictionarySpams:
 
     Attributes
     ----------
-    dict_init : array(p_size, d_size)
+    dict_init : array(a_length, d_size)
         Atoms of the initial dictionary.
 
-    components : array(p_size, d_size)
+    components : array(a_length, d_size)
         Atoms of the current dictionary.
 
     n_iter : int
@@ -117,14 +117,14 @@ class DictionarySpams:
     in February 2022.
 
     """
-    def __init__(self, dict_init=None, signal_pool=None, wave_pos=None, p_size=None, d_size=None,
+    def __init__(self, dict_init=None, signal_pool=None, wave_pos=None, a_length=None, d_size=None,
                  lambda1=None, batch_size=64, identifier='', l2_normed=True, allow_allzeros=True,
                  n_iter=None, n_train=None, patch_min=1, random_state=None, trained=False,
                  ignore_completeness=False, mode_traindl=0, mode_lasso=2):
         self.dict_init = dict_init
         self.components = dict_init
         self.wave_pos = wave_pos
-        self.p_size = p_size
+        self.a_length = a_length
         self.d_size = d_size
         self.lambda1 = lambda1
         self.batch_size = batch_size
@@ -145,13 +145,13 @@ class DictionarySpams:
 
         # Explicit initial dictionary (trained or not).
         if self.dict_init is not None:
-            self.p_size, self.d_size = self.dict_init.shape
+            self.a_length, self.d_size = self.dict_init.shape
 
         # Get the initial atoms from a set of signals.
         else:
             self.dict_init = lib.extract_patches(
                 signal_pool,
-                self.p_size,
+                self.a_length,
                 limits=self.wave_pos,
                 n_patches=self.d_size,
                 l2_normed=self.l2_normed,
@@ -194,7 +194,7 @@ class DictionarySpams:
         Additional parameters will be passed to the SPAMS training function.
 
         """
-        if len(patches) != self.p_size:
+        if len(patches) != self.a_length:
             raise ValueError("the length of 'patches' must be the same as the"
                              " atoms of the dictionary")
         if n_iter is not None:
@@ -234,7 +234,7 @@ class DictionarySpams:
     def _reconstruct_single(self, signal, sc_lambda, step=1, **kwargs_lasso):
         patches, norms = lib.extract_patches(
             signal,
-            patch_size=self.p_size,
+            patch_size=self.a_length,
             step=step,
             l2_normed=True,
             return_norm_coefs=True
@@ -281,7 +281,7 @@ class DictionarySpams:
         signal_rec : array
             Reconstructed signal.
 
-        code : array(p_size, d_size), optional
+        code : array(a_length, d_size), optional
             Transformed data, encoded as a sparse combination of atoms.
             Returned when 'with_code' is True.
 
@@ -302,7 +302,7 @@ class DictionarySpams:
         ls, ns = strains.shape
 
         patches, norms = lib.extract_patches(
-            strains, patch_size=self.p_size, step=step, l2_normed=True, return_norm_coefs=True
+            strains, patch_size=self.a_length, step=step, l2_normed=True, return_norm_coefs=True
         )
         codes = spams.lasso(
             patches, D=self.components, lambda1=sc_lambda, mode=self.mode_lasso, **kwargs
@@ -542,7 +542,7 @@ class DictionarySpams:
                 raise ValueError("'dict_init' must be a F-contiguous array")
             if (self.dict_init.shape[0] >= self.dict_init.shape[1]
                 and not self.ignore_completeness):
-                raise ValueError("the dictionary must be overcomplete (p_size < d_size)")
+                raise ValueError("the dictionary must be overcomplete (a_length < d_size)")
         
         # Signal pool from where to extract the initial dictionary.
         elif signal_pool is not None:
@@ -552,12 +552,12 @@ class DictionarySpams:
                 )
             if not signal_pool.flags.f_contiguous:
                 raise ValueError("'signal_pool' must be a F-contiguous array")
-            if None in (self.p_size, self.d_size):
+            if None in (self.a_length, self.d_size):
                 raise TypeError(
-                    f"'p_size' and 'd_size' must be explicitly provided along 'signal_pool'"
+                    f"'a_length' and 'd_size' must be explicitly provided along 'signal_pool'"
                 )
-            if self.p_size >= self.d_size:
-                raise ValueError("the dictionary must be overcomplete (p_size < d_size)")
+            if self.a_length >= self.d_size:
+                raise ValueError("the dictionary must be overcomplete (a_length < d_size)")
         
         # None of the above.
         else:
