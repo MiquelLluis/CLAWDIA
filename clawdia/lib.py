@@ -90,7 +90,7 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     return solver_stats
 
 
-def extract_patches(signals, *, patch_size, n_patches=None, random_seed=None,
+def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
                     step=1, limits=None, patch_min=1, l2_normed=False, return_norm_coefs=False,
                     allow_allzeros=True):
     """Extract patches (all possible or randomly selected) from the input 'signals'.
@@ -119,8 +119,8 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_seed=None,
     n_patches: int, optional
         Total number of patches to extract. If None (default) extract the maximum amount.
 
-    random_seed: {None, int, array_like[ints], SeedSequence, BitGenerator, Generator}, optional
-        Given to 'numpy.random.default_rng(random_seed)'.
+    random_state: {None, int, array_like[ints], SeedSequence, BitGenerator, Generator}, optional
+        Given to 'numpy.random.default_rng(random_state)'.
 
     step: int, optional
         Minimum windowing step (separation between patches).
@@ -145,7 +145,7 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_seed=None,
 
     # Compute the maximum patches per signal that can be obtained with the given 'step'
     # ignoring the limits:
-    rng = np.random.default_rng(random_seed)
+    rng = np.random.default_rng(random_state)
     l_signals, n_signals = signals.shape
     max_pps = (l_signals - patch_size) / step + 1
     if not max_pps.is_integer() and limits is None and signals.ndim == 1:
