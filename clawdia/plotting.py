@@ -50,7 +50,7 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
         return None
 
 
-def plot_spams_dictionary(array, **plot_kw):    
+def plot_dictionary(array, **plot_kw):    
     l = array.shape[1]
     c = int(np.sqrt(l))
     fig, axs = plt.subplots(ncols=c, nrows=c, **plot_kw)
