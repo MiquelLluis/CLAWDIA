@@ -165,7 +165,7 @@ class DictionarySpams:
             )
             self.components = self.dict_init
 
-    def train(self, patches, lambda1=None, n_iter=None, verbose=False, **kwargs):
+    def train(self, patches, lambda1=None, n_iter=None, verbose=False, threads=-1, **kwargs):
         """Train the dictionary with a set of patches.
 
         Calls 'spams.trainDL' to train the dictionary by solving the
@@ -191,6 +191,9 @@ class DictionarySpams:
 
         verbose : bool, optional
             If True print the iterations (might not be shown in real time).
+
+        threads: int, optional
+            Number of threads to use during training, see [1].
 
         **kwargs
             Passed directly to 'spams.trainDL', see [1].
@@ -222,6 +225,7 @@ class DictionarySpams:
             iter=self.n_iter,
             mode=self.mode_traindl,  # Default mode is 2
             verbose=verbose,
+            numThreads=threads,
             return_model=True,
             **kwargs
         )
