@@ -155,7 +155,7 @@ class DictionarySpams:
         else:
             self.dict_init = lib.extract_patches(
                 signal_pool,
-                self.a_length,
+                patch_size=self.a_length,
                 limits=self.wave_pos,
                 n_patches=self.d_size,
                 l2_normed=self.l2_normed,
