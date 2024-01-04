@@ -5,7 +5,7 @@ from ._dictionary_lrsdl import DictionaryLRSDL
 
 
 def load(file):
-    dico_raw = dict(np.load(file))
+    dico_raw = dict(np.load(file, allow_pickle=True))
 
     if 'lambd2' in dico_raw:
         # Initialize LRSDL instance
