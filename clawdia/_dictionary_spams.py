@@ -426,6 +426,62 @@ class DictionarySpams:
 
         return (rec, code, result) if full_output else rec
 
+    def reconstruct_iterative_minibatch(self, signals, *, sc_lambda, threshold, step=1,
+                                        batchsize=64, normed=True, max_iter=100, full_output=False,
+                                        verbose=True, kwargs_lasso={}):
+        """Reconstruct multiple signals by iterative subtraction.
+
+        Each signal is reconstructed by iteratively performing a reconstruction
+        of the input signal, subtracting it to the original, and then
+        performing again the reconstruction on the residual until the amplitude
+        of the last reconstruction is below a given threshold.
+
+        threshold: float
+            Relative between the current reconstruction and the initial one.
+            The stop condition is:
+                maxamp_n / maxamp_0 < threshold
+
+        """
+        l, n = signals.shape
+
+        # First iteration outside:
+        initial_max_amplitudes = np.max(np.abs(signals), axis=0)
+        step_reconstructions = self.reconstruct_minibatch(
+            signals, sc_lambda=sc_lambda, step=step, batchsize=batchsize,
+            normed=False,  # Important! The threshold is applied over the raw reconstruction.
+            verbose=verbose, **kwargs_lasso
+        )
+        final_reconstructions = step_reconstructions.copy()
+        residuals = signals - step_reconstructions
+        max_amplitudes = np.max(np.abs(step_reconstructions), axis=0)
+        finished = max_amplitudes/initial_max_amplitudes < threshold
+        iters = np.ones(n, dtype=int)
+
+        while not np.all(finished) and np.max(iters) < max_iter:
+            step_reconstructions = self.reconstruct_minibatch(
+                residuals[:,~finished], sc_lambda=sc_lambda, step=step, batchsize=batchsize,
+                normed=False,  # Important! The threshold is applied over the raw reconstruction.
+                verbose=verbose, **kwargs_lasso
+            )
+            final_reconstructions[:,~finished] += step_reconstructions
+            residuals[:,~finished] -= step_reconstructions
+
+            # Stop conditions' variables:
+            max_amplitudes[~finished] = np.max(np.abs(step_reconstructions), axis=0)
+            relative_max_amplitudes = max_amplitudes[~finished] / initial_max_amplitudes[~finished]
+            iters[~finished] += 1
+            finished[~finished] = relative_max_amplitudes < threshold
+
+        if not np.all(finished):
+            print("WARNING: reached max_iter before finishing all the reconstructions")
+
+        if normed:
+            with np.errstate(divide='ignore', invalid='ignore'):
+                final_reconstructions /= np.max(np.abs(final_reconstructions), axis=0, keepdims=True)
+            np.nan_to_num(final_reconstructions, copy=False)
+
+        return (final_reconstructions, residuals, iters) if full_output else final_reconstructions
+
     def optimum_reconstruct(self, strain, *, reference, kwargs_minimize, kwargs_lasso,
                             step=1, limits=None, normed=True, verbose=False):
         """Find the best reconstruction of a signal w.r.t. a reference.
