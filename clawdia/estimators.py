@@ -141,9 +141,8 @@ def snr(strain, *, psd, at, window=('tukey',0.5)):
 
     # Lowest and highest frequency cut-off taken from the given psd
     f_min, f_max = psd[0][[0,-1]]
-    i_min = np.argmax(ff >= f_min)
-    i_max = np.argmax(ff <= f_max)
-    # If max(psd[0]) > max(ff) do not cut off
+    i_min = np.argmin(ff < f_min)
+    i_max = np.argmin(ff < f_max)
     if i_max == 0:
         i_max = len(hh)
     hh = hh[i_min:i_max]
