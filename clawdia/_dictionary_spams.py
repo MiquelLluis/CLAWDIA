@@ -90,6 +90,9 @@ class DictionarySpams:
 
     mode_traindl : int, 0 by default
         Refer to [1] for more information.
+    
+    modeD_traindl : int, 0 by default
+        Refer to [1] for more information.
 
     mode_lasso : int, 2 by default
         Refer to [1] for more information.
@@ -124,7 +127,7 @@ class DictionarySpams:
     def __init__(self, dict_init=None, signal_pool=None, wave_pos=None, a_length=None, d_size=None,
                  lambda1=None, batch_size=64, identifier='', l2_normed=True, allow_allzeros=True,
                  n_iter=None, n_train=None, patch_min=1, random_state=None, trained=False,
-                 ignore_completeness=False, mode_traindl=0, mode_lasso=2):
+                 ignore_completeness=False, mode_traindl=0, modeD_traindl=0, mode_lasso=2):
         self.dict_init = dict_init
         self.components = dict_init
         self.wave_pos = wave_pos
@@ -143,6 +146,7 @@ class DictionarySpams:
         self.trained = trained
         self.ignore_completeness = ignore_completeness
         self.mode_traindl = mode_traindl
+        self.modeD_traindl = modeD_traindl
         self.mode_lasso = mode_lasso
 
         self._check_initial_parameters(signal_pool)
@@ -168,12 +172,6 @@ class DictionarySpams:
     def train(self, patches, lambda1=None, n_iter=None, verbose=False, threads=-1, **kwargs):
         """Train the dictionary with a set of patches.
 
-        Calls 'spams.trainDL' to train the dictionary by solving the
-        learning problem
-            min_{D in C} (1/d_size) sum_{i=1}^d_size {
-                (1/2)||x_i-Dalpha_i||_2^2  s.t. ||alpha_i||_1 <= lambda1
-            } .
-
         Parameters
         ----------
         patches : 2d-array(samples, signals)
@@ -192,7 +190,7 @@ class DictionarySpams:
         verbose : bool, optional
             If True print the iterations (might not be shown in real time).
 
-        threads: int, optional
+        threads : int, optional
             Number of threads to use during training, see [1].
 
         **kwargs
@@ -216,14 +214,21 @@ class DictionarySpams:
 
         self.n_train = patches.shape[1]
 
+        # In case of loading older instances in which this attribute didn't
+        # exist, it is set to the default of spams.trainDL. This way it should
+        # produce the same results as before.
+        if not hasattr(self, 'modeD_traindl'):
+            self.modeD_traindl = 0
+
         tic = time.time()
         self.components, model = spams.trainDL(
             patches,
-            D=self.dict_init,  # Cool-start
+            D=self.dict_init,
             batchsize=self.batch_size,
             lambda1=self.lambda1,
             iter=self.n_iter,
-            mode=self.mode_traindl,  # Default mode is 2
+            mode=self.mode_traindl,
+            modeD=self.modeD_traindl,
             verbose=verbose,
             numThreads=threads,
             return_model=True,
