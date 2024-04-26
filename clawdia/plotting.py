@@ -50,16 +50,32 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
         return None
 
 
-def plot_dictionary(array, **plot_kw):    
-    l = array.shape[1]
-    c = int(np.sqrt(l))
+def plot_dictionary(array, c=None, **plot_kw):
+    """Plot atoms from a dictionary in a squared matrix.
+    
+    Parameters
+    ----------
+    array : 2d-array
+        Dictionary matrix in Fortran order with shape (l, a).
+    
+    c : int, optional
+        Number of atoms at each side of the squared matrix of plots; the total
+        number of plotted atoms will be `c ** 2`.
+        If not given, it is computed as `int(np.sqrt(a))`.
+    
+    **plot_kw : optional
+        Passed to pyplot.subplots().
+    
+    """
+    if c is None:
+        c = int(np.sqrt(array.shape[1]))
     fig, axs = plt.subplots(ncols=c, nrows=c, **plot_kw)
     for i in range(c**2):
         ax = axs[i//c,i%c]
         ax.plot(array[:,i], lw=1)
         ax.axis('off')
-    fig.subplots_adjust(wspace=0, hspace=0)
     fig.tight_layout()
+    fig.subplots_adjust(wspace=0, hspace=0)
     
     return fig
 
