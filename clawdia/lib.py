@@ -217,6 +217,9 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
         with np.errstate(divide='ignore', invalid='ignore'):
             patches /= coefs
         patches = np.nan_to_num(patches)
+    
+    elif return_norm_coefs:
+        coefs = np.ones(n_patches)
 
     return (patches, coefs) if return_norm_coefs else patches
 

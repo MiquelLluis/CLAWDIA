@@ -245,6 +245,9 @@ class DictionarySpams:
             self.t_train = tac - tic
 
     def _reconstruct_single(self, signal, sc_lambda, step=1, **kwargs_lasso):
+        # TODO: Add kwarg option to disable the patch normalization.
+        # This might be usefull for tasks such detection or when a heavy
+        # discrimination is needed.
         patches, norms = lib.extract_patches(
             signal,
             patch_size=self.a_length,
@@ -311,11 +314,12 @@ class DictionarySpams:
 
         return (signal_rec, code) if with_code else signal_rec
 
-    def _reconstruct_batch(self, strains, *, sc_lambda, step=1, **kwargs):
-        ls, ns = strains.shape
+    def _reconstruct_batch(self, strains, *, sc_lambda, step=1, normed_windows=True, **kwargs):
+        ns = strains.shape[1]
 
         patches, norms = lib.extract_patches(
-            strains, patch_size=self.a_length, step=step, l2_normed=True, return_norm_coefs=True
+            strains, patch_size=self.a_length, step=step, l2_normed=normed_windows,
+            return_norm_coefs=True
         )
         codes = spams.lasso(
             patches, D=self.components, lambda1=sc_lambda, mode=self.mode_lasso, **kwargs
@@ -355,7 +359,7 @@ class DictionarySpams:
         return out
 
     def reconstruct_minibatch(self, signals, *, sc_lambda, step=1, batchsize=4, normed=True,
-                              verbose=True, **kwargs):
+                              normed_windows=True, verbose=True, **kwargs):
         """TODO
 
         Reconstruct multiple signals, each one as a sparse combination of
@@ -374,7 +378,7 @@ class DictionarySpams:
             i1 = i0 + batchsize
             minibatch = signals[:,i0:i1]
             out[:,i0:i1] = self._reconstruct_batch(
-                minibatch, sc_lambda=sc_lambda, step=step, **kwargs
+                minibatch, sc_lambda=sc_lambda, step=step, normed_windows=normed_windows, **kwargs
             )
         if n_minibatch == 0:
             # In case there was no point in using a minibatch:
@@ -431,51 +435,70 @@ class DictionarySpams:
 
         return (rec, code, result) if full_output else rec
 
-    def reconstruct_iterative_minibatch(self, signals, *, sc_lambda, threshold, step=1,
-                                        batchsize=64, normed=True, max_iter=100, full_output=False,
-                                        verbose=True, kwargs_lasso={}):
+    def reconstruct_iterative_minibatch(self, signals, sc_lambda=0.01, step=1, batchsize=64,
+                                        max_iter=100, threshold=0.001, normed=True,
+                                        full_output=False, verbose=True, kwargs_lasso={}):
         """Reconstruct multiple signals by iterative subtraction.
 
         Each signal is reconstructed by iteratively performing a reconstruction
         of the input signal, subtracting it to the original, and then
-        performing again the reconstruction on the residual until the amplitude
-        of the last reconstruction is below a given threshold.
+        performing again the reconstruction on the residual until the relative
+        difference between consecutive residuals is below a certain threshold.
 
-        threshold: float
-            Relative between the current reconstruction and the initial one.
-            The stop condition is:
-                maxamp_n / maxamp_0 < threshold
+        NOTE: During the step reconstructions, the windows into which each
+        signal is split are not normalized. This is needed to enhance the
+        dictionary discrimination. Otherwise, the residuals are amplified at
+        each iteration, the algorithm takes longer to converge, and some
+        ad-hoc tests showed it also messes up with the resulting shape.
 
         """
-        l, n = signals.shape
+        n_signals = signals.shape[1]
 
         # First iteration outside:
-        initial_max_amplitudes = np.max(np.abs(signals), axis=0)
+        if verbose:
+                print(f"\nIteration 0")
+                print(f"Signals remaining: {n_signals}")
         step_reconstructions = self.reconstruct_minibatch(
             signals, sc_lambda=sc_lambda, step=step, batchsize=batchsize,
-            normed=False,  # Important! The threshold is applied over the raw reconstruction.
+            normed=False,  # Normalization is (optionally) applied at the END.
+            normed_windows=False,  # See NOTE in the docstring.
             verbose=verbose, **kwargs_lasso
         )
         final_reconstructions = step_reconstructions.copy()
         residuals = signals - step_reconstructions
-        max_amplitudes = np.max(np.abs(step_reconstructions), axis=0)
-        finished = max_amplitudes/initial_max_amplitudes < threshold
-        iters = np.ones(n, dtype=int)
 
-        while not np.all(finished) and np.max(iters) < max_iter:
+        # Stop conditions
+        iters = np.ones(n_signals, dtype=int)
+        finished = ~step_reconstructions.any(axis=0)  # In case any reconstructions are 0 already.
+        residuals_old = residuals.copy()
+
+        while not np.all(finished) and iters.max() < max_iter:
+            if verbose:
+                print(f"\nIteration {iters.max():3d}")
+                print(f"Signals remaining: {(~finished).sum():^13d}")
+
             step_reconstructions = self.reconstruct_minibatch(
                 residuals[:,~finished], sc_lambda=sc_lambda, step=step, batchsize=batchsize,
-                normed=False,  # Important! The threshold is applied over the raw reconstruction.
+                normed=False,  # Normalization is (optionally) applied at the END.
+                normed_windows=False,  # See NOTE in the docstring.
                 verbose=verbose, **kwargs_lasso
             )
             final_reconstructions[:,~finished] += step_reconstructions
             residuals[:,~finished] -= step_reconstructions
 
-            # Stop conditions' variables:
-            max_amplitudes[~finished] = np.max(np.abs(step_reconstructions), axis=0)
-            relative_max_amplitudes = max_amplitudes[~finished] / initial_max_amplitudes[~finished]
+            # Stop conditions
             iters[~finished] += 1
-            finished[~finished] = relative_max_amplitudes < threshold
+            residual_decrease = np.linalg.norm(residuals[:,~finished] - residuals_old[:,~finished], axis=0)
+            finished[~finished] = residual_decrease < threshold
+            residuals_old = residuals.copy()
+
+            if verbose:
+                print(
+                    "CURRENT RESIDUAL DECREASE:\n"
+                    f"Max: {residual_decrease.max()}\n"
+                    f"Mean: {residual_decrease.mean()}\n"
+                    f"Min: {residual_decrease.min()}\n"
+                )
 
         if not np.all(finished):
             print("WARNING: reached max_iter before finishing all the reconstructions")
@@ -484,8 +507,8 @@ class DictionarySpams:
             with np.errstate(divide='ignore', invalid='ignore'):
                 final_reconstructions /= np.max(np.abs(final_reconstructions), axis=0, keepdims=True)
             np.nan_to_num(final_reconstructions, copy=False)
-
         return (final_reconstructions, residuals, iters) if full_output else final_reconstructions
+
 
     def optimum_reconstruct(self, strain, *, reference, kwargs_minimize, kwargs_lasso,
                             step=1, limits=None, normed=True, verbose=False):
