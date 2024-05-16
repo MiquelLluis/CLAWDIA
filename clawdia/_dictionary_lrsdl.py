@@ -149,33 +149,37 @@ class DictionaryLRSDL(LRSDL):
             If True, increase verbosity of LRSDL.fit().
 
         """
-        X_crop = X[:,offset:]
-
-        n_x, l_x = X_crop.shape
+        n_x, l_x = X.shape
         n_wps = int((l_x - l_atoms) / step + 1)  # Number of windows per strain
         y_windowed = np.repeat(y_true, n_wps).reshape(n_x, n_wps)
         
         # Split X -> X_windowed:
         X_windowed = np.empty((n_x, n_wps, l_atoms), dtype=float)
         for ix in range(n_x):
-            X_windowed[ix] = lib.extract_patches(X_crop[ix].T, patch_size=l_atoms, step=step).T
+            X_windowed[ix] = lib.extract_patches(X[ix].T, patch_size=l_atoms, step=step).T
         
-        # Filter windows: Discard those which their L2-norm is lower than the
-        # specified by the relative threshold:
-        # <---
-        norms = np.linalg.norm(X_windowed, axis=2)         # (n_x, n_wps)
-        l2_maxs = np.max(norms, axis=1, keepdims=True)     # (n_x, 1)
-        m_keep = norms >= l2_maxs*threshold                # (n_x, n_wps)  Mask of windows to keep.
+        if threshold > 0:
+            # Filter windows: Discard those which their L2-norm is lower than the
+            # specified by the relative threshold:
 
-        m_alltrue = np.all(m_keep, axis=1)
-        i_ends = np.argmin(m_keep, axis=1, keepdims=True)  # (n_x, 1)
-        m_out = i_ends <= np.arange(m_keep.shape[1])      # (n_x, n_wps)
-        m_out[m_alltrue] = False
-        m_keep = ~m_out
+            norms = np.linalg.norm(X_windowed, axis=2)         # (n_x, n_wps)
+            l2_maxs = np.max(norms, axis=1, keepdims=True)     # (n_x, 1)
+            m_keep = norms >= l2_maxs*threshold                # (n_x, n_wps)  Mask of windows to keep.
 
-        X_filtered = X_windowed[m_keep]  # (n_filtered, l_atoms)
-        y_filtered = y_windowed[m_keep]  # (n_filtered)
-        # --->
+            m_alltrue = np.all(m_keep, axis=1)
+            i_ends = np.argmin(m_keep, axis=1, keepdims=True)  # (n_x, 1)
+            m_out = i_ends <= np.arange(m_keep.shape[1])      # (n_x, n_wps)
+            m_out[m_alltrue] = False
+            m_keep = ~m_out
+
+            X_filtered = X_windowed[m_keep]  # (n_filtered, l_atoms)
+            y_filtered = y_windowed[m_keep]  # (n_filtered)
+        
+        else:
+            X_filtered = X_windowed
+            y_filtered = y_windowed
+            m_keep = np.ones((n_x, n_wps), dtype=bool)
+            m_out = np.zeros((n_x, n_wps), dtype=bool)
 
         if verbose:
             n_out = np.sum(m_out)
