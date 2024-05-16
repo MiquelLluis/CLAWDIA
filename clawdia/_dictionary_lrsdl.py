@@ -5,41 +5,147 @@ from . import lib
 
 
 class DictionaryLRSDL(LRSDL):
-    def fit(self, X, *, y_true, l_atoms, step, iterations, offset=0,
-                threshold=0, random_seed=None, verbose=False):
-        """Train with specific crops and filtering on the training samples.
+    """Interface for the Low-Rank Shared Dictionary Learning class.
 
-        Train the dictionary splitting the strains in X into sliced windows
-        of length equal to the length of de dictionary.
+    NOTE: The authors of Dictol didn't provide a seed parameter for the random
+    initialization of the dictionary. If reproducibility is important, one must
+    set the global numpy's seed before callint LRSDL.__init__().
 
-        PARAMETERS
+    Attributes
+    ----------
+    lambd : float
+        See self.__init__() for details.
+    
+    lambd2 : float
+        See self.__init__() for details.
+    
+    eta : float
+        See self.__init__() for details.
+    
+    D : ndarray
+        Class-specific dictionary.
+    
+    X : ndarray
+        Class-specific coefficient vector of the training set given when
+        calling self.fit().
+    
+    Y : ndarray
+        Class-specific target vector (the training set) given when calling
+        self.fit().
+    
+    k : int
+        See self.__init__() for details.
+    
+    k0 : int
+        See self.__init__() for details.
+    
+    updateX_iters : int
+        See self.__init__() for details.
+    
+    updateD_iters : int
+        See self.__init__() for details.
+    
+    D_range : list[int]
+        Auxiliar list containing the range of indices of each class in D.
+    
+    D0 : ndarray
+        Shared dictionary.
+    
+    Y_range : list[→nt]
+        Auxiliar list containing the range of indices of each class in Y.
+        Derived directly from 'train_label', equivalent to the 'y_true' labels.
+        Example: given train_label = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1], then
+        Y_range = [0, 4, 6]. The first value is always 0, marking the
+        start of the first class, and the last value is always the number of
+        classes + 1.
+    
+    X0 : ndarray
+        Shared coefficient vector of the training set given when calling
+        self.fit().
+
+
+    References
+    ----------
+    Vu, T. H.; Monga, V. (2017). Fast low-rank shared dictionary learning for image classification.
+    IEEE Transactions on Image Processing, 26(11), 5160–5175. https://doi.org/10.1109/TIP.2017.2729885
+
+    """
+    def __init__(self, lambd=0.01, lambd2=0.01, eta=0.0001, k=10, k0=5,
+                 updateX_iters=100, updateD_iters=100):
+        """Initialize the dictionary.
+        
+        Parameters
         ----------
-        X: 2d-array, shape=(samples, features)
+        lambd : float
+            Regularization term:
+                lambd * ||X||_1
+            Makes the class-specific vector sparse, symilar to the LASSO
+            regularization term.
+
+        lambd2 : float
+            Regularization term:
+                lambd2 / 2 * ||X⁰-M⁰||²
+            Makes the shared vector (selection of shared atoms) sparse and close to
+            the mean shared vector, i.e. all {X⁰} close between them.
+
+        eta : float
+            Regularization term:
+                eta * ||D⁰||_*
+            Enforces the shared dictionary to be low-rank.
+
+        k : int
+            Number of class-specific atoms for each class. The total number of
+            atoms in the class-specific dictionary is then `k * nc` where 'nc' is
+            the number of classes.
+        
+        k0 : int
+            Total number of shared atoms. k0=0 is equivalent to the case when there
+            is no shared dictionary.
+        
+        updateX_iters, updateD_iters : int
+            *I think they are not used in this class at all.*
+        
+        """
+        super().__init__(
+            lambd=lambd, lambd2=lambd2, eta=eta, k=k, k0=k0,
+            updateX_iters=updateX_iters, updateD_iters=updateD_iters
+        )
+
+    def fit(self, X, *, y_true, l_atoms, step, iterations, threshold=0,
+            random_seed=None, verbose=False):
+        """Train de LRSDL dictionary.
+
+        Train the dictionary allowing several options:
+        - Split the strains in X into sliced windows of length equal to the
+          length of de dictionary, or
+        - use the whole strain as a window.
+        - Discard training windows whose L2-norm is below a threshold.
+
+        Parameters
+        ----------
+        X : 2d-array, shape=(samples, features)
             Training samples, with equal or more features than the atoms'.
 
-        y_true: array-like
+        y_true : array-like
             Labels of samples in X, with `len(y_true) == X.shape[0]`.
 
-        l_atoms: int
+        l_atoms : int
             Lenght of the atoms of the dictionary.
 
-        step: int
+        step : int
             For splitting strains in X into the specified 'l_atoms' in order to
             generate the training patches.
+            If no split is needed, 'step' should be equal to 'l_atoms'.
 
-        iterations: int
+        iterations : int
             Number of training iterations.
 
-        offset: int, optional
-            Index i0 at which to crop the input strains X.
-            The i1 will be `offset + l_atoms`. By default 0.
-
-        threshold: float, optional
+        threshold : float, optional
             L2-norm threshold relative to the window of max(L2-norm) of each
             strain, below which to discard the rest of the reconstruction windows.
             No threshold by default.
 
-        verbose: bool
+        verbose : bool
             If True, increase verbosity of LRSDL.fit().
 
         """
@@ -92,18 +198,37 @@ class DictionaryLRSDL(LRSDL):
         super().fit(X_filtered.T, y_filtered, iterations=iterations, verbose=verbose)
 
     def predict(self, X, *, threshold=0, offset=0, with_losses=False):
-        """
+        """Predict the class of each window in X.
+
+        The class of a window is the class of the closest codeword to that
+        window in the dictionary.
 
         Parameters
         ----------
-        threshold: float, optional
+        X : 2d-array, shape=(n_signals, n_samples)
+            Input signals, with equal or more samples than the atoms'.
+
+        threshold : float, optional
             Loss threshold ABOVE which signals will be marked as "unknown" class,
             which corresponds to the label value -1.
             Zero by default, all signals will be classified.
 
-        offset: int, optional
+        offset : int, optional
             Index i0 at which to crop the input signals X.
             The i1 will be `offset + l_atoms`. By default 0.
+
+        with_losses : bool, optional
+            If True, return a tuple with the class predictions and the
+            corresponding losses.
+
+        Returns
+        -------
+        y_pred : 1d-array, shape=(n_signals)
+            Class predictions for each input signal.
+
+        losses : 1d-array, shape=(n_signals), optional
+            Losses of the closest codewords to each input signal.
+            Only returned if with_losses=True.
 
         """
         # Cut signals to dico's length and discard the rest:
