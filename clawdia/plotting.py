@@ -5,44 +5,100 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 
-def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None):
-    if mode in ('absolute', 'both'):
+def plot_confusion(cmat, ax=None, labels=None, mode='both', invert_axis=False, vmin=None, vmax=None, **kwargs):
+    """Plot a confusion matrix.
+
+    Parameters
+    ----------
+    cmat : array-like of shape (n_classes, n_classes)
+        The confusion matrix to plot, with true label being i-th class and
+        predicted label being j-th class.
+    
+    ax : matplotlib.axes.Axes, optional
+        The axes on which to plot the matrix. If not given, a new figure and axes
+        are created.
+    
+    labels : list of str, optional
+        The labels for the classes. If not given, the integers from 0 to
+        `n_classes-1` are used.
+    
+    mode : {'absolute', 'percent', 'both'}
+        The format of the annotations: absolute numbers, percentages, or both.
+        Defaults to 'both'.
+    
+    invert_axis : bool
+        If True, invert the axes of the plot (predicted values at the abscissa).
+        Defaults to False (predicted values at the ordinate).
+    
+    vmin : float, optional
+        The minimum value of the color scale.
+    
+    vmax : float, optional
+        The maximum value of the color scale.
+    
+    **kwargs
+        Additional keyword arguments are passed to `matplotlib.pyplot.subplots`.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure or None
+        The figure containing the plot, or None if `ax` was given.
+
+    """
+    if invert_axis:
+        cmat = cmat.T
+        axis = 1
+    else:
+        axis = 0
+    
+    if mode in ('percent', 'both'):
         with np.errstate(divide='ignore', invalid='ignore'):
-            cmat_perc = np.nan_to_num(cmat / np.sum(cmat, axis=1, keepdims=True))
-        if mode == 'absolute':
-            format_str = lambda *args: str(args[0])
+            cmat_perc = np.nan_to_num(cmat / np.sum(cmat, axis=axis, keepdims=True))
+        
+        if mode == 'percent':
+            format_str = lambda *args: '\n{:.0%}'.format(args[1])
         else:
             format_str = lambda *args: '{}\n{:.0%}'.format(*args)
-    elif mode == 'percent':
+    
+    elif mode == 'absolute':
         cmat_perc = cmat
-        format_str = lambda *args: '{:.0%}'.format(args[0])
+        format_str = lambda *args: str(args[0])
+    
     else:
         raise ValueError("mode can only be 'absolute', 'percent' or 'both'")
 
-    vmin = 0 if vmin is None else vmin
-    vmax = 1.2 if vmax is None else vmax
     n_classes = len(cmat)
+
     cmat_str = np.empty_like(cmat_perc, dtype=object)
-    for i, j in it.product(range(n_classes), repeat=2):
-        cmat_str[i,j] = format_str(cmat[i,j], cmat_perc[i,j])
+    for i_true, i_pred in it.product(range(n_classes), repeat=2):
+        cmat_str[i_true,i_pred] = format_str(cmat[i_true,i_pred], cmat_perc[i_true,i_pred])
 
     if ax is None:
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(**kwargs)
     
     ax.imshow(cmat_perc, cmap=plt.get_cmap('Blues'), vmin=vmin, vmax=vmax)
-    for i, j in it.product(range(n_classes), repeat=2):
-        ax.annotate(cmat_str[i,j], xy=(j,i), ha='center', va='center')
+    
+    for i_true, i_pred in it.product(range(n_classes), repeat=2):
+        ax.annotate(cmat_str[i_true,i_pred], xy=(i_pred,i_true), ha='center', va='center')
+    
+    ax.grid(False)
+
+    if invert_axis:
+        ax.set_xlabel("Predicted")
+        ax.set_ylabel("Actual")
+    else:
+        ax.set_xlabel("Actual")
+        ax.set_ylabel("Predicted")
 
     ax.set_xticks(range(n_classes))
-    ax.set_xticklabels(labels)
-    ax.set_xlabel("Predicted")
-    ax.set_xlim([-0.5, n_classes-0.5])
     ax.set_yticks(range(n_classes))
-    ax.set_yticklabels(labels if labels is not None else None)
-    ax.set_ylabel("Actual")
+    
+    ax.set_xlim([-0.5, n_classes-0.5])
     ax.set_ylim([-0.5, n_classes-0.5])
-    ax.invert_yaxis()
-    ax.grid(False)
+
+    if labels is not None:
+        ax.set_xticklabels(labels)
+        ax.set_yticklabels(labels)
 
     try:
         return fig
