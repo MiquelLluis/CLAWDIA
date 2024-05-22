@@ -249,3 +249,16 @@ class DictionaryLRSDL(LRSDL):
         y_pred[discarded] = -1
 
         return (y_pred, losses) if with_losses else y_pred
+    def save(self, file: str) -> None:
+        """Save the dictionary to a file.
+
+        Save the dictionary attributes using NumPy's 'np.savez()'.
+        
+        Parameters
+        ----------
+        file : str
+            Path to the file where to save the dictionary.
+        
+        """
+        vars_ = vars(self)
+        np.savez(file, **vars_)
