@@ -1,5 +1,6 @@
 from dictol.LRSDL import LRSDL
 import numpy as np
+from time import time
 
 from . import lib
 
@@ -13,6 +14,9 @@ class DictionaryLRSDL(LRSDL):
 
     Attributes
     ----------
+    t_train : float
+        Training time in seconds.
+
     lambd : float
         See self.__init__() for details.
     
@@ -111,8 +115,10 @@ class DictionaryLRSDL(LRSDL):
             updateX_iters=updateX_iters, updateD_iters=updateD_iters
         )
 
-    def fit(self, X, *, y_true, l_atoms, step, iterations, threshold=0,
-            random_seed=None, verbose=False):
+        self.t_train = None
+
+    def fit(self, X, *, y_true, l_atoms, iterations, step=None,
+            threshold=0, random_seed=None, verbose=False, show_after=5):
         """Train de LRSDL dictionary.
 
         Train the dictionary allowing several options:
@@ -132,13 +138,13 @@ class DictionaryLRSDL(LRSDL):
         l_atoms : int
             Lenght of the atoms of the dictionary.
 
-        step : int
-            For splitting strains in X into the specified 'l_atoms' in order to
-            generate the training patches.
-            If no split is needed, 'step' should be equal to 'l_atoms'.
-
         iterations : int
             Number of training iterations.
+
+        step : int, optional
+            For splitting strains in X into the specified 'l_atoms' in order to
+            generate the training patches.
+            No splitting by default.
 
         threshold : float, optional
             L2-norm threshold relative to the window of max(L2-norm) of each
@@ -147,8 +153,24 @@ class DictionaryLRSDL(LRSDL):
 
         verbose : bool
             If True, increase verbosity of LRSDL.fit().
+        
+        show_after : int, optional
+            If verbose is True, show the progress every 'show_after' iterations.
 
         """
+        # Check that there are at least 'self.k' samples of each class in the
+        # training set.
+        _least_samples = np.min(np.bincount(y_true)[1:])
+        if _least_samples < self.k:
+            i_class = np.argmin(np.bincount(y_true)[1:]) + 1
+            raise ValueError(
+                f"there are less than {self.k} samples of class {i_class} in"
+                f" the training set ()"
+            )
+
+        if step is None:
+            step = l_atoms
+
         n_x, l_x = X.shape
         n_wps = int((l_x - l_atoms) / step + 1)  # Number of windows per strain
         y_windowed = np.repeat(y_true, n_wps).reshape(n_x, n_wps)
@@ -157,29 +179,22 @@ class DictionaryLRSDL(LRSDL):
         X_windowed = np.empty((n_x, n_wps, l_atoms), dtype=float)
         for ix in range(n_x):
             X_windowed[ix] = lib.extract_patches(X[ix].T, patch_size=l_atoms, step=step).T
-        
-        if threshold > 0:
-            # Filter windows: Discard those which their L2-norm is lower than the
-            # specified by the relative threshold:
 
-            norms = np.linalg.norm(X_windowed, axis=2)         # (n_x, n_wps)
-            l2_maxs = np.max(norms, axis=1, keepdims=True)     # (n_x, 1)
-            m_keep = norms >= l2_maxs*threshold                # (n_x, n_wps)  Mask of windows to keep.
 
-            m_alltrue = np.all(m_keep, axis=1)
-            i_ends = np.argmin(m_keep, axis=1, keepdims=True)  # (n_x, 1)
-            m_out = i_ends <= np.arange(m_keep.shape[1])      # (n_x, n_wps)
-            m_out[m_alltrue] = False
-            m_keep = ~m_out
+        # Filter windows: Discard those which their L2-norm is lower than the
+        # specified by the relative threshold:
+        norms = np.linalg.norm(X_windowed, axis=2)         # (n_x, n_wps)
+        l2_maxs = np.max(norms, axis=1, keepdims=True)     # (n_x, 1)
+        m_keep = norms >= l2_maxs*threshold                # (n_x, n_wps)  Mask of windows to keep.
 
-            X_filtered = X_windowed[m_keep]  # (n_filtered, l_atoms)
-            y_filtered = y_windowed[m_keep]  # (n_filtered)
-        
-        else:
-            X_filtered = X_windowed
-            y_filtered = y_windowed
-            m_keep = np.ones((n_x, n_wps), dtype=bool)
-            m_out = np.zeros((n_x, n_wps), dtype=bool)
+        m_alltrue = np.all(m_keep, axis=1)
+        i_ends = np.argmin(m_keep, axis=1, keepdims=True)  # (n_x, 1)
+        m_out = i_ends <= np.arange(m_keep.shape[1])      # (n_x, n_wps)
+        m_out[m_alltrue] = False
+        m_keep = ~m_out
+
+        X_filtered = X_windowed[m_keep]  # (n_filtered, l_atoms)
+        y_filtered = y_windowed[m_keep]  # (n_filtered)
 
         if verbose:
             n_out = np.sum(m_out)
@@ -199,7 +214,13 @@ class DictionaryLRSDL(LRSDL):
 
         # Train the dictionary
         np.random.seed(random_seed)
-        super().fit(X_filtered.T, y_filtered, iterations=iterations, verbose=verbose)
+        tic = time()
+        super().fit(
+            X_filtered.T, y_filtered, iterations=iterations, verbose=verbose, show_after=show_after
+        )
+        tac = time()
+        
+        self.t_train = tac - tic
 
     def predict(self, X, *, threshold=0, offset=0, with_losses=False):
         """Predict the class of each window in X.
@@ -245,10 +266,13 @@ class DictionaryLRSDL(LRSDL):
         y_pred, E = super().predict(X_cut.T, loss_mat=True)
 
         losses = np.min(E, axis=0)
-        discarded = losses >= threshold
-        y_pred[discarded] = -1
+        
+        if threshold != 0:
+            discarded = losses >= threshold
+            y_pred[discarded] = -1
 
         return (y_pred, losses) if with_losses else y_pred
+
     def save(self, file: str) -> None:
         """Save the dictionary to a file.
 
@@ -262,3 +286,4 @@ class DictionaryLRSDL(LRSDL):
         """
         vars_ = vars(self)
         np.savez(file, **vars_)
+
