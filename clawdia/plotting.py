@@ -50,20 +50,16 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', invert_axis=False, v
         axis = 1
     else:
         axis = 0
+
+    with np.errstate(divide='ignore', invalid='ignore'):
+        cmat_perc = np.nan_to_num(cmat / np.sum(cmat, axis=axis, keepdims=True))
     
-    if mode in ('percent', 'both'):
-        with np.errstate(divide='ignore', invalid='ignore'):
-            cmat_perc = np.nan_to_num(cmat / np.sum(cmat, axis=axis, keepdims=True))
-        
-        if mode == 'percent':
-            format_str = lambda *args: '\n{:.0%}'.format(args[1])
-        else:
-            format_str = lambda *args: '{}\n{:.0%}'.format(*args)
-    
+    if mode == 'both':
+        format_str = lambda *args: '{}\n{:.0%}'.format(*args)
+    elif mode == 'percent':
+        format_str = lambda *args: '\n{:.0%}'.format(args[1])
     elif mode == 'absolute':
-        cmat_perc = cmat
         format_str = lambda *args: str(args[0])
-    
     else:
         raise ValueError("mode can only be 'absolute', 'percent' or 'both'")
 
@@ -76,6 +72,8 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', invert_axis=False, v
     if ax is None:
         fig, ax = plt.subplots(**kwargs)
     
+    if vmax is None:
+        vmax = 1.2
     ax.imshow(cmat_perc, cmap=plt.get_cmap('Blues'), vmin=vmin, vmax=vmax)
     
     for i_true, i_pred in it.product(range(n_classes), repeat=2):
