@@ -168,6 +168,14 @@ class DictionaryLRSDL(LRSDL):
                 f" the training set ()"
             )
 
+        # Sort `X` and `y_true` so that labels are consecutive and begin with 1.
+        i_sorted = np.argsort(y_true)
+        y_true = y_true[i_sorted]
+        X = X[i_sorted]
+
+        if y_true[0] != 1:
+            raise ValueError("labels in 'y_true' must be integers starting from 1")
+
         if step is None:
             step = l_atoms
 
