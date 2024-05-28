@@ -4,6 +4,9 @@ from ._dictionary_spams import DictionarySpams
 from ._dictionary_lrsdl import DictionaryLRSDL
 
 
+__all__ = ['load', 'save', 'DictionarySpams', 'DictionaryLRSDL']
+
+
 def load(file):
     dico_raw = dict(np.load(file, allow_pickle=True))
 

@@ -30,6 +30,9 @@ from ._dictionary_spams import DictionarySpams
 from ._dictionary_lrsdl import DictionaryLRSDL
 
 
+__all__ = [&#39;load&#39;, &#39;save&#39;, &#39;DictionarySpams&#39;, &#39;DictionaryLRSDL&#39;]
+
+
 def load(file):
     dico_raw = dict(np.load(file, allow_pickle=True))
 
@@ -118,6 +121,1982 @@ def save(file, dico):
 </dl>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="clawdia.dictionaries.DictionaryLRSDL"><code class="flex name class">
+<span>class <span class="ident">DictionaryLRSDL</span></span>
+<span>(</span><span>lambd=0.01, lambd2=0.01, eta=0.0001, k=10, k0=5, updateX_iters=100, updateD_iters=100)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Interface for the Low-Rank Shared Dictionary Learning class.</p>
+<p>NOTE: The authors of Dictol didn't provide a seed parameter for the random
+initialization of the dictionary. If reproducibility is important, one must
+set the global numpy's seed before callint LRSDL.<strong>init</strong>().</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>t_train</code></strong> :&ensp;<code>float</code></dt>
+<dd>Training time in seconds.</dd>
+<dt><strong><code>lambd</code></strong> :&ensp;<code>float</code></dt>
+<dd>See self.<strong>init</strong>() for details.</dd>
+<dt><strong><code>lambd2</code></strong> :&ensp;<code>float</code></dt>
+<dd>See self.<strong>init</strong>() for details.</dd>
+<dt><strong><code>eta</code></strong> :&ensp;<code>float</code></dt>
+<dd>See self.<strong>init</strong>() for details.</dd>
+<dt><strong><code>D</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Class-specific dictionary.</dd>
+<dt><strong><code>X</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Class-specific coefficient vector of the training set given when
+calling self.fit().</dd>
+<dt><strong><code>Y</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Class-specific target vector (the training set) given when calling
+self.fit().</dd>
+<dt><strong><code>k</code></strong> :&ensp;<code>int</code></dt>
+<dd>See self.<strong>init</strong>() for details.</dd>
+<dt><strong><code>k0</code></strong> :&ensp;<code>int</code></dt>
+<dd>See self.<strong>init</strong>() for details.</dd>
+<dt><strong><code>updateX_iters</code></strong> :&ensp;<code>int</code></dt>
+<dd>See self.<strong>init</strong>() for details.</dd>
+<dt><strong><code>updateD_iters</code></strong> :&ensp;<code>int</code></dt>
+<dd>See self.<strong>init</strong>() for details.</dd>
+<dt><strong><code>D_range</code></strong> :&ensp;<code>list[int]</code></dt>
+<dd>Auxiliar list containing the range of indices of each class in D.</dd>
+<dt><strong><code>D0</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Shared dictionary.</dd>
+<dt><strong><code>Y_range</code></strong> :&ensp;<code>list[→nt]</code></dt>
+<dd>Auxiliar list containing the range of indices of each class in Y.
+Derived directly from 'train_label', equivalent to the 'y_true' labels.
+Example: given train_label = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1], then
+Y_range = [0, 4, 6]. The first value is always 0, marking the
+start of the first class, and the last value is always the number of
+classes + 1.</dd>
+<dt><strong><code>X0</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Shared coefficient vector of the training set given when calling
+self.fit().</dd>
+</dl>
+<h2 id="references">References</h2>
+<p>Vu, T. H.; Monga, V. (2017). Fast low-rank shared dictionary learning for image classification.
+IEEE Transactions on Image Processing, 26(11), 5160–5175. <a href="https://doi.org/10.1109/TIP.2017.2729885">https://doi.org/10.1109/TIP.2017.2729885</a></p>
+<p>Initialize the dictionary.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>lambd</code></strong> :&ensp;<code>float</code></dt>
+<dd>Regularization term:
+lambd * ||X||_1
+Makes the class-specific vector sparse, symilar to the LASSO
+regularization term.</dd>
+<dt><strong><code>lambd2</code></strong> :&ensp;<code>float</code></dt>
+<dd>Regularization term:
+lambd2 / 2 * ||X⁰-M⁰||²
+Makes the shared vector (selection of shared atoms) sparse and close to
+the mean shared vector, i.e. all {X⁰} close between them.</dd>
+<dt><strong><code>eta</code></strong> :&ensp;<code>float</code></dt>
+<dd>Regularization term:
+eta * ||D⁰||_*
+Enforces the shared dictionary to be low-rank.</dd>
+<dt><strong><code>k</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of class-specific atoms for each class. The total number of
+atoms in the class-specific dictionary is then <code>k * nc</code> where 'nc' is
+the number of classes.</dd>
+<dt><strong><code>k0</code></strong> :&ensp;<code>int</code></dt>
+<dd>Total number of shared atoms. k0=0 is equivalent to the case when there
+is no shared dictionary.</dd>
+<dt><strong><code>updateX_iters</code></strong>, <strong><code>updateD_iters</code></strong> :&ensp;<code>int</code></dt>
+<dd><em>I think they are not used in this class at all.</em></dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DictionaryLRSDL(LRSDL):
+    &#34;&#34;&#34;Interface for the Low-Rank Shared Dictionary Learning class.
+
+    NOTE: The authors of Dictol didn&#39;t provide a seed parameter for the random
+    initialization of the dictionary. If reproducibility is important, one must
+    set the global numpy&#39;s seed before callint LRSDL.__init__().
+
+    Attributes
+    ----------
+    t_train : float
+        Training time in seconds.
+
+    lambd : float
+        See self.__init__() for details.
+    
+    lambd2 : float
+        See self.__init__() for details.
+    
+    eta : float
+        See self.__init__() for details.
+    
+    D : ndarray
+        Class-specific dictionary.
+    
+    X : ndarray
+        Class-specific coefficient vector of the training set given when
+        calling self.fit().
+    
+    Y : ndarray
+        Class-specific target vector (the training set) given when calling
+        self.fit().
+    
+    k : int
+        See self.__init__() for details.
+    
+    k0 : int
+        See self.__init__() for details.
+    
+    updateX_iters : int
+        See self.__init__() for details.
+    
+    updateD_iters : int
+        See self.__init__() for details.
+    
+    D_range : list[int]
+        Auxiliar list containing the range of indices of each class in D.
+    
+    D0 : ndarray
+        Shared dictionary.
+    
+    Y_range : list[→nt]
+        Auxiliar list containing the range of indices of each class in Y.
+        Derived directly from &#39;train_label&#39;, equivalent to the &#39;y_true&#39; labels.
+        Example: given train_label = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1], then
+        Y_range = [0, 4, 6]. The first value is always 0, marking the
+        start of the first class, and the last value is always the number of
+        classes + 1.
+    
+    X0 : ndarray
+        Shared coefficient vector of the training set given when calling
+        self.fit().
+
+
+    References
+    ----------
+    Vu, T. H.; Monga, V. (2017). Fast low-rank shared dictionary learning for image classification.
+    IEEE Transactions on Image Processing, 26(11), 5160–5175. https://doi.org/10.1109/TIP.2017.2729885
+
+    &#34;&#34;&#34;
+    def __init__(self, lambd=0.01, lambd2=0.01, eta=0.0001, k=10, k0=5,
+                 updateX_iters=100, updateD_iters=100):
+        &#34;&#34;&#34;Initialize the dictionary.
+        
+        Parameters
+        ----------
+        lambd : float
+            Regularization term:
+                lambd * ||X||_1
+            Makes the class-specific vector sparse, symilar to the LASSO
+            regularization term.
+
+        lambd2 : float
+            Regularization term:
+                lambd2 / 2 * ||X⁰-M⁰||²
+            Makes the shared vector (selection of shared atoms) sparse and close to
+            the mean shared vector, i.e. all {X⁰} close between them.
+
+        eta : float
+            Regularization term:
+                eta * ||D⁰||_*
+            Enforces the shared dictionary to be low-rank.
+
+        k : int
+            Number of class-specific atoms for each class. The total number of
+            atoms in the class-specific dictionary is then `k * nc` where &#39;nc&#39; is
+            the number of classes.
+        
+        k0 : int
+            Total number of shared atoms. k0=0 is equivalent to the case when there
+            is no shared dictionary.
+        
+        updateX_iters, updateD_iters : int
+            *I think they are not used in this class at all.*
+        
+        &#34;&#34;&#34;
+        super().__init__(
+            lambd=lambd, lambd2=lambd2, eta=eta, k=k, k0=k0,
+            updateX_iters=updateX_iters, updateD_iters=updateD_iters
+        )
+
+        self.t_train = None
+
+    def fit(self, X, *, y_true, l_atoms, iterations, step=None,
+            threshold=0, random_seed=None, verbose=False, show_after=5):
+        &#34;&#34;&#34;Train de LRSDL dictionary.
+
+        Train the dictionary allowing several options:
+        - Split the strains in X into sliced windows of length equal to the
+          length of de dictionary, or
+        - use the whole strain as a window.
+        - Discard training windows whose L2-norm is below a threshold.
+
+        Parameters
+        ----------
+        X : 2d-array, shape=(samples, features)
+            Training samples, with equal or more features than the atoms&#39;.
+
+        y_true : array-like
+            Labels of samples in X, with `len(y_true) == X.shape[0]`.
+
+        l_atoms : int
+            Lenght of the atoms of the dictionary.
+
+        iterations : int
+            Number of training iterations.
+
+        step : int, optional
+            For splitting strains in X into the specified &#39;l_atoms&#39; in order to
+            generate the training patches.
+            No splitting by default.
+
+        threshold : float, optional
+            L2-norm threshold relative to the window of max(L2-norm) of each
+            strain, below which to discard the rest of the reconstruction windows.
+            No threshold by default.
+
+        verbose : bool
+            If True, increase verbosity of LRSDL.fit().
+        
+        show_after : int, optional
+            If verbose is True, show the progress every &#39;show_after&#39; iterations.
+
+        &#34;&#34;&#34;
+        # Check that there are at least &#39;self.k&#39; samples of each class in the
+        # training set.
+        _least_samples = np.min(np.bincount(y_true)[1:])
+        if _least_samples &lt; self.k:
+            i_class = np.argmin(np.bincount(y_true)[1:]) + 1
+            raise ValueError(
+                f&#34;there are less than {self.k} samples of class {i_class} in&#34;
+                f&#34; the training set ()&#34;
+            )
+
+        # Sort `X` and `y_true` so that labels are consecutive and begin with 1.
+        i_sorted = np.argsort(y_true)
+        y_true = y_true[i_sorted]
+        X = X[i_sorted]
+
+        if y_true[0] != 1:
+            raise ValueError(&#34;labels in &#39;y_true&#39; must be integers starting from 1&#34;)
+
+        if step is None:
+            step = l_atoms
+
+        n_x, l_x = X.shape
+        n_wps = int((l_x - l_atoms) / step + 1)  # Number of windows per strain
+        y_windowed = np.repeat(y_true, n_wps).reshape(n_x, n_wps)
+        
+        # Split X -&gt; X_windowed:
+        X_windowed = np.empty((n_x, n_wps, l_atoms), dtype=float)
+        for ix in range(n_x):
+            X_windowed[ix] = lib.extract_patches(X[ix].T, patch_size=l_atoms, step=step).T
+
+
+        # Filter windows: Discard those which their L2-norm is lower than the
+        # specified by the relative threshold:
+        norms = np.linalg.norm(X_windowed, axis=2)         # (n_x, n_wps)
+        l2_maxs = np.max(norms, axis=1, keepdims=True)     # (n_x, 1)
+        m_keep = norms &gt;= l2_maxs*threshold                # (n_x, n_wps)  Mask of windows to keep.
+
+        m_alltrue = np.all(m_keep, axis=1)
+        i_ends = np.argmin(m_keep, axis=1, keepdims=True)  # (n_x, 1)
+        m_out = i_ends &lt;= np.arange(m_keep.shape[1])      # (n_x, n_wps)
+        m_out[m_alltrue] = False
+        m_keep = ~m_out
+
+        X_filtered = X_windowed[m_keep]  # (n_filtered, l_atoms)
+        y_filtered = y_windowed[m_keep]  # (n_filtered)
+
+        if verbose:
+            n_out = np.sum(m_out)
+            n_keep = np.sum(m_keep)
+            frac_keep = n_keep / m_keep.size
+            print(f&#34;filtered: {n_out}\t kept: {n_keep} ({frac_keep:.1%})&#34;)
+
+        # Check that there are enough windows to build the dictionary:
+        n_classes = len(set(y_true))
+        minimum_windows = self.k * n_classes + self.k0
+        if X_filtered.shape[0] &lt; minimum_windows:
+            raise ValueError(
+                &#34;there are not enough training samples for the requested &#34;
+                &#34;dimensions of the dictionary. Either try to lower the &#39;treshold&#39; &#34;
+                &#34;parameter or provide more training samples.&#34;
+            )
+
+        # Train the dictionary
+        np.random.seed(random_seed)
+        tic = time()
+        super().fit(
+            X_filtered.T, y_filtered, iterations=iterations, verbose=verbose, show_after=show_after
+        )
+        tac = time()
+        
+        self.t_train = tac - tic
+
+    def predict(self, X, *, threshold=0, offset=0, with_losses=False):
+        &#34;&#34;&#34;Predict the class of each window in X.
+
+        The class of a window is the class of the closest codeword to that
+        window in the dictionary.
+
+        Parameters
+        ----------
+        X : 2d-array, shape=(n_signals, n_samples)
+            Input signals, with equal or more samples than the atoms&#39;.
+
+        threshold : float, optional
+            Loss threshold ABOVE which signals will be marked as &#34;unknown&#34; class,
+            which corresponds to the label value -1.
+            Zero by default, all signals will be classified.
+
+        offset : int, optional
+            Index i0 at which to crop the input signals X.
+            The i1 will be `offset + l_atoms`. By default 0.
+
+        with_losses : bool, optional
+            If True, return a tuple with the class predictions and the
+            corresponding losses.
+
+        Returns
+        -------
+        y_pred : 1d-array, shape=(n_signals)
+            Class predictions for each input signal.
+
+        losses : 1d-array, shape=(n_signals), optional
+            Losses of the closest codewords to each input signal.
+            Only returned if with_losses=True.
+
+        &#34;&#34;&#34;
+        # Cut signals to dico&#39;s length and discard the rest:
+        i0 = offset
+        i1 = i0 + self.D.shape[0]
+        X_cut = X[:,i0:i1]
+        with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+            X_cut /= np.linalg.norm(X_cut, axis=1, keepdims=True)
+
+        # E: losses of all strains, shape: (class, strain)
+        y_pred, E = super().predict(X_cut.T, loss_mat=True)
+
+        losses = np.min(E, axis=0)
+        
+        if threshold != 0:
+            discarded = losses &gt;= threshold
+            y_pred[discarded] = -1
+
+        return (y_pred, losses) if with_losses else y_pred
+
+    def save(self, file: str) -&gt; None:
+        &#34;&#34;&#34;Save the dictionary to a file.
+
+        Save the dictionary attributes using NumPy&#39;s &#39;np.savez()&#39;.
+        
+        Parameters
+        ----------
+        file : str
+            Path to the file where to save the dictionary.
+        
+        &#34;&#34;&#34;
+        vars_ = vars(self)
+        np.savez(file, **vars_)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>dictol.LRSDL.LRSDL</li>
+<li>dictol.base.BaseModel</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="clawdia.dictionaries.DictionaryLRSDL.fit"><code class="name flex">
+<span>def <span class="ident">fit</span></span>(<span>self, X, *, y_true, l_atoms, iterations, step=None, threshold=0, random_seed=None, verbose=False, show_after=5)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Train de LRSDL dictionary.</p>
+<p>Train the dictionary allowing several options:
+- Split the strains in X into sliced windows of length equal to the
+length of de dictionary, or
+- use the whole strain as a window.
+- Discard training windows whose L2-norm is below a threshold.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>2d-array, shape=(samples, features)</code></dt>
+<dd>Training samples, with equal or more features than the atoms'.</dd>
+<dt><strong><code>y_true</code></strong> :&ensp;<code>array-like</code></dt>
+<dd>Labels of samples in X, with <code>len(y_true) == X.shape[0]</code>.</dd>
+<dt><strong><code>l_atoms</code></strong> :&ensp;<code>int</code></dt>
+<dd>Lenght of the atoms of the dictionary.</dd>
+<dt><strong><code>iterations</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of training iterations.</dd>
+<dt><strong><code>step</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>For splitting strains in X into the specified 'l_atoms' in order to
+generate the training patches.
+No splitting by default.</dd>
+<dt><strong><code>threshold</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>L2-norm threshold relative to the window of max(L2-norm) of each
+strain, below which to discard the rest of the reconstruction windows.
+No threshold by default.</dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True, increase verbosity of LRSDL.fit().</dd>
+<dt><strong><code>show_after</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>If verbose is True, show the progress every 'show_after' iterations.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fit(self, X, *, y_true, l_atoms, iterations, step=None,
+        threshold=0, random_seed=None, verbose=False, show_after=5):
+    &#34;&#34;&#34;Train de LRSDL dictionary.
+
+    Train the dictionary allowing several options:
+    - Split the strains in X into sliced windows of length equal to the
+      length of de dictionary, or
+    - use the whole strain as a window.
+    - Discard training windows whose L2-norm is below a threshold.
+
+    Parameters
+    ----------
+    X : 2d-array, shape=(samples, features)
+        Training samples, with equal or more features than the atoms&#39;.
+
+    y_true : array-like
+        Labels of samples in X, with `len(y_true) == X.shape[0]`.
+
+    l_atoms : int
+        Lenght of the atoms of the dictionary.
+
+    iterations : int
+        Number of training iterations.
+
+    step : int, optional
+        For splitting strains in X into the specified &#39;l_atoms&#39; in order to
+        generate the training patches.
+        No splitting by default.
+
+    threshold : float, optional
+        L2-norm threshold relative to the window of max(L2-norm) of each
+        strain, below which to discard the rest of the reconstruction windows.
+        No threshold by default.
+
+    verbose : bool
+        If True, increase verbosity of LRSDL.fit().
+    
+    show_after : int, optional
+        If verbose is True, show the progress every &#39;show_after&#39; iterations.
+
+    &#34;&#34;&#34;
+    # Check that there are at least &#39;self.k&#39; samples of each class in the
+    # training set.
+    _least_samples = np.min(np.bincount(y_true)[1:])
+    if _least_samples &lt; self.k:
+        i_class = np.argmin(np.bincount(y_true)[1:]) + 1
+        raise ValueError(
+            f&#34;there are less than {self.k} samples of class {i_class} in&#34;
+            f&#34; the training set ()&#34;
+        )
+
+    # Sort `X` and `y_true` so that labels are consecutive and begin with 1.
+    i_sorted = np.argsort(y_true)
+    y_true = y_true[i_sorted]
+    X = X[i_sorted]
+
+    if y_true[0] != 1:
+        raise ValueError(&#34;labels in &#39;y_true&#39; must be integers starting from 1&#34;)
+
+    if step is None:
+        step = l_atoms
+
+    n_x, l_x = X.shape
+    n_wps = int((l_x - l_atoms) / step + 1)  # Number of windows per strain
+    y_windowed = np.repeat(y_true, n_wps).reshape(n_x, n_wps)
+    
+    # Split X -&gt; X_windowed:
+    X_windowed = np.empty((n_x, n_wps, l_atoms), dtype=float)
+    for ix in range(n_x):
+        X_windowed[ix] = lib.extract_patches(X[ix].T, patch_size=l_atoms, step=step).T
+
+
+    # Filter windows: Discard those which their L2-norm is lower than the
+    # specified by the relative threshold:
+    norms = np.linalg.norm(X_windowed, axis=2)         # (n_x, n_wps)
+    l2_maxs = np.max(norms, axis=1, keepdims=True)     # (n_x, 1)
+    m_keep = norms &gt;= l2_maxs*threshold                # (n_x, n_wps)  Mask of windows to keep.
+
+    m_alltrue = np.all(m_keep, axis=1)
+    i_ends = np.argmin(m_keep, axis=1, keepdims=True)  # (n_x, 1)
+    m_out = i_ends &lt;= np.arange(m_keep.shape[1])      # (n_x, n_wps)
+    m_out[m_alltrue] = False
+    m_keep = ~m_out
+
+    X_filtered = X_windowed[m_keep]  # (n_filtered, l_atoms)
+    y_filtered = y_windowed[m_keep]  # (n_filtered)
+
+    if verbose:
+        n_out = np.sum(m_out)
+        n_keep = np.sum(m_keep)
+        frac_keep = n_keep / m_keep.size
+        print(f&#34;filtered: {n_out}\t kept: {n_keep} ({frac_keep:.1%})&#34;)
+
+    # Check that there are enough windows to build the dictionary:
+    n_classes = len(set(y_true))
+    minimum_windows = self.k * n_classes + self.k0
+    if X_filtered.shape[0] &lt; minimum_windows:
+        raise ValueError(
+            &#34;there are not enough training samples for the requested &#34;
+            &#34;dimensions of the dictionary. Either try to lower the &#39;treshold&#39; &#34;
+            &#34;parameter or provide more training samples.&#34;
+        )
+
+    # Train the dictionary
+    np.random.seed(random_seed)
+    tic = time()
+    super().fit(
+        X_filtered.T, y_filtered, iterations=iterations, verbose=verbose, show_after=show_after
+    )
+    tac = time()
+    
+    self.t_train = tac - tic</code></pre>
+</details>
+</dd>
+<dt id="clawdia.dictionaries.DictionaryLRSDL.predict"><code class="name flex">
+<span>def <span class="ident">predict</span></span>(<span>self, X, *, threshold=0, offset=0, with_losses=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Predict the class of each window in X.</p>
+<p>The class of a window is the class of the closest codeword to that
+window in the dictionary.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>2d-array, shape=(n_signals, n_samples)</code></dt>
+<dd>Input signals, with equal or more samples than the atoms'.</dd>
+<dt><strong><code>threshold</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Loss threshold ABOVE which signals will be marked as "unknown" class,
+which corresponds to the label value -1.
+Zero by default, all signals will be classified.</dd>
+<dt><strong><code>offset</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Index i0 at which to crop the input signals X.
+The i1 will be <code>offset + l_atoms</code>. By default 0.</dd>
+<dt><strong><code>with_losses</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If True, return a tuple with the class predictions and the
+corresponding losses.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>y_pred</code></strong> :&ensp;<code>1d-array, shape=(n_signals)</code></dt>
+<dd>Class predictions for each input signal.</dd>
+<dt><strong><code>losses</code></strong> :&ensp;<code>1d-array, shape=(n_signals)</code>, optional</dt>
+<dd>Losses of the closest codewords to each input signal.
+Only returned if with_losses=True.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def predict(self, X, *, threshold=0, offset=0, with_losses=False):
+    &#34;&#34;&#34;Predict the class of each window in X.
+
+    The class of a window is the class of the closest codeword to that
+    window in the dictionary.
+
+    Parameters
+    ----------
+    X : 2d-array, shape=(n_signals, n_samples)
+        Input signals, with equal or more samples than the atoms&#39;.
+
+    threshold : float, optional
+        Loss threshold ABOVE which signals will be marked as &#34;unknown&#34; class,
+        which corresponds to the label value -1.
+        Zero by default, all signals will be classified.
+
+    offset : int, optional
+        Index i0 at which to crop the input signals X.
+        The i1 will be `offset + l_atoms`. By default 0.
+
+    with_losses : bool, optional
+        If True, return a tuple with the class predictions and the
+        corresponding losses.
+
+    Returns
+    -------
+    y_pred : 1d-array, shape=(n_signals)
+        Class predictions for each input signal.
+
+    losses : 1d-array, shape=(n_signals), optional
+        Losses of the closest codewords to each input signal.
+        Only returned if with_losses=True.
+
+    &#34;&#34;&#34;
+    # Cut signals to dico&#39;s length and discard the rest:
+    i0 = offset
+    i1 = i0 + self.D.shape[0]
+    X_cut = X[:,i0:i1]
+    with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+        X_cut /= np.linalg.norm(X_cut, axis=1, keepdims=True)
+
+    # E: losses of all strains, shape: (class, strain)
+    y_pred, E = super().predict(X_cut.T, loss_mat=True)
+
+    losses = np.min(E, axis=0)
+    
+    if threshold != 0:
+        discarded = losses &gt;= threshold
+        y_pred[discarded] = -1
+
+    return (y_pred, losses) if with_losses else y_pred</code></pre>
+</details>
+</dd>
+<dt id="clawdia.dictionaries.DictionaryLRSDL.save"><code class="name flex">
+<span>def <span class="ident">save</span></span>(<span>self, file: str) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save the dictionary to a file.</p>
+<p>Save the dictionary attributes using NumPy's 'np.savez()'.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code></dt>
+<dd>Path to the file where to save the dictionary.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save(self, file: str) -&gt; None:
+    &#34;&#34;&#34;Save the dictionary to a file.
+
+    Save the dictionary attributes using NumPy&#39;s &#39;np.savez()&#39;.
+    
+    Parameters
+    ----------
+    file : str
+        Path to the file where to save the dictionary.
+    
+    &#34;&#34;&#34;
+    vars_ = vars(self)
+    np.savez(file, **vars_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="clawdia.dictionaries.DictionarySpams"><code class="flex name class">
+<span>class <span class="ident">DictionarySpams</span></span>
+<span>(</span><span>dict_init=None, signal_pool=None, wave_pos=None, a_length=None, d_size=None, lambda1=None, batch_size=64, identifier='', l2_normed=True, allow_allzeros=True, n_iter=None, n_train=None, patch_min=1, random_state=None, trained=False, ignore_completeness=False, mode_traindl=0, modeD_traindl=0, mode_lasso=2)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Mini-Batch Dictionary Learning interface for SPAMS-python.</p>
+<p>Set of utilities for dictionary learning and sparse encoding using the
+functions of SPAMS-python[1].</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dict_init</code></strong> :&ensp;<code>2d-array(a_length, d_size)</code>, optional</dt>
+<dd>Atoms of the initial dictionary.
+If None, 'signal_pool' must be given.</dd>
+<dt><strong><code>signal_pool</code></strong> :&ensp;<code>2d-array(samples, signals)</code>, optional</dt>
+<dd>Set of signals from where to randomly extract the atoms.
+Ignored if 'dict_init' is not None.</dd>
+<dt><strong><code>wave_pos</code></strong> :&ensp;<code>2d array-like (len(signals), 2)</code>, optional</dt>
+<dd>Position of each waveform inside 'signal_pool' from where to extract
+the atoms for the initial dictionary.
+If None, the whole array will be used.</dd>
+<dt><strong><code>a_length</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Atoms' length (patch size).
+If 'signal_pool' is not None, must be given.</dd>
+<dt><strong><code>d_size</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Number of atoms (dictionary size).
+If 'signal_pool' is not None, must be given.</dd>
+<dt><strong><code>lambda1</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Regularization parameter of the learning algorithm.
+If None, will be requierd when calling 'train' method.</dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int, 64 by default</code></dt>
+<dd>Number of samples in each mini-batch.</dd>
+<dt><strong><code>identifier</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>A word or note to identify the dictionary.</dd>
+<dt><strong><code>l2_normed</code></strong> :&ensp;<code>bool, True by default</code></dt>
+<dd>If True, normalize atoms to their L2-Norm.</dd>
+<dt><strong><code>allow_allzeros</code></strong> :&ensp;<code>bool, True by default</code></dt>
+<dd>Kwarg to pass to lib.extract_patches if initializing the
+dictionary from a signal_pool.</dd>
+<dt><strong><code>n_iter</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Total number of iterations to perform.
+If a negative number is provided it will perform the computation during
+the corresponding number of seconds. For instance n_iter=-5 learns the
+dictionary during 5 seconds.
+If None, will be required when calling 'train' method.</dd>
+<dt><strong><code>n_train</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Number of patches used to train the dictionary in case it has been
+trained already (just informative).</dd>
+<dt><strong><code>patch_min</code></strong> :&ensp;<code>int, 1 by default</code></dt>
+<dd>Minimum number of samples within each 'wave_pos[i]' to include in each
+extracted atom when 'signal_pool' given.
+Will be ignored if 'wave_pos' is None.</dd>
+<dt><strong><code>random_state</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Seed used for random sampling.</dd>
+<dt><strong><code>trained</code></strong> :&ensp;<code>bool, False by default</code></dt>
+<dd>Flag indicating whether dict_init is an already trained dictionary.</dd>
+<dt><strong><code>ignore_completeness</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If set to True and the dictionary is not overcomplete, no error will be
+raised.</dd>
+<dt><strong><code>mode_traindl</code></strong> :&ensp;<code>int, 0 by default</code></dt>
+<dd>Refer to [1] for more information.</dd>
+<dt><strong><code>modeD_traindl</code></strong> :&ensp;<code>int, 0 by default</code></dt>
+<dd>Refer to [1] for more information.</dd>
+<dt><strong><code>mode_lasso</code></strong> :&ensp;<code>int, 2 by default</code></dt>
+<dd>Refer to [1] for more information.</dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>dict_init</code></strong> :&ensp;<code>array(a_length, d_size)</code></dt>
+<dd>Atoms of the initial dictionary.</dd>
+<dt><strong><code>components</code></strong> :&ensp;<code>array(a_length, d_size)</code></dt>
+<dd>Atoms of the current dictionary.</dd>
+<dt><strong><code>n_iter</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of iterations performed in training.</dd>
+<dt><strong><code>t_train</code></strong> :&ensp;<code>float</code></dt>
+<dd>Time spent training.</dd>
+<dt><strong><code>identifier</code></strong> :&ensp;<code>str</code></dt>
+<dd>A word or note to identify the dictionary.</dd>
+</dl>
+<h2 id="references">References</h2>
+<p>[1]: SPAMS (for python), (<a href="http://spams-devel.gforge.inria.fr/">http://spams-devel.gforge.inria.fr/</a>), last
+accessed in october 2018.</p>
+<p>[2]: SciPy's Optimization tools,
+(<a href="https://docs.scipy.org/doc/scipy/reference/optimize.html">https://docs.scipy.org/doc/scipy/reference/optimize.html</a>), last accessed
+in February 2022.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DictionarySpams:
+    &#34;&#34;&#34;Mini-Batch Dictionary Learning interface for SPAMS-python.
+
+    Set of utilities for dictionary learning and sparse encoding using the
+    functions of SPAMS-python[1].
+
+    Parameters
+    ----------
+    dict_init : 2d-array(a_length, d_size), optional
+        Atoms of the initial dictionary.
+        If None, &#39;signal_pool&#39; must be given.
+
+    signal_pool : 2d-array(samples, signals), optional
+        Set of signals from where to randomly extract the atoms.
+        Ignored if &#39;dict_init&#39; is not None.
+
+    wave_pos : 2d array-like (len(signals), 2), optional
+        Position of each waveform inside &#39;signal_pool&#39; from where to extract
+        the atoms for the initial dictionary.
+        If None, the whole array will be used.
+
+    a_length : int, optional
+        Atoms&#39; length (patch size).
+        If &#39;signal_pool&#39; is not None, must be given.
+
+    d_size : int, optional
+        Number of atoms (dictionary size).
+        If &#39;signal_pool&#39; is not None, must be given.
+
+    lambda1 : float, optional
+        Regularization parameter of the learning algorithm.
+        If None, will be requierd when calling &#39;train&#39; method.
+
+    batch_size : int, 64 by default
+        Number of samples in each mini-batch.
+
+    identifier : str, optional
+        A word or note to identify the dictionary.
+
+    l2_normed : bool, True by default
+        If True, normalize atoms to their L2-Norm.
+
+    allow_allzeros : bool, True by default
+        Kwarg to pass to lib.extract_patches if initializing the
+        dictionary from a signal_pool.
+
+    n_iter : int, optional
+        Total number of iterations to perform.
+        If a negative number is provided it will perform the computation during
+        the corresponding number of seconds. For instance n_iter=-5 learns the
+        dictionary during 5 seconds.
+        If None, will be required when calling &#39;train&#39; method.
+
+    n_train : int, optional
+        Number of patches used to train the dictionary in case it has been
+        trained already (just informative).
+
+    patch_min : int, 1 by default
+        Minimum number of samples within each &#39;wave_pos[i]&#39; to include in each
+        extracted atom when &#39;signal_pool&#39; given.
+        Will be ignored if &#39;wave_pos&#39; is None.
+
+    random_state : int, optional
+        Seed used for random sampling.
+
+    trained : bool, False by default
+        Flag indicating whether dict_init is an already trained dictionary.
+
+    ignore_completeness : bool, optional
+        If set to True and the dictionary is not overcomplete, no error will be
+        raised.
+
+    mode_traindl : int, 0 by default
+        Refer to [1] for more information.
+    
+    modeD_traindl : int, 0 by default
+        Refer to [1] for more information.
+
+    mode_lasso : int, 2 by default
+        Refer to [1] for more information.
+
+    Attributes
+    ----------
+    dict_init : array(a_length, d_size)
+        Atoms of the initial dictionary.
+
+    components : array(a_length, d_size)
+        Atoms of the current dictionary.
+
+    n_iter : int
+        Number of iterations performed in training.
+
+    t_train : float
+        Time spent training.
+
+    identifier : str
+        A word or note to identify the dictionary.
+
+    References
+    ----------
+    [1]: SPAMS (for python), (http://spams-devel.gforge.inria.fr/), last
+    accessed in october 2018.
+
+    [2]: SciPy&#39;s Optimization tools,
+    (https://docs.scipy.org/doc/scipy/reference/optimize.html), last accessed
+    in February 2022.
+
+    &#34;&#34;&#34;
+    def __init__(self, dict_init=None, signal_pool=None, wave_pos=None, a_length=None, d_size=None,
+                 lambda1=None, batch_size=64, identifier=&#39;&#39;, l2_normed=True, allow_allzeros=True,
+                 n_iter=None, n_train=None, patch_min=1, random_state=None, trained=False,
+                 ignore_completeness=False, mode_traindl=0, modeD_traindl=0, mode_lasso=2):
+        self.dict_init = dict_init
+        self.components = dict_init
+        self.wave_pos = wave_pos
+        self.a_length = a_length
+        self.d_size = d_size
+        self.lambda1 = lambda1
+        self.batch_size = batch_size
+        self.identifier = identifier
+        self.l2_normed = l2_normed
+        self.allow_allzeros = allow_allzeros
+        self.n_iter = n_iter
+        self.t_train = -n_iter if n_iter is not None and n_iter &lt; 0 else None
+        self.n_train = n_train
+        self.patch_min = patch_min
+        self.random_state = random_state
+        self.trained = trained
+        self.ignore_completeness = ignore_completeness
+        self.mode_traindl = mode_traindl
+        self.modeD_traindl = modeD_traindl
+        self.mode_lasso = mode_lasso
+
+        self._check_initial_parameters(signal_pool)
+
+        # Explicit initial dictionary (trained or not).
+        if self.dict_init is not None:
+            self.a_length, self.d_size = self.dict_init.shape
+
+        # Get the initial atoms from a set of signals.
+        else:
+            self.dict_init = lib.extract_patches(
+                signal_pool,
+                patch_size=self.a_length,
+                limits=self.wave_pos,
+                n_patches=self.d_size,
+                l2_normed=self.l2_normed,
+                allow_allzeros=self.allow_allzeros,
+                patch_min=self.patch_min,
+                random_state=self.random_state
+            )
+            self.components = self.dict_init
+
+    def train(self, patches, lambda1=None, n_iter=None, verbose=False, threads=-1, **kwargs):
+        &#34;&#34;&#34;Train the dictionary with a set of patches.
+
+        Parameters
+        ----------
+        patches : 2d-array(samples, signals)
+            Training patches.
+
+        lambda1 : float, optional
+            Regularization parameter of the learning algorithm.
+            It is not needed if already specified at initialization.
+
+        n_iter : int, optional
+            Total number of iterations to perform.
+            If a negative number is provided it will perform the computation
+            during the corresponding number of seconds.
+            It is not needed if already specified at initialization.
+
+        verbose : bool, optional
+            If True print the iterations (might not be shown in real time).
+
+        threads : int, optional
+            Number of threads to use during training, see [1].
+
+        **kwargs
+            Passed directly to &#39;spams.trainDL&#39;, see [1].
+
+        Additional parameters will be passed to the SPAMS training function.
+
+        &#34;&#34;&#34;
+        if len(patches) != self.a_length:
+            raise ValueError(&#34;the length of &#39;patches&#39; must be the same as the&#34;
+                             &#34; atoms of the dictionary&#34;)
+        if n_iter is not None:
+            self.n_iter = n_iter
+        elif self.n_iter is None:
+            raise TypeError(&#34;&#39;n_iter&#39; not specified&#34;)
+            
+        if lambda1 is not None:
+            self.lambda1 = lambda1
+        elif self.lambda1 is None:
+            raise TypeError(&#34;&#39;lambda1&#39; not specified&#34;)
+
+        self.n_train = patches.shape[1]
+
+        # In case of loading older instances in which this attribute didn&#39;t
+        # exist, it is set to the default of spams.trainDL. This way it should
+        # produce the same results as before.
+        if not hasattr(self, &#39;modeD_traindl&#39;):
+            self.modeD_traindl = 0
+
+        tic = time.time()
+        self.components, model = spams.trainDL(
+            patches,
+            D=self.dict_init,
+            batchsize=self.batch_size,
+            lambda1=self.lambda1,
+            iter=self.n_iter,
+            mode=self.mode_traindl,
+            modeD=self.modeD_traindl,
+            verbose=verbose,
+            numThreads=threads,
+            return_model=True,
+            **kwargs
+        )
+        tac = time.time()
+
+        self.trained = True
+
+        if self.n_iter &lt; 0:
+            self.t_train = -self.n_iter
+            self.n_iter = model[&#39;iter&#39;]
+        else:
+            self.t_train = tac - tic
+
+    def _reconstruct_single(self, signal, sc_lambda, step=1, **kwargs_lasso):
+        # TODO: Add kwarg option to disable the patch normalization.
+        # This might be usefull for tasks such detection or when a heavy
+        # discrimination is needed.
+        patches, norms = lib.extract_patches(
+            signal,
+            patch_size=self.a_length,
+            step=step,
+            l2_normed=True,
+            return_norm_coefs=True
+        )
+        code = spams.lasso(
+            patches,
+            D=self.components,
+            lambda1=sc_lambda,
+            mode=self.mode_lasso,
+            **kwargs_lasso
+        )
+        patches = (self.components @ code) * norms
+
+        signal_rec = lib.reconstruct_from_patches_1d(patches, step)
+
+        return signal_rec, code
+
+    def reconstruct(self, signal, sc_lambda, step=1, normed=True, with_code=False, **kwargs):
+        &#34;&#34;&#34;Reconstruct a signal as a sparse combination of dictionary atoms.
+
+        Parameters
+        ----------
+        signal : ndarray
+            Sample to be reconstructed.
+
+        sc_lambda : float
+            Regularization parameter of the sparse coding transformation.
+
+        step : int, 1 by default
+            Sample interval between each patch extracted from signal.
+            Determines the number of patches to be extracted. 1 by default.
+
+        normed : boolean, True by default
+            Normalize the result to the maximum absolute value.
+
+        with_code : boolean, False by default.
+            If True, also returns the coefficients array.
+
+        **kwargs
+            Passed directly to the external learning function.
+
+        Returns
+        -------
+        signal_rec : array
+            Reconstructed signal.
+
+        code : array(a_length, d_size), optional
+            Transformed data, encoded as a sparse combination of atoms.
+            Returned when &#39;with_code&#39; is True.
+
+        &#34;&#34;&#34;
+        if not isinstance(signal, np.ndarray):
+            raise TypeError(&#34;&#39;signal&#39; must be a numpy array&#34;)
+
+        signal_rec, code = self._reconstruct_single(signal, sc_lambda, step, **kwargs)
+
+        if normed and signal_rec.any():
+            norm = np.max(np.abs(signal_rec))
+            signal_rec /= norm
+            code /= norm
+
+        return (signal_rec, code) if with_code else signal_rec
+
+    def _reconstruct_batch(self, strains, *, sc_lambda, step=1, normed_windows=True, **kwargs):
+        ns = strains.shape[1]
+
+        patches, norms = lib.extract_patches(
+            strains, patch_size=self.a_length, step=step, l2_normed=normed_windows,
+            return_norm_coefs=True
+        )
+        codes = spams.lasso(
+            patches, D=self.components, lambda1=sc_lambda, mode=self.mode_lasso, **kwargs
+        )
+        patches = (self.components @ codes) * norms
+        
+        lp = patches.shape[0]
+        np_ = patches.shape[1] // ns  # Number of patches per strain
+        patches = patches.reshape(lp, np_, ns, order=&#39;F&#39;)
+        reconstructions = np.empty_like(strains)
+        for i in range(ns):
+            reconstructions[:,i] = lib.reconstruct_from_patches_1d(patches[...,i], step)
+
+        return reconstructions
+
+    def reconstruct_batch(self, signals, sc_lambda, out=None, step=1, normed=True,
+                          verbose=True, **kwargs):
+        &#34;&#34;&#34;TODO
+
+        Reconstruct multiple signals, each one as a sparse combination of
+        dictionary atoms.
+
+        WARNING: Only viable for small &#39;signals&#39; set, it is really memory
+        expensive (all patches are stored in a single array in memory).
+
+        WARNING: &#39;out&#39; deprecated, left for backwards compatibility but will
+        be ignored if given.
+
+        &#34;&#34;&#34;
+        out = self._reconstruct_batch(signals, sc_lambda=sc_lambda, step=step, **kwargs)
+
+        if normed and out.any():
+            with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+                out /= np.max(np.abs(out), axis=0, keepdims=True)
+            np.nan_to_num(out, copy=False)
+
+        return out
+
+    def reconstruct_minibatch(self, signals, *, sc_lambda, step=1, batchsize=4, normed=True,
+                              normed_windows=True, verbose=True, **kwargs):
+        &#34;&#34;&#34;TODO
+
+        Reconstruct multiple signals, each one as a sparse combination of
+        dictionary atoms. Minibatch version.
+
+        &#34;&#34;&#34;
+        n_signals = signals.shape[1]
+        n_minibatch = n_signals // batchsize
+        out = np.empty_like(signals)
+        loop = range(n_minibatch)
+        if verbose:
+            loop = tqdm(loop)
+        
+        for ibatch in loop:
+            i0 = ibatch * batchsize
+            i1 = i0 + batchsize
+            minibatch = signals[:,i0:i1]
+            out[:,i0:i1] = self._reconstruct_batch(
+                minibatch, sc_lambda=sc_lambda, step=step, normed_windows=normed_windows, **kwargs
+            )
+        if n_minibatch == 0:
+            # In case there was no point in using a minibatch:
+            i1 = 0
+
+        # If &#39;n_signals&#39; was not divisible by &#39;batchsize&#39; reconstruct the
+        # remaining signals:
+        if i1 &lt; n_signals:
+            i0 = i1
+            minibatch = signals[:,i0:]
+            out[:,i0:] = self._reconstruct_batch(
+                minibatch, sc_lambda=sc_lambda, step=step, **kwargs
+            )
+
+        if normed and out.any():
+            with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+                out /= np.max(np.abs(out), axis=0, keepdims=True)
+            np.nan_to_num(out, copy=False)
+
+        return out
+
+    def reconstruct_auto(self, signal, *, zero_marg, lambda_lims, step=1, normed=True,
+                         full_output=False, kwargs_bisect={}, kwargs_lasso={}):
+        &#34;&#34;&#34;TODO
+
+        Reconstrueix un únic senyal buscant per bisecció la lambda que
+        minimitza el senyal reconstruit al marge esquerre del senyal, la mida
+        dels quals ve determinada per &#39;zero_marg&#39;.
+
+        &#34;&#34;&#34;
+        # Margins of the signals to be zeroed
+        margin = signal[:zero_marg]
+        # Function to be bisected.
+        def fun(sc_lambda):
+            rec, _ = self._reconstruct_single(margin, sc_lambda, step, **kwargs_lasso)
+            return np.sum(np.abs(rec))
+
+        try:
+            with warnings.catch_warnings():
+                # Ignore specific warning from extract_patches since here we do
+                # not care about reconstructing the entire strain (margin).
+                warnings.filterwarnings(&#34;ignore&#34;, message=&#34;&#39;signals&#39; cannot be fully divided into patches.*&#34;)
+                result = lib.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
+        except lib.BoundaryError:
+            rec = np.zeros_like(signal)
+            code = None
+            result = {&#39;x&#39;: np.min(lambda_lims), &#39;f&#39;: 0., &#39;converged&#39;: False, &#39;niters&#39;: 0, &#39;funcalls&#39;: 2}
+        else:
+            rec, code = self._reconstruct_single(signal, result[&#39;x&#39;], step, **kwargs_lasso)
+            if normed and rec.any():
+                norm = np.max(np.abs(rec))
+                rec /= norm
+                code /= norm
+
+        return (rec, code, result) if full_output else rec
+
+    def reconstruct_iterative_minibatch(self, signals, sc_lambda=0.01, step=1, batchsize=64,
+                                        max_iter=100, threshold=0.001, normed=True,
+                                        full_output=False, verbose=True, kwargs_lasso={}):
+        &#34;&#34;&#34;Reconstruct multiple signals by iterative subtraction.
+
+        Each signal is reconstructed by iteratively performing a reconstruction
+        of the input signal, subtracting it to the original, and then
+        performing again the reconstruction on the residual until the relative
+        difference between consecutive residuals is below a certain threshold.
+
+        NOTE: During the step reconstructions, the windows into which each
+        signal is split are not normalized. This is needed to enhance the
+        dictionary discrimination. Otherwise, the residuals are amplified at
+        each iteration, the algorithm takes longer to converge, and some
+        ad-hoc tests showed it also messes up with the resulting shape.
+
+        &#34;&#34;&#34;
+        n_signals = signals.shape[1]
+
+        # First iteration outside:
+        if verbose:
+                print(f&#34;\nIteration 0&#34;)
+                print(f&#34;Signals remaining: {n_signals}&#34;)
+        step_reconstructions = self.reconstruct_minibatch(
+            signals, sc_lambda=sc_lambda, step=step, batchsize=batchsize,
+            normed=False,  # Normalization is (optionally) applied at the END.
+            normed_windows=False,  # See NOTE in the docstring.
+            verbose=verbose, **kwargs_lasso
+        )
+        final_reconstructions = step_reconstructions.copy()
+        residuals = signals - step_reconstructions
+
+        # Stop conditions
+        iters = np.ones(n_signals, dtype=int)
+        finished = ~step_reconstructions.any(axis=0)  # In case any reconstructions are 0 already.
+        residuals_old = residuals.copy()
+
+        while not np.all(finished) and iters.max() &lt; max_iter:
+            if verbose:
+                print(f&#34;\nIteration {iters.max():3d}&#34;)
+                print(f&#34;Signals remaining: {(~finished).sum():^13d}&#34;)
+
+            step_reconstructions = self.reconstruct_minibatch(
+                residuals[:,~finished], sc_lambda=sc_lambda, step=step, batchsize=batchsize,
+                normed=False,  # Normalization is (optionally) applied at the END.
+                normed_windows=False,  # See NOTE in the docstring.
+                verbose=verbose, **kwargs_lasso
+            )
+            final_reconstructions[:,~finished] += step_reconstructions
+            residuals[:,~finished] -= step_reconstructions
+
+            # Stop conditions
+            iters[~finished] += 1
+            residual_decrease = np.linalg.norm(residuals[:,~finished] - residuals_old[:,~finished], axis=0)
+            finished[~finished] = residual_decrease &lt; threshold
+            residuals_old = residuals.copy()
+
+            if verbose:
+                print(
+                    &#34;CURRENT RESIDUAL DECREASE:\n&#34;
+                    f&#34;Max: {residual_decrease.max()}\n&#34;
+                    f&#34;Mean: {residual_decrease.mean()}\n&#34;
+                    f&#34;Min: {residual_decrease.min()}\n&#34;
+                )
+
+        if not np.all(finished):
+            print(&#34;WARNING: reached max_iter before finishing all the reconstructions&#34;)
+
+        if normed:
+            with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+                final_reconstructions /= np.max(np.abs(final_reconstructions), axis=0, keepdims=True)
+            np.nan_to_num(final_reconstructions, copy=False)
+        return (final_reconstructions, residuals, iters) if full_output else final_reconstructions
+
+
+    def optimum_reconstruct(self, strain, *, reference, kwargs_minimize, kwargs_lasso,
+                            step=1, limits=None, normed=True, verbose=False):
+        &#34;&#34;&#34;Find the best reconstruction of a signal w.r.t. a reference.
+
+        Find the lambda which produces a reconstruction of the
+        input &#39;strain&#39; closest to the given &#39;reference&#39;, comparing them with
+        the SSIM estimator. The search is performed by the SciPy&#39;s function
+        &#39;minimize_scalar&#39; with bounds.
+
+        PARAMETERS
+        ----------
+        strain: ndarray
+            Input strain to be reconstructed (and optimized).
+
+        reference: ndarray
+            Reference strain which to compare the reconstruction to.
+
+        kwargs_minimize: dict
+            Passed to SciPy&#39;s `minimize_scalar(**kwargs_minimize)`.
+
+        kwargs_lasso: dict
+            Passed to Python-Spams&#39; `lasso(**kwargs_lasso)`.
+
+        step: int, optional
+            Separation in samples between each window into which the input
+            strain is split up to be reconstructed by the dictionary. Defaults
+            to 1.
+
+        limits: array-like, optional
+            Indices of limits to where compute the loss between the
+            reconstruction and the reference strain.
+
+        normed: bool, optional
+            If True, returns the signal normed to its maximum absolute amplitude.
+
+        verbose: bool, optional
+            Print info about the minimization results. False by default.
+
+        RETURNS
+        -------
+        rec: ndarray
+            Optimum reconstruction found.
+
+        l_opt: float
+            Optimum value for lambda.
+
+        loss: float
+            ISSIM (1 - SSIM) between the optimized reconstruction and the
+            reference.
+
+        &#34;&#34;&#34;
+        aa = 10
+        bb = 10  # max(issim) x bb as the minimu value for the auxiliar line function.
+        rec = None
+        if limits is None:
+            sl = slice(None)
+        else:
+            sl = slice(*limits)
+        reference_ = reference[sl]
+
+        def fun(l_rec_log):
+            &#34;&#34;&#34;Function to be minimized.&#34;&#34;&#34;
+            nonlocal rec
+            l_rec = 10 ** l_rec_log  # Opitimizes lambda in log. space!
+            rec = self.reconstruct(strain, l_rec, step=step, normed=normed, **kwargs_lasso)
+            if rec.any():
+                loss = estimators.issim(rec[sl], reference_)
+            else:
+                loss = aa * l_rec + bb
+            return loss
+
+        result = scipy.optimize.minimize_scalar(fun, **kwargs_minimize)
+        l_opt = 10 ** result[&#39;x&#39;]
+        loss = result[&#39;fun&#39;]
+
+        if verbose:
+            success = result[&#39;success&#39;]
+            print(
+                &#34;Optimization results:\n&#34;
+                f&#34;&gt; Minimization success: {success}&#34;
+            )
+            if not success:
+                print(
+                    &#34;  Reason\n&#34;
+                    &#34;  ------\n&#34;
+                    + result[&#39;message&#39;] + &#34;\n&#34;
+                    &#34;  ------&#34;
+                )
+            print(
+                f&#34;&gt; Lambda optimized: {l_opt}\n&#34;
+                f&#34;&gt; Iterations performed: {result[&#39;nit&#39;]}\n&#34;
+                f&#34;&gt; Final loss: {loss}&#34;
+            )
+
+        return rec, l_opt, loss
+
+    def save(self, file):
+        vars_ = vars(self)
+        to_remove = []
+
+        if not self.trained:
+            # To avoid silent bugs in the future
+            to_remove += [&#39;lambda1&#39;, &#39;n_train&#39;, &#39;t_train&#39;]
+        if self.wave_pos is None:
+            to_remove.append(&#39;wave_pos&#39;)
+        if self.random_state is None:
+            to_remove.append(&#39;random_state&#39;)
+
+        for attr in to_remove:
+            vars_.pop(attr)
+
+        np.savez(file, **vars_)
+
+    def _check_initial_parameters(self, signal_pool):
+        # Explicit initial dictionary.
+        if self.dict_init is not None:
+            if not isinstance(self.dict_init, np.ndarray):
+                raise TypeError(
+                    f&#34;&#39;{type(self.dict_init).__name__}&#39; is not a valid &#39;dict_init&#39;&#34;
+                )
+            if not self.dict_init.flags.f_contiguous:
+                raise ValueError(&#34;&#39;dict_init&#39; must be a F-contiguous array&#34;)
+            if (self.dict_init.shape[0] &gt;= self.dict_init.shape[1]
+                and not self.ignore_completeness):
+                raise ValueError(&#34;the dictionary must be overcomplete (a_length &lt; d_size)&#34;)
+        
+        # Signal pool from where to extract the initial dictionary.
+        elif signal_pool is not None:
+            if not isinstance(signal_pool, np.ndarray):
+                raise TypeError(
+                    f&#34;&#39;{type(signal_pool).__name__}&#39; is not a valid &#39;signal_pool&#39;&#34;
+                )
+            if not signal_pool.flags.f_contiguous:
+                raise ValueError(&#34;&#39;signal_pool&#39; must be a F-contiguous array&#34;)
+            if None in (self.a_length, self.d_size):
+                raise TypeError(
+                    f&#34;&#39;a_length&#39; and &#39;d_size&#39; must be explicitly provided along &#39;signal_pool&#39;&#34;
+                )
+            if self.a_length &gt;= self.d_size:
+                raise ValueError(&#34;the dictionary must be overcomplete (a_length &lt; d_size)&#34;)
+        
+        # None of the above.
+        else:
+            raise ValueError(&#34;either &#39;dict_init&#39; or &#39;signal_pool&#39; must be provided&#34;)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="clawdia.dictionaries.DictionarySpams.optimum_reconstruct"><code class="name flex">
+<span>def <span class="ident">optimum_reconstruct</span></span>(<span>self, strain, *, reference, kwargs_minimize, kwargs_lasso, step=1, limits=None, normed=True, verbose=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Find the best reconstruction of a signal w.r.t. a reference.</p>
+<p>Find the lambda which produces a reconstruction of the
+input 'strain' closest to the given 'reference', comparing them with
+the SSIM estimator. The search is performed by the SciPy's function
+'minimize_scalar' with bounds.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>strain</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Input strain to be reconstructed (and optimized).</dd>
+<dt><strong><code>reference</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Reference strain which to compare the reconstruction to.</dd>
+<dt><strong><code>kwargs_minimize</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Passed to SciPy's <code>minimize_scalar(**kwargs_minimize)</code>.</dd>
+<dt><strong><code>kwargs_lasso</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Passed to Python-Spams' <code>lasso(**kwargs_lasso)</code>.</dd>
+<dt><strong><code>step</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Separation in samples between each window into which the input
+strain is split up to be reconstructed by the dictionary. Defaults
+to 1.</dd>
+<dt><strong><code>limits</code></strong> :&ensp;<code>array-like</code>, optional</dt>
+<dd>Indices of limits to where compute the loss between the
+reconstruction and the reference strain.</dd>
+<dt><strong><code>normed</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If True, returns the signal normed to its maximum absolute amplitude.</dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Print info about the minimization results. False by default.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>rec</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Optimum reconstruction found.</dd>
+<dt><strong><code>l_opt</code></strong> :&ensp;<code>float</code></dt>
+<dd>Optimum value for lambda.</dd>
+<dt><strong><code>loss</code></strong> :&ensp;<code>float</code></dt>
+<dd>ISSIM (1 - SSIM) between the optimized reconstruction and the
+reference.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def optimum_reconstruct(self, strain, *, reference, kwargs_minimize, kwargs_lasso,
+                        step=1, limits=None, normed=True, verbose=False):
+    &#34;&#34;&#34;Find the best reconstruction of a signal w.r.t. a reference.
+
+    Find the lambda which produces a reconstruction of the
+    input &#39;strain&#39; closest to the given &#39;reference&#39;, comparing them with
+    the SSIM estimator. The search is performed by the SciPy&#39;s function
+    &#39;minimize_scalar&#39; with bounds.
+
+    PARAMETERS
+    ----------
+    strain: ndarray
+        Input strain to be reconstructed (and optimized).
+
+    reference: ndarray
+        Reference strain which to compare the reconstruction to.
+
+    kwargs_minimize: dict
+        Passed to SciPy&#39;s `minimize_scalar(**kwargs_minimize)`.
+
+    kwargs_lasso: dict
+        Passed to Python-Spams&#39; `lasso(**kwargs_lasso)`.
+
+    step: int, optional
+        Separation in samples between each window into which the input
+        strain is split up to be reconstructed by the dictionary. Defaults
+        to 1.
+
+    limits: array-like, optional
+        Indices of limits to where compute the loss between the
+        reconstruction and the reference strain.
+
+    normed: bool, optional
+        If True, returns the signal normed to its maximum absolute amplitude.
+
+    verbose: bool, optional
+        Print info about the minimization results. False by default.
+
+    RETURNS
+    -------
+    rec: ndarray
+        Optimum reconstruction found.
+
+    l_opt: float
+        Optimum value for lambda.
+
+    loss: float
+        ISSIM (1 - SSIM) between the optimized reconstruction and the
+        reference.
+
+    &#34;&#34;&#34;
+    aa = 10
+    bb = 10  # max(issim) x bb as the minimu value for the auxiliar line function.
+    rec = None
+    if limits is None:
+        sl = slice(None)
+    else:
+        sl = slice(*limits)
+    reference_ = reference[sl]
+
+    def fun(l_rec_log):
+        &#34;&#34;&#34;Function to be minimized.&#34;&#34;&#34;
+        nonlocal rec
+        l_rec = 10 ** l_rec_log  # Opitimizes lambda in log. space!
+        rec = self.reconstruct(strain, l_rec, step=step, normed=normed, **kwargs_lasso)
+        if rec.any():
+            loss = estimators.issim(rec[sl], reference_)
+        else:
+            loss = aa * l_rec + bb
+        return loss
+
+    result = scipy.optimize.minimize_scalar(fun, **kwargs_minimize)
+    l_opt = 10 ** result[&#39;x&#39;]
+    loss = result[&#39;fun&#39;]
+
+    if verbose:
+        success = result[&#39;success&#39;]
+        print(
+            &#34;Optimization results:\n&#34;
+            f&#34;&gt; Minimization success: {success}&#34;
+        )
+        if not success:
+            print(
+                &#34;  Reason\n&#34;
+                &#34;  ------\n&#34;
+                + result[&#39;message&#39;] + &#34;\n&#34;
+                &#34;  ------&#34;
+            )
+        print(
+            f&#34;&gt; Lambda optimized: {l_opt}\n&#34;
+            f&#34;&gt; Iterations performed: {result[&#39;nit&#39;]}\n&#34;
+            f&#34;&gt; Final loss: {loss}&#34;
+        )
+
+    return rec, l_opt, loss</code></pre>
+</details>
+</dd>
+<dt id="clawdia.dictionaries.DictionarySpams.reconstruct"><code class="name flex">
+<span>def <span class="ident">reconstruct</span></span>(<span>self, signal, sc_lambda, step=1, normed=True, with_code=False, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reconstruct a signal as a sparse combination of dictionary atoms.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>signal</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Sample to be reconstructed.</dd>
+<dt><strong><code>sc_lambda</code></strong> :&ensp;<code>float</code></dt>
+<dd>Regularization parameter of the sparse coding transformation.</dd>
+<dt><strong><code>step</code></strong> :&ensp;<code>int, 1 by default</code></dt>
+<dd>Sample interval between each patch extracted from signal.
+Determines the number of patches to be extracted. 1 by default.</dd>
+<dt><strong><code>normed</code></strong> :&ensp;<code>boolean, True by default</code></dt>
+<dd>Normalize the result to the maximum absolute value.</dd>
+</dl>
+<p>with_code : boolean, False by default.
+If True, also returns the coefficients array.</p>
+<dl>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Passed directly to the external learning function.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>signal_rec</code></strong> :&ensp;<code>array</code></dt>
+<dd>Reconstructed signal.</dd>
+<dt><strong><code>code</code></strong> :&ensp;<code>array(a_length, d_size)</code>, optional</dt>
+<dd>Transformed data, encoded as a sparse combination of atoms.
+Returned when 'with_code' is True.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reconstruct(self, signal, sc_lambda, step=1, normed=True, with_code=False, **kwargs):
+    &#34;&#34;&#34;Reconstruct a signal as a sparse combination of dictionary atoms.
+
+    Parameters
+    ----------
+    signal : ndarray
+        Sample to be reconstructed.
+
+    sc_lambda : float
+        Regularization parameter of the sparse coding transformation.
+
+    step : int, 1 by default
+        Sample interval between each patch extracted from signal.
+        Determines the number of patches to be extracted. 1 by default.
+
+    normed : boolean, True by default
+        Normalize the result to the maximum absolute value.
+
+    with_code : boolean, False by default.
+        If True, also returns the coefficients array.
+
+    **kwargs
+        Passed directly to the external learning function.
+
+    Returns
+    -------
+    signal_rec : array
+        Reconstructed signal.
+
+    code : array(a_length, d_size), optional
+        Transformed data, encoded as a sparse combination of atoms.
+        Returned when &#39;with_code&#39; is True.
+
+    &#34;&#34;&#34;
+    if not isinstance(signal, np.ndarray):
+        raise TypeError(&#34;&#39;signal&#39; must be a numpy array&#34;)
+
+    signal_rec, code = self._reconstruct_single(signal, sc_lambda, step, **kwargs)
+
+    if normed and signal_rec.any():
+        norm = np.max(np.abs(signal_rec))
+        signal_rec /= norm
+        code /= norm
+
+    return (signal_rec, code) if with_code else signal_rec</code></pre>
+</details>
+</dd>
+<dt id="clawdia.dictionaries.DictionarySpams.reconstruct_auto"><code class="name flex">
+<span>def <span class="ident">reconstruct_auto</span></span>(<span>self, signal, *, zero_marg, lambda_lims, step=1, normed=True, full_output=False, kwargs_bisect={}, kwargs_lasso={})</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TODO</p>
+<p>Reconstrueix un únic senyal buscant per bisecció la lambda que
+minimitza el senyal reconstruit al marge esquerre del senyal, la mida
+dels quals ve determinada per 'zero_marg'.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reconstruct_auto(self, signal, *, zero_marg, lambda_lims, step=1, normed=True,
+                     full_output=False, kwargs_bisect={}, kwargs_lasso={}):
+    &#34;&#34;&#34;TODO
+
+    Reconstrueix un únic senyal buscant per bisecció la lambda que
+    minimitza el senyal reconstruit al marge esquerre del senyal, la mida
+    dels quals ve determinada per &#39;zero_marg&#39;.
+
+    &#34;&#34;&#34;
+    # Margins of the signals to be zeroed
+    margin = signal[:zero_marg]
+    # Function to be bisected.
+    def fun(sc_lambda):
+        rec, _ = self._reconstruct_single(margin, sc_lambda, step, **kwargs_lasso)
+        return np.sum(np.abs(rec))
+
+    try:
+        with warnings.catch_warnings():
+            # Ignore specific warning from extract_patches since here we do
+            # not care about reconstructing the entire strain (margin).
+            warnings.filterwarnings(&#34;ignore&#34;, message=&#34;&#39;signals&#39; cannot be fully divided into patches.*&#34;)
+            result = lib.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
+    except lib.BoundaryError:
+        rec = np.zeros_like(signal)
+        code = None
+        result = {&#39;x&#39;: np.min(lambda_lims), &#39;f&#39;: 0., &#39;converged&#39;: False, &#39;niters&#39;: 0, &#39;funcalls&#39;: 2}
+    else:
+        rec, code = self._reconstruct_single(signal, result[&#39;x&#39;], step, **kwargs_lasso)
+        if normed and rec.any():
+            norm = np.max(np.abs(rec))
+            rec /= norm
+            code /= norm
+
+    return (rec, code, result) if full_output else rec</code></pre>
+</details>
+</dd>
+<dt id="clawdia.dictionaries.DictionarySpams.reconstruct_batch"><code class="name flex">
+<span>def <span class="ident">reconstruct_batch</span></span>(<span>self, signals, sc_lambda, out=None, step=1, normed=True, verbose=True, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TODO</p>
+<p>Reconstruct multiple signals, each one as a sparse combination of
+dictionary atoms.</p>
+<p>WARNING: Only viable for small 'signals' set, it is really memory
+expensive (all patches are stored in a single array in memory).</p>
+<p>WARNING: 'out' deprecated, left for backwards compatibility but will
+be ignored if given.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reconstruct_batch(self, signals, sc_lambda, out=None, step=1, normed=True,
+                      verbose=True, **kwargs):
+    &#34;&#34;&#34;TODO
+
+    Reconstruct multiple signals, each one as a sparse combination of
+    dictionary atoms.
+
+    WARNING: Only viable for small &#39;signals&#39; set, it is really memory
+    expensive (all patches are stored in a single array in memory).
+
+    WARNING: &#39;out&#39; deprecated, left for backwards compatibility but will
+    be ignored if given.
+
+    &#34;&#34;&#34;
+    out = self._reconstruct_batch(signals, sc_lambda=sc_lambda, step=step, **kwargs)
+
+    if normed and out.any():
+        with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+            out /= np.max(np.abs(out), axis=0, keepdims=True)
+        np.nan_to_num(out, copy=False)
+
+    return out</code></pre>
+</details>
+</dd>
+<dt id="clawdia.dictionaries.DictionarySpams.reconstruct_iterative_minibatch"><code class="name flex">
+<span>def <span class="ident">reconstruct_iterative_minibatch</span></span>(<span>self, signals, sc_lambda=0.01, step=1, batchsize=64, max_iter=100, threshold=0.001, normed=True, full_output=False, verbose=True, kwargs_lasso={})</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reconstruct multiple signals by iterative subtraction.</p>
+<p>Each signal is reconstructed by iteratively performing a reconstruction
+of the input signal, subtracting it to the original, and then
+performing again the reconstruction on the residual until the relative
+difference between consecutive residuals is below a certain threshold.</p>
+<p>NOTE: During the step reconstructions, the windows into which each
+signal is split are not normalized. This is needed to enhance the
+dictionary discrimination. Otherwise, the residuals are amplified at
+each iteration, the algorithm takes longer to converge, and some
+ad-hoc tests showed it also messes up with the resulting shape.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reconstruct_iterative_minibatch(self, signals, sc_lambda=0.01, step=1, batchsize=64,
+                                    max_iter=100, threshold=0.001, normed=True,
+                                    full_output=False, verbose=True, kwargs_lasso={}):
+    &#34;&#34;&#34;Reconstruct multiple signals by iterative subtraction.
+
+    Each signal is reconstructed by iteratively performing a reconstruction
+    of the input signal, subtracting it to the original, and then
+    performing again the reconstruction on the residual until the relative
+    difference between consecutive residuals is below a certain threshold.
+
+    NOTE: During the step reconstructions, the windows into which each
+    signal is split are not normalized. This is needed to enhance the
+    dictionary discrimination. Otherwise, the residuals are amplified at
+    each iteration, the algorithm takes longer to converge, and some
+    ad-hoc tests showed it also messes up with the resulting shape.
+
+    &#34;&#34;&#34;
+    n_signals = signals.shape[1]
+
+    # First iteration outside:
+    if verbose:
+            print(f&#34;\nIteration 0&#34;)
+            print(f&#34;Signals remaining: {n_signals}&#34;)
+    step_reconstructions = self.reconstruct_minibatch(
+        signals, sc_lambda=sc_lambda, step=step, batchsize=batchsize,
+        normed=False,  # Normalization is (optionally) applied at the END.
+        normed_windows=False,  # See NOTE in the docstring.
+        verbose=verbose, **kwargs_lasso
+    )
+    final_reconstructions = step_reconstructions.copy()
+    residuals = signals - step_reconstructions
+
+    # Stop conditions
+    iters = np.ones(n_signals, dtype=int)
+    finished = ~step_reconstructions.any(axis=0)  # In case any reconstructions are 0 already.
+    residuals_old = residuals.copy()
+
+    while not np.all(finished) and iters.max() &lt; max_iter:
+        if verbose:
+            print(f&#34;\nIteration {iters.max():3d}&#34;)
+            print(f&#34;Signals remaining: {(~finished).sum():^13d}&#34;)
+
+        step_reconstructions = self.reconstruct_minibatch(
+            residuals[:,~finished], sc_lambda=sc_lambda, step=step, batchsize=batchsize,
+            normed=False,  # Normalization is (optionally) applied at the END.
+            normed_windows=False,  # See NOTE in the docstring.
+            verbose=verbose, **kwargs_lasso
+        )
+        final_reconstructions[:,~finished] += step_reconstructions
+        residuals[:,~finished] -= step_reconstructions
+
+        # Stop conditions
+        iters[~finished] += 1
+        residual_decrease = np.linalg.norm(residuals[:,~finished] - residuals_old[:,~finished], axis=0)
+        finished[~finished] = residual_decrease &lt; threshold
+        residuals_old = residuals.copy()
+
+        if verbose:
+            print(
+                &#34;CURRENT RESIDUAL DECREASE:\n&#34;
+                f&#34;Max: {residual_decrease.max()}\n&#34;
+                f&#34;Mean: {residual_decrease.mean()}\n&#34;
+                f&#34;Min: {residual_decrease.min()}\n&#34;
+            )
+
+    if not np.all(finished):
+        print(&#34;WARNING: reached max_iter before finishing all the reconstructions&#34;)
+
+    if normed:
+        with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+            final_reconstructions /= np.max(np.abs(final_reconstructions), axis=0, keepdims=True)
+        np.nan_to_num(final_reconstructions, copy=False)
+    return (final_reconstructions, residuals, iters) if full_output else final_reconstructions</code></pre>
+</details>
+</dd>
+<dt id="clawdia.dictionaries.DictionarySpams.reconstruct_minibatch"><code class="name flex">
+<span>def <span class="ident">reconstruct_minibatch</span></span>(<span>self, signals, *, sc_lambda, step=1, batchsize=4, normed=True, normed_windows=True, verbose=True, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TODO</p>
+<p>Reconstruct multiple signals, each one as a sparse combination of
+dictionary atoms. Minibatch version.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reconstruct_minibatch(self, signals, *, sc_lambda, step=1, batchsize=4, normed=True,
+                          normed_windows=True, verbose=True, **kwargs):
+    &#34;&#34;&#34;TODO
+
+    Reconstruct multiple signals, each one as a sparse combination of
+    dictionary atoms. Minibatch version.
+
+    &#34;&#34;&#34;
+    n_signals = signals.shape[1]
+    n_minibatch = n_signals // batchsize
+    out = np.empty_like(signals)
+    loop = range(n_minibatch)
+    if verbose:
+        loop = tqdm(loop)
+    
+    for ibatch in loop:
+        i0 = ibatch * batchsize
+        i1 = i0 + batchsize
+        minibatch = signals[:,i0:i1]
+        out[:,i0:i1] = self._reconstruct_batch(
+            minibatch, sc_lambda=sc_lambda, step=step, normed_windows=normed_windows, **kwargs
+        )
+    if n_minibatch == 0:
+        # In case there was no point in using a minibatch:
+        i1 = 0
+
+    # If &#39;n_signals&#39; was not divisible by &#39;batchsize&#39; reconstruct the
+    # remaining signals:
+    if i1 &lt; n_signals:
+        i0 = i1
+        minibatch = signals[:,i0:]
+        out[:,i0:] = self._reconstruct_batch(
+            minibatch, sc_lambda=sc_lambda, step=step, **kwargs
+        )
+
+    if normed and out.any():
+        with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+            out /= np.max(np.abs(out), axis=0, keepdims=True)
+        np.nan_to_num(out, copy=False)
+
+    return out</code></pre>
+</details>
+</dd>
+<dt id="clawdia.dictionaries.DictionarySpams.save"><code class="name flex">
+<span>def <span class="ident">save</span></span>(<span>self, file)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save(self, file):
+    vars_ = vars(self)
+    to_remove = []
+
+    if not self.trained:
+        # To avoid silent bugs in the future
+        to_remove += [&#39;lambda1&#39;, &#39;n_train&#39;, &#39;t_train&#39;]
+    if self.wave_pos is None:
+        to_remove.append(&#39;wave_pos&#39;)
+    if self.random_state is None:
+        to_remove.append(&#39;random_state&#39;)
+
+    for attr in to_remove:
+        vars_.pop(attr)
+
+    np.savez(file, **vars_)</code></pre>
+</details>
+</dd>
+<dt id="clawdia.dictionaries.DictionarySpams.train"><code class="name flex">
+<span>def <span class="ident">train</span></span>(<span>self, patches, lambda1=None, n_iter=None, verbose=False, threads=-1, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Train the dictionary with a set of patches.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>patches</code></strong> :&ensp;<code>2d-array(samples, signals)</code></dt>
+<dd>Training patches.</dd>
+<dt><strong><code>lambda1</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Regularization parameter of the learning algorithm.
+It is not needed if already specified at initialization.</dd>
+<dt><strong><code>n_iter</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Total number of iterations to perform.
+If a negative number is provided it will perform the computation
+during the corresponding number of seconds.
+It is not needed if already specified at initialization.</dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If True print the iterations (might not be shown in real time).</dd>
+<dt><strong><code>threads</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Number of threads to use during training, see [1].</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Passed directly to 'spams.trainDL', see [1].</dd>
+</dl>
+<p>Additional parameters will be passed to the SPAMS training function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def train(self, patches, lambda1=None, n_iter=None, verbose=False, threads=-1, **kwargs):
+    &#34;&#34;&#34;Train the dictionary with a set of patches.
+
+    Parameters
+    ----------
+    patches : 2d-array(samples, signals)
+        Training patches.
+
+    lambda1 : float, optional
+        Regularization parameter of the learning algorithm.
+        It is not needed if already specified at initialization.
+
+    n_iter : int, optional
+        Total number of iterations to perform.
+        If a negative number is provided it will perform the computation
+        during the corresponding number of seconds.
+        It is not needed if already specified at initialization.
+
+    verbose : bool, optional
+        If True print the iterations (might not be shown in real time).
+
+    threads : int, optional
+        Number of threads to use during training, see [1].
+
+    **kwargs
+        Passed directly to &#39;spams.trainDL&#39;, see [1].
+
+    Additional parameters will be passed to the SPAMS training function.
+
+    &#34;&#34;&#34;
+    if len(patches) != self.a_length:
+        raise ValueError(&#34;the length of &#39;patches&#39; must be the same as the&#34;
+                         &#34; atoms of the dictionary&#34;)
+    if n_iter is not None:
+        self.n_iter = n_iter
+    elif self.n_iter is None:
+        raise TypeError(&#34;&#39;n_iter&#39; not specified&#34;)
+        
+    if lambda1 is not None:
+        self.lambda1 = lambda1
+    elif self.lambda1 is None:
+        raise TypeError(&#34;&#39;lambda1&#39; not specified&#34;)
+
+    self.n_train = patches.shape[1]
+
+    # In case of loading older instances in which this attribute didn&#39;t
+    # exist, it is set to the default of spams.trainDL. This way it should
+    # produce the same results as before.
+    if not hasattr(self, &#39;modeD_traindl&#39;):
+        self.modeD_traindl = 0
+
+    tic = time.time()
+    self.components, model = spams.trainDL(
+        patches,
+        D=self.dict_init,
+        batchsize=self.batch_size,
+        lambda1=self.lambda1,
+        iter=self.n_iter,
+        mode=self.mode_traindl,
+        modeD=self.modeD_traindl,
+        verbose=verbose,
+        numThreads=threads,
+        return_model=True,
+        **kwargs
+    )
+    tac = time.time()
+
+    self.trained = True
+
+    if self.n_iter &lt; 0:
+        self.t_train = -self.n_iter
+        self.n_iter = model[&#39;iter&#39;]
+    else:
+        self.t_train = tac - tic</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -135,6 +2114,31 @@ def save(file, dico):
 <ul class="">
 <li><code><a title="clawdia.dictionaries.load" href="#clawdia.dictionaries.load">load</a></code></li>
 <li><code><a title="clawdia.dictionaries.save" href="#clawdia.dictionaries.save">save</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="clawdia.dictionaries.DictionaryLRSDL" href="#clawdia.dictionaries.DictionaryLRSDL">DictionaryLRSDL</a></code></h4>
+<ul class="">
+<li><code><a title="clawdia.dictionaries.DictionaryLRSDL.fit" href="#clawdia.dictionaries.DictionaryLRSDL.fit">fit</a></code></li>
+<li><code><a title="clawdia.dictionaries.DictionaryLRSDL.predict" href="#clawdia.dictionaries.DictionaryLRSDL.predict">predict</a></code></li>
+<li><code><a title="clawdia.dictionaries.DictionaryLRSDL.save" href="#clawdia.dictionaries.DictionaryLRSDL.save">save</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="clawdia.dictionaries.DictionarySpams" href="#clawdia.dictionaries.DictionarySpams">DictionarySpams</a></code></h4>
+<ul class="">
+<li><code><a title="clawdia.dictionaries.DictionarySpams.optimum_reconstruct" href="#clawdia.dictionaries.DictionarySpams.optimum_reconstruct">optimum_reconstruct</a></code></li>
+<li><code><a title="clawdia.dictionaries.DictionarySpams.reconstruct" href="#clawdia.dictionaries.DictionarySpams.reconstruct">reconstruct</a></code></li>
+<li><code><a title="clawdia.dictionaries.DictionarySpams.reconstruct_auto" href="#clawdia.dictionaries.DictionarySpams.reconstruct_auto">reconstruct_auto</a></code></li>
+<li><code><a title="clawdia.dictionaries.DictionarySpams.reconstruct_batch" href="#clawdia.dictionaries.DictionarySpams.reconstruct_batch">reconstruct_batch</a></code></li>
+<li><code><a title="clawdia.dictionaries.DictionarySpams.reconstruct_iterative_minibatch" href="#clawdia.dictionaries.DictionarySpams.reconstruct_iterative_minibatch">reconstruct_iterative_minibatch</a></code></li>
+<li><code><a title="clawdia.dictionaries.DictionarySpams.reconstruct_minibatch" href="#clawdia.dictionaries.DictionarySpams.reconstruct_minibatch">reconstruct_minibatch</a></code></li>
+<li><code><a title="clawdia.dictionaries.DictionarySpams.save" href="#clawdia.dictionaries.DictionarySpams.save">save</a></code></li>
+<li><code><a title="clawdia.dictionaries.DictionarySpams.train" href="#clawdia.dictionaries.DictionarySpams.train">train</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

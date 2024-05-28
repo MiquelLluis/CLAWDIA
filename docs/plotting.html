@@ -76,20 +76,16 @@ def plot_confusion(cmat, ax=None, labels=None, mode=&#39;both&#39;, invert_axis=
         axis = 1
     else:
         axis = 0
+
+    with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+        cmat_perc = np.nan_to_num(cmat / np.sum(cmat, axis=axis, keepdims=True))
     
-    if mode in (&#39;percent&#39;, &#39;both&#39;):
-        with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
-            cmat_perc = np.nan_to_num(cmat / np.sum(cmat, axis=axis, keepdims=True))
-        
-        if mode == &#39;percent&#39;:
-            format_str = lambda *args: &#39;\n{:.0%}&#39;.format(args[1])
-        else:
-            format_str = lambda *args: &#39;{}\n{:.0%}&#39;.format(*args)
-    
+    if mode == &#39;both&#39;:
+        format_str = lambda *args: &#39;{}\n{:.0%}&#39;.format(*args)
+    elif mode == &#39;percent&#39;:
+        format_str = lambda *args: &#39;\n{:.0%}&#39;.format(args[1])
     elif mode == &#39;absolute&#39;:
-        cmat_perc = cmat
         format_str = lambda *args: str(args[0])
-    
     else:
         raise ValueError(&#34;mode can only be &#39;absolute&#39;, &#39;percent&#39; or &#39;both&#39;&#34;)
 
@@ -102,6 +98,8 @@ def plot_confusion(cmat, ax=None, labels=None, mode=&#39;both&#39;, invert_axis=
     if ax is None:
         fig, ax = plt.subplots(**kwargs)
     
+    if vmax is None:
+        vmax = 1.2
     ax.imshow(cmat_perc, cmap=plt.get_cmap(&#39;Blues&#39;), vmin=vmin, vmax=vmax)
     
     for i_true, i_pred in it.product(range(n_classes), repeat=2):
@@ -268,20 +266,16 @@ Defaults to False (predicted values at the ordinate).</dd>
         axis = 1
     else:
         axis = 0
+
+    with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+        cmat_perc = np.nan_to_num(cmat / np.sum(cmat, axis=axis, keepdims=True))
     
-    if mode in (&#39;percent&#39;, &#39;both&#39;):
-        with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
-            cmat_perc = np.nan_to_num(cmat / np.sum(cmat, axis=axis, keepdims=True))
-        
-        if mode == &#39;percent&#39;:
-            format_str = lambda *args: &#39;\n{:.0%}&#39;.format(args[1])
-        else:
-            format_str = lambda *args: &#39;{}\n{:.0%}&#39;.format(*args)
-    
+    if mode == &#39;both&#39;:
+        format_str = lambda *args: &#39;{}\n{:.0%}&#39;.format(*args)
+    elif mode == &#39;percent&#39;:
+        format_str = lambda *args: &#39;\n{:.0%}&#39;.format(args[1])
     elif mode == &#39;absolute&#39;:
-        cmat_perc = cmat
         format_str = lambda *args: str(args[0])
-    
     else:
         raise ValueError(&#34;mode can only be &#39;absolute&#39;, &#39;percent&#39; or &#39;both&#39;&#34;)
 
@@ -294,6 +288,8 @@ Defaults to False (predicted values at the ordinate).</dd>
     if ax is None:
         fig, ax = plt.subplots(**kwargs)
     
+    if vmax is None:
+        vmax = 1.2
     ax.imshow(cmat_perc, cmap=plt.get_cmap(&#39;Blues&#39;), vmin=vmin, vmax=vmax)
     
     for i_true, i_pred in it.product(range(n_classes), repeat=2):
