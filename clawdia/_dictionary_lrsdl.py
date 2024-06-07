@@ -160,6 +160,10 @@ class DictionaryLRSDL(LRSDL):
         """
         if not isinstance(y_true, np.ndarray):
             raise TypeError("'y_true' must be a numpy array.")
+        
+        if X.shape[1] < l_atoms:
+            raise ValueError("X must have at least 'l_atoms' features.")
+
         # Check that there are at least 'self.k' samples of each class in the
         # training set.
         _least_samples = np.min(np.bincount(y_true)[1:])
