@@ -132,7 +132,7 @@ class DictionaryLRSDL(LRSDL):
         X : 2d-array, shape=(samples, features)
             Training samples, with equal or more features than the atoms'.
 
-        y_true : array-like
+        y_true : np.ndarray
             Labels of samples in X, with `len(y_true) == X.shape[0]`.
 
         l_atoms : int
@@ -158,6 +158,8 @@ class DictionaryLRSDL(LRSDL):
             If verbose is True, show the progress every 'show_after' iterations.
 
         """
+        if not isinstance(y_true, np.ndarray):
+            raise TypeError("'y_true' must be a numpy array.")
         # Check that there are at least 'self.k' samples of each class in the
         # training set.
         _least_samples = np.min(np.bincount(y_true)[1:])
