@@ -623,6 +623,42 @@ class DictionarySpams:
 
         np.savez(file, **vars_)
 
+    def copy(self):
+        """Return a copy of the dictionary.
+
+        Returns a new instance of the same dictionary with the same values
+        and state.
+
+        Returns
+        -------
+        dico_copy : DictionarySpams
+            A copy of the current dictionary.
+        
+        """
+        dico_copy = DictionarySpams(
+            dict_init=self.components.copy(order='K'),
+            wave_pos=self.wave_pos.copy(),
+            lambda1=self.lambda1,
+            batch_size=self.batch_size,
+            identifier=self.identifier,
+            l2_normed=self.l2_normed,
+            allow_allzeros=self.allow_allzeros,
+            n_iter=self.n_iter,
+            n_train=self.t_train,
+            patch_min=self.patch_min,
+            random_state=self.random_state,
+            trained=self.trained,
+            ignore_completeness=self.ignore_completeness,
+            mode_traindl=self.mode_traindl,
+            modeD_traindl=self.modeD_traindl,
+            mode_lasso=self.mode_lasso
+        )
+        if self.trained:
+            # Retain the initial components of the dictionary.
+            dico_copy.dict_init = self.dict_init
+
+        return dico_copy
+
     def _check_initial_parameters(self, signal_pool):
         # Explicit initial dictionary.
         if self.dict_init is not None:
