@@ -25,12 +25,27 @@ def wave_pos_clean():
 
 @pytest.fixture(scope='module')
 def components_init():
-    return np.load('tests/data/dico_spams_initial.npy')
+    return np.load('tests/data/_dictionary_spams/dico_spams_initial.npy')
 
 
 @pytest.fixture(scope='module')
 def components_trained():
-    return np.load('tests/data/dico_spams_trained.npy')
+    return np.load('tests/data/_dictionary_spams/dico_spams_trained.npy')
+
+
+@pytest.fixture(scope='module')
+def reconstructions_test_A():
+    return np.load('tests/data/_dictionary_spams/reconstructions_A.npz')
+
+
+@pytest.fixture(scope='module')
+def reconstructions_target(reconstructions_test_A):
+    return reconstructions_test_A['target']
+    
+
+@pytest.fixture(scope='module')
+def reconstructions_input(reconstructions_test_A):
+    return reconstructions_test_A['input']
 
 
 
@@ -93,3 +108,18 @@ def test_copy(dico, request):
     dico_copy = dico.copy()
     np.testing.assert_array_equal(dico.components, dico_copy.components)
     np.testing.assert_array_equal(dico.dict_init, dico_copy.dict_init)
+
+
+def test_reconstruct(dico_trained, reconstructions_input, reconstructions_target):
+    reconstructions = np.zeros_like(reconstructions_input)
+    for i, x in enumerate(reconstructions_input):
+        rec = dico_trained.reconstruct(
+            x,
+            sc_lambda=0.5,
+            step=2,
+            normed=False,
+            with_code=False
+        )
+        reconstructions[i,:len(rec)] = rec
+    
+    np.testing.assert_array_equal(reconstructions, reconstructions_target)
