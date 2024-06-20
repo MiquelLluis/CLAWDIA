@@ -5,22 +5,28 @@ import clawdia
 from clawdia._dictionary_spams import DictionarySpams
 
 
+#------------------------------------------------------------------------------
+# LOAD DATA
 
 @pytest.fixture(scope='module')
 def strains_clean():
     return np.load('tests/data/strains_clean.npy')
 
+
 @pytest.fixture(scope='module')
 def wave_pos_clean():
     return np.load('tests/data/wave_pos_clean.npy')
+
 
 # @pytest.fixture
 # def strains_injected():
 #     return np.load('tests/data/strains_injected.npy')
 
+
 @pytest.fixture(scope='module')
 def components_init():
     return np.load('tests/data/dico_spams_initial.npy')
+
 
 @pytest.fixture(scope='module')
 def components_trained():
@@ -28,7 +34,8 @@ def components_trained():
 
 
 
-
+#------------------------------------------------------------------------------
+# COMPUTE DICTIONARIES 1 TIME
 
 @pytest.fixture(scope='module')
 def dico_initial(strains_clean, wave_pos_clean):
@@ -45,6 +52,7 @@ def dico_initial(strains_clean, wave_pos_clean):
         patch_min=16,
         random_state=42
     )
+
 
 @pytest.fixture(scope='module')
 def dico_trained(dico_initial, strains_clean, wave_pos_clean):
@@ -68,6 +76,8 @@ def dico_trained(dico_initial, strains_clean, wave_pos_clean):
 
 
 
+#------------------------------------------------------------------------------
+# TESTS
 
 def test___init__(dico_initial, components_init):
     np.testing.assert_array_equal(dico_initial.components, components_init)
@@ -75,3 +85,11 @@ def test___init__(dico_initial, components_init):
 
 def test_train(dico_trained, components_trained):
     np.testing.assert_array_equal(dico_trained.components, components_trained)
+
+
+@pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
+def test_copy(dico, request):
+    dico = request.getfixturevalue(dico)
+    dico_copy = dico.copy()
+    np.testing.assert_array_equal(dico.components, dico_copy.components)
+    np.testing.assert_array_equal(dico.dict_init, dico_copy.dict_init)
