@@ -507,6 +507,7 @@ class DictionarySpams:
             with np.errstate(divide='ignore', invalid='ignore'):
                 final_reconstructions /= np.max(np.abs(final_reconstructions), axis=0, keepdims=True)
             np.nan_to_num(final_reconstructions, copy=False)
+        
         return (final_reconstructions, residuals, iters) if full_output else final_reconstructions
 
 

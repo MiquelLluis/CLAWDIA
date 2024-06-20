@@ -39,13 +39,20 @@ def reconstructions_test_A():
 
 
 @pytest.fixture(scope='module')
-def reconstructions_target(reconstructions_test_A):
-    return reconstructions_test_A['target']
-    
-
-@pytest.fixture(scope='module')
 def reconstructions_input(reconstructions_test_A):
     return reconstructions_test_A['input']
+
+
+@pytest.fixture(scope='module')
+def reconstructions_target(reconstructions_test_A):
+    return reconstructions_test_A['target_reconstructions']
+
+
+@pytest.fixture(scope='module')
+def reconstructions_code_target(reconstructions_test_A):
+    return reconstructions_test_A['target_codes']
+    
+
 
 
 
@@ -110,19 +117,25 @@ def test_copy(dico, request):
     np.testing.assert_array_equal(dico.dict_init, dico_copy.dict_init)
 
 
-def test_reconstruct(dico_trained, reconstructions_input, reconstructions_target):
+def test_reconstruct(dico_trained, reconstructions_input,
+                     reconstructions_target, reconstructions_code_target):
     reconstructions = np.zeros_like(reconstructions_input)
+    codes = []
+
     for i, x in enumerate(reconstructions_input):
-        rec = dico_trained.reconstruct(
+        rec, code = dico_trained.reconstruct(
             x,
             sc_lambda=0.5,
             step=2,
-            normed=False,
-            with_code=False
+            normed=True,
+            with_code=True
         )
         reconstructions[i,:len(rec)] = rec
-    
+        codes.append(code.toarray())
+
+    codes = np.array(codes)    
     np.testing.assert_array_equal(reconstructions, reconstructions_target)
+    np.testing.assert_array_equal(codes, reconstructions_code_target)
 
 
 def test_reconstruct_batch(dico_trained, reconstructions_input, reconstructions_target):
@@ -132,7 +145,7 @@ def test_reconstruct_batch(dico_trained, reconstructions_input, reconstructions_
         reconstructions_input.T,  # Current version still uses Fortran order.
         sc_lambda=0.5,
         step=2,
-        normed=False,
+        normed=True,
         verbose=False
     )
     reconstructions[:, :recs.shape[0]] = recs.T
@@ -148,7 +161,7 @@ def test_reconstruct_minibatch(dico_trained, reconstructions_input, reconstructi
         sc_lambda=0.5,
         step=2,
         batchsize=2,
-        normed=False,
+        normed=True,
         normed_windows=True,
         verbose=False
     )
