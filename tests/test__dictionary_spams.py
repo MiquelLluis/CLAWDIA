@@ -123,3 +123,35 @@ def test_reconstruct(dico_trained, reconstructions_input, reconstructions_target
         reconstructions[i,:len(rec)] = rec
     
     np.testing.assert_array_equal(reconstructions, reconstructions_target)
+
+
+def test_reconstruct_batch(dico_trained, reconstructions_input, reconstructions_target):
+    reconstructions = np.zeros_like(reconstructions_input)
+
+    recs = dico_trained.reconstruct_batch(
+        reconstructions_input.T,  # Current version still uses Fortran order.
+        sc_lambda=0.5,
+        step=2,
+        normed=False,
+        verbose=False
+    )
+    reconstructions[:, :recs.shape[0]] = recs.T
+    
+    np.testing.assert_array_equal(reconstructions, reconstructions_target)
+
+
+def test_reconstruct_minibatch(dico_trained, reconstructions_input, reconstructions_target):
+    reconstructions = np.zeros_like(reconstructions_input)
+
+    recs = dico_trained.reconstruct_minibatch(
+        reconstructions_input.T,  # Current version still uses Fortran order.
+        sc_lambda=0.5,
+        step=2,
+        batchsize=2,
+        normed=False,
+        normed_windows=True,
+        verbose=False
+    )
+    reconstructions[:, :recs.shape[0]] = recs.T
+    
+    np.testing.assert_array_equal(reconstructions, reconstructions_target)
