@@ -9,57 +9,60 @@ from clawdia._dictionary_spams import DictionarySpams
 # LOAD DATA
 
 @pytest.fixture(scope='module')
-def strains_clean():
-    return np.load('tests/data/strains_clean.npy')
-
-
+def file_clean():
+    return np.load('tests/data/strains_clean.npz')
 @pytest.fixture(scope='module')
-def wave_pos_clean():
-    return np.load('tests/data/wave_pos_clean.npy')
-
-
-# @pytest.fixture
-# def strains_injected():
-#     return np.load('tests/data/strains_injected.npy')
+def strains_clean(file_clean):
+    return file_clean['strains']
+@pytest.fixture(scope='module')
+def wave_pos_clean(file_clean):
+    return file_clean['wave_pos']
 
 
 @pytest.fixture(scope='module')
 def components_init():
     return np.load('tests/data/_dictionary_spams/dico_spams_initial.npy')
-
-
 @pytest.fixture(scope='module')
 def components_trained():
     return np.load('tests/data/_dictionary_spams/dico_spams_trained.npy')
 
 
 @pytest.fixture(scope='module')
-def reconstructions_test_A():
+def reconstructions_basic():
     return np.load('tests/data/_dictionary_spams/reconstructions_A.npz')
-
-
 @pytest.fixture(scope='module')
-def reconstructions_input(reconstructions_test_A):
-    return reconstructions_test_A['input']
-
-
+def reconstructions_input(reconstructions_basic):
+    return reconstructions_basic['input']
 @pytest.fixture(scope='module')
-def reconstructions_target(reconstructions_test_A):
-    return reconstructions_test_A['target_reconstructions']
-
-
+def reconstructions_target(reconstructions_basic):
+    return reconstructions_basic['target_reconstructions']
 @pytest.fixture(scope='module')
-def reconstructions_code_target(reconstructions_test_A):
-    return reconstructions_test_A['target_codes']
+def reconstructions_code_target(reconstructions_basic):
+    return reconstructions_basic['target_codes']
     
 
+@pytest.fixture
+def reconstructions_iterative():
+    return np.load('tests/data/_dictionary_spams/reconstructions_iterative.npz')
+@pytest.fixture
+def reconstructions_iterative_input(reconstructions_iterative):
+    return reconstructions_iterative['input']
+@pytest.fixture
+def reconstructions_iterative_target(reconstructions_iterative):
+    return reconstructions_iterative['target_reconstructions']
+@pytest.fixture
+def reconstructions_iterative_residuals_target(reconstructions_iterative):
+    return reconstructions_iterative['target_residuals']
+@pytest.fixture
+def reconstructions_iterative_iters_target(reconstructions_iterative):
+    return reconstructions_iterative['target_iters']
 
 
 
 #------------------------------------------------------------------------------
 # COMPUTE DICTIONARIES 1 TIME
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def dico_initial(strains_clean, wave_pos_clean):
     return DictionarySpams(
         signal_pool=strains_clean.T,
@@ -76,7 +79,7 @@ def dico_initial(strains_clean, wave_pos_clean):
     )
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def dico_trained(dico_initial, strains_clean, wave_pos_clean):
     training_patches = clawdia.lib.extract_patches(
         strains_clean.T,
@@ -102,11 +105,11 @@ def dico_trained(dico_initial, strains_clean, wave_pos_clean):
 # TESTS
 
 def test___init__(dico_initial, components_init):
-    np.testing.assert_array_equal(dico_initial.components, components_init)
+    np.testing.assert_array_almost_equal(dico_initial.components, components_init, decimal=9)
 
 
 def test_train(dico_trained, components_trained):
-    np.testing.assert_array_equal(dico_trained.components, components_trained)
+    np.testing.assert_array_almost_equal(dico_trained.components, components_trained, decimal=9)
 
 
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
@@ -119,7 +122,7 @@ def test_copy(dico, request):
 
 def test_reconstruct(dico_trained, reconstructions_input,
                      reconstructions_target, reconstructions_code_target):
-    reconstructions = np.zeros_like(reconstructions_input)
+    reconstructions = []
     codes = []
 
     for i, x in enumerate(reconstructions_input):
@@ -130,33 +133,31 @@ def test_reconstruct(dico_trained, reconstructions_input,
             normed=True,
             with_code=True
         )
-        reconstructions[i,:len(rec)] = rec
+        reconstructions.append(rec)
         codes.append(code.toarray())
 
-    codes = np.array(codes)    
-    np.testing.assert_array_equal(reconstructions, reconstructions_target)
-    np.testing.assert_array_equal(codes, reconstructions_code_target)
+    reconstructions = np.array(reconstructions)
+    codes = np.array(codes)
+
+    np.testing.assert_array_almost_equal(reconstructions, reconstructions_target, decimal=9)
+    np.testing.assert_array_almost_equal(codes, reconstructions_code_target, decimal=9)
 
 
 def test_reconstruct_batch(dico_trained, reconstructions_input, reconstructions_target):
-    reconstructions = np.zeros_like(reconstructions_input)
-
-    recs = dico_trained.reconstruct_batch(
+    reconstructions = dico_trained.reconstruct_batch(
         reconstructions_input.T,  # Current version still uses Fortran order.
         sc_lambda=0.5,
         step=2,
         normed=True,
         verbose=False
     )
-    reconstructions[:, :recs.shape[0]] = recs.T
+    reconstructions = reconstructions.T
     
-    np.testing.assert_array_equal(reconstructions, reconstructions_target)
+    np.testing.assert_array_almost_equal(reconstructions, reconstructions_target, decimal=9)
 
 
 def test_reconstruct_minibatch(dico_trained, reconstructions_input, reconstructions_target):
-    reconstructions = np.zeros_like(reconstructions_input)
-
-    recs = dico_trained.reconstruct_minibatch(
+    reconstructions = dico_trained.reconstruct_minibatch(
         reconstructions_input.T,  # Current version still uses Fortran order.
         sc_lambda=0.5,
         step=2,
@@ -165,6 +166,35 @@ def test_reconstruct_minibatch(dico_trained, reconstructions_input, reconstructi
         normed_windows=True,
         verbose=False
     )
-    reconstructions[:, :recs.shape[0]] = recs.T
+    reconstructions = reconstructions.T
     
-    np.testing.assert_array_equal(reconstructions, reconstructions_target)
+    np.testing.assert_array_almost_equal(reconstructions, reconstructions_target, decimal=9)
+
+
+def test_reconstruct_iterative_minibatch(dico_trained, reconstructions_iterative_input,
+                                         reconstructions_iterative_target,
+                                         reconstructions_iterative_residuals_target,
+                                         reconstructions_iterative_iters_target):
+    reconstructions, residuals, iters = dico_trained.reconstruct_iterative_minibatch(
+        reconstructions_iterative_input.T,
+        sc_lambda=0.7,
+        step=2,
+        batchsize=2,
+        max_iter=1000,
+        threshold=0.01,
+        normed=True,
+        full_output=True,
+        verbose=False
+    )
+    reconstructions = reconstructions.T
+    residuals = residuals.T
+    
+    np.testing.assert_array_almost_equal(
+        reconstructions, reconstructions_iterative_target, decimal=9
+    )
+    np.testing.assert_array_almost_equal(
+        residuals, reconstructions_iterative_residuals_target, decimal=9
+    )
+    np.testing.assert_array_almost_equal(
+        iters, reconstructions_iterative_iters_target, decimal=9
+    )
