@@ -3,6 +3,7 @@ import itertools as it
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import numpy as np
+import scipy as sp
 
 
 def plot_confusion(cmat, ax=None, labels=None, mode='both', invert_axis=False, vmin=None, vmax=None, **kwargs):
