@@ -70,9 +70,9 @@ def target_optimum_reconstruct():
 
 
 #------------------------------------------------------------------------------
-# COMPUTE DICTIONARIES 1 TIME
+# COMPUTE DICTIONARIES
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def dico_initial(strains_clean, wave_pos_clean):
     return DictionarySpams(
         signal_pool=strains_clean.T,
@@ -89,7 +89,7 @@ def dico_initial(strains_clean, wave_pos_clean):
     )
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def dico_trained(dico_initial, strains_clean, wave_pos_clean):
     training_patches = clawdia.lib.extract_patches(
         strains_clean.T,
