@@ -58,6 +58,11 @@ def reconstructions_iterative_iters_target(reconstructions_iterative):
     return reconstructions_iterative['target_iters']
 
 
+@pytest.fixture
+def target_reconstruct_auto():
+    return np.load('tests/data/_dictionary_spams/reconstruct_auto.npz', allow_pickle=True)
+
+
 
 #------------------------------------------------------------------------------
 # COMPUTE DICTIONARIES 1 TIME
@@ -198,3 +203,20 @@ def test_reconstruct_iterative_minibatch(dico_trained, reconstructions_iterative
     np.testing.assert_array_almost_equal(
         iters, reconstructions_iterative_iters_target, decimal=9
     )
+
+
+def test_reconstruct_auto(dico_trained, target_reconstruct_auto):
+    strain_input = target_reconstruct_auto['input']
+    reconstruction, code, result = dico_trained.reconstruct_auto(
+        strain_input,
+        zero_marg=100,
+        lambda_lims=(0.01, 10),
+        step=4,
+        normed=True,
+        full_output=True
+    )
+    code = code.toarray()
+
+    np.testing.assert_array_almost_equal(reconstruction, target_reconstruct_auto['reconstruction'], decimal=9)
+    np.testing.assert_array_almost_equal(code, target_reconstruct_auto['code'], decimal=9)
+    assert result == pytest.approx(target_reconstruct_auto['result'].item())
