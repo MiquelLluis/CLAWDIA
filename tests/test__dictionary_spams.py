@@ -19,10 +19,10 @@ def wave_pos_clean(file_clean):
     return file_clean['wave_pos']
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def components_init():
     return np.load('tests/data/_dictionary_spams/dico_spams_initial.npy')
-@pytest.fixture(scope='module')
+@pytest.fixture
 def components_trained():
     return np.load('tests/data/_dictionary_spams/dico_spams_trained.npy')
 
@@ -61,6 +61,11 @@ def reconstructions_iterative_iters_target(reconstructions_iterative):
 @pytest.fixture
 def target_reconstruct_auto():
     return np.load('tests/data/_dictionary_spams/reconstruct_auto.npz', allow_pickle=True)
+
+
+@pytest.fixture
+def target_optimum_reconstruct():
+    return np.load('tests/data/_dictionary_spams/optimum_reconstruct.npz')
 
 
 
@@ -220,3 +225,23 @@ def test_reconstruct_auto(dico_trained, target_reconstruct_auto):
     np.testing.assert_array_almost_equal(reconstruction, target_reconstruct_auto['reconstruction'], decimal=9)
     np.testing.assert_array_almost_equal(code, target_reconstruct_auto['code'], decimal=9)
     assert result == pytest.approx(target_reconstruct_auto['result'].item())
+
+
+def test_optimum_reconstruct(dico_trained, target_optimum_reconstruct):
+    strain_input = target_optimum_reconstruct['input']
+    strain_ref = target_optimum_reconstruct['reference']
+    strain_limits = target_optimum_reconstruct['limits']
+
+    rec, l_opt, loss = dico_trained.optimum_reconstruct(
+        strain_input,
+        reference=strain_ref,
+        kwargs_minimize={},
+        kwargs_lasso={},
+        step=2,
+        limits=strain_limits,
+        normed=True
+    )
+
+    np.testing.assert_array_almost_equal(rec, target_optimum_reconstruct['reconstruction'], decimal=9)
+    assert l_opt == pytest.approx(target_optimum_reconstruct['l_opt'].item())
+    assert loss == pytest.approx(target_optimum_reconstruct['loss'].item())
