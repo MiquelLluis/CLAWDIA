@@ -24,11 +24,11 @@ class DictionarySpams:
 
     Parameters
     ----------
-    dict_init : 2d-array(a_length, d_size), optional
+    dict_init : 2d-array(d_size, a_length), optional
         Atoms of the initial dictionary.
         If None, 'signal_pool' must be given.
 
-    signal_pool : 2d-array(samples, signals), optional
+    signal_pool : 2d-array(signals, samples), optional
         Set of signals from where to randomly extract the atoms.
         Ignored if 'dict_init' is not None.
 
@@ -99,10 +99,10 @@ class DictionarySpams:
 
     Attributes
     ----------
-    dict_init : array(a_length, d_size)
+    dict_init : array(d_size, a_length)
         Atoms of the initial dictionary.
 
-    components : array(a_length, d_size)
+    components : array(d_size, a_length)
         Atoms of the current dictionary.
 
     n_iter : int
@@ -153,7 +153,7 @@ class DictionarySpams:
 
         # Explicit initial dictionary (trained or not).
         if self.dict_init is not None:
-            self.a_length, self.d_size = self.dict_init.shape
+            self.d_size, self.a_length = self.dict_init.shape
 
         # Get the initial atoms from a set of signals.
         else:
@@ -174,7 +174,7 @@ class DictionarySpams:
 
         Parameters
         ----------
-        patches : 2d-array(samples, signals)
+        patches : 2d-array(signals, samples)
             Training patches.
 
         lambda1 : float, optional
@@ -199,7 +199,7 @@ class DictionarySpams:
         Additional parameters will be passed to the SPAMS training function.
 
         """
-        if len(patches) != self.a_length:
+        if patches.shape[1] != self.a_length:
             raise ValueError("the length of 'patches' must be the same as the"
                              " atoms of the dictionary")
         if n_iter is not None:
@@ -212,7 +212,7 @@ class DictionarySpams:
         elif self.lambda1 is None:
             raise TypeError("'lambda1' not specified")
 
-        self.n_train = patches.shape[1]
+        self.n_train = patches.shape[0]
 
         # In case of loading older instances in which this attribute didn't
         # exist, it is set to the default of spams.trainDL. This way it should
@@ -221,9 +221,9 @@ class DictionarySpams:
             self.modeD_traindl = 0
 
         tic = time.time()
-        self.components, model = spams.trainDL(
-            patches,
-            D=self.dict_init,
+        components, model = spams.trainDL(
+            patches.T,           # SPAMS works with Fortran order.
+            D=self.dict_init.T,  #
             batchsize=self.batch_size,
             lambda1=self.lambda1,
             iter=self.n_iter,
@@ -234,6 +234,7 @@ class DictionarySpams:
             return_model=True,
             **kwargs
         )
+        self.components = components.T
         tac = time.time()
 
         self.trained = True
@@ -256,13 +257,13 @@ class DictionarySpams:
             return_norm_coefs=True
         )
         code = spams.lasso(
-            patches,
-            D=self.components,
+            patches.T,            # SPAMS works with Fortran order.
+            D=self.components.T,  #
             lambda1=sc_lambda,
             mode=self.mode_lasso,
             **kwargs_lasso
         )
-        patches = (self.components @ code) * norms
+        patches = ((self.components.T @ code) * norms).T
 
         signal_rec = lib.reconstruct_from_patches_1d(patches, step)
 
@@ -315,23 +316,28 @@ class DictionarySpams:
         return (signal_rec, code) if with_code else signal_rec
 
     def _reconstruct_batch(self, strains, *, sc_lambda, step=1, normed_windows=True, **kwargs):
-        ns = strains.shape[1]
+        ns = strains.shape[0]
 
         patches, norms = lib.extract_patches(
             strains, patch_size=self.a_length, step=step, l2_normed=normed_windows,
             return_norm_coefs=True
         )
         codes = spams.lasso(
-            patches, D=self.components, lambda1=sc_lambda, mode=self.mode_lasso, **kwargs
+            patches.T,            # SPAMS works with Fortran order.
+            D=self.components.T,  #
+            lambda1=sc_lambda,
+            mode=self.mode_lasso,
+            **kwargs
         )
-        patches = (self.components @ codes) * norms
         
-        lp = patches.shape[0]
-        np_ = patches.shape[1] // ns  # Number of patches per strain
-        patches = patches.reshape(lp, np_, ns, order='F')
+        patches = ((self.components.T @ codes) * norms).T
+        lp = patches.shape[1]
+        np_ = patches.shape[0] // ns  # Number of patches per strain
+        patches = patches.reshape(ns, np_, lp, order='C')
+
         reconstructions = np.empty_like(strains)
         for i in range(ns):
-            reconstructions[:,i] = lib.reconstruct_from_patches_1d(patches[...,i], step)
+            reconstructions[i] = lib.reconstruct_from_patches_1d(patches[i], step)
 
         return reconstructions
 
@@ -353,7 +359,7 @@ class DictionarySpams:
 
         if normed and out.any():
             with np.errstate(divide='ignore', invalid='ignore'):
-                out /= np.max(np.abs(out), axis=0, keepdims=True)
+                out /= np.max(np.abs(out), axis=1, keepdims=True)
             np.nan_to_num(out, copy=False)
 
         return out
@@ -366,7 +372,7 @@ class DictionarySpams:
         dictionary atoms. Minibatch version.
 
         """
-        n_signals = signals.shape[1]
+        n_signals = signals.shape[0]
         n_minibatch = n_signals // batchsize
         out = np.empty_like(signals)
         loop = range(n_minibatch)
@@ -376,8 +382,8 @@ class DictionarySpams:
         for ibatch in loop:
             i0 = ibatch * batchsize
             i1 = i0 + batchsize
-            minibatch = signals[:,i0:i1]
-            out[:,i0:i1] = self._reconstruct_batch(
+            minibatch = signals[i0:i1]
+            out[i0:i1] = self._reconstruct_batch(
                 minibatch, sc_lambda=sc_lambda, step=step, normed_windows=normed_windows, **kwargs
             )
         if n_minibatch == 0:
@@ -388,14 +394,14 @@ class DictionarySpams:
         # remaining signals:
         if i1 < n_signals:
             i0 = i1
-            minibatch = signals[:,i0:]
-            out[:,i0:] = self._reconstruct_batch(
+            minibatch = signals[i0:]
+            out[i0:] = self._reconstruct_batch(
                 minibatch, sc_lambda=sc_lambda, step=step, **kwargs
             )
 
         if normed and out.any():
             with np.errstate(divide='ignore', invalid='ignore'):
-                out /= np.max(np.abs(out), axis=0, keepdims=True)
+                out /= np.max(np.abs(out), axis=1, keepdims=True)
             np.nan_to_num(out, copy=False)
 
         return out
@@ -422,10 +428,12 @@ class DictionarySpams:
                 # not care about reconstructing the entire strain (margin).
                 warnings.filterwarnings("ignore", message="'signals' cannot be fully divided into patches.*")
                 result = lib.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
+        
         except lib.BoundaryError:
             rec = np.zeros_like(signal)
             code = None
             result = {'x': np.min(lambda_lims), 'f': 0., 'converged': False, 'niters': 0, 'funcalls': 2}
+        
         else:
             rec, code = self._reconstruct_single(signal, result['x'], step, **kwargs_lasso)
             if normed and rec.any():
@@ -452,12 +460,13 @@ class DictionarySpams:
         ad-hoc tests showed it also messes up with the resulting shape.
 
         """
-        n_signals = signals.shape[1]
+        n_signals = signals.shape[0]
 
         # First iteration outside:
         if verbose:
                 print(f"\nIteration 0")
                 print(f"Signals remaining: {n_signals}")
+        
         step_reconstructions = self.reconstruct_minibatch(
             signals, sc_lambda=sc_lambda, step=step, batchsize=batchsize,
             normed=False,  # Normalization is (optionally) applied at the END.
@@ -469,7 +478,7 @@ class DictionarySpams:
 
         # Stop conditions
         iters = np.ones(n_signals, dtype=int)
-        finished = ~step_reconstructions.any(axis=0)  # In case any reconstructions are 0 already.
+        finished = ~step_reconstructions.any(axis=1)  # In case any reconstructions are 0 already.
         residuals_old = residuals.copy()
 
         while not np.all(finished) and iters.max() < max_iter:
@@ -478,17 +487,21 @@ class DictionarySpams:
                 print(f"Signals remaining: {(~finished).sum():^13d}")
 
             step_reconstructions = self.reconstruct_minibatch(
-                residuals[:,~finished], sc_lambda=sc_lambda, step=step, batchsize=batchsize,
+                residuals[~finished],
+                sc_lambda=sc_lambda,
+                step=step,
+                batchsize=batchsize,
                 normed=False,  # Normalization is (optionally) applied at the END.
                 normed_windows=False,  # See NOTE in the docstring.
-                verbose=verbose, **kwargs_lasso
+                verbose=verbose,
+                **kwargs_lasso
             )
-            final_reconstructions[:,~finished] += step_reconstructions
-            residuals[:,~finished] -= step_reconstructions
+            final_reconstructions[~finished] += step_reconstructions
+            residuals[~finished] -= step_reconstructions
 
             # Stop conditions
             iters[~finished] += 1
-            residual_decrease = np.linalg.norm(residuals[:,~finished] - residuals_old[:,~finished], axis=0)
+            residual_decrease = np.linalg.norm(residuals[~finished] - residuals_old[~finished], axis=1)
             finished[~finished] = residual_decrease < threshold
             residuals_old = residuals.copy()
 
@@ -505,7 +518,7 @@ class DictionarySpams:
 
         if normed:
             with np.errstate(divide='ignore', invalid='ignore'):
-                final_reconstructions /= np.max(np.abs(final_reconstructions), axis=0, keepdims=True)
+                final_reconstructions /= np.max(np.abs(final_reconstructions), axis=1, keepdims=True)
             np.nan_to_num(final_reconstructions, copy=False)
         
         return (final_reconstructions, residuals, iters) if full_output else final_reconstructions
@@ -637,7 +650,7 @@ class DictionarySpams:
         
         """
         dico_copy = DictionarySpams(
-            dict_init=self.components.copy(order='K'),
+            dict_init=self.components.copy(),
             wave_pos=self.wave_pos.copy(),
             lambda1=self.lambda1,
             batch_size=self.batch_size,
@@ -667,11 +680,13 @@ class DictionarySpams:
                 raise TypeError(
                     f"'{type(self.dict_init).__name__}' is not a valid 'dict_init'"
                 )
-            if not self.dict_init.flags.f_contiguous:
-                raise ValueError("'dict_init' must be a F-contiguous array")
-            if (self.dict_init.shape[0] >= self.dict_init.shape[1]
-                and not self.ignore_completeness):
-                raise ValueError("the dictionary must be overcomplete (a_length < d_size)")
+            
+            if not self.dict_init.flags.c_contiguous:
+                raise ValueError("'dict_init' must be a C-contiguous array")
+            
+            if (self.dict_init.shape[1] >= self.dict_init.shape[0]
+                    and not self.ignore_completeness):
+                raise ValueError("the dictionary must be overcomplete (d_size > a_length)")
         
         # Signal pool from where to extract the initial dictionary.
         elif signal_pool is not None:
@@ -679,15 +694,17 @@ class DictionarySpams:
                 raise TypeError(
                     f"'{type(signal_pool).__name__}' is not a valid 'signal_pool'"
                 )
-            if not signal_pool.flags.f_contiguous:
-                raise ValueError("'signal_pool' must be a F-contiguous array")
+            
+            if not signal_pool.flags.c_contiguous:
+                raise ValueError("'signal_pool' must be a C-contiguous array")
+            
             if None in (self.a_length, self.d_size):
                 raise TypeError(
                     f"'a_length' and 'd_size' must be explicitly provided along 'signal_pool'"
                 )
+            
             if self.a_length >= self.d_size:
-                raise ValueError("the dictionary must be overcomplete (a_length < d_size)")
+                raise ValueError("the dictionary must be overcomplete (d_size > a_length)")
         
-        # None of the above.
         else:
             raise ValueError("either 'dict_init' or 'signal_pool' must be provided")
