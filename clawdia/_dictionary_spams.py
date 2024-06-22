@@ -372,7 +372,7 @@ class DictionarySpams:
         dictionary atoms. Minibatch version.
 
         """
-        n_signals = signals.shape[1]
+        n_signals = signals.shape[0]
         n_minibatch = n_signals // batchsize
         out = np.empty_like(signals)
         loop = range(n_minibatch)
@@ -382,8 +382,8 @@ class DictionarySpams:
         for ibatch in loop:
             i0 = ibatch * batchsize
             i1 = i0 + batchsize
-            minibatch = signals[:,i0:i1]
-            out[:,i0:i1] = self._reconstruct_batch(
+            minibatch = signals[i0:i1]
+            out[i0:i1] = self._reconstruct_batch(
                 minibatch, sc_lambda=sc_lambda, step=step, normed_windows=normed_windows, **kwargs
             )
         if n_minibatch == 0:
@@ -394,14 +394,14 @@ class DictionarySpams:
         # remaining signals:
         if i1 < n_signals:
             i0 = i1
-            minibatch = signals[:,i0:]
-            out[:,i0:] = self._reconstruct_batch(
+            minibatch = signals[i0:]
+            out[i0:] = self._reconstruct_batch(
                 minibatch, sc_lambda=sc_lambda, step=step, **kwargs
             )
 
         if normed and out.any():
             with np.errstate(divide='ignore', invalid='ignore'):
-                out /= np.max(np.abs(out), axis=0, keepdims=True)
+                out /= np.max(np.abs(out), axis=1, keepdims=True)
             np.nan_to_num(out, copy=False)
 
         return out
