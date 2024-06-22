@@ -111,7 +111,7 @@ def plot_dictionary(array, c=None, ylim=None, **plot_kw):
     Parameters
     ----------
     array : 2d-array
-        Dictionary matrix in Fortran order with shape (l, a).
+        Dictionary matrix in Fortran order with shape (a, l).
     
     c : int, optional
         Number of atoms at each side of the squared matrix of plots; the total
@@ -123,11 +123,11 @@ def plot_dictionary(array, c=None, ylim=None, **plot_kw):
     
     """
     if c is None:
-        c = int(np.sqrt(array.shape[1]))
+        c = int(np.sqrt(array.shape[0]))
     fig, axs = plt.subplots(ncols=c, nrows=c, **plot_kw)
     for i in range(c**2):
         ax = axs[i//c,i%c]
-        ax.plot(array[:,i], lw=1)
+        ax.plot(array[i], lw=1)
         ax.set_ylim(ylim)
         ax.axis('off')
     fig.tight_layout()
