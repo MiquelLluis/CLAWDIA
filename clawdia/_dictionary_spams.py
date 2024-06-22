@@ -359,7 +359,7 @@ class DictionarySpams:
 
         if normed and out.any():
             with np.errstate(divide='ignore', invalid='ignore'):
-                out /= np.max(np.abs(out), axis=0, keepdims=True)
+                out /= np.max(np.abs(out), axis=1, keepdims=True)
             np.nan_to_num(out, copy=False)
 
         return out
