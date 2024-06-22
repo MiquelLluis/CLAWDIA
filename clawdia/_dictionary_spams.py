@@ -316,23 +316,28 @@ class DictionarySpams:
         return (signal_rec, code) if with_code else signal_rec
 
     def _reconstruct_batch(self, strains, *, sc_lambda, step=1, normed_windows=True, **kwargs):
-        ns = strains.shape[1]
+        ns = strains.shape[0]
 
         patches, norms = lib.extract_patches(
             strains, patch_size=self.a_length, step=step, l2_normed=normed_windows,
             return_norm_coefs=True
         )
         codes = spams.lasso(
-            patches, D=self.components, lambda1=sc_lambda, mode=self.mode_lasso, **kwargs
+            patches.T,            # SPAMS works with Fortran order.
+            D=self.components.T,  #
+            lambda1=sc_lambda,
+            mode=self.mode_lasso,
+            **kwargs
         )
-        patches = (self.components @ codes) * norms
         
-        lp = patches.shape[0]
-        np_ = patches.shape[1] // ns  # Number of patches per strain
-        patches = patches.reshape(lp, np_, ns, order='F')
+        patches = ((self.components.T @ codes) * norms).T
+        lp = patches.shape[1]
+        np_ = patches.shape[0] // ns  # Number of patches per strain
+        patches = patches.reshape(ns, np_, lp, order='C')
+
         reconstructions = np.empty_like(strains)
         for i in range(ns):
-            reconstructions[:,i] = lib.reconstruct_from_patches_1d(patches[...,i], step)
+            reconstructions[i] = lib.reconstruct_from_patches_1d(patches[i], step)
 
         return reconstructions
 
