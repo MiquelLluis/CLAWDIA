@@ -174,7 +174,7 @@ class DictionarySpams:
 
         Parameters
         ----------
-        patches : 2d-array(samples, signals)
+        patches : 2d-array(signals, samples)
             Training patches.
 
         lambda1 : float, optional
@@ -199,7 +199,7 @@ class DictionarySpams:
         Additional parameters will be passed to the SPAMS training function.
 
         """
-        if len(patches) != self.a_length:
+        if patches.shape[1] != self.a_length:
             raise ValueError("the length of 'patches' must be the same as the"
                              " atoms of the dictionary")
         if n_iter is not None:
@@ -212,7 +212,7 @@ class DictionarySpams:
         elif self.lambda1 is None:
             raise TypeError("'lambda1' not specified")
 
-        self.n_train = patches.shape[1]
+        self.n_train = patches.shape[0]
 
         # In case of loading older instances in which this attribute didn't
         # exist, it is set to the default of spams.trainDL. This way it should
@@ -221,8 +221,8 @@ class DictionarySpams:
             self.modeD_traindl = 0
 
         tic = time.time()
-        self.components, model = spams.trainDL(
-            patches,
+        components, model = spams.trainDL(
+            patches.T,  # SPAMS works with Fortran order.
             D=self.dict_init,
             batchsize=self.batch_size,
             lambda1=self.lambda1,
@@ -234,6 +234,7 @@ class DictionarySpams:
             return_model=True,
             **kwargs
         )
+        self.components = components.T
         tac = time.time()
 
         self.trained = True
