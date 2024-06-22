@@ -222,8 +222,8 @@ class DictionarySpams:
 
         tic = time.time()
         components, model = spams.trainDL(
-            patches.T,  # SPAMS works with Fortran order.
-            D=self.dict_init,
+            patches.T,           # SPAMS works with Fortran order.
+            D=self.dict_init.T,  #
             batchsize=self.batch_size,
             lambda1=self.lambda1,
             iter=self.n_iter,
