@@ -244,13 +244,13 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
 
 
 def reconstruct_from_patches_1d(patches, step):
-    l_patches, n_patches = patches.shape
+    n_patches, l_patches = patches.shape
     total_len = (n_patches - 1) * step + l_patches
     
     reconstructed = np.zeros(total_len, dtype=patches.dtype)
     normalizer = np.zeros_like(reconstructed)
     for i in range(n_patches):
-        reconstructed[i*step:i*step+l_patches] += patches[:,i]
+        reconstructed[i*step:i*step+l_patches] += patches[i]
         normalizer[i*step:i*step+l_patches] += 1
     normalizer[i*step+l_patches:] = 1
     reconstructed /= normalizer
