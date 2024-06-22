@@ -11,7 +11,7 @@ class BoundaryError(ValueError):
     pass
 
 
-def abs_normalize(array, axis=0):
+def abs_normalize(array, axis=-1):
     """TODO
     Normalitza inplace un array ignorant els errors de divissió entre 0 i
     canviant els nan a 0.
@@ -22,7 +22,7 @@ def abs_normalize(array, axis=0):
         np.nan_to_num(array, copy=False)
 
 
-def l2_normalize(array, axis=0):
+def l2_normalize(array, axis=-1):
     """TODO
     Normalitza inplace un array amb la norma L2 ignorant els errors de divissió
     entre 0 i canviant els nan a 0.
