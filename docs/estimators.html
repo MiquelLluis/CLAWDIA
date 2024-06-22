@@ -41,7 +41,34 @@ def medse(x, y):
 
 
 def ssim(x, y):
-    &#34;&#34;&#34;Structural similarity index.&#34;&#34;&#34;  # TODO: Doc més
+    &#34;&#34;&#34;Structural Similarity Index Measure.
+
+    Compute the Structural Similarity Index Measure (SSIM) between two arrays
+    x and y.
+
+    Ranges from -1 to 1:
+
+        -  1: Perfect similarity.
+
+        -  0: No similarity.
+
+        - -1: Perfect anti-correlation.
+
+    Parameters
+    ----------
+    x, y : array
+        Input signals.
+
+    Returns
+    -------
+    ssim : float
+        The Structural Similarity Index Measure between the signals x and y.
+
+    Reference
+    ---------
+    https://en.wikipedia.org/wiki/Structural_similarity_index_measure
+    
+    &#34;&#34;&#34;
     mux = x.mean()
     muy = y.mean()
     cov_mat = np.cov(x, y, ddof=0)
@@ -57,8 +84,25 @@ def ssim(x, y):
 
 
 def dssim(x, y):
-    &#34;&#34;&#34;Structural dissimilarity.&#34;&#34;&#34;
+    &#34;&#34;&#34;Structural Dissimilarity.&#34;&#34;&#34;
     return (1 - ssim(x, y)) / 2
+
+
+def issim(x, y):
+    &#34;&#34;&#34;Inverse Structural SimilarityIndex Measure.
+    
+    In this case:
+
+        -  1: Perfect anti-correlation.
+
+        -  0: No similarity.
+
+        - -1: Perfect similarity.
+
+    Useful as a loss function to perform minimization.
+        
+    &#34;&#34;&#34;
+    return -ssim(x, y)
 
 
 def residual(x, y):
@@ -204,13 +248,13 @@ def find_merger(h: np.ndarray) -&gt; int:
 <span>def <span class="ident">dssim</span></span>(<span>x, y)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Structural dissimilarity.</p></div>
+<div class="desc"><p>Structural Dissimilarity.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def dssim(x, y):
-    &#34;&#34;&#34;Structural dissimilarity.&#34;&#34;&#34;
+    &#34;&#34;&#34;Structural Dissimilarity.&#34;&#34;&#34;
     return (1 - ssim(x, y)) / 2</code></pre>
 </details>
 </dd>
@@ -250,6 +294,40 @@ make much difference.</p></div>
     &#34;&#34;&#34;Compute `1 - Overlap()`.&#34;&#34;&#34;
 
     return 1 - overlap(x, y, psd, at, window=window)</code></pre>
+</details>
+</dd>
+<dt id="clawdia.estimators.issim"><code class="name flex">
+<span>def <span class="ident">issim</span></span>(<span>x, y)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Inverse Structural SimilarityIndex Measure.</p>
+<p>In this case:</p>
+<pre><code>-  1: Perfect anti-correlation.
+
+-  0: No similarity.
+
+- -1: Perfect similarity.
+</code></pre>
+<p>Useful as a loss function to perform minimization.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def issim(x, y):
+    &#34;&#34;&#34;Inverse Structural SimilarityIndex Measure.
+    
+    In this case:
+
+        -  1: Perfect anti-correlation.
+
+        -  0: No similarity.
+
+        - -1: Perfect similarity.
+
+    Useful as a loss function to perform minimization.
+        
+    &#34;&#34;&#34;
+    return -ssim(x, y)</code></pre>
 </details>
 </dd>
 <dt id="clawdia.estimators.medse"><code class="name flex">
@@ -401,13 +479,61 @@ Time step, inverse of sampling rate of 'x' and 'y'.</p>
 <span>def <span class="ident">ssim</span></span>(<span>x, y)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Structural similarity index.</p></div>
+<div class="desc"><p>Structural Similarity Index Measure.</p>
+<p>Compute the Structural Similarity Index Measure (SSIM) between two arrays
+x and y.</p>
+<p>Ranges from -1 to 1:</p>
+<pre><code>-  1: Perfect similarity.
+
+-  0: No similarity.
+
+- -1: Perfect anti-correlation.
+</code></pre>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>x</code></strong>, <strong><code>y</code></strong> :&ensp;<code>array</code></dt>
+<dd>Input signals.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>ssim</code></strong> :&ensp;<code>float</code></dt>
+<dd>The Structural Similarity Index Measure between the signals x and y.</dd>
+</dl>
+<h2 id="reference">Reference</h2>
+<p><a href="https://en.wikipedia.org/wiki/Structural_similarity_index_measure">https://en.wikipedia.org/wiki/Structural_similarity_index_measure</a></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def ssim(x, y):
-    &#34;&#34;&#34;Structural similarity index.&#34;&#34;&#34;  # TODO: Doc més
+    &#34;&#34;&#34;Structural Similarity Index Measure.
+
+    Compute the Structural Similarity Index Measure (SSIM) between two arrays
+    x and y.
+
+    Ranges from -1 to 1:
+
+        -  1: Perfect similarity.
+
+        -  0: No similarity.
+
+        - -1: Perfect anti-correlation.
+
+    Parameters
+    ----------
+    x, y : array
+        Input signals.
+
+    Returns
+    -------
+    ssim : float
+        The Structural Similarity Index Measure between the signals x and y.
+
+    Reference
+    ---------
+    https://en.wikipedia.org/wiki/Structural_similarity_index_measure
+    
+    &#34;&#34;&#34;
     mux = x.mean()
     muy = y.mean()
     cov_mat = np.cov(x, y, ddof=0)
@@ -443,6 +569,7 @@ Time step, inverse of sampling rate of 'x' and 'y'.</p>
 <li><code><a title="clawdia.estimators.dssim" href="#clawdia.estimators.dssim">dssim</a></code></li>
 <li><code><a title="clawdia.estimators.find_merger" href="#clawdia.estimators.find_merger">find_merger</a></code></li>
 <li><code><a title="clawdia.estimators.ioverlap" href="#clawdia.estimators.ioverlap">ioverlap</a></code></li>
+<li><code><a title="clawdia.estimators.issim" href="#clawdia.estimators.issim">issim</a></code></li>
 <li><code><a title="clawdia.estimators.medse" href="#clawdia.estimators.medse">medse</a></code></li>
 <li><code><a title="clawdia.estimators.mse" href="#clawdia.estimators.mse">mse</a></code></li>
 <li><code><a title="clawdia.estimators.overlap" href="#clawdia.estimators.overlap">overlap</a></code></li>

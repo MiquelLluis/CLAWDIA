@@ -29,6 +29,7 @@
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import numpy as np
+import scipy as sp
 
 
 def plot_confusion(cmat, ax=None, labels=None, mode=&#39;both&#39;, invert_axis=False, vmin=None, vmax=None, **kwargs):
@@ -130,7 +131,7 @@ def plot_confusion(cmat, ax=None, labels=None, mode=&#39;both&#39;, invert_axis=
         return None
 
 
-def plot_dictionary(array, c=None, **plot_kw):
+def plot_dictionary(array, c=None, ylim=None, **plot_kw):
     &#34;&#34;&#34;Plot atoms from a dictionary in a squared matrix.
     
     Parameters
@@ -153,6 +154,7 @@ def plot_dictionary(array, c=None, **plot_kw):
     for i in range(c**2):
         ax = axs[i//c,i%c]
         ax.plot(array[:,i], lw=1)
+        ax.set_ylim(ylim)
         ax.axis(&#39;off&#39;)
     fig.tight_layout()
     fig.subplots_adjust(wspace=0, hspace=0)
@@ -321,7 +323,7 @@ Defaults to False (predicted values at the ordinate).</dd>
 </details>
 </dd>
 <dt id="clawdia.plotting.plot_dictionary"><code class="name flex">
-<span>def <span class="ident">plot_dictionary</span></span>(<span>array, c=None, **plot_kw)</span>
+<span>def <span class="ident">plot_dictionary</span></span>(<span>array, c=None, ylim=None, **plot_kw)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Plot atoms from a dictionary in a squared matrix.</p>
@@ -340,7 +342,7 @@ If not given, it is computed as <code>int(np.sqrt(a))</code>.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def plot_dictionary(array, c=None, **plot_kw):
+<pre><code class="python">def plot_dictionary(array, c=None, ylim=None, **plot_kw):
     &#34;&#34;&#34;Plot atoms from a dictionary in a squared matrix.
     
     Parameters
@@ -363,6 +365,7 @@ If not given, it is computed as <code>int(np.sqrt(a))</code>.</dd>
     for i in range(c**2):
         ax = axs[i//c,i%c]
         ax.plot(array[:,i], lw=1)
+        ax.set_ylim(ylim)
         ax.axis(&#39;off&#39;)
     fig.tight_layout()
     fig.subplots_adjust(wspace=0, hspace=0)
