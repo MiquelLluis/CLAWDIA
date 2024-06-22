@@ -703,7 +703,7 @@ class DictionarySpams:
                     f"'a_length' and 'd_size' must be explicitly provided along 'signal_pool'"
                 )
             
-            if self.a_length >= self.d_size:
+            if (self.a_length >= self.d_size) and not self.ignore_completeness:
                 raise ValueError("the dictionary must be overcomplete (d_size > a_length)")
         
         else:
