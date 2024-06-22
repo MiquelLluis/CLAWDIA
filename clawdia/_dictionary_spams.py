@@ -428,10 +428,12 @@ class DictionarySpams:
                 # not care about reconstructing the entire strain (margin).
                 warnings.filterwarnings("ignore", message="'signals' cannot be fully divided into patches.*")
                 result = lib.semibool_bisect(fun, *lambda_lims, **kwargs_bisect)
+        
         except lib.BoundaryError:
             rec = np.zeros_like(signal)
             code = None
             result = {'x': np.min(lambda_lims), 'f': 0., 'converged': False, 'niters': 0, 'funcalls': 2}
+        
         else:
             rec, code = self._reconstruct_single(signal, result['x'], step, **kwargs_lasso)
             if normed and rec.any():
@@ -458,12 +460,13 @@ class DictionarySpams:
         ad-hoc tests showed it also messes up with the resulting shape.
 
         """
-        n_signals = signals.shape[1]
+        n_signals = signals.shape[0]
 
         # First iteration outside:
         if verbose:
                 print(f"\nIteration 0")
                 print(f"Signals remaining: {n_signals}")
+        
         step_reconstructions = self.reconstruct_minibatch(
             signals, sc_lambda=sc_lambda, step=step, batchsize=batchsize,
             normed=False,  # Normalization is (optionally) applied at the END.
@@ -475,7 +478,7 @@ class DictionarySpams:
 
         # Stop conditions
         iters = np.ones(n_signals, dtype=int)
-        finished = ~step_reconstructions.any(axis=0)  # In case any reconstructions are 0 already.
+        finished = ~step_reconstructions.any(axis=1)  # In case any reconstructions are 0 already.
         residuals_old = residuals.copy()
 
         while not np.all(finished) and iters.max() < max_iter:
@@ -484,17 +487,21 @@ class DictionarySpams:
                 print(f"Signals remaining: {(~finished).sum():^13d}")
 
             step_reconstructions = self.reconstruct_minibatch(
-                residuals[:,~finished], sc_lambda=sc_lambda, step=step, batchsize=batchsize,
+                residuals[~finished],
+                sc_lambda=sc_lambda,
+                step=step,
+                batchsize=batchsize,
                 normed=False,  # Normalization is (optionally) applied at the END.
                 normed_windows=False,  # See NOTE in the docstring.
-                verbose=verbose, **kwargs_lasso
+                verbose=verbose,
+                **kwargs_lasso
             )
-            final_reconstructions[:,~finished] += step_reconstructions
-            residuals[:,~finished] -= step_reconstructions
+            final_reconstructions[~finished] += step_reconstructions
+            residuals[~finished] -= step_reconstructions
 
             # Stop conditions
             iters[~finished] += 1
-            residual_decrease = np.linalg.norm(residuals[:,~finished] - residuals_old[:,~finished], axis=0)
+            residual_decrease = np.linalg.norm(residuals[~finished] - residuals_old[~finished], axis=1)
             finished[~finished] = residual_decrease < threshold
             residuals_old = residuals.copy()
 
@@ -511,7 +518,7 @@ class DictionarySpams:
 
         if normed:
             with np.errstate(divide='ignore', invalid='ignore'):
-                final_reconstructions /= np.max(np.abs(final_reconstructions), axis=0, keepdims=True)
+                final_reconstructions /= np.max(np.abs(final_reconstructions), axis=1, keepdims=True)
             np.nan_to_num(final_reconstructions, copy=False)
         
         return (final_reconstructions, residuals, iters) if full_output else final_reconstructions
