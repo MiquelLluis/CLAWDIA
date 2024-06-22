@@ -695,8 +695,8 @@ class DictionarySpams:
                     f"'{type(signal_pool).__name__}' is not a valid 'signal_pool'"
                 )
             
-            if not signal_pool.flags.f_contiguous:
-                raise ValueError("'signal_pool' must be a F-contiguous array")
+            if not signal_pool.flags.c_contiguous:
+                raise ValueError("'signal_pool' must be a C-contiguous array")
             
             if None in (self.a_length, self.d_size):
                 raise TypeError(
