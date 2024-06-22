@@ -24,11 +24,11 @@ class DictionarySpams:
 
     Parameters
     ----------
-    dict_init : 2d-array(a_length, d_size), optional
+    dict_init : 2d-array(d_size, a_length), optional
         Atoms of the initial dictionary.
         If None, 'signal_pool' must be given.
 
-    signal_pool : 2d-array(samples, signals), optional
+    signal_pool : 2d-array(signals, samples), optional
         Set of signals from where to randomly extract the atoms.
         Ignored if 'dict_init' is not None.
 
@@ -99,10 +99,10 @@ class DictionarySpams:
 
     Attributes
     ----------
-    dict_init : array(a_length, d_size)
+    dict_init : array(d_size, a_length)
         Atoms of the initial dictionary.
 
-    components : array(a_length, d_size)
+    components : array(d_size, a_length)
         Atoms of the current dictionary.
 
     n_iter : int
@@ -667,11 +667,13 @@ class DictionarySpams:
                 raise TypeError(
                     f"'{type(self.dict_init).__name__}' is not a valid 'dict_init'"
                 )
-            if not self.dict_init.flags.f_contiguous:
-                raise ValueError("'dict_init' must be a F-contiguous array")
-            if (self.dict_init.shape[0] >= self.dict_init.shape[1]
-                and not self.ignore_completeness):
-                raise ValueError("the dictionary must be overcomplete (a_length < d_size)")
+            
+            if not self.dict_init.flags.c_contiguous:
+                raise ValueError("'dict_init' must be a C-contiguous array")
+            
+            if (self.dict_init.shape[1] >= self.dict_init.shape[0]
+                    and not self.ignore_completeness):
+                raise ValueError("the dictionary must be overcomplete (d_size > a_length)")
         
         # Signal pool from where to extract the initial dictionary.
         elif signal_pool is not None:
@@ -679,15 +681,17 @@ class DictionarySpams:
                 raise TypeError(
                     f"'{type(signal_pool).__name__}' is not a valid 'signal_pool'"
                 )
+            
             if not signal_pool.flags.f_contiguous:
                 raise ValueError("'signal_pool' must be a F-contiguous array")
+            
             if None in (self.a_length, self.d_size):
                 raise TypeError(
                     f"'a_length' and 'd_size' must be explicitly provided along 'signal_pool'"
                 )
+            
             if self.a_length >= self.d_size:
-                raise ValueError("the dictionary must be overcomplete (a_length < d_size)")
+                raise ValueError("the dictionary must be overcomplete (d_size > a_length)")
         
-        # None of the above.
         else:
             raise ValueError("either 'dict_init' or 'signal_pool' must be provided")
