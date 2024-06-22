@@ -3,6 +3,7 @@ import itertools as it
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import numpy as np
+import scipy as sp
 
 
 def plot_confusion(cmat, ax=None, labels=None, mode='both', invert_axis=False, vmin=None, vmax=None, **kwargs):
@@ -104,7 +105,7 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', invert_axis=False, v
         return None
 
 
-def plot_dictionary(array, c=None, **plot_kw):
+def plot_dictionary(array, c=None, ylim=None, **plot_kw):
     """Plot atoms from a dictionary in a squared matrix.
     
     Parameters
@@ -127,6 +128,7 @@ def plot_dictionary(array, c=None, **plot_kw):
     for i in range(c**2):
         ax = axs[i//c,i%c]
         ax.plot(array[:,i], lw=1)
+        ax.set_ylim(ylim)
         ax.axis('off')
     fig.tight_layout()
     fig.subplots_adjust(wspace=0, hspace=0)

@@ -15,7 +15,34 @@ def medse(x, y):
 
 
 def ssim(x, y):
-    """Structural similarity index."""  # TODO: Doc més
+    """Structural Similarity Index Measure.
+
+    Compute the Structural Similarity Index Measure (SSIM) between two arrays
+    x and y.
+
+    Ranges from -1 to 1:
+
+        -  1: Perfect similarity.
+
+        -  0: No similarity.
+
+        - -1: Perfect anti-correlation.
+
+    Parameters
+    ----------
+    x, y : array
+        Input signals.
+
+    Returns
+    -------
+    ssim : float
+        The Structural Similarity Index Measure between the signals x and y.
+
+    Reference
+    ---------
+    https://en.wikipedia.org/wiki/Structural_similarity_index_measure
+    
+    """
     mux = x.mean()
     muy = y.mean()
     cov_mat = np.cov(x, y, ddof=0)
@@ -31,8 +58,25 @@ def ssim(x, y):
 
 
 def dssim(x, y):
-    """Structural dissimilarity."""
+    """Structural Dissimilarity."""
     return (1 - ssim(x, y)) / 2
+
+
+def issim(x, y):
+    """Inverse Structural SimilarityIndex Measure.
+    
+    In this case:
+
+        -  1: Perfect anti-correlation.
+
+        -  0: No similarity.
+
+        - -1: Perfect similarity.
+
+    Useful as a loss function to perform minimization.
+        
+    """
+    return -ssim(x, y)
 
 
 def residual(x, y):
