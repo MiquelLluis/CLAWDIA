@@ -69,11 +69,11 @@ def test_extract_patches(i_test, data_extract_patches):
     targets = data_extract_patches[2][i_test]
 
     out = lib.extract_patches(
-        input_.T,
+        input_,
         **parameters
     )
     if isinstance(out, tuple):
-        np.testing.assert_array_almost_equal(out[0].T, targets[0], decimal=9)
-        np.testing.assert_array_almost_equal(out[1].T, targets[1], decimal=9)
+        np.testing.assert_array_almost_equal(out[0], targets[0], decimal=9)
+        np.testing.assert_array_almost_equal(out[1], targets[1], decimal=9)
     else:
-        np.testing.assert_array_almost_equal(out.T, targets, decimal=9)
+        np.testing.assert_array_almost_equal(out, targets, decimal=9)
