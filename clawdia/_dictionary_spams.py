@@ -650,7 +650,7 @@ class DictionarySpams:
         
         """
         dico_copy = DictionarySpams(
-            dict_init=self.components.copy(order='K'),
+            dict_init=self.components.copy(),
             wave_pos=self.wave_pos.copy(),
             lambda1=self.lambda1,
             batch_size=self.batch_size,
