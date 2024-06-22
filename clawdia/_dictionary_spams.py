@@ -257,13 +257,13 @@ class DictionarySpams:
             return_norm_coefs=True
         )
         code = spams.lasso(
-            patches,
-            D=self.components,
+            patches.T,            # SPAMS works with Fortran order.
+            D=self.components.T,  #
             lambda1=sc_lambda,
             mode=self.mode_lasso,
             **kwargs_lasso
         )
-        patches = (self.components @ code) * norms
+        patches = ((self.components.T @ code) * norms).T
 
         signal_rec = lib.reconstruct_from_patches_1d(patches, step)
 
