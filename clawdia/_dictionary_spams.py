@@ -153,7 +153,7 @@ class DictionarySpams:
 
         # Explicit initial dictionary (trained or not).
         if self.dict_init is not None:
-            self.a_length, self.d_size = self.dict_init.shape
+            self.d_size, self.a_length = self.dict_init.shape
 
         # Get the initial atoms from a set of signals.
         else:
