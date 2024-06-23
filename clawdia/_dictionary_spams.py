@@ -139,7 +139,6 @@ class DictionarySpams:
         self.n_iter = n_iter
         self.t_train = -n_iter if n_iter is not None and n_iter < 0 else None
         self.n_train = n_train
-        self.patch_min = patch_min
         self.random_state = random_state
         self.trained = trained
         self.ignore_completeness = ignore_completeness
@@ -162,7 +161,7 @@ class DictionarySpams:
                 n_patches=self.d_size,
                 l2_normed=self.l2_normed,
                 allow_allzeros=allow_allzeros,
-                patch_min=self.patch_min,
+                patch_min=patch_min,
                 random_state=self.random_state
             )
             self.components = self.dict_init
@@ -653,7 +652,6 @@ class DictionarySpams:
             l2_normed=self.l2_normed,
             n_iter=self.n_iter,
             n_train=self.t_train,
-            patch_min=self.patch_min,
             random_state=self.random_state,
             trained=self.trained,
             ignore_completeness=self.ignore_completeness,
