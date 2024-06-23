@@ -136,7 +136,6 @@ class DictionarySpams:
         self.batch_size = batch_size
         self.identifier = identifier
         self.l2_normed = l2_normed
-        self.allow_allzeros = allow_allzeros
         self.n_iter = n_iter
         self.t_train = -n_iter if n_iter is not None and n_iter < 0 else None
         self.n_train = n_train
@@ -162,7 +161,7 @@ class DictionarySpams:
                 limits=wave_pos,
                 n_patches=self.d_size,
                 l2_normed=self.l2_normed,
-                allow_allzeros=self.allow_allzeros,
+                allow_allzeros=allow_allzeros,
                 patch_min=self.patch_min,
                 random_state=self.random_state
             )
@@ -652,7 +651,6 @@ class DictionarySpams:
             batch_size=self.batch_size,
             identifier=self.identifier,
             l2_normed=self.l2_normed,
-            allow_allzeros=self.allow_allzeros,
             n_iter=self.n_iter,
             n_train=self.t_train,
             patch_min=self.patch_min,
