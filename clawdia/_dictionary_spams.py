@@ -176,12 +176,11 @@ class DictionarySpams:
         self.t_train = -n_iter if n_iter is not None and n_iter < 0 else None
         self.n_train = n_train
         self.trained = trained
-        self.ignore_completeness = ignore_completeness
         self.mode_traindl = mode_traindl
         self.modeD_traindl = modeD_traindl
         self.mode_lasso = mode_lasso
 
-        self._check_initial_parameters(signal_pool)
+        self._check_initial_parameters(signal_pool, ignore_completeness)
 
         # Explicit initial dictionary (trained or not).
         if self.dict_init is not None:
@@ -685,7 +684,6 @@ class DictionarySpams:
             n_iter=self.n_iter,
             n_train=self.t_train,
             trained=self.trained,
-            ignore_completeness=self.ignore_completeness,
             mode_traindl=self.mode_traindl,
             modeD_traindl=self.modeD_traindl,
             mode_lasso=self.mode_lasso
@@ -696,7 +694,7 @@ class DictionarySpams:
 
         return dico_copy
 
-    def _check_initial_parameters(self, signal_pool):
+    def _check_initial_parameters(self, signal_pool, ignore_completeness):
         # Explicit initial dictionary.
         if self.dict_init is not None:
             if not isinstance(self.dict_init, np.ndarray):
@@ -708,7 +706,7 @@ class DictionarySpams:
                 raise ValueError("'dict_init' must be a C-contiguous array")
             
             if (self.dict_init.shape[1] >= self.dict_init.shape[0]
-                    and not self.ignore_completeness):
+                    and not ignore_completeness):
                 raise ValueError("the dictionary must be overcomplete (d_size > a_length)")
         
         # Signal pool from where to extract the initial dictionary.
@@ -726,7 +724,7 @@ class DictionarySpams:
                     f"'a_length' and 'd_size' must be explicitly provided along 'signal_pool'"
                 )
             
-            if (self.a_length >= self.d_size) and not self.ignore_completeness:
+            if (self.a_length >= self.d_size) and not ignore_completeness:
                 raise ValueError("the dictionary must be overcomplete (d_size > a_length)")
         
         else:
