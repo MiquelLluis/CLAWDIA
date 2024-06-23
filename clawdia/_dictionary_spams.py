@@ -22,6 +22,7 @@ class DictionarySpams:
     Set of utilities for performing Dictionary Learning and sparse encoding
     using functions of SPAMS-python[1].
 
+    
     Attributes
     ----------
     dict_init : array(d_size, a_length)
@@ -37,15 +38,34 @@ class DictionarySpams:
     lambda1 : float
         Regularization parameter used for training the dictionary.
 
+    batch_size : int
+        Batch size used in training.
+
     n_iter : int
         Number of iterations performed in training.
 
     t_train : float
-        Time spent training.
+        Time spent training in seconds.
+
+    trained : bool
+        Flag indicating whether the dictionary has been trained.
+    
+    n_train : int
+        Number of training patches used to train the dictionary.
+
+    mode_traindl : int
+        Refer to [1] for more information.
+
+    modeD_traindl : int
+        Refer to [1] for more information.
+
+    mode_lasso : int
+        Refer to [1] for more information.
 
     identifier : str
         A word or note which can be used to identify the dictionary.
 
+        
     References
     ----------
     [1]: SPAMS (for python), (http://spams-devel.gforge.inria.fr/), last
@@ -131,18 +151,18 @@ class DictionarySpams:
         
         Additional arguments:
 
+        lambda1 : float, optional
+            Regularization parameter used for training the dictionary.
+
         ignore_completeness : bool, optional
             If the dictionary is notzation parameter of the learning algorithm.
-            If None, will be requierd when calling 'train' method.rd when calling 'train' method.
+            If None, will be requierd when calling 'train' method.
 
         batch_size : int, 64 by default
             Number of samples in each mini-batch.
 
         n_iter : int, optional
             Total number of iterations to perform.
-            If a negative number is provided it will perform the computation during
-            the corresponding number of seconds. For instance n_iter=-5 learns the
-            dictionary during 5 seconds.
             If None, will be required when calling 'train' method.
 
         trained : bool, False by default
@@ -171,14 +191,14 @@ class DictionarySpams:
         self.d_size = d_size
         self.lambda1 = lambda1
         self.batch_size = batch_size
-        self.identifier = identifier
         self.n_iter = n_iter
         self.t_train = -n_iter if n_iter is not None and n_iter < 0 else None
-        self.n_train = n_train
         self.trained = trained
+        self.n_train = n_train
         self.mode_traindl = mode_traindl
         self.modeD_traindl = modeD_traindl
         self.mode_lasso = mode_lasso
+        self.identifier = identifier
 
         self._check_initial_parameters(signal_pool, ignore_completeness)
 
@@ -216,7 +236,7 @@ class DictionarySpams:
             Total number of iterations to perform.
             If a negative number is provided it will perform the computation
             during the corresponding number of seconds.
-            It is not needed if already specified at initialization.
+            For instance `n_iter = -5` trains the dictionary during 5 seconds.
 
         verbose : bool, optional
             If True print the iterations (might not be shown in real time).
@@ -233,9 +253,8 @@ class DictionarySpams:
         if patches.shape[1] != self.a_length:
             raise ValueError("the length of 'patches' must be the same as the"
                              " atoms of the dictionary")
-        if n_iter is not None:
-            self.n_iter = n_iter
-        elif self.n_iter is None:
+        
+        if n_iter is None and self.n_iter is None:
             raise TypeError("'n_iter' not specified")
             
         if lambda1 is not None:
@@ -257,7 +276,7 @@ class DictionarySpams:
             D=self.dict_init.T,  #
             batchsize=self.batch_size,
             lambda1=self.lambda1,
-            iter=self.n_iter,
+            iter=n_iter,
             mode=self.mode_traindl,
             modeD=self.modeD_traindl,
             verbose=verbose,
@@ -270,10 +289,11 @@ class DictionarySpams:
 
         self.trained = True
 
-        if self.n_iter < 0:
-            self.t_train = -self.n_iter
+        if n_iter < 0:
             self.n_iter = model['iter']
+            self.t_train = -n_iter
         else:
+            self.n_iter = n_iter
             self.t_train = tac - tic
 
     def _reconstruct_single(self, signal, sc_lambda, step=1, **kwargs_lasso):
