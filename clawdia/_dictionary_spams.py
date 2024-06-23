@@ -130,7 +130,6 @@ class DictionarySpams:
                  ignore_completeness=False, mode_traindl=0, modeD_traindl=0, mode_lasso=2):
         self.dict_init = dict_init
         self.components = dict_init
-        self.wave_pos = wave_pos
         self.a_length = a_length
         self.d_size = d_size
         self.lambda1 = lambda1
@@ -160,7 +159,7 @@ class DictionarySpams:
             self.dict_init = lib.extract_patches(
                 signal_pool,
                 patch_size=self.a_length,
-                limits=self.wave_pos,
+                limits=wave_pos,
                 n_patches=self.d_size,
                 l2_normed=self.l2_normed,
                 allow_allzeros=self.allow_allzeros,
@@ -627,8 +626,6 @@ class DictionarySpams:
         if not self.trained:
             # To avoid silent bugs in the future
             to_remove += ['lambda1', 'n_train', 't_train']
-        if self.wave_pos is None:
-            to_remove.append('wave_pos')
         if self.random_state is None:
             to_remove.append('random_state')
 
@@ -651,7 +648,6 @@ class DictionarySpams:
         """
         dico_copy = DictionarySpams(
             dict_init=self.components.copy(),
-            wave_pos=self.wave_pos.copy(),
             lambda1=self.lambda1,
             batch_size=self.batch_size,
             identifier=self.identifier,
