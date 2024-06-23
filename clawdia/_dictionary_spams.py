@@ -135,11 +135,9 @@ class DictionarySpams:
         self.lambda1 = lambda1
         self.batch_size = batch_size
         self.identifier = identifier
-        self.l2_normed = l2_normed
         self.n_iter = n_iter
         self.t_train = -n_iter if n_iter is not None and n_iter < 0 else None
         self.n_train = n_train
-        self.random_state = random_state
         self.trained = trained
         self.ignore_completeness = ignore_completeness
         self.mode_traindl = mode_traindl
@@ -159,10 +157,10 @@ class DictionarySpams:
                 patch_size=self.a_length,
                 limits=wave_pos,
                 n_patches=self.d_size,
-                l2_normed=self.l2_normed,
+                l2_normed=l2_normed,
                 allow_allzeros=allow_allzeros,
                 patch_min=patch_min,
-                random_state=self.random_state
+                random_state=random_state
             )
             self.components = self.dict_init
 
@@ -624,8 +622,6 @@ class DictionarySpams:
         if not self.trained:
             # To avoid silent bugs in the future
             to_remove += ['lambda1', 'n_train', 't_train']
-        if self.random_state is None:
-            to_remove.append('random_state')
 
         for attr in to_remove:
             vars_.pop(attr)
@@ -649,10 +645,8 @@ class DictionarySpams:
             lambda1=self.lambda1,
             batch_size=self.batch_size,
             identifier=self.identifier,
-            l2_normed=self.l2_normed,
             n_iter=self.n_iter,
             n_train=self.t_train,
-            random_state=self.random_state,
             trained=self.trained,
             ignore_completeness=self.ignore_completeness,
             mode_traindl=self.mode_traindl,
