@@ -131,17 +131,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-
-######################
-# MANUAL IGNORE LIST #
-######################
-
-*.txt
-*.ipynb
-*.bar
-*.err
-*.out
-*.sublime*
-*.zip
-*.pdf
