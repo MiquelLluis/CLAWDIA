@@ -126,7 +126,7 @@ def test___init__(dico_initial, components_init):
 
 
 @pytest.mark.skipif(os.name != 'posix', reason='random reproducibility of SPAM only guaranteed on Linux')
-def test_train(strains_clean, wave_pos_clean, dico_initial, components_trained):
+def test_train(dico_initial, strains_clean, wave_pos_clean, components_trained):
     training_patches = clawdia.lib.extract_patches(
         strains_clean,
         patch_size=64,
@@ -145,6 +145,37 @@ def test_train(strains_clean, wave_pos_clean, dico_initial, components_trained):
     )
 
     np.testing.assert_array_almost_equal(dico.components, components_trained, decimal=9)
+
+
+@pytest.mark.skipif(os.name != 'posix', reason='random reproducibility of SPAM only guaranteed on Linux')
+def test_train_warm(dico_initial, strains_clean, wave_pos_clean):
+    training_patches = clawdia.lib.extract_patches(
+        strains_clean,
+        patch_size=64,
+        limits=wave_pos_clean,
+        n_patches=100,
+        random_state=84,
+        l2_normed=True,
+        allow_allzeros=False
+    )
+    dico = dico_initial.copy()
+    dico.train(
+        training_patches,
+        n_iter=1000,
+        verbose=False,
+        threads=1
+    )
+    dico.train(
+        training_patches,
+        warm_start=True,
+        n_iter=500,
+        verbose=False,
+        threads=1
+    )
+
+    target_components = np.load('tests/data/_dictionary_spams/dico_spams_trained_warm.npy')
+
+    np.testing.assert_array_almost_equal(dico.components, target_components, decimal=9)
 
 
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
