@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import pytest
 
@@ -22,7 +24,7 @@ def wave_pos_clean(file_clean):
 @pytest.fixture
 def components_init():
     return np.load('tests/data/_dictionary_spams/dico_spams_initial.npy').T
-@pytest.fixture
+@pytest.fixture(scope='module')
 def components_trained():
     return np.load('tests/data/_dictionary_spams/dico_spams_trained.npy').T
 
@@ -90,7 +92,7 @@ def dico_initial(strains_clean, wave_pos_clean):
 
 
 @pytest.fixture(scope='module')
-def dico_trained(dico_initial, strains_clean, wave_pos_clean):
+def dico_trained(dico_initial, strains_clean, wave_pos_clean, components_trained):
     training_patches = clawdia.lib.extract_patches(
         strains_clean,
         patch_size=64,
@@ -107,6 +109,11 @@ def dico_trained(dico_initial, strains_clean, wave_pos_clean):
         verbose=False,
         threads=1
     )
+    # Ensure the trained atoms are the same. This is necessary because
+    # the training patches are also randomized inside `spams.trainDL`, which
+    # uses a platform-dependent random number generator.
+    dico.components = components_trained.copy()
+
     return dico
 
 
@@ -118,8 +125,26 @@ def test___init__(dico_initial, components_init):
     np.testing.assert_array_almost_equal(dico_initial.components, components_init, decimal=9)
 
 
-def test_train(dico_trained, components_trained):
-    np.testing.assert_array_almost_equal(dico_trained.components, components_trained, decimal=9)
+@pytest.mark.skipif(os.name != 'posix', reason='random reproducibility of SPAM only guaranteed on Linux')
+def test_train(strains_clean, wave_pos_clean, dico_initial, components_trained):
+    training_patches = clawdia.lib.extract_patches(
+        strains_clean,
+        patch_size=64,
+        limits=wave_pos_clean,
+        n_patches=100,
+        random_state=84,
+        l2_normed=True,
+        allow_allzeros=False
+    )
+    dico = dico_initial.copy()
+    dico.train(
+        training_patches,
+        n_iter=1000,
+        verbose=False,
+        threads=1
+    )
+
+    np.testing.assert_array_almost_equal(dico.components, components_trained, decimal=9)
 
 
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
