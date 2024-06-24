@@ -23,10 +23,10 @@ def wave_pos_clean(file_clean):
 
 @pytest.fixture
 def components_init():
-    return np.load('tests/data/_dictionary_spams/dico_spams_initial.npy').T
+    return np.load('tests/data/_dictionary_spams/dico_spams_initial.npy')
 @pytest.fixture(scope='module')
 def components_trained():
-    return np.load('tests/data/_dictionary_spams/dico_spams_trained.npy').T
+    return np.load('tests/data/_dictionary_spams/dico_spams_trained.npy')
 
 
 @pytest.fixture(scope='module')
