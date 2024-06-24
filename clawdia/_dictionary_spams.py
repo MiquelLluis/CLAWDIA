@@ -713,6 +713,14 @@ class DictionarySpams:
             dico_copy.dict_init = self.dict_init
 
         return dico_copy
+    
+    def reset(self):
+        """Reset the dictionary to its initial (untrained) state."""
+
+        self.components = self.dict_init
+        self.trained = False
+        self.n_train = None
+        self.t_train = None
 
     def _check_initial_parameters(self, signal_pool, ignore_completeness):
         # Explicit initial dictionary.

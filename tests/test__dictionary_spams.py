@@ -266,3 +266,14 @@ def test_optimum_reconstruct(dico_trained, target_optimum_reconstruct):
     np.testing.assert_array_almost_equal(rec, target_optimum_reconstruct['reconstruction'], decimal=9)
     assert l_opt == pytest.approx(target_optimum_reconstruct['l_opt'].item())
     assert loss == pytest.approx(target_optimum_reconstruct['loss'].item())
+
+
+def test_reset(dico_initial, dico_trained):
+    dico = dico_trained.copy()
+    dico.reset()
+
+    np.testing.assert_array_equal(dico.components, dico_initial.components)
+    np.testing.assert_array_equal(dico.dict_init, dico_initial.dict_init)
+    assert not dico.trained
+    assert dico.n_train is None
+    assert dico.t_train is None
