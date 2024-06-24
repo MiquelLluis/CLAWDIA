@@ -10,15 +10,15 @@ __all__ = ['load', 'save', 'DictionarySpams', 'DictionaryLRSDL']
 def load(file):
     dico_raw = dict(np.load(file, allow_pickle=True))
 
-    if 'lambd2' in dico_raw:
-        # Initialize LRSDL instance
+    # Initialize the correct dictionary instance.
+    if 'lambd2' in dico_raw:  # LRSDL
         dico = DictionaryLRSDL(
             lambd=dico_raw.pop('lambd'), lambd2=dico_raw.pop('lambd2'), eta=dico_raw.pop('eta'),
             k=dico_raw.pop('k'), k0=dico_raw.pop('k0'), updateX_iters=dico_raw.pop('updateX_iters'),
             updateD_iters=dico_raw.pop('updateD_iters')
         )
     
-    else:
+    else:  # SPAMS
         dict_init = dico_raw.pop('dict_init')
         
         # For backwards compatibility with versions previous to v0.4,
@@ -27,7 +27,6 @@ def load(file):
             print('dict_init')
             dict_init = dict_init.T
         
-        # Initialize DictionarySpams instance
         dico = DictionarySpams(dict_init=dict_init)
 
 
@@ -44,6 +43,12 @@ def load(file):
             value = value.T
 
         setattr(dico, key, value)
+    
+    # In case of loading older instances in which this attribute
+    # didn't exist, it is set to the default of spams.trainDL.
+    # This way it should produce the same results as before.
+    if isinstance(dico, DictionarySpams) and not hasattr(dico, 'modeD_traindl'):
+        dico.modeD_traindl = 0
 
     return dico
 

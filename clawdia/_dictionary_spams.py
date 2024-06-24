@@ -32,6 +32,14 @@ class DictionarySpams:
     components : array(d_size, a_length)
         Atoms of the current dictionary.
 
+    model : tuple
+        SPAMS' trainDL model components in the form (A, B, iter).
+        
+        If the initial dictionary is already trained, and it is desired to
+        continue training it (warm start), 'model' must be provided at
+        initialization.
+        See [1] for more information.
+
     d_size, a_length : int
         Size of the dictionary.
     
@@ -79,6 +87,7 @@ class DictionarySpams:
     def __init__(self,
                  # Init 1)
                  dict_init=None,
+                 model=None,
                  # Init 2)
                  signal_pool=None, a_length=None, d_size=None, wave_pos=None,
                  patch_min=1, l2_normed=True, allow_allzeros=True,
@@ -110,6 +119,12 @@ class DictionarySpams:
         dict_init : 2d-array(d_size, a_length), optional
             Atoms of the initial dictionary.
             If None, 'signal_pool' must be given.
+
+        model : dict
+            SPAMS' trainDL model components with the elements {A, B, iter}.
+            If the dictionary is already trained, and it is desired to continue
+            training it (warm start), 'model' must be provided.
+            See [1] for more information.
 
         signal_pool : 2d-array(signals, samples), optional
             Set of signals from where to randomly extract the atoms.
@@ -185,6 +200,7 @@ class DictionarySpams:
             A word or note to identify the dictionary.
         
         """
+        self.model = model
         self.dict_init = dict_init
         self.components = dict_init
         self.a_length = a_length
@@ -220,8 +236,16 @@ class DictionarySpams:
             )
             self.components = self.dict_init
 
-    def train(self, patches, lambda1=None, n_iter=None, verbose=False, threads=-1, **kwargs):
-        """Train the dictionary with a set of patches.
+    def train(self, patches, lambda1=None, n_iter=None, warm_start=False,
+              verbose=False, threads=-1, **kwargs):
+        """Train the dictionary.
+
+        Train the dictionary with the given patches.
+
+        This also allows a warm start using the previous components as initial
+        dictionary, but only if the lambda1 parameter is the same. It can be
+        thought of as adding more iterations to the training. Hence, providing
+        different patches is discouraged and untested.
 
         Parameters
         ----------
@@ -238,6 +262,11 @@ class DictionarySpams:
             during the corresponding number of seconds.
             For instance `n_iter = -5` trains the dictionary during 5 seconds.
 
+        warm_start : bool
+            If True, use the previous components as initial dictionary.
+            It can be thought of as adding more iterations to the training.
+            Providing different patches is discouraged and untested.
+
         verbose : bool, optional
             If True print the iterations (might not be shown in real time).
 
@@ -250,6 +279,13 @@ class DictionarySpams:
         Additional parameters will be passed to the SPAMS training function.
 
         """
+        if self.trained:
+            if not warm_start:
+                raise ValueError("the dictionary has already been trained")
+            if lambda1 is not None and lambda1 != self.lambda1:
+                raise ValueError("the 'lambda1' parameter must be the same "
+                                 "as the one used at the previous training")
+
         if patches.shape[1] != self.a_length:
             raise ValueError("the length of 'patches' must be the same as the"
                              " atoms of the dictionary")
@@ -257,25 +293,20 @@ class DictionarySpams:
         if n_iter is None and self.n_iter is None:
             raise TypeError("'n_iter' not specified")
             
-        if lambda1 is not None:
-            self.lambda1 = lambda1
-        elif self.lambda1 is None:
-            raise TypeError("'lambda1' not specified")
-
-        self.n_train = patches.shape[0]
-
-        # In case of loading older instances in which this attribute didn't
-        # exist, it is set to the default of spams.trainDL. This way it should
-        # produce the same results as before.
-        if not hasattr(self, 'modeD_traindl'):
-            self.modeD_traindl = 0
+        if lambda1 is None:
+            if self.lambda1 is None:
+                raise TypeError("'lambda1' not specified")
+            
+            lambda1 = self.lambda1
 
         tic = time.time()
         components, model = spams.trainDL(
-            patches.T,           # SPAMS works with Fortran order.
-            D=self.dict_init.T,  #
+            patches.T,            # SPAMS works with Fortran order.
+            D=self.components.T,  #
+            model=self.model,
             batchsize=self.batch_size,
-            lambda1=self.lambda1,
+            K=self.d_size,  # In SPAMS argo, the dictionary size is the number of atoms.
+            lambda1=lambda1,
             iter=n_iter,
             mode=self.mode_traindl,
             modeD=self.modeD_traindl,
@@ -285,16 +316,28 @@ class DictionarySpams:
             **kwargs
         )
         self.components = components.T
+        self.model = model
         tac = time.time()
 
-        self.trained = True
+        if warm_start:
+            if n_iter < 0:
+                self.n_iter += model['iter']
+                self.t_train += -n_iter
+            else:
+                self.n_iter += n_iter
+                self.t_train += tac - tic
 
-        if n_iter < 0:
-            self.n_iter = model['iter']
-            self.t_train = -n_iter
         else:
-            self.n_iter = n_iter
-            self.t_train = tac - tic
+            self.trained = True
+            self.lambda1 = lambda1
+            self.n_train = patches.shape[0]
+
+            if n_iter < 0:
+                self.n_iter = model['iter']
+                self.t_train = -n_iter
+            else:
+                self.n_iter = n_iter
+                self.t_train = tac - tic
 
     def _reconstruct_single(self, signal, sc_lambda, step=1, **kwargs_lasso):
         # TODO: Add kwarg option to disable the patch normalization.
@@ -698,6 +741,7 @@ class DictionarySpams:
         """
         dico_copy = DictionarySpams(
             dict_init=self.components.copy(),
+            model=self.model,
             lambda1=self.lambda1,
             batch_size=self.batch_size,
             identifier=self.identifier,
