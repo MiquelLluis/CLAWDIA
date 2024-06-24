@@ -126,7 +126,7 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
         maximum amount.
 
     random_state: {None, int, array_like[ints], SeedSequence, BitGenerator, Generator}, optional
-        Given to 'numpy.random.default_rng(random_state)'.
+        Given to 'numpy.random.PCG64(random_state)'.
 
     step: int, optional
         Minimum windowing step (separation between patches).
@@ -161,7 +161,7 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
     # Compute the maximum patches per signal that can be obtained with the
     # given 'step' ignoring the limits.
 
-    rng = np.random.default_rng(random_state)
+    rng = np.random.Generator(np.random.PCG64(random_state))
     n_signals, l_signals = signals.shape
     max_pps = (l_signals - patch_size) / step + 1
     if not max_pps.is_integer() and limits is None and n_signals == 1:
