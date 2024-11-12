@@ -540,18 +540,53 @@ class DictionarySpams:
     def reconstruct_iterative_minibatch(self, signals, sc_lambda=0.01, step=1, batchsize=64,
                                         max_iter=100, threshold=0.001, normed=True,
                                         full_output=False, verbose=True, kwargs_lasso={}):
-        """Reconstruct multiple signals by iterative subtraction.
+        """Reconstruct multiple signals using iterative residual subtraction.
 
-        Each signal is reconstructed by iteratively performing a reconstruction
-        of the input signal, subtracting it to the original, and then
-        performing again the reconstruction on the residual until the relative
-        difference between consecutive residuals is below a certain threshold.
+        This method reconstructs each signal by iteratively updating and
+        accumulating reconstructions. In the first iteration, the original 
+        input signal is reconstructed and then subtracted from itself to 
+        obtain the initial residual. In each subsequent iteration, a new 
+        reconstruction is generated from the current residual and subtracted 
+        from it, producing an updated residual for the next iteration, while 
+        also being added to the cumulative reconstruction. The process 
+        repeats until the Euclidean norm of the difference between consecutive 
+        residuals falls below a specified threshold, which sets the convergence 
+        criterion.
 
-        NOTE: During the step reconstructions, the windows into which each
+        NOTE: In contrast with the usual procedure, the windows into which each
         signal is split are not normalized. This is needed to enhance the
         dictionary discrimination. Otherwise, the residuals are amplified at
         each iteration, the algorithm takes longer to converge, and some
         ad-hoc tests showed it also messes up with the resulting shape.
+
+        Parameters
+        ----------
+        signals : ndarray
+            Input signals to be reconstructed, with each signal along the first dimension.
+        sc_lambda : float, optional
+            Sparsity control parameter for reconstruction.
+        step : int, optional
+            Step size for the reconstruction.
+        batchsize : int, optional
+            Number of signals processed in each minibatch.
+        max_iter : int, optional
+            Maximum number of iterations before stopping.
+        threshold : float, optional
+            Convergence threshold based on the relative change in residuals.
+        normed : bool, optional
+            If True, the reconstructed signals are normalized after convergence.
+        full_output : bool, optional
+            If True, returns additional output values (residuals and iteration counts).
+        verbose : bool, optional
+            If True, prints progress information at each iteration.
+        kwargs_lasso : dict, optional
+            Additional arguments for the Lasso reconstruction method.
+
+        Returns
+        -------
+        ndarray or tuple
+            The final reconstructed signals. If `full_output` is True, also returns the residuals
+            and the number of iterations per signal.
 
         """
         n_signals = signals.shape[0]
