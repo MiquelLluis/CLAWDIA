@@ -290,8 +290,11 @@ class DictionarySpams:
             raise ValueError("the length of 'patches' must be the same as the"
                              " atoms of the dictionary")
         
-        if n_iter is None and self.n_iter is None:
-            raise TypeError("'n_iter' not specified")
+        if n_iter is None:
+            if self.n_iter is None:
+                raise TypeError("'n_iter' not specified")
+            else:
+                n_iter = self.n_iter
             
         if lambda1 is None:
             if self.lambda1 is None:
