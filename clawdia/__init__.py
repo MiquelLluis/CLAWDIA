@@ -7,4 +7,4 @@ from . import lib
 from . import pipeline
 
 
-__version__ = '0.4.0'
+__version__ = '0.4.1'
