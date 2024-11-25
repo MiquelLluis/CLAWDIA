@@ -1,3 +1,4 @@
+from colorsys import rgb_to_hls, hls_to_rgb
 import itertools as it
 
 import matplotlib as mpl
@@ -6,7 +7,8 @@ import numpy as np
 import scipy as sp
 
 
-def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None, **kwargs):
+def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None,
+                   cmap="PaleBlues", **kwargs):
     """Plot a confusion matrix.
 
     Plot a pre-computed confusion matrix `cmat`.
@@ -46,6 +48,9 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
     
     vmax : float, optional
         The maximum value of the color scale.
+
+    cmap : Function (matplotlib's Colormap equivalent) | str
+        Defaults to "PaleBlue", a custom modification of Matplotlib's "Blues".
     
     **kwargs
         Additional keyword arguments are passed to `matplotlib.pyplot.subplots`.
@@ -73,6 +78,12 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
         format_str = lambda *args: str(args[0])
     else:
         raise ValueError("mode can only be 'absolute', 'percent' or 'both'")
+    
+    if not callable(cmap):
+        if cmap == "PaleBlues":
+            cmap = _desaturate_cmap(plt.cm.Blues, desaturation_factor=0.8, brightness_boost=0.2)
+        else:
+            raise ValueError("Colormap not recognized")
 
     n_classes = len(cmat)
 
@@ -85,7 +96,8 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
     
     if vmax is None:
         vmax = 1.2
-    ax.imshow(cmat_perc, cmap=plt.get_cmap('Blues'), vmin=vmin, vmax=vmax)
+
+    ax.imshow(cmat_perc, cmap=cmap, vmin=vmin, vmax=vmax)
     
     for i_true, i_pred in it.product(range(n_classes), repeat=2):
         ax.annotate(cmat_str[i_true, i_pred], xy=(i_pred, i_true), ha='center', va='center')
@@ -163,3 +175,34 @@ def plot_spec_of(strain, figsize=(10,5), sf=4096, window='hann', vmin=None, vmax
     pcm = ax.pcolormesh(tt, ff, spec, norm=norm)
 
     return fig, spec, pcm
+
+
+def _desaturate_cmap(cmap, *, desaturation_factor, brightness_boost):
+    """
+    Desaturate and brighten a colormap.
+
+    Parameters
+    ----------
+    cmap : matplotlib.colors.Colormap
+        The original colormap to modify.
+    desaturation_factor : float
+        The factor by which to reduce the saturation (0 = grayscale, 1 = no change).
+    brightness_boost : float
+        The amount to increase the brightness (lightness) (0 = no change).
+
+    Returns
+    -------
+    LinearSegmentedColormap
+        The modified colormap with reduced saturation and increased brightness.
+    """
+    colors = cmap(np.linspace(0, 1, 256))  # Extract RGB colors
+    modified_colors = []
+
+    for r, g, b, a in colors:  # Process each RGBA color
+        h, l, s = rgb_to_hls(r, g, b)  # Convert to HLS
+        s *= desaturation_factor  # Reduce saturation
+        l = min(l + brightness_boost * (1 - l), 1.0)  # Adjust brightness, ensure no overflow
+        r, g, b = hls_to_rgb(h, l, s)  # Convert back to RGB
+        modified_colors.append((r, g, b, a))  # Add the alpha channel back
+
+    return mpl.colors.LinearSegmentedColormap.from_list("DesaturatedBrightenedBlues", modified_colors)
