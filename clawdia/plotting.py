@@ -82,8 +82,10 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
     if not callable(cmap):
         if cmap == "PaleBlues":
             cmap = _desaturate_cmap(plt.cm.Blues, desaturation_factor=0.8, brightness_boost=0.2)
+        elif isinstance(cmap, str):
+            cmap = plt.get_cmap(cmap)
         else:
-            raise ValueError("Colormap not recognized")
+            raise TypeError("Colormap not recognized")
 
     n_classes = len(cmat)
 
