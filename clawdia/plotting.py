@@ -61,12 +61,12 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
     
     if mode == 'both':
         if plt.rcParams["text.usetex"]:
-            format_str = lambda *args: '{}\n{:.0%}'.format(*args).replace('%', r'\%')
+            format_str = lambda *args: '{}\n{:.0%}'.format(*args).replace('%', r'\,\%')
         else:
             format_str = lambda *args: '{}\n{:.0%}'.format(*args)
     elif mode == 'percent':
         if plt.rcParams["text.usetex"]:
-            format_str = lambda *args: '{:.0%}'.format(args[1]).replace('%', r'\%')
+            format_str = lambda *args: '{:.0%}'.format(args[1]).replace('%', r'\,\%')
         else:
             format_str = lambda *args: '{:.0%}'.format(args[1])
     elif mode == 'absolute':
