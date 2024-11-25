@@ -93,9 +93,6 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
 
     if ax is None:
         fig, ax = plt.subplots(**kwargs)
-    
-    if vmax is None:
-        vmax = 1.2
 
     ax.imshow(cmat_perc, cmap=cmap, vmin=vmin, vmax=vmax)
     
