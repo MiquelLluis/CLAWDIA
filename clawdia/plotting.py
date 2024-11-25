@@ -6,14 +6,28 @@ import numpy as np
 import scipy as sp
 
 
-def plot_confusion(cmat, ax=None, labels=None, mode='both', invert_axis=False, vmin=None, vmax=None, **kwargs):
+def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None, **kwargs):
     """Plot a confusion matrix.
+
+    Plot a pre-computed confusion matrix `cmat`.
+    Rows must contain true values, and columns predicted values. For example,
+    in a binary classification case:
+
+    | T \ P  | Pred 0  | Pred 1  |
+    |--------|---------|---------|
+    | True 0 | TP      | FN      |
+    | True 1 | FP      | TN      |
+
+    Where:
+    - **TP** (True Positives): Correctly predicted Class 0.
+    - **FN** (False Negatives): Class 0 incorrectly predicted as Class 1.
+    - **FP** (False Positives): Class 1 incorrectly predicted as Class 0.
+    - **TN** (True Negatives): Correctly predicted Class 1.
 
     Parameters
     ----------
     cmat : array-like of shape (n_classes, n_classes)
-        The confusion matrix to plot, with true label being i-th class and
-        predicted label being j-th class.
+        The confusion matrix to plot.
     
     ax : matplotlib.axes.Axes, optional
         The axes on which to plot the matrix. If not given, a new figure and axes
@@ -26,10 +40,6 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', invert_axis=False, v
     mode : {'absolute', 'percent', 'both'}
         The format of the annotations: absolute numbers, percentages, or both.
         Defaults to 'both'.
-    
-    invert_axis : bool
-        If True, invert the axes of the plot (predicted values at the abscissa).
-        Defaults to False (predicted values at the ordinate).
     
     vmin : float, optional
         The minimum value of the color scale.
@@ -46,19 +56,19 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', invert_axis=False, v
         The figure containing the plot, or None if `ax` was given.
 
     """
-    if invert_axis:
-        cmat = cmat.T
-        axis = 1
-    else:
-        axis = 0
-
     with np.errstate(divide='ignore', invalid='ignore'):
-        cmat_perc = np.nan_to_num(cmat / np.sum(cmat, axis=axis, keepdims=True))
+        cmat_perc = np.nan_to_num(cmat / np.sum(cmat, axis=1, keepdims=True))
     
     if mode == 'both':
-        format_str = lambda *args: '{}\n{:.0%}'.format(*args)
+        if plt.rcParams["text.usetex"]:
+            format_str = lambda *args: '{}\n{:.0%}'.format(*args).replace('%', r'\%')
+        else:
+            format_str = lambda *args: '{}\n{:.0%}'.format(*args)
     elif mode == 'percent':
-        format_str = lambda *args: '\n{:.0%}'.format(args[1])
+        if plt.rcParams["text.usetex"]:
+            format_str = lambda *args: '{:.0%}'.format(args[1]).replace('%', r'\%')
+        else:
+            format_str = lambda *args: '{:.0%}'.format(args[1])
     elif mode == 'absolute':
         format_str = lambda *args: str(args[0])
     else:
@@ -68,7 +78,7 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', invert_axis=False, v
 
     cmat_str = np.empty_like(cmat_perc, dtype=object)
     for i_true, i_pred in it.product(range(n_classes), repeat=2):
-        cmat_str[i_true,i_pred] = format_str(cmat[i_true,i_pred], cmat_perc[i_true,i_pred])
+        cmat_str[i_true, i_pred] = format_str(cmat[i_true, i_pred], cmat_perc[i_true, i_pred])
 
     if ax is None:
         fig, ax = plt.subplots(**kwargs)
@@ -78,31 +88,34 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', invert_axis=False, v
     ax.imshow(cmat_perc, cmap=plt.get_cmap('Blues'), vmin=vmin, vmax=vmax)
     
     for i_true, i_pred in it.product(range(n_classes), repeat=2):
-        ax.annotate(cmat_str[i_true,i_pred], xy=(i_pred,i_true), ha='center', va='center')
+        ax.annotate(cmat_str[i_true, i_pred], xy=(i_pred, i_true), ha='center', va='center')
     
     ax.grid(False)
 
-    if invert_axis:
-        ax.set_xlabel("Predicted")
-        ax.set_ylabel("Actual")
-    else:
-        ax.set_xlabel("Actual")
-        ax.set_ylabel("Predicted")
+    # Set X and Y labels
+    ax.set_xlabel("Predicted")
+    ax.set_ylabel("True")
 
+    # Set ticks
     ax.set_xticks(range(n_classes))
     ax.set_yticks(range(n_classes))
     
     ax.set_xlim([-0.5, n_classes-0.5])
-    ax.set_ylim([-0.5, n_classes-0.5])
+    ax.set_ylim([n_classes-0.5, -0.5])  # Invert Y-axis
 
     if labels is not None:
         ax.set_xticklabels(labels)
         ax.set_yticklabels(labels)
 
+    # Move X-axis ticks and label to the top
+    ax.xaxis.tick_top()
+    ax.xaxis.set_label_position('top')
+
     try:
         return fig
     except NameError:
         return None
+
 
 
 def plot_dictionary(array, c=None, ylim=None, **plot_kw):
