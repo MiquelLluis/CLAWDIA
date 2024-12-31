@@ -1,10 +1,13 @@
 from colorsys import rgb_to_hls, hls_to_rgb
 import itertools as it
+import warnings
 
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import numpy as np
 import scipy as sp
+
+# from gwadama.fat import instant_frequency  # IMPORTED INSIDE THE SPECTROGRAM FUNCTION
 
 
 def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None,
@@ -174,6 +177,187 @@ def plot_spec_of(strain, figsize=(10,5), sf=4096, window='hann', vmin=None, vmax
     pcm = ax.pcolormesh(tt, ff, spec, norm=norm)
 
     return fig, spec, pcm
+
+
+def plot_spectrogram(strain_array, time_array, sampling_rate=2**14,
+                     outseg=None, outfreq=None,
+                     window=sp.windows.tukey(128,0.5), hop=32, mfft=2**14,
+                     vmin=-22, ax=None):
+    """Plot the spectrogram of the strain, with a time-domain plot on top.
+
+    This function computes the Short-Time Fourier Transform (STFT) of the
+    provided `strain_array` to generate a spectrogram, which is plotted on a
+    2D color map with a normalized logarithmic scale of the power spectral
+    density (PSD).
+
+    Additionally, the time-domain gravitational wave signal is overlaid as a
+    separate plot above the spectrogram.
+
+    The plot features the following characteristics:
+    - **Spectrogram**: Shows the frequency evolution of the gravitational wave
+        signal in time with a colormap (`inferno`). The x-axis represents time
+        (in milliseconds), and the y-axis represents frequency (in Hz).
+    - **Energy Normalization**: The color of the spectrogram reflects the
+        logarithmic scale of the energy in the signal (using `log10(sqrt(Sxx))`).
+    - **Dynamic Range Control**: You can adjust the minimum dynamic range using
+        the `vmin` parameter to emphasize specific parts of the energy spectrum.
+    - **Time-Domain Waveform**: Above the spectrogram, the original
+        gravitational wave strain data is plotted in the time domain, showing
+        the raw signal's amplitude variation over time.
+    - **Optional Segmentation**: You can specify limits for the x-axis (time)
+        and y-axis (frequency) using `outseg` and `outfreq`, respectively.
+    - **Grid and Customizations**: The plot has a black background, white grid
+        lines, and labeled colorbars for better visualization.
+
+    Parameters
+    ----------
+    strain_array : numpy.ndarray
+        The time-domain strain data of the gravitational wave signal.
+    
+    time_array : numpy.ndarray
+        Array representing the time stamps corresponding to the strain data.
+    
+    sampling_rate : int, optional
+        The sampling rate of the data, in Hz (default is 2**14, or 16384 Hz).
+    
+    outseg : tuple, optional
+        A tuple specifying the time range (start, end) in seconds for the
+        x-axis. If `None`, the full time range of the input data is used.
+    
+    outfreq : tuple, optional
+        A tuple specifying the frequency range (start, end) in Hz for the
+        y-axis. If `None`, the full frequency range (up to Nyquist frequency)
+        is used.
+    
+    window : numpy.ndarray, optional
+        The window function applied during STFT computation (default is a Tukey
+        window).
+    
+    hop : int, optional
+        The hop size between successive STFT windows (default is 32).
+    
+    mfft : int, optional
+        The number of points in the FFT used for STFT computation (default is
+        2**14).
+    
+    vmin : float, optional
+        The minimum value for the color scale in the spectrogram (default is
+        -22). Adjusts the dynamic range of the plot.
+    
+    ax : matplotlib.axes.Axes, optional
+        The axes object on which to plot the spectrogram. If `None`, a new
+        figure and axes are created.
+    
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure object containing the plot.
+    
+    axs : List[matplotlib.axes.Axes]
+        The axes objects containing the spectrogram, the colorbar and the
+        time-domain plots.
+    
+    Sxx : numpy.ndarray
+        The computed spectrogram (PSD values) of the input strain data.
+
+    """
+    from gwadama.fat import instant_frequency
+
+    # Compute the spectrogram using the ShortTimeFFT class.
+    stfft_model = sp.signal.ShortTimeFFT(
+        win=window, hop=hop, fs=sampling_rate, mfft=mfft,
+        fft_mode='onesided', scale_to='psd'
+    )
+    Sxx = stfft_model.spectrogram(strain_array)
+    with np.errstate(divide='ignore'):
+        normalized_Sxx = np.log10(np.sqrt(Sxx))
+    normalized_Sxx -= np.max(normalized_Sxx)
+    t0, t1, f0, f1 = stfft_model.extent(len(strain_array))
+    t_origin = time_array[0]
+    t0 += t_origin
+    t1 += t_origin
+
+    if ax is None:
+        fig, ax = plt.subplots()
+    else:
+        fig = ax.get_figure()
+
+    # SPECTROGRAM (ax1)
+    ax.imshow(normalized_Sxx, cmap='inferno', origin='lower', aspect='auto',
+              extent=(t0,t1,f0,f1), interpolation='lanczos', vmin=vmin)
+    # ...and Instant Frequency
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)
+        instant_freq = instant_frequency(strain_array, sample_rate=sampling_rate)
+    length = len(strain_array)
+    t1_instant = t_origin + (length-1)/sampling_rate
+    instant_time = np.linspace(t_origin, t1_instant, length)
+    mask = instant_freq >= 0  # Remove non-physical frequencies
+    instant_freq = instant_freq[mask]
+    instant_time = instant_time[mask]
+    ax.plot(instant_time, instant_freq, 'purple', lw=2)
+    
+    # COLORBAR (ax2)
+    ax_pos = ax.get_position()
+    ax2_width = 0.015  # Set the width of the colorbar axis
+    ax2_pad = 0.01    # Set the padding between the spectrogram and colorbar
+    ax2_x = ax_pos.x1 + ax2_pad
+    ax2 = fig.add_axes([ax2_x, ax_pos.y0, ax2_width, ax_pos.height])
+    cbar = fig.colorbar(ax.images[-1], cax=ax2)
+    
+    # LABELS, LIMITS, ETC
+    ax.grid(True, ls='--', alpha=.4)
+    # ...limits
+    if outseg is None:
+        ax.set_xlim(time_array[0], time_array[-1])
+    else:
+        ax.set_xlim(*outseg)
+    if outfreq is None:
+        ax.set_ylim(0, sampling_rate/2)
+    else:
+        ax.set_ylim(*outfreq)
+    # ...labels.
+    ax.set_xlabel('Time [ms]')
+    ax.set_ylabel('Frequency [kHz]')
+    cbar.set_label('Normalized energy')
+    # ...Y ticks to kHz
+    ax.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(lambda x, pos: f'{x / 1000:.0f}'))
+    # ...X ticks to milliseconds and avoid roundoff errors.
+    # ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))  # Set style first, for new ticklabels.
+    xticks = ax.get_xticks()
+    ax.set_xticks(xticks)
+    # ax.set_xticklabels(np.round(xticks * 1000).astype(int))
+    ax.set_xticklabels(np.round(xticks*1000, decimals=1))
+    # ...background in black to match the colormap.
+    ax.set_facecolor('black')
+
+    # GW IN TIME-DOMAIN ON TOP OF THE SPECTROGRAM (ax3)
+    ax3 = fig.add_axes([ax_pos.x0, ax_pos.y0+ax_pos.height+0.03, ax_pos.width, ax_pos.height*0.2])
+    ax3.plot(time_array, strain_array, c='black', lw=1, alpha=1)
+    ax3.set_xlim(ax.get_xlim())
+    ax3.set_ylim(np.min(strain_array), np.max(strain_array))
+    ax3.axis('off')
+
+    # # DEBUG AXES AREA [
+    # from matplotlib import patches
+    # ax3_pos = ax3.get_position()
+    # ax2_pos = ax2.get_position()
+    # # Create a rectangle for the main axis (ax)
+    # ax_rect = patches.Rectangle((ax_pos.x0, ax_pos.y0), ax_pos.width, ax_pos.height,
+    #                             linewidth=3, edgecolor='r', facecolor='none', label='ax')
+    # # Create a rectangle for the colorbar axis (ax2)
+    # ax2_rect = patches.Rectangle((ax2_pos.x0, ax2_pos.y0), ax2_pos.width, ax2_pos.height,
+    #                             linewidth=3, edgecolor='b', facecolor='none', label='ax2')
+    # # Create a rectangle for the time-domain axis (ax3)
+    # ax3_rect = patches.Rectangle((ax3_pos.x0, ax3_pos.y0), ax3_pos.width, ax3_pos.height,
+    #                             linewidth=3, edgecolor='g', facecolor='none', label='ax3')
+    # # Add the rectangles to the figure
+    # fig.add_artist(ax_rect)
+    # fig.add_artist(ax2_rect)
+    # fig.add_artist(ax3_rect)
+    # # ]
+    
+    return fig, [ax, ax2, ax3], Sxx
 
 
 def _desaturate_cmap(cmap, *, desaturation_factor, brightness_boost):
