@@ -179,35 +179,41 @@ def plot_spec_of(strain, figsize=(10,5), sf=4096, window='hann', vmin=None, vmax
     return fig, spec, pcm
 
 
-def plot_spectrogram_and_strain(strain_array, time_array, sampling_rate=2**14,
-                     outseg=None, outfreq=None,
-                     window=sp.windows.tukey(128,0.5), hop=32, mfft=2**14,
-                     vmin=-22, ax=None):
-    """Plot the spectrogram of the strain, with a time-domain plot on top.
+def plot_spectrogram_with_instantaneous_features(
+        strain_array, time_array, sampling_rate=2**14, outseg=None, outfreq=None,
+        window=sp.signal.windows.tukey(128,0.5), hop=32, mfft=2**14, vmin=-22, ax=None):
+    """
+    Plot the spectrogram, instantaneous frequency, and strain's waveform.
 
-    This function computes the Short-Time Fourier Transform (STFT) of the
-    provided `strain_array` to generate a spectrogram, which is plotted on a
-    2D color map with a normalized logarithmic scale of the power spectral
-    density (PSD).
+    This function generates a multi-panel plot consisting of:
+    
+    1. A spectrogram of the gravitational wave strain, obtained using
+    Short-Time Fourier Transform (STFT), visualizing the frequency evolution
+    over time.
+    2. The instantaneous frequency of the strain, plotted on top of the
+    spectrogram to show the frequency changes in real time.
+    3. The raw gravitational wave strain in the time domain, shown above the
+    spectrogram for direct comparison.
 
-    Additionally, the time-domain gravitational wave signal is overlaid as a
-    separate plot above the spectrogram.
-
-    The plot features the following characteristics:
-    - **Spectrogram**: Shows the frequency evolution of the gravitational wave
-        signal in time with a colormap (`inferno`). The x-axis represents time
-        (in milliseconds), and the y-axis represents frequency (in Hz).
-    - **Energy Normalization**: The color of the spectrogram reflects the
-        logarithmic scale of the energy in the signal (using `log10(sqrt(Sxx))`).
-    - **Dynamic Range Control**: You can adjust the minimum dynamic range using
-        the `vmin` parameter to emphasize specific parts of the energy spectrum.
-    - **Time-Domain Waveform**: Above the spectrogram, the original
-        gravitational wave strain data is plotted in the time domain, showing
-        the raw signal's amplitude variation over time.
-    - **Optional Segmentation**: You can specify limits for the x-axis (time)
-        and y-axis (frequency) using `outseg` and `outfreq`, respectively.
-    - **Grid and Customizations**: The plot has a black background, white grid
-        lines, and labeled colorbars for better visualization.
+    Key features of the plot:
+    - **Spectrogram**: The frequency content of the gravitational wave signal
+      is displayed over time using a color map (`inferno`), with the x-axis
+      representing time (in milliseconds) and the y-axis representing
+      frequency (in Hz).
+    - **Instantaneous Frequency**: Plots the instantaneous frequency of the
+      strain over time, highlighting the frequency variations.
+    - **Energy Normalization**: The spectrogram uses a logarithmic scale for
+      the energy (power spectral density, PSD), normalized by the maximum
+      energy value in the signal.
+    - **Dynamic Range Control**: The color scale of the spectrogram can be
+      adjusted via the `vmin` parameter to emphasize specific energy levels.
+    - **Time-Domain Waveform**: A plot of the original strain data in the time
+      domain is shown above the spectrogram, providing context for the signal's
+      evolution.
+    - **Segmentation**: The user can specify the time (`outseg`) and frequency
+      (`outfreq`) ranges to focus on specific parts of the data.
+    - **Customization**: The plot has a black background, white grid lines,
+      and labeled colorbars for clarity.
 
     Parameters
     ----------
@@ -215,14 +221,14 @@ def plot_spectrogram_and_strain(strain_array, time_array, sampling_rate=2**14,
         The time-domain strain data of the gravitational wave signal.
     
     time_array : numpy.ndarray
-        Array representing the time stamps corresponding to the strain data.
+        Array of time stamps corresponding to the strain data.
     
     sampling_rate : int, optional
-        The sampling rate of the data, in Hz (default is 2**14, or 16384 Hz).
+        The sampling rate of the data in Hz (default is 2^14, or 16384 Hz).
     
     outseg : tuple, optional
         A tuple specifying the time range (start, end) in seconds for the
-        x-axis. If `None`, the full time range of the input data is used.
+        x-axis. If `None`, the entire time range of the input data is used.
     
     outfreq : tuple, optional
         A tuple specifying the frequency range (start, end) in Hz for the
@@ -230,19 +236,19 @@ def plot_spectrogram_and_strain(strain_array, time_array, sampling_rate=2**14,
         is used.
     
     window : numpy.ndarray, optional
-        The window function applied during STFT computation (default is a Tukey
-        window).
+        The window function applied during STFT computation (default is a
+        Tukey window).
     
     hop : int, optional
         The hop size between successive STFT windows (default is 32).
     
     mfft : int, optional
-        The number of points in the FFT used for STFT computation (default is
-        2**14).
+        The number of points in the FFT used for STFT computation (default
+        is 2^14).
     
     vmin : float, optional
-        The minimum value for the color scale in the spectrogram (default is
-        -22). Adjusts the dynamic range of the plot.
+        The minimum value for the color scale in the spectrogram (default
+        is -22). This controls the dynamic range of the color map.
     
     ax : matplotlib.axes.Axes, optional
         The axes object on which to plot the spectrogram. If `None`, a new
@@ -251,15 +257,24 @@ def plot_spectrogram_and_strain(strain_array, time_array, sampling_rate=2**14,
     Returns
     -------
     fig : matplotlib.figure.Figure
-        The figure object containing the plot.
+        The figure object containing the complete plot.
     
     axs : List[matplotlib.axes.Axes]
-        The axes objects containing the spectrogram, the colorbar and the
-        time-domain plots.
+        A list of axes objects containing the spectrogram, the colorbar, and
+        the time-domain plots.
     
     Sxx : numpy.ndarray
         The computed spectrogram (PSD values) of the input strain data.
 
+    Notes
+    -----
+    - The spectrogram normalization is performed on the square root of the 
+      Power Spectral Density (PSD), converted to a logarithmic scale.
+    - The y-axis of the spectrogram uses a kilohertz scale for readability.
+    - The time-domain waveform is plotted without axes labels for simplicity.
+    - Instantaneous frequency values below zero are masked to avoid displaying 
+      non-physical results.
+    
     """
     from gwadama.fat import instant_frequency
 
