@@ -179,7 +179,7 @@ def plot_spec_of(strain, figsize=(10,5), sf=4096, window='hann', vmin=None, vmax
     return fig, spec, pcm
 
 
-def plot_spectrogram(strain_array, time_array, sampling_rate=2**14,
+def plot_spectrogram_and_strain(strain_array, time_array, sampling_rate=2**14,
                      outseg=None, outfreq=None,
                      window=sp.windows.tukey(128,0.5), hop=32, mfft=2**14,
                      vmin=-22, ax=None):
