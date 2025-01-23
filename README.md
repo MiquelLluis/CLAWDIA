@@ -1,8 +1,65 @@
-Below are some personal notes about different parts of the code.
+<span style="font-family:Times; font-size:4em; text-align:right; display:block;">CLAWDIA</span>
 
-# Training the Denoising dictionary with SPAMS
+<span style="font-size:2em; text-align:right; display:block;">_**Cla**ssification of **W**aves via **Di**ctionary-based **A**lgorithms_</span>
 
-## Main training models
+<br>
+
+
+
+
+
+
+
+# Introduction
+
+**CLAWDIA** is a modular pipeline developed with the aim to facilitate data analysis tasks related to Gravitational Waves (GW) using Spars Dictionary Learning (SDL) techniques, with a particular focus in denoising and classification. Its modular design is intended to allow CLAWDIA to be used both as a whole classification pipeline and as a compillation of standalone routines and functions, making it a versatile tool for a wide range of use cases and applications.
+
+The workflow is divided into two main stages: denoising and classification. In the denoising stage, the input signals are processed to reduce noise artifacts while striving to preserve the key features of the signal. This task is performed using dictionaries designed for sparse reconstruction, optimized to work under the typical noise conditions of gravitational-wave detectors. In the second stage, focused on classification, the enhanced signals are classified by assigning specific labels, whether of astrophysical or instrumental origin. Currently, classification relies on the **LRSDL**¹ model, which leverages the patterns captured by the trained dictionaries to differentiate between various signal classes.
+
+This pipeline was developed as part of my PhD thesis _Gravitational-wave signal denoising, reconstruction and classification via sparse dictionary learning_ (2025).
+
+
+
+
+
+
+
+
+
+# References
+1. T. H. Vu and V. Monga, _Fast Low-Rank Shared Dictionary Learning for Image Classification_, in IEEE Transactions on Image Processing, vol. 26, no. 11, pp. 5160-5175, Nov. 2017, doi: 10.1109/TIP.2017.2729885.
+
+
+
+
+
+
+
+
+
+# TODO
+
+- The training function of LRSDL is from an older version that "expands" the training dataset by obtaining multiple windows from each signal using the usual sliding window. This needs to be reviewed to determine whether it is positive, negative, or unnecessary. In any case, since this step in the dictionary is exclusively about increasing the samples, it should either be removed or placed in a separate function.
+- Vectorize `snr()` to estimate multiple signals (rfft accepts multidimensional arrays).
+- Make it explicit when iterating over labels by updating the relevant variables: avoid referring to different dictionaries and instead refer to different labels.
+- Ensure that `DictionarySpams.reconstruct` and `..._reconstruct` are explicitly designed to reconstruct only a single signal.
+- Modularize `extract_patches` function.
+
+
+
+
+
+
+
+
+
+# Notes
+
+Below are some notes about different parts of the code.
+
+## Training the Denoising dictionary with SPAMS
+
+### Main training models
 
 In the `spams.trainDL` function:
 
@@ -37,9 +94,9 @@ If your primary goal is to **obtain sparse representations**, even if it means a
 If **reconstruction accuracy** is the main focus, with sparsity as a secondary goal, `mode=0` may be better. It minimizes reconstruction error directly, only applying the L1 constraint on $ \alpha_i $ as a limit on how sparse the representation can be.
 
 
-## Mini-batch relevance and `batch_size` parameter
+### Mini-batch relevance and `batch_size` parameter
 
-### General overview
+#### General overview
 
 While in-memory processing allows the dataset to fit comfortably in memory, using mini-batches instead of a single large batch introduces beneficial stochasticity, improves parallel efficiency, and offers more flexibility in convergence control. Setting a moderate `batch_size` (like 256 or 512) even when data is in memory can be advantageous in terms of both convergence quality and computational efficiency.
 
@@ -56,7 +113,7 @@ While in-memory processing allows the dataset to fit comfortably in memory, usin
 4. **Incremental Updates with Potential for Early Stopping**:
    - Smaller batch sizes allow more frequent updates to the dictionary, providing opportunities for earlier stopping if convergence criteria are met. With a single large batch, the dictionary is updated less frequently, which could result in slower effective convergence in practice, especially if the dictionary is close to optimal.
 
-### The case of Gravitational Wave signals
+#### The case of Gravitational Wave signals
 
 In general, a **lower `batch_size`** is beneficial for learning from complex signals with rich information across a wide range of frequencies and high temporal variability:
 
@@ -76,7 +133,7 @@ In general, a **lower `batch_size`** is beneficial for learning from complex sig
 
    Smaller batch sizes allow the dictionary to make frequent, incremental adjustments, which are useful for complex signals where different parts of the data might push updates in diverse directions. This approach smooths the convergence process, allowing the dictionary to gradually settle into a representation that captures the full range of signal variations.
 
-### Experimental observations
+#### Experimental observations
 
 For GW signals, all split into fitting windows and normalized to their L2 norm, the denoising dictionary performed the best **for later classification** when trained with `batch_size = 1` for a large number of iterations, `n_iter = 100_000`, to compensate for the small batch size by allowing the dictionary ample time to adjust and converge.
 
