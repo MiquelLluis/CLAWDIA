@@ -7,22 +7,6 @@ Learning (SDL). Support is included for both SPAMS-based dictionaries and
 Low-Rank Sparse Dictionary Learning (LRSDL) models, ensuring compatibility and 
 ease of use.
 
-Classes
--------
-DictionarySpams
-    Represents a SPAMS-based dictionary model.
-
-DictionaryLRSDL
-    Represents the Low-Rank Sparse Dictionary Learning (LRSDL) model.
-
-Functions
----------
-load(file)
-    Load a dictionary object from a specified `.npz` file.
-
-    save(file, dico)
-    Save a dictionary object to a specified `.npz` file.
-
 """
 import numpy as np
 
@@ -30,7 +14,7 @@ from ._dictionary_spams import DictionarySpams
 from ._dictionary_lrsdl import DictionaryLRSDL
 
 
-__all__ = ['load', 'save', 'DictionarySpams', 'DictionaryLRSDL']
+__all__ = ['DictionarySpams', 'DictionaryLRSDL', 'load', 'save']
 
 
 def load(file):
