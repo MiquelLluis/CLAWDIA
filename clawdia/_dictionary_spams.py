@@ -17,72 +17,59 @@ if not '__version__' in dir(spams) or spams.__version__ <= '2.6.5.4':
 
 
 class DictionarySpams:
-    """OOP Interface of SPAMS-python's Mini-Batch Dictionary Learning.
+    """Sparse Dictionary Learning (SDL) model for waveform denoising via SPAMS.
 
-    Set of utilities for performing Dictionary Learning and sparse encoding
-    using functions of SPAMS-python[1].
+    This class provides an object-oriented implementation of a Sparse
+    Dictionary Learning model, designed for the denoising and reconstruction
+    of waveforms. At its core, it utilizes the `trainDL` function for
+    dictionary learning and the `lasso` function for sparse coding from the
+    SPAMS-python library [1].
 
-    
+    It extends these core functionalities to arbitrarily long signals and
+    minibatch processing for large datasets. Additionally, the class includes
+    various utilities for signal preprocessing, composite models of denoising
+    (such as iterative reconstruction), and the ability to easily save and
+    load the dictionary's state.
+
     Attributes
     ----------
-    dict_init : array(d_size, a_length)
-        Atoms of the initial dictionary.
-        It remains unaltered after training.
-
-    components : array(d_size, a_length)
-        Atoms of the current dictionary.
-
+    dict_init : ndarray
+        Atoms of the initial dictionary. Remains unaltered after training.
+    components : ndarray
+        Atoms of the current (trained) dictionary.
     model : tuple
         SPAMS' trainDL model components in the form (A, B, iter).
-        
-        If the initial dictionary is already trained, and it is desired to
-        continue training it (warm start), 'model' must be provided at
-        initialization.
-        See [1] for more information.
-
-    d_size, a_length : int
-        Size of the dictionary.
-    
+    d_size : int
+        Number of atoms in the dictionary (dictionary size).
+    a_length : int
+        Length of each atom in the dictionary (patch size).
     lambda1 : float
-        Regularization parameter used for training the dictionary.
-
+        Regularization parameter for training the dictionary.
     batch_size : int
-        Batch size used in training.
-
+        Batch size used in mini-batch training.
     n_iter : int
-        Number of iterations performed in training.
-
+        Number of iterations performed during training.
     t_train : float
-        Time spent training in seconds.
-
+        Total training time in seconds.
     trained : bool
-        Flag indicating whether the dictionary has been trained.
-    
+        Indicates whether the dictionary has been trained.
     n_train : int
-        Number of training patches used to train the dictionary.
-
+        Number of patches used during training.
     mode_traindl : int
-        Refer to [1] for more information.
-
+        Training mode for SPAMS' `trainDL` function.
     modeD_traindl : int
-        Refer to [1] for more information.
-
+        Dictionary mode for SPAMS' `trainDL` function.
     mode_lasso : int
-        Refer to [1] for more information.
-
+        Mode for SPAMS' `lasso` function.
     identifier : str
-        A word or note which can be used to identify the dictionary.
+        Optional identifier or note for distinguishing the dictionary.
 
-        
     References
     ----------
-    [1]: SPAMS (for python), (http://spams-devel.gforge.inria.fr/), last
-    accessed in october 2018.
-
-    [2]: SciPy's Optimization tools,
-    (https://docs.scipy.org/doc/scipy/reference/optimize.html), last accessed
-    in February 2022.
-
+    [1] SPAMS (for python),
+        (http://spams-devel.gforge.inria.fr/).
+        Last accessed in October 2018.
+    
     """
     def __init__(self,
                  # Init 1)
