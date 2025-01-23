@@ -26,11 +26,6 @@
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
 
-            <h2>Contents</h2>
-            <ul>
-  <li><a href="#functions">Functions</a></li>
-</ul>
-
 
 
             <h2>API Documentation</h2>
@@ -73,7 +68,7 @@ pipeline. </p>
 for presenting and analyzing outcomes, such as confusion matrices, dictionary
 atoms, and spectrograms.</p>
 
-<h2 id="functions">Functions</h2>
+<h6 id="functions">Functions</h6>
 
 <p>plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None,
         cmap="PaleBlues", **kwargs)
@@ -713,39 +708,35 @@ in a binary classification case:</p>
 <li><strong>TN</strong> (True Negatives): Correctly predicted Class 1.</li>
 </ul>
 
-<h2 id="parameters">Parameters</h2>
+<h6 id="parameters">Parameters</h6>
 
-<p>cmat : array-like of shape (n_classes, n_classes)
-    The confusion matrix to plot.</p>
+<ul>
+<li><strong>cmat</strong> (array-like of shape (n_classes, n_classes)):
+The confusion matrix to plot.</li>
+<li><strong>ax</strong> (matplotlib.axes.Axes, optional):
+The axes on which to plot the matrix. If not given, a new figure and axes
+are created.</li>
+<li><strong>labels</strong> (list of str, optional):
+The labels for the classes. If not given, the integers from 0 to
+<code>n_classes-1</code> are used.</li>
+<li><strong>mode</strong> ({'absolute', 'percent', 'both'}):
+The format of the annotations: absolute numbers, percentages, or both.
+Defaults to 'both'.</li>
+<li><strong>vmin</strong> (float, optional):
+The minimum value of the color scale.</li>
+<li><strong>vmax</strong> (float, optional):
+The maximum value of the color scale.</li>
+<li><strong>cmap</strong> (Function (matplotlib's Colormap equivalent) | str):
+Defaults to "PaleBlue", a custom modification of Matplotlib's "Blues".</li>
+<li><strong>**kwargs</strong>: Additional keyword arguments are passed to <code>matplotlib.pyplot.subplots</code>.</li>
+</ul>
 
-<p>ax : matplotlib.axes.Axes, optional
-    The axes on which to plot the matrix. If not given, a new figure and axes
-    are created.</p>
+<h6 id="returns">Returns</h6>
 
-<p>labels : list of str, optional
-    The labels for the classes. If not given, the integers from 0 to
-    <code>n_classes-1</code> are used.</p>
-
-<p>mode : {'absolute', 'percent', 'both'}
-    The format of the annotations: absolute numbers, percentages, or both.
-    Defaults to 'both'.</p>
-
-<p>vmin : float, optional
-    The minimum value of the color scale.</p>
-
-<p>vmax : float, optional
-    The maximum value of the color scale.</p>
-
-<p>cmap : Function (matplotlib's Colormap equivalent) | str
-    Defaults to "PaleBlue", a custom modification of Matplotlib's "Blues".</p>
-
-<p>**kwargs
-    Additional keyword arguments are passed to <code>matplotlib.pyplot.subplots</code>.</p>
-
-<h2 id="returns">Returns</h2>
-
-<p>fig : matplotlib.figure.Figure or None
-    The figure containing the plot, or None if <code>ax</code> was given.</p>
+<ul>
+<li><strong>fig</strong> (matplotlib.figure.Figure or None):
+The figure containing the plot, or None if <code>ax</code> was given.</li>
+</ul>
 </div>
 
 
@@ -795,18 +786,18 @@ in a binary classification case:</p>
 
             <div class="docstring"><p>Plot atoms from a dictionary in a squared matrix.</p>
 
-<h2 id="parameters">Parameters</h2>
+<h6 id="parameters">Parameters</h6>
 
-<p>array : 2d-array
-    Dictionary matrix in Fortran order with shape (a, l).</p>
-
-<p>c : int, optional
-    Number of atoms at each side of the squared matrix of plots; the total
-    number of plotted atoms will be <code>c ** 2</code>.
-    If not given, it is computed as <code>int(np.sqrt(a))</code>.</p>
-
-<p>**plot_kw : optional
-    Passed to pyplot.subplots().</p>
+<ul>
+<li><strong>array</strong> (2d-array):
+Dictionary matrix in Fortran order with shape (a, l).</li>
+<li><strong>c</strong> (int, optional):
+Number of atoms at each side of the squared matrix of plots; the total
+number of plotted atoms will be <code>c ** 2</code>.
+If not given, it is computed as <code>int(np.sqrt(a))</code>.</li>
+<li><strong>**plot_kw</strong> (optional):
+Passed to pyplot.subplots().</li>
+</ul>
 </div>
 
 
@@ -1118,58 +1109,51 @@ evolution.</li>
 and labeled colorbars for clarity.</li>
 </ul>
 
-<h2 id="parameters">Parameters</h2>
+<h6 id="parameters">Parameters</h6>
 
-<p>strain_array : numpy.ndarray
-    The time-domain strain data of the gravitational wave signal.</p>
+<ul>
+<li><strong>strain_array</strong> (numpy.ndarray):
+The time-domain strain data of the gravitational wave signal.</li>
+<li><strong>time_array</strong> (numpy.ndarray):
+Array of time stamps corresponding to the strain data.</li>
+<li><strong>sampling_rate</strong> (int, optional):
+The sampling rate of the data in Hz (default is 2^14, or 16384 Hz).</li>
+<li><strong>outseg</strong> (tuple, optional):
+A tuple specifying the time range (start, end) in seconds for the
+x-axis. If <code>None</code>, the entire time range of the input data is used.</li>
+<li><strong>outfreq</strong> (tuple, optional):
+A tuple specifying the frequency range (start, end) in Hz for the
+y-axis. If <code>None</code>, the full frequency range (up to Nyquist frequency)
+is used.</li>
+<li><strong>window</strong> (numpy.ndarray, optional):
+The window function applied during STFT computation (default is a
+Tukey window).</li>
+<li><strong>hop</strong> (int, optional):
+The hop size between successive STFT windows (default is 32).</li>
+<li><strong>mfft</strong> (int, optional):
+The number of points in the FFT used for STFT computation (default
+is 2^14).</li>
+<li><strong>vmin</strong> (float, optional):
+The minimum value for the color scale in the spectrogram (default
+is -22). This controls the dynamic range of the color map.</li>
+<li><strong>ax</strong> (matplotlib.axes.Axes, optional):
+The axes object on which to plot the spectrogram. If <code>None</code>, a new
+figure and axes are created.</li>
+</ul>
 
-<p>time_array : numpy.ndarray
-    Array of time stamps corresponding to the strain data.</p>
+<h6 id="returns">Returns</h6>
 
-<p>sampling_rate : int, optional
-    The sampling rate of the data in Hz (default is 2^14, or 16384 Hz).</p>
+<ul>
+<li><strong>fig</strong> (matplotlib.figure.Figure):
+The figure object containing the complete plot.</li>
+<li><strong>axs</strong> (List[matplotlib.axes.Axes]):
+A list of axes objects containing the spectrogram, the colorbar, and
+the time-domain plots.</li>
+<li><strong>Sxx</strong> (numpy.ndarray):
+The computed spectrogram (PSD values) of the input strain data.</li>
+</ul>
 
-<p>outseg : tuple, optional
-    A tuple specifying the time range (start, end) in seconds for the
-    x-axis. If <code>None</code>, the entire time range of the input data is used.</p>
-
-<p>outfreq : tuple, optional
-    A tuple specifying the frequency range (start, end) in Hz for the
-    y-axis. If <code>None</code>, the full frequency range (up to Nyquist frequency)
-    is used.</p>
-
-<p>window : numpy.ndarray, optional
-    The window function applied during STFT computation (default is a
-    Tukey window).</p>
-
-<p>hop : int, optional
-    The hop size between successive STFT windows (default is 32).</p>
-
-<p>mfft : int, optional
-    The number of points in the FFT used for STFT computation (default
-    is 2^14).</p>
-
-<p>vmin : float, optional
-    The minimum value for the color scale in the spectrogram (default
-    is -22). This controls the dynamic range of the color map.</p>
-
-<p>ax : matplotlib.axes.Axes, optional
-    The axes object on which to plot the spectrogram. If <code>None</code>, a new
-    figure and axes are created.</p>
-
-<h2 id="returns">Returns</h2>
-
-<p>fig : matplotlib.figure.Figure
-    The figure object containing the complete plot.</p>
-
-<p>axs : List[matplotlib.axes.Axes]
-    A list of axes objects containing the spectrogram, the colorbar, and
-    the time-domain plots.</p>
-
-<p>Sxx : numpy.ndarray
-    The computed spectrogram (PSD values) of the input strain data.</p>
-
-<h2 id="notes">Notes</h2>
+<h6 id="notes">Notes</h6>
 
 <ul>
 <li>The spectrogram normalization is performed on the square root of the 

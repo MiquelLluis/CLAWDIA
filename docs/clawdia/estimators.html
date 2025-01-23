@@ -26,12 +26,6 @@
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
 
-            <h2>Contents</h2>
-            <ul>
-  <li><a href="#functions">Functions</a></li>
-  <li><a href="#references">References</a></li>
-</ul>
-
 
 
             <h2>API Documentation</h2>
@@ -93,7 +87,7 @@ index, overlaps, signal-to-noise ratios, and others. Some of these functions
 are specifically adapted for gravitational-wave signal analysis, but may be 
 used in broader signal-processing contexts.</p>
 
-<h2 id="functions">Functions</h2>
+<h6 id="functions">Functions</h6>
 
 <p>mse(x, y)
     Compute the Mean Squared Error between two signals.</p>
@@ -128,7 +122,7 @@ used in broader signal-processing contexts.</p>
 <p>find_merger(h)
     Estimate the index position of the merger in a given strain.</p>
 
-<h2 id="references">References</h2>
+<h6 id="references">References</h6>
 
 <ul>
 <li>Overlap: Badger, C. et al. (2022). DOI: 10.48550/arxiv.2210.06194</li>
@@ -519,17 +513,21 @@ x and y.</p>
 - -1: Perfect anti-correlation.
 </code></pre>
 
-<h2 id="parameters">Parameters</h2>
+<h6 id="parameters">Parameters</h6>
 
-<p>x, y : array
-    Input signals.</p>
+<ul>
+<li><strong>x, y</strong> (array):
+Input signals.</li>
+</ul>
 
-<h2 id="returns">Returns</h2>
+<h6 id="returns">Returns</h6>
 
-<p>ssim : float
-    The Structural Similarity Index Measure between the signals x and y.</p>
+<ul>
+<li><strong>ssim</strong> (float):
+The Structural Similarity Index Measure between the signals x and y.</li>
+</ul>
 
-<h2 id="reference">Reference</h2>
+<h6 id="reference">Reference</h6>
 
 <p><a href="https://en.wikipedia.org/wiki/Structural_similarity_index_measure">https://en.wikipedia.org/wiki/Structural_similarity_index_measure</a></p>
 </div>

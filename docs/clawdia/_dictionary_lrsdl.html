@@ -695,62 +695,50 @@
 initialization of the dictionary. If reproducibility is important, one must
 set the global numpy's seed before callint LRSDL.__init__().</p>
 
-<h2 id="attributes">Attributes</h2>
+<h6 id="attributes">Attributes</h6>
 
-<p>t_train : float
-    Training time in seconds.</p>
+<ul>
+<li><strong>t_train</strong> (float):
+Training time in seconds.</li>
+<li><strong>lambd</strong> (float):
+See self.__init__() for details.</li>
+<li><strong>lambd2</strong> (float):
+See self.__init__() for details.</li>
+<li><strong>eta</strong> (float):
+See self.__init__() for details.</li>
+<li><strong>D</strong> (ndarray):
+Class-specific dictionary.</li>
+<li><strong>X</strong> (ndarray):
+Class-specific coefficient vector of the training set given when
+calling self.fit().</li>
+<li><strong>Y</strong> (ndarray):
+Class-specific target vector (the training set) given when calling
+self.fit().</li>
+<li><strong>k</strong> (int):
+See self.__init__() for details.</li>
+<li><strong>k0</strong> (int):
+See self.__init__() for details.</li>
+<li><strong>updateX_iters</strong> (int):
+See self.__init__() for details.</li>
+<li><strong>updateD_iters</strong> (int):
+See self.__init__() for details.</li>
+<li><strong>D_range</strong> (list[int]):
+Auxiliar list containing the range of indices of each class in D.</li>
+<li><strong>D0</strong> (ndarray):
+Shared dictionary.</li>
+<li><strong>Y_range</strong> (list[→nt]):
+Auxiliar list containing the range of indices of each class in Y.
+Derived directly from 'train_label', equivalent to the 'y_true' labels.
+Example: given train_label = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1], then
+Y_range = [0, 4, 6]. The first value is always 0, marking the
+start of the first class, and the last value is always the number of
+classes + 1.</li>
+<li><strong>X0</strong> (ndarray):
+Shared coefficient vector of the training set given when calling
+self.fit().</li>
+</ul>
 
-<p>lambd : float
-    See self.__init__() for details.</p>
-
-<p>lambd2 : float
-    See self.__init__() for details.</p>
-
-<p>eta : float
-    See self.__init__() for details.</p>
-
-<p>D : ndarray
-    Class-specific dictionary.</p>
-
-<p>X : ndarray
-    Class-specific coefficient vector of the training set given when
-    calling self.fit().</p>
-
-<p>Y : ndarray
-    Class-specific target vector (the training set) given when calling
-    self.fit().</p>
-
-<p>k : int
-    See self.__init__() for details.</p>
-
-<p>k0 : int
-    See self.__init__() for details.</p>
-
-<p>updateX_iters : int
-    See self.__init__() for details.</p>
-
-<p>updateD_iters : int
-    See self.__init__() for details.</p>
-
-<p>D_range : list[int]
-    Auxiliar list containing the range of indices of each class in D.</p>
-
-<p>D0 : ndarray
-    Shared dictionary.</p>
-
-<p>Y_range : list[→nt]
-    Auxiliar list containing the range of indices of each class in Y.
-    Derived directly from 'train_label', equivalent to the 'y_true' labels.
-    Example: given train_label = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1], then
-    Y_range = [0, 4, 6]. The first value is always 0, marking the
-    start of the first class, and the last value is always the number of
-    classes + 1.</p>
-
-<p>X0 : ndarray
-    Shared coefficient vector of the training set given when calling
-    self.fit().</p>
-
-<h2 id="references">References</h2>
+<h6 id="references">References</h6>
 
 <p>Vu, T. H.; Monga, V. (2017). Fast low-rank shared dictionary learning for image classification.
 IEEE Transactions on Image Processing, 26(11), 5160–5175. <a href="https://doi.org/10.1109/TIP.2017.2729885">https://doi.org/10.1109/TIP.2017.2729885</a></p>
@@ -814,36 +802,33 @@ IEEE Transactions on Image Processing, 26(11), 5160–5175. <a href="https://doi
 
             <div class="docstring"><p>Initialize the dictionary.</p>
 
-<h2 id="parameters">Parameters</h2>
+<h6 id="parameters">Parameters</h6>
 
-<p>lambd : float
-    Regularization term:
-        lambd * ||X||_1
-    Makes the class-specific vector sparse, symilar to the LASSO
-    regularization term.</p>
-
-<p>lambd2 : float
-    Regularization term:
-        lambd2 / 2 * ||X⁰-M⁰||²
-    Makes the shared vector (selection of shared atoms) sparse and close to
-    the mean shared vector, i.e. all {X⁰} close between them.</p>
-
-<p>eta : float
-    Regularization term:
-        eta * ||D⁰||_*
-    Enforces the shared dictionary to be low-rank.</p>
-
-<p>k : int
-    Number of class-specific atoms for each class. The total number of
-    atoms in the class-specific dictionary is then <code>k * nc</code> where 'nc' is
-    the number of classes.</p>
-
-<p>k0 : int
-    Total number of shared atoms. k0=0 is equivalent to the case when there
-    is no shared dictionary.</p>
-
-<p>updateX_iters, updateD_iters : int
-    <em>I think they are not used in this class at all.</em></p>
+<ul>
+<li><strong>lambd</strong> (float):
+Regularization term:
+    lambd * ||X||_1
+Makes the class-specific vector sparse, symilar to the LASSO
+regularization term.</li>
+<li><strong>lambd2</strong> (float):
+Regularization term:
+    lambd2 / 2 * ||X⁰-M⁰||²
+Makes the shared vector (selection of shared atoms) sparse and close to
+the mean shared vector, i.e. all {X⁰} close between them.</li>
+<li><strong>eta</strong> (float):
+Regularization term:
+    eta * ||D⁰||_*
+Enforces the shared dictionary to be low-rank.</li>
+<li><strong>k</strong> (int):
+Number of class-specific atoms for each class. The total number of
+atoms in the class-specific dictionary is then <code>k * nc</code> where 'nc' is
+the number of classes.</li>
+<li><strong>k0</strong> (int):
+Total number of shared atoms. k0=0 is equivalent to the case when there
+is no shared dictionary.</li>
+<li><strong>updateX_iters, updateD_iters</strong> (int):
+<em>I think they are not used in this class at all.</em></li>
+</ul>
 </div>
 
 
@@ -1002,35 +987,30 @@ length of de dictionary, or</li>
 <li>Discard training windows whose L2-norm is below a threshold.</li>
 </ul>
 
-<h2 id="parameters">Parameters</h2>
+<h6 id="parameters">Parameters</h6>
 
-<p>X : 2d-array, shape=(samples, features)
-    Training samples, with equal or more features than the atoms'.</p>
-
-<p>y_true : np.ndarray
-    Labels of samples in X, with <code>len(y_true) == X.shape[0]</code>.</p>
-
-<p>l_atoms : int
-    Lenght of the atoms of the dictionary.</p>
-
-<p>iterations : int
-    Number of training iterations.</p>
-
-<p>step : int, optional
-    For splitting strains in X into the specified 'l_atoms' in order to
-    generate the training patches.
-    No splitting by default.</p>
-
-<p>threshold : float, optional
-    L2-norm threshold relative to the window of max(L2-norm) of each
-    strain, below which to discard the rest of the reconstruction windows.
-    No threshold by default.</p>
-
-<p>verbose : bool
-    If True, increase verbosity of LRSDL.fit().</p>
-
-<p>show_after : int, optional
-    If verbose is True, show the progress every 'show_after' iterations.</p>
+<ul>
+<li><strong>X</strong> (2d-array, shape=(samples, features)):
+Training samples, with equal or more features than the atoms'.</li>
+<li><strong>y_true</strong> (np.ndarray):
+Labels of samples in X, with <code>len(y_true) == X.shape[0]</code>.</li>
+<li><strong>l_atoms</strong> (int):
+Lenght of the atoms of the dictionary.</li>
+<li><strong>iterations</strong> (int):
+Number of training iterations.</li>
+<li><strong>step</strong> (int, optional):
+For splitting strains in X into the specified 'l_atoms' in order to
+generate the training patches.
+No splitting by default.</li>
+<li><strong>threshold</strong> (float, optional):
+L2-norm threshold relative to the window of max(L2-norm) of each
+strain, below which to discard the rest of the reconstruction windows.
+No threshold by default.</li>
+<li><strong>verbose</strong> (bool):
+If True, increase verbosity of LRSDL.fit().</li>
+<li><strong>show_after</strong> (int, optional):
+If verbose is True, show the progress every 'show_after' iterations.</li>
+</ul>
 </div>
 
 
@@ -1105,32 +1085,32 @@ length of de dictionary, or</li>
 <p>The class of a window is the class of the closest codeword to that
 window in the dictionary.</p>
 
-<h2 id="parameters">Parameters</h2>
+<h6 id="parameters">Parameters</h6>
 
-<p>X : 2d-array, shape=(n_signals, n_samples)
-    Input signals, with equal or more samples than the atoms'.</p>
+<ul>
+<li><strong>X</strong> (2d-array, shape=(n_signals, n_samples)):
+Input signals, with equal or more samples than the atoms'.</li>
+<li><strong>threshold</strong> (float, optional):
+Loss threshold ABOVE which signals will be marked as "unknown" class,
+which corresponds to the label value -1.
+Zero by default, all signals will be classified.</li>
+<li><strong>offset</strong> (int, optional):
+Index i0 at which to crop the input signals X.
+The i1 will be <code>offset + l_atoms</code>. By default 0.</li>
+<li><strong>with_losses</strong> (bool, optional):
+If True, return a tuple with the class predictions and the
+corresponding losses.</li>
+</ul>
 
-<p>threshold : float, optional
-    Loss threshold ABOVE which signals will be marked as "unknown" class,
-    which corresponds to the label value -1.
-    Zero by default, all signals will be classified.</p>
+<h6 id="returns">Returns</h6>
 
-<p>offset : int, optional
-    Index i0 at which to crop the input signals X.
-    The i1 will be <code>offset + l_atoms</code>. By default 0.</p>
-
-<p>with_losses : bool, optional
-    If True, return a tuple with the class predictions and the
-    corresponding losses.</p>
-
-<h2 id="returns">Returns</h2>
-
-<p>y_pred : 1d-array, shape=(n_signals)
-    Class predictions for each input signal.</p>
-
-<p>losses : 1d-array, shape=(n_signals), optional
-    Losses of the closest codewords to each input signal.
-    Only returned if with_losses=True.</p>
+<ul>
+<li><strong>y_pred</strong> (1d-array, shape=(n_signals)):
+Class predictions for each input signal.</li>
+<li><strong>losses</strong> (1d-array, shape=(n_signals), optional):
+Losses of the closest codewords to each input signal.
+Only returned if with_losses=True.</li>
+</ul>
 </div>
 
 
@@ -1166,10 +1146,12 @@ window in the dictionary.</p>
 
 <p>Save the dictionary attributes using NumPy's 'np.savez()'.</p>
 
-<h2 id="parameters">Parameters</h2>
+<h6 id="parameters">Parameters</h6>
 
-<p>file : str
-    Path to the file where to save the dictionary.</p>
+<ul>
+<li><strong>file</strong> (str):
+Path to the file where to save the dictionary.</li>
+</ul>
 </div>
 
 
