@@ -1,4 +1,54 @@
-""" Pipeline Claudia: Classification using Dictionary Algorithms
+"""CLAWDIA: Classification of Waves via Dictionary-based Algorithms
+
+CLAWDIA is a modular pipeline for analyzing gravitational-wave (GW) data using
+Sparse Dictionary Learning (SDL) techniques. It is designed to facilitate tasks
+such as denoising and classification, offering a flexible framework that can be
+used as an integrated pipeline or as standalone routines. The primary goal is
+to enhance GW signals by reducing noise and accurately classifying them based
+on their astrophysical or instrumental origins.
+
+The workflow is divided into two stages:
+1. **Denoising**: Reduces noise artifacts while preserving key features of the
+    GW signals using dictionaries optimized for sparse reconstruction.
+2. **Classification**: Classifies the enhanced signals into specific categories
+    using the Low-Rank Shared Dictionary Learning (LRSDL) model, which
+    leverages patterns learned during the denoising stage.
+
+CLAWDIA's modular design ensures it can adapt to a wide range of applications,
+making it a versatile tool for gravitational-wave data analysis.
+
+
+Submodules
+----------
+dictionaries : Classes and functions to handle dictionary models, including
+               SPAMS and LRSDL-based dictionaries, for Sparse Dictionary
+               Learning.
+estimators   : Tools for computing signal metrics such as mean squared error,
+               signal-to-noise ratio, and other statistical and
+               signal-processing metrics.
+lib          : Utility functions for mathematical operations, signal
+               normalization, and optimization routines.
+pipeline     : A minimal implementation of CLAWDIA's classification pipeline,
+               assuming pre-trained dictionaries and configured parameters.
+plotting     : Visualization tools for debugging and presenting results, such
+               as dictionary atoms and confusion matrices.
+
+
+See Also
+--------
+numpy : Fundamental package for numerical computations.
+scipy : Library for scientific computing with Python.
+sklearn : Machine learning framework used in CLAWDIA.
+spams : Sparse Modeling Software for dictionary learning and sparse coding.
+
+
+Notes
+-----
+- CLAWDIA was developed as part of the PhD thesis _Gravitational-wave signal
+    denoising, reconstruction and classification via sparse dictionary
+    learning_ (2025).
+- Future updates will address enhancements to dictionary training and
+    modularization of utility functions to improve usability and performance.
 
 """
 from . import dictionaries
