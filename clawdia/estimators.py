@@ -1,3 +1,43 @@
+"""Provides estimators and metrics for analyzing and comparing signals.
+
+This module includes a variety of functions to compute statistical and 
+signal-processing metrics, such as mean squared error, structural similarity 
+index, overlaps, signal-to-noise ratios, and others. Some of these functions
+are specifically adapted for gravitational-wave signal analysis, but may be 
+used in broader signal-processing contexts.
+
+Functions
+---------
+mse(x, y)
+    Compute the Mean Squared Error between two signals.
+medse(x, y)
+    Compute the Median Squared Error between two signals.
+ssim(x, y)
+    Compute the Structural Similarity Index Measure (SSIM) between two signals.
+dssim(x, y)
+    Compute the Structural Dissimilarity between two signals.
+issim(x, y)
+    Compute the Inverse Structural Similarity Index Measure (ISSIM).
+residual(x, y)
+    Compute the norm of the difference between two signals.
+softmax(x, axis=None)
+    Compute the softmax probability distribution of the input array.
+overlap(x, y, psd, at, window=('tukey', 0.5))
+    Compute the overlap between two signals.
+ioverlap(x, y, psd, at, window=('tukey', 0.5))
+    Compute `1 - Overlap()` between two signals.
+snr(strain, *, psd, at, window=('tukey', 0.5))
+    Compute the Signal-to-Noise Ratio (SNR) of a signal.
+find_merger(h)
+    Estimate the index position of the merger in a given strain.
+
+References
+----------
+- Overlap: Badger, C. et al. (2022). DOI: 10.48550/arxiv.2210.06194
+- Structural Similarity Index Measure (SSIM): 
+  https://en.wikipedia.org/wiki/Structural_similarity_index_measure
+
+"""
 import numpy as np
 import scipy as sp
 import scipy.signal
