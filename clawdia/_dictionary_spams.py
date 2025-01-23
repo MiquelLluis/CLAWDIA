@@ -72,120 +72,92 @@ class DictionarySpams:
     
     """
     def __init__(self,
-                 # Init 1)
-                 dict_init=None,
-                 model=None,
-                 # Init 2)
-                 signal_pool=None, a_length=None, d_size=None, wave_pos=None,
-                 patch_min=1, l2_normed=True, allow_allzeros=True,
-                 random_state=None, ignore_completeness=False,
-                 # Other settings.
-                 lambda1=None, batch_size=64, n_iter=None, n_train=None,
-                 trained=False, mode_traindl=0, modeD_traindl=0, mode_lasso=2,
-                 identifier=''):
+             dict_init=None,
+             model=None,
+             signal_pool=None, a_length=None, d_size=None, wave_pos=None,
+             patch_min=1, l2_normed=True, allow_allzeros=True,
+             random_state=None, ignore_completeness=False,
+             lambda1=None, batch_size=64, n_iter=None, n_train=None,
+             trained=False, mode_traindl=0, modeD_traindl=0, mode_lasso=2,
+             identifier=''):
         """Initialize the dictionary.
 
-        There are two forms of initializing the dictionary:
+        There are two ways to initialize the dictionary:
         
-            1) By directly providing the initial dictionary with 'dict_init'.
-            
-            2) Providing a collection of signals 'signal_pool' with the same
-               length or larger than the atoms of the target dictionary, where
-               to extract these from.
-               
-        If the second is chosen, the size of the dictionary must be explicitly
-        given with 'd_size' and 'a_length'. In order to provide more control
-        for this case, some optional parameters are available (see below).
+        1. By directly providing the initial dictionary with `dict_init`.
+        2. By providing a collection of signals (`signal_pool`) from which atoms
+        are randomly extracted to form the initial dictionary.
 
-        Note that even though most of the training parameters can be set here,
-        this method does not train the dictionary. For that use the train
-        method.
-        
+        If the second option is used, `a_length` and `d_size` must be explicitly
+        specified to define the size of the dictionary. Additional optional
+        parameters provide more control over this process.
+
+        Note
+        ----
+        This method initializes the dictionary but does not train it. Use the
+        `train` method for training.
+
         Parameters
         ----------
-        dict_init : 2d-array(d_size, a_length), optional
-            Atoms of the initial dictionary.
-            If None, 'signal_pool' must be given.
-
-        model : dict
-            SPAMS' trainDL model components with the elements {A, B, iter}.
-            If the dictionary is already trained, and it is desired to continue
-            training it (warm start), 'model' must be provided.
-            See [1] for more information.
-
-        signal_pool : 2d-array(signals, samples), optional
-            Set of signals from where to randomly extract the atoms.
-            Ignored if 'dict_init' is given.
-
-        
-        If 'signal_pool' is used for initializing the dictionary, the following
-        parameters are available (with the first two being mandatory):
-
+        dict_init : ndarray of shape (d_size, a_length), optional
+            Atoms of the initial dictionary. If None, `signal_pool` must be provided.
+        model : dict, optional
+            SPAMS' `trainDL` model components as a dictionary with elements
+            {A, B, iter}. Must be provided if continuing training from a previous state.
+        signal_pool : ndarray of shape (n_signals, n_samples), optional
+            A collection of signals from which atoms are extracted to form the
+            initial dictionary. Ignored if `dict_init` is provided.
         a_length : int, optional
-            Atoms' length (patch size).
-            If 'signal_pool' is not None, must be given.
-
+            Length of each atom in the dictionary (patch size). Required if
+            `signal_pool` is provided.
         d_size : int, optional
-            Number of atoms (dictionary size).
-            If 'signal_pool' is not None, must be given.
-
-        wave_pos : 2d array-like (len(signals), 2), optional
-            Position of each waveform inside 'signal_pool' from where to extract
-            the atoms for the initial dictionary.
-            If None, the whole array will be used.
-
-        patch_min : int, 1 by default
-            Minimum number of samples within each 'wave_pos[i]' to include in each
-            extracted atom when 'signal_pool' given.
-            Will be ignored if 'wave_pos' is None.
-
-        l2_normed : bool, True by default
-            If True, normalize atoms extracted from 'signal_pool' to their
-            L2-Norm.
-
-        allow_allzeros : bool, True by default
-            If False, keep pulling random atoms from 'signal_pool' until no
-            atom with all zeros remains in the initial dictionary.
-
+            Number of atoms in the dictionary. Required if `signal_pool` is provided.
+        wave_pos : array-like of shape (n_signals, 2), optional
+            Positions of waveforms within `signal_pool` to extract atoms from. If
+            None, the entire array is used.
+        patch_min : int, default=1
+            Minimum number of samples for each extracted patch. Ignored if
+            `wave_pos` is None.
+        l2_normed : bool, default=True
+            If True, normalize extracted atoms to their L2 norm.
+        allow_allzeros : bool, default=True
+            If False, random atoms with all zeros are not included in the initial
+            dictionary.
         random_state : int, optional
-            Seed used for random sampling from 'signal_pool'.
-
-        
-        Additional arguments:
-
-        lambda1 : float, optional
-            Regularization parameter used for training the dictionary.
-
+            Seed for random sampling from `signal_pool`.
         ignore_completeness : bool, optional
-            If the dictionary is notzation parameter of the learning algorithm.
-            If None, will be requierd when calling 'train' method.
-
-        batch_size : int, 64 by default
-            Number of samples in each mini-batch.
-
+            If False, the dictionary must be overcomplete (`d_size > a_length`).
+            Defaults to False.
+        lambda1 : float, optional
+            Regularization parameter for training.
+        batch_size : int, default=64
+            Batch size used during training.
         n_iter : int, optional
-            Total number of iterations to perform.
-            If None, will be required when calling 'train' method.
-
-        trained : bool, False by default
-            Flag indicating whether dict_init is an already trained dictionary.
-
+            Total number of iterations for training. If None, this must be set when
+            calling the `train` method.
         n_train : int, optional
-            Number of patches used to train the dictionary in case it has been
-            trained already (just informative).
-
-        mode_traindl : int, 0 by default
-            Refer to [1] for more information.
-        
-        modeD_traindl : int, 0 by default
-            Refer to [1] for more information.
-
-        mode_lasso : int, 2 by default
-            Refer to [1] for more information.
-
+            Number of patches used for training. Informational only.
+        trained : bool, default=False
+            Indicates whether the dictionary is already trained.
+        mode_traindl : int, default=0
+            Training mode for SPAMS' `trainDL` function. See SPAMS documentation.
+        modeD_traindl : int, default=0
+            Dictionary mode for SPAMS' `trainDL` function. See SPAMS documentation.
+        mode_lasso : int, default=2
+            Mode for SPAMS' `lasso` function. See SPAMS documentation.
         identifier : str, optional
-            A word or note to identify the dictionary.
-        
+            A note or label for identifying the dictionary.
+
+        See Also
+        --------
+        train : Method to train the dictionary.
+        reconstruct : Method to reconstruct signals using the dictionary.
+
+        References
+        ----------
+        [1] SPAMS (for python), (http://spams-devel.gforge.inria.fr/).
+            Last accessed in October 2018.
+
         """
         self.model = model
         self.dict_init = dict_init
