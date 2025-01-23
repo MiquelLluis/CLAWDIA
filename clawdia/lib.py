@@ -1,3 +1,10 @@
+"""Collection of auxiliar functions.
+
+Collection of different types of functions, from mathematical to optimization
+functions, which did not fit inside any other modules. There are still too few
+to group them into proper, semantic modules.
+
+"""
 import warnings
 
 import numpy as np
