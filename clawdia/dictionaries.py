@@ -11,6 +11,7 @@ Classes
 -------
 DictionarySpams
     Represents a SPAMS-based dictionary model.
+
 DictionaryLRSDL
     Represents the Low-Rank Sparse Dictionary Learning (LRSDL) model.
 
@@ -18,15 +19,9 @@ Functions
 ---------
 load(file)
     Load a dictionary object from a specified `.npz` file.
-save(file, dico)
-    Save a dictionary object to a specified `.npz` file.
 
-Notes
------
-- When loading dictionaries, attributes are restored and adjusted as needed 
-  for compatibility with previous versions of the CLAWDIA pipeline.
-- For dictionaries created in versions prior to v0.4, components stored 
-  in Fortran order are transposed to C order to ensure consistency.
+    save(file, dico)
+    Save a dictionary object to a specified `.npz` file.
 
 """
 import numpy as np

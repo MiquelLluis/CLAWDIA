@@ -10,24 +10,34 @@ Functions
 ---------
 mse(x, y)
     Compute the Mean Squared Error between two signals.
+
 medse(x, y)
     Compute the Median Squared Error between two signals.
+
 ssim(x, y)
     Compute the Structural Similarity Index Measure (SSIM) between two signals.
+
 dssim(x, y)
     Compute the Structural Dissimilarity between two signals.
+
 issim(x, y)
     Compute the Inverse Structural Similarity Index Measure (ISSIM).
+
 residual(x, y)
     Compute the norm of the difference between two signals.
+
 softmax(x, axis=None)
     Compute the softmax probability distribution of the input array.
+
 overlap(x, y, psd, at, window=('tukey', 0.5))
     Compute the overlap between two signals.
+
 ioverlap(x, y, psd, at, window=('tukey', 0.5))
     Compute `1 - Overlap()` between two signals.
+
 snr(strain, *, psd, at, window=('tukey', 0.5))
     Compute the Signal-to-Noise Ratio (SNR) of a signal.
+
 find_merger(h)
     Estimate the index position of the merger in a given strain.
 
