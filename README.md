@@ -1,12 +1,4 @@
-<span style="font-family:Times; font-size:4em; text-align:right; display:block;">CLAWDIA</span>
-
-<span style="font-size:2em; text-align:right; display:block;">_**Cla**ssification of **W**aves via **Di**ctionary-based **A**lgorithms_</span>
-
-<br>
-
-
-
-
+![CLAWDIA: Classification of Waves via Dictionary-based Algorithms](clawdia.svg)
 
 
 
