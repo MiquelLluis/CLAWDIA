@@ -1,3 +1,24 @@
+"""
+Basic implementation of the pipeline model.
+
+The `Pipeline` class provides a minimal example of how to use CLAWDIA as a 
+classification pipeline. This implementation assumes that the dictionaries 
+have already been trained and that all necessary hyperparameters and 
+post-training parameters are provided.
+
+Classes
+-------
+Pipeline
+    Implements a basic classification pipeline that preprocesses input 
+    gravitational-wave strain data using a denoising dictionary and 
+    subsequently classifies it using a classification dictionary.
+
+Notes
+-----
+- This class is primarily provided as a reference example for integrating 
+  CLAWDIA into a custom pipeline.
+
+"""
 import yaml
 
 from gwpy.timeseries import TimeSeries
