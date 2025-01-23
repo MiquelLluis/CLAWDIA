@@ -1,3 +1,35 @@
+"""
+dictionaries.py
+
+Main module for managing all SDL models.
+
+This module serves as the central interface for handling dictionary models
+included in CLAWDIA.
+
+
+Classes
+-------
+DictionarySpams
+    Represents a SPAMS-based dictionary model.
+
+DictionaryLRSDL
+    Represents the Low-Rank Sparse Dictionary Learning (LRSDL) model.
+
+
+Functions
+---------
+load(file)
+    Load a dictionary object from a specified `.npz` file.
+
+save(file, dico)
+    Save a dictionary object to a specified `.npz` file.
+
+
+Notes
+-----
+- Attributes of the dictionary are restored and adjusted as needed during loading.
+
+"""
 import numpy as np
 
 from ._dictionary_spams import DictionarySpams
@@ -54,6 +86,6 @@ def load(file):
 
 
 def save(file, dico):
-    """Call to the dictionary's save method."""
+    """Same as using the dictionary's save method."""
 
     dico.save(file)
