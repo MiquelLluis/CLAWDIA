@@ -1,33 +1,32 @@
-"""
-dictionaries.py
+"""Main module for managing all SDL models.
 
-Main module for managing all SDL models.
-
-This module serves as the central interface for handling dictionary models
-included in CLAWDIA.
-
+This module serves as the central interface for handling dictionary models 
+included in the CLAWDIA pipeline. It provides classes and functions to load, 
+save, and manage different types of dictionary models used in Sparse Dictionary 
+Learning (SDL). Support is included for both SPAMS-based dictionaries and 
+Low-Rank Sparse Dictionary Learning (LRSDL) models, ensuring compatibility and 
+ease of use.
 
 Classes
 -------
 DictionarySpams
     Represents a SPAMS-based dictionary model.
-
 DictionaryLRSDL
     Represents the Low-Rank Sparse Dictionary Learning (LRSDL) model.
-
 
 Functions
 ---------
 load(file)
     Load a dictionary object from a specified `.npz` file.
-
 save(file, dico)
     Save a dictionary object to a specified `.npz` file.
 
-
 Notes
 -----
-- Attributes of the dictionary are restored and adjusted as needed during loading.
+- When loading dictionaries, attributes are restored and adjusted as needed 
+  for compatibility with previous versions of the CLAWDIA pipeline.
+- For dictionaries created in versions prior to v0.4, components stored 
+  in Fortran order are transposed to C order to ensure consistency.
 
 """
 import numpy as np
