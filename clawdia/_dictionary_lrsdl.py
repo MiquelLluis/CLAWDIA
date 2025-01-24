@@ -76,26 +76,27 @@ class DictionaryLRSDL(LRSDL):
     """
     def __init__(self, lambd=0.01, lambd2=0.01, eta=0.0001, k=10, k0=5,
                  updateX_iters=100, updateD_iters=100):
-        """Initialize the dictionary.
+        r"""Initialize the dictionary.
         
         Parameters
         ----------
         lambd : float
-            Regularization term:
-                lambd * ||X||_1
+            Regularization parameter of the term
+                $$ \lambda  \|X\|_1. $$
             Makes the class-specific vector sparse, symilar to the LASSO
             regularization term.
 
         lambd2 : float
-            Regularization term:
-                lambd2 / 2 * ||X⁰-M⁰||²
+            Regularization parameter of the term
+                $$ \frac{\lambda_2}{2} \|X^0 - M^0\|^2. $$
             Makes the shared vector (selection of shared atoms) sparse and close to
             the mean shared vector, i.e. all {X⁰} close between them.
 
         eta : float
-            Regularization term:
-                eta * ||D⁰||_*
-            Enforces the shared dictionary to be low-rank.
+            Regularization parameter of the term
+                $$ \eta  \| D^0 \|_{\*}, $$
+            where $\|\cdot\|_*$ is the nuclear norm. Enforces the shared
+            dictionary to be low-rank.
 
         k : int
             Number of class-specific atoms for each class. The total number of
