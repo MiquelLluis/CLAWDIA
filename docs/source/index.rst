@@ -10,7 +10,7 @@ Welcome to CLAWDIA's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   modules  # Include the generated "modules.rst"
+   modules
 
 Indices and tables
 ==================

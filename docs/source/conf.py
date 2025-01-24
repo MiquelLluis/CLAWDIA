@@ -20,6 +20,15 @@ extensions = [
     'sphinx.ext.viewcode', # Adds links to highlighted source code
     'sphinx.ext.mathjax',  # Renders math equations
 ]
+autosummary_generate = True
+
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": False,
+    "special-members": "__init__",
+    "inherited-members": True,
+    "show-inheritance": True,
+}
 
 # Optional: Numpydoc settings (tweak as needed)
 # numpydoc_show_class_members = False  # Avoid showing all class members automatically
