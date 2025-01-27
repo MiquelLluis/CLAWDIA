@@ -49,6 +49,24 @@ html_css_files = [
 html_theme_options = {
     "secondary_sidebar_items": ["page-toc", "sourcelink"],
     "show_toc_level": 2,
+
+    # HEADER ------------------------------------------------------------------
+
+    # "external_links": [
+    #     {"name": "GitHub", "url": "https://github.com/MiquelLluis/clawdia"},
+    # ],
+    "icon_links": [
+        {
+            # Label for this link
+            "name": "GitHub",
+            # URL where the link will redirect
+            "url": "https://github.com/MiquelLluis/clawdia",  # required
+            # Icon class (if "type": "fontawesome"), or path to local image (if "type": "local")
+            "icon": "fa-brands fa-square-github",
+            # The type of image to be used (see below for details)
+            "type": "fontawesome",
+        }
+   ],
 }
 
 
