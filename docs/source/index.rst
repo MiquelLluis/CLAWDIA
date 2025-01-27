@@ -6,11 +6,28 @@
 Welcome to CLAWDIA's documentation!
 ===================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+**CLAWDIA** is a Python package for denoising and classifying gravitational-wave signals. 
+It provides a modular pipeline with an intuitive API to preprocess, analyze, and extract features from 
+gravitational-wave data.
 
-   modules
+
+.. raw:: html
+
+   <div style="margin-top: 30px; margin-bottom: 30px; text-align: center;">
+       <a href="modules.html" style="
+           display: inline-block;
+           padding: 12px 24px;
+           font-size: 1.1rem;
+           color: white;
+           background-color: #0078d4;
+           border-radius: 6px;
+           text-decoration: none;
+       ">
+           Explore the Documentation
+       </a>
+   </div>
+
+
 
 Indices and tables
 ==================
