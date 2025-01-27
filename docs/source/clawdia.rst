@@ -4,45 +4,14 @@ clawdia package
 Submodules
 ----------
 
-clawdia.dictionaries module
----------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: clawdia.dictionaries
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-clawdia.estimators module
--------------------------
-
-.. automodule:: clawdia.estimators
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-clawdia.lib module
-------------------
-
-.. automodule:: clawdia.lib
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-clawdia.pipeline module
------------------------
-
-.. automodule:: clawdia.pipeline
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-clawdia.plotting module
------------------------
-
-.. automodule:: clawdia.plotting
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   clawdia.dictionaries
+   clawdia.estimators
+   clawdia.lib
+   clawdia.pipeline
+   clawdia.plotting
 
 Module contents
 ---------------

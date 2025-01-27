@@ -19,9 +19,11 @@ extensions = [
     'sphinx.ext.autodoc',  # Auto-generates documentation from docstrings
     'sphinx.ext.viewcode', # Adds links to highlighted source code
     'sphinx.ext.mathjax',  # Renders math equations
+    'sphinx.ext.autosummary', # Generate summary tables
 ]
-autosummary_generate = True
 
+autosummary_generate = True
+autosummary_imported_members = True  # Include members imported from other modules
 autodoc_default_options = {
     "members": True,
     "undoc-members": False,
@@ -48,19 +50,17 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
+html_css_files = [
+    'custom.css',
+]
 
-# # Optional: Customize the theme with some common settings
-# html_theme_options = {
-#     "logo": {
-#         "text": "CLAWDIA",  # Displayed text with the logo
-#     },
-#     "navbar_start": ["navbar-logo", "navbar-title"],  # Controls the navigation bar
-#     "navbar_end": ["search-field", "navbar-icon-links"],  # Controls the right-hand section of the navbar
-#     "icon_links": [
-#         {
-#             "name": "GitHub",
-#             "url": "https://github.com/yourusername/clawdia",
-#             "icon": "fab fa-github",  # Requires FontAwesome, which this theme supports
-#         },
-#     ],
-# }
+
+# Add explicit anchors to methods and class members
+numpydoc_class_members_toctree = True  # Ensures class methods are linked in the "On this page" section
+autodoc_default_flags = ['members', 'show-inheritance']
+
+
+html_theme_options = {
+    "secondary_sidebar_items": ["page-toc", "sourcelink"],
+    "show_toc_level": 2,
+}
