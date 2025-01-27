@@ -4,31 +4,10 @@ This module provides a temporary collection of various utility functions,
 including mathematical operations, signal normalization, optimization routines, 
 and signal patching utilities.
 
+Notes
+-----
 As the CLAWDIA pipeline grows, these functions will be organized into more
 semantically appropriate modules.
-
-Functions
----------
-abs_normalize(array, axis=-1)
-    Normalize an array in place by its absolute maximum, ignoring division
-    errors and replacing NaNs with zeros.
-
-l2_normalize(array, axis=-1)
-    Normalize an array in place using the L2 norm, ignoring division errors and 
-    replacing NaNs with zeros.
-
-semibool_bisect(f, a, b, args=(), xtol, rtol, maxiter=100, verbose=False)
-    Perform a semi-boolean bisection method to find a zero boundary for a
-    function.
-
-extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
-                step=1, limits=None, patch_min=1, l2_normed=False,
-                return_norm_coefs=False, allow_allzeros=True)
-    Extract patches from input signals, with options for random extraction, 
-    normalization, and patch-specific constraints.
-
-reconstruct_from_patches_1d(patches, step)
-    Reconstruct a 1D signal from its patches, using overlap-add synthesis.
 
 """
 import warnings
@@ -43,6 +22,12 @@ _rtol = 4 * np.finfo(float).eps
 
 
 class BoundaryError(ValueError):
+    """Exception raised when a boundary condition is violated.
+    
+    This exception is a subclass of `ValueError` and is used to signal
+    issues with input values exceeding or falling below defined boundaries.
+    
+    """
     pass
 
 
