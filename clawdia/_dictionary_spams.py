@@ -706,6 +706,22 @@ class DictionarySpams:
         return rec, l_opt, loss
 
     def save(self, file):
+        """Save the current state of the DictionarySpams object to a file.
+
+        This method saves all attributes of the object as a `.npz` file. 
+        If the object has not been trained, certain attributes (`lambda1`, 
+        `n_train`, and `t_train`) are removed to avoid potential issues when 
+        reloading the state.
+
+        Parameters
+        ----------
+        file : str or file-like object
+            The file path or file object where the state of the object will 
+            be saved. If a string is provided, it specifies the path to the 
+            `.npz` file. If a file-like object is given, it must be writable 
+            in binary mode.
+
+        """
         vars_ = vars(self)
         to_remove = []
 
