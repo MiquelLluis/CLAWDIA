@@ -3,6 +3,11 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+# Ensure Sphinx can find the 'clawdia' package
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../..'))
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
@@ -31,18 +36,7 @@ autodoc_default_options = {
     "inherited-members": True,
     "show-inheritance": True,
 }
-
-# Optional: Numpydoc settings (tweak as needed)
-# numpydoc_show_class_members = False  # Avoid showing all class members automatically
-# numpydoc_class_members_toctree = False  # Avoid creating a toctree for class members
-
-templates_path = ['_templates']
 exclude_patterns = []
-
-# Ensure Sphinx can find the 'clawdia' package
-import os
-import sys
-sys.path.insert(0, os.path.abspath('../..'))
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -64,3 +58,6 @@ html_theme_options = {
     "secondary_sidebar_items": ["page-toc", "sourcelink"],
     "show_toc_level": 2,
 }
+
+
+templates_path = ['_templates']

@@ -1,4 +1,4 @@
-![CLAWDIA: Classification of Waves via Dictionary-based Algorithms](clawdia.svg)
+![CLAWDIA: Classification of Waves via Dictionary-based Algorithms](docs/source/_static/clawdia.svg)
 
 
 
