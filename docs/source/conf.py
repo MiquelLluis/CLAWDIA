@@ -55,7 +55,7 @@ html_css_files = [
 ]
 
 html_theme_options = {
-    "secondary_sidebar_items": ["page-toc", "sourcelink"],
+    "secondary_sidebar_items": ["page-toc"],
     "show_toc_level": 2,
 
     # HEADER ------------------------------------------------------------------
