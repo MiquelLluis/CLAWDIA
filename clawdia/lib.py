@@ -69,24 +69,86 @@ def l2_normalize(array, axis=-1):
 
 
 def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbose=False):
-    """TODO
+    """Semi-boolean bisection method for solving f(x).
 
-    Troba x0 pel mètode de bisecció adaptat a una funció f(x) tal que
-        f(x)  > 0       x <= x0,
-        f(x) == 0       x  > x0,
-    o viceversa. Un dels dos extrems del límite [a, b] ha de ser f(x) = 0.
-    Algorisme basat en la funció de bisecció `scipy.optimize.bisect`.
+    Find the boundary point ``x0`` in the interval [a, b] using a modified
+    bisection method such that:
 
-    Nota: 'rtol' controla l'ordre de precissió respecte 'x'.
+        f(x) > 0 for x <= x0, f(x) == 0 for x > x0,
 
-    Result
+    or vice versa. One of the two endpoints of the interval [a, b] must
+    satisfy ``f(x) = 0``. This algorithm is based on the
+    `scipy.optimize.bisect` method but includes modifications for this specific
+    boundary behavior.
+
+    The method iteratively narrows down the interval [a, b] until the
+    solution is found to within the specified tolerances `xtol` and `rtol`, or
+    the maximum number of iterations is reached.
+
+    Parameters
+    ----------
+    f : callable
+        A continuous function of a single variable, ``f(x)``. The function must
+        accept a single positional argument and any additional arguments via
+        `args`.
+    a : float
+        Lower bound of the interval [a, b].
+    b : float
+        Upper bound of the interval [a, b].
+    args : tuple, optional
+        Additional arguments to pass to the function `f`.
+    xtol : float, optional
+        Absolute tolerance for the solution. Default is ``2e-12``.
+    rtol : float, optional
+        Relative tolerance for the solution. Default is `_rtol`.
+    maxiter : int, optional
+        Maximum number of iterations to perform. Default is 100.
+    verbose : bool, optional
+        If `True`, prints the progress of each iteration, including the
+        evaluation of ``f(x)`` at the midpoint. Default is `False`.
+
+    Returns
+    -------
+    solver_stats : dict
+        A dictionary containing information about the solution:
+        - `'x'` : float
+            The last point where `f(x) != 0`. Approximates the boundary point
+            ``x0``.
+        - `'f'` : float
+            The value of ``f(x)`` at the solution.
+        - `'converged'` : bool
+            Indicates whether the algorithm converged to a solution.
+        - `'niters'` : int
+            The number of iterations performed.
+        - `'funcalls'` : int
+            The total number of function evaluations.
+
+    Raises
     ------
-    solver_stats: dict
-        'x': Solution.
-        'f': Value of f(x).
-        'converged': bool.
-        'niters': Number of iterations performed.
-        'funcalls': Number of times `f` was evaluated.
+    BoundaryError
+        If the initial interval [a, b] does not satisfy the condition that
+        one endpoint evaluates to ``f(x) = 0``.
+    ValueError
+        If the function is not continuous or if `a` and `b` are not proper
+        bounds.
+
+    Notes
+    -----
+    - The `xtol` parameter controls the absolute precision of the solution,
+      while the `rtol` parameter ensures relative precision with respect to the
+      value of `x`.
+    - This method assumes that ``f(x)`` is continuous over [a, b] and that
+      there is exactly one boundary point in the interval.
+
+    Examples
+    --------
+    >>> def f(x):
+    ...     return 1 if x < 2 else 0
+    >>> result = semibool_bisect(f, 0, 4)
+    >>> print(result['x'])
+    2.0
+    >>> print(result['converged'])
+    True
 
     """
     fa = f(a, *args)
