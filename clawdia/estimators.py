@@ -65,32 +65,36 @@ def medse(x, y):
 
 
 def ssim(x, y):
-    """Structural Similarity Index Measure.
+    """Structural Similarity Index Measure (SSIM).
 
-    Compute the Structural Similarity Index Measure (SSIM) between two arrays
-    x and y.
+    Compute the Structural Similarity Index Measure (SSIM) between two
+    arrays, `x` and `y`. SSIM is a perceptual metric that quantifies the
+    similarity between two signals or images, accounting for luminance,
+    contrast, and structure [1]_, [2]_.
 
-    Ranges from -1 to 1:
-
+    The SSIM value ranges from -1 to 1:
         -  1: Perfect similarity.
-
         -  0: No similarity.
-
         - -1: Perfect anti-correlation.
 
     Parameters
     ----------
-    x, y : array
-        Input signals.
+    x : array_like
+        Input signal or image. Must be of the same shape as `y`.
+    y : array_like
+        Input signal or image. Must be of the same shape as `x`.
 
     Returns
     -------
     ssim : float
-        The Structural Similarity Index Measure between the signals x and y.
+        The Structural Similarity Index Measure between the signals `x` and `y`.
 
-    Reference
-    ---------
-    https://en.wikipedia.org/wiki/Structural_similarity_index_measure
+    References
+    ----------
+    .. [1] Wang, Z., Bovik, A. C., Sheikh, H. R., & Simoncelli, E. P. (2004). 
+        Image quality assessment: From error visibility to structural similarity. 
+        IEEE Transactions on Image Processing, 13(4), 600-612.
+    .. [2] https://en.wikipedia.org/wiki/Structural_similarity
     
     """
     mux = x.mean()
