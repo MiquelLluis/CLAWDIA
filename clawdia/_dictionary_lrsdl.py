@@ -120,43 +120,61 @@ class DictionaryLRSDL(LRSDL):
 
     def fit(self, X, *, y_true, l_atoms, iterations, step=None,
             threshold=0, random_seed=None, verbose=False, show_after=5):
-        """Train de LRSDL dictionary.
+        """Train the LRSDL dictionary.
 
-        Train the dictionary allowing several options:
-        - Split the strains in X into sliced windows of length equal to the
-          length of de dictionary, or
-        - use the whole strain as a window.
-        - Discard training windows whose L2-norm is below a threshold.
+        This method trains the dictionary using the provided data and allows
+        for several configuration options:
+        
+        - Split the input data `X` into sliding windows of length `l_atoms`.
+        - Use the entire input as a single window.
+        - Discard training windows whose L2-norm is below a specified
+          threshold.
+
+        The splitting behavior depends on the `step` parameter. If `step` is
+        `None`, the entire input is treated as a single window. Otherwise,
+        overlapping patches of size `l_atoms` are created with the specified
+        step size.
 
         Parameters
         ----------
-        X : 2d-array, shape=(samples, features)
-            Training samples, with equal or more features than the atoms'.
+        X : ndarray of shape (n_samples, n_features)
+            Training samples. The number of features must be equal to or
+            greater than the dictionary's atom size.
 
-        y_true : np.ndarray
-            Labels of samples in X, with `len(y_true) == X.shape[0]`.
+        y_true : ndarray of shape (n_samples,)
+            Labels corresponding to the samples in `X`. The length of `y_true`
+            must equal the number of samples in `X`.
 
         l_atoms : int
-            Lenght of the atoms of the dictionary.
+            Length of the dictionary's atoms.
 
         iterations : int
             Number of training iterations.
 
         step : int, optional
-            For splitting strains in X into the specified 'l_atoms' in order to
-            generate the training patches.
-            No splitting by default.
+            The step size for splitting input samples into patches of length
+            `l_atoms`. If not specified, the entire input is used as a single
+            window.
 
         threshold : float, optional
-            L2-norm threshold relative to the window of max(L2-norm) of each
-            strain, below which to discard the rest of the reconstruction windows.
-            No threshold by default.
+            L2-norm threshold (relative to the maximum L2-norm in each strain).
+            Training windows with L2-norm below this value will be discarded.
+            Default is 0 (no threshold applied).
 
-        verbose : bool
-            If True, increase verbosity of LRSDL.fit().
-        
+        random_seed : int, optional
+            Random seed for reproducibility. Default is `None`.
+
+        verbose : bool, optional
+            If True, print verbose output during training. Default is False.
+
         show_after : int, optional
-            If verbose is True, show the progress every 'show_after' iterations.
+            If `verbose` is True, progress will be displayed every `show_after`
+            iterations. Default is 5.
+
+        Returns
+        -------
+        `None`
+            The method trains the dictionary in place.
 
         """
         if not isinstance(y_true, np.ndarray):
