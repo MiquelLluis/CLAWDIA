@@ -1,23 +1,22 @@
 # Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 # Ensure Sphinx can find the 'clawdia' package
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'CLAWDIA'
 copyright = '2025, Miquel Lluís Llorens Monteagudo'
 author = 'Miquel Lluís Llorens Monteagudo'
-release = '0.4.2'
+
+from clawdia import __version__ as version
+release = version
+
 
 # -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
     'numpydoc',            # Parses NumPy-style docstrings
@@ -40,19 +39,12 @@ exclude_patterns = []
 
 
 # -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
 html_css_files = [
     'custom.css',
 ]
-
-
-# Add explicit anchors to methods and class members
-numpydoc_class_members_toctree = True  # Ensures class methods are linked in the "On this page" section
-autodoc_default_flags = ['members', 'show-inheritance']
-
 
 html_theme_options = {
     "secondary_sidebar_items": ["page-toc", "sourcelink"],
@@ -61,3 +53,7 @@ html_theme_options = {
 
 
 templates_path = ['_templates']
+
+# Add explicit anchors to methods and class members
+numpydoc_class_members_toctree = True  # Ensures class methods are linked in the "On this page" section
+autodoc_default_flags = ['members', 'show-inheritance']
