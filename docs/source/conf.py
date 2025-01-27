@@ -23,10 +23,12 @@ extensions = [
     'sphinx.ext.autodoc',  # Auto-generates documentation from docstrings
     'sphinx.ext.viewcode', # Adds links to highlighted source code
     'sphinx.ext.mathjax',  # Renders math equations
-    'sphinx.ext.autosummary', # Generate summary tables
+    'sphinx.ext.autosummary',  # Generate summary tables
+    'sphinx.ext.intersphinx',  # Allows references to external libraries
 ]
 
 autosummary_generate = True
+autosummary_generate_overwrite = True  # Overwrite existing stub files
 autosummary_imported_members = True  # Include members imported from other modules
 autodoc_default_options = {
     "members": True,
@@ -36,6 +38,12 @@ autodoc_default_options = {
     "show-inheritance": True,
 }
 exclude_patterns = []
+
+# To Enable Cross-Referencing with Sphinx (Intersphinx)
+intersphinx_mapping = {
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/', None),
+}
 
 
 # -- Options for HTML output -------------------------------------------------
