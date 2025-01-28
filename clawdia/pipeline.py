@@ -6,13 +6,6 @@ have already been trained and that all necessary hyperparameters and
 post-training parameters are provided.
 
 """
-import yaml
-
-from gwpy.timeseries import TimeSeries
-from gwpy.frequencyseries import FrequencySeries
-import numpy as np
-
-from . import lib
 
 
 class Pipeline:
