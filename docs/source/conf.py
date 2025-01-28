@@ -39,6 +39,10 @@ autodoc_default_options = {
 }
 exclude_patterns = []
 
+# Add explicit anchors to methods and class members
+numpydoc_class_members_toctree = True  # Ensures class methods are linked in the "On this page" section
+autodoc_default_flags = ['members', 'show-inheritance']
+
 # To Enable Cross-Referencing with Sphinx (Intersphinx)
 intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable/', None),
@@ -48,8 +52,9 @@ intersphinx_mapping = {
 
 # -- Options for HTML output -------------------------------------------------
 
-html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
+templates_path = ['_templates']
+html_theme = 'pydata_sphinx_theme'
 html_css_files = [
     'custom.css',
 ]
@@ -77,9 +82,3 @@ html_theme_options = {
    ],
 }
 
-
-templates_path = ['_templates']
-
-# Add explicit anchors to methods and class members
-numpydoc_class_members_toctree = True  # Ensures class methods are linked in the "On this page" section
-autodoc_default_flags = ['members', 'show-inheritance']
