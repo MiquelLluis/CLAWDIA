@@ -1,5 +1,7 @@
-Index
-=====
+API Documentation
+=================
+
+Below is an overview of the available modules in the CLAWDIA package.
 
 .. toctree::
    :maxdepth: 2
