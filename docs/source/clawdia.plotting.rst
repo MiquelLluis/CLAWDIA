@@ -1,5 +1,5 @@
-clawdia.plotting module
-=======================
+clawdia.plotting
+================
 
 .. automodule:: clawdia.plotting
    :members:

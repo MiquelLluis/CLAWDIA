@@ -1,5 +1,5 @@
-clawdia.dictionaries module
-===========================
+clawdia.dictionaries
+====================
 
 .. automodule:: clawdia.dictionaries
    :members:

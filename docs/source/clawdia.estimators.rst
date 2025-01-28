@@ -1,5 +1,5 @@
-clawdia.estimators module
-=========================
+clawdia.estimators
+==================
 
 .. automodule:: clawdia.estimators
    :members:

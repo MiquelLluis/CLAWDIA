@@ -25,8 +25,8 @@ Submodules
 .. toctree::
    :maxdepth: 2
 
-   CLAWDIA Dictionaries <clawdia.dictionaries>
-   CLAWDIA Estimators <clawdia.estimators>
-   CLAWDIA Lib <clawdia.lib>
-   CLAWDIA Pipeline <clawdia.pipeline>
-   CLAWDIA Plotting <clawdia.plotting>
+   clawdia.dictionaries
+   clawdia.estimators
+   clawdia.lib
+   clawdia.pipeline
+   clawdia.plotting

@@ -1,5 +1,5 @@
-clawdia.pipeline module
-=======================
+clawdia.pipeline
+================
 
 .. automodule:: clawdia.pipeline
    :members:

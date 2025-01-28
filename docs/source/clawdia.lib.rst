@@ -1,5 +1,5 @@
-clawdia.lib module
-==================
+clawdia.lib
+===========
 
 .. automodule:: clawdia.lib
    :members:
