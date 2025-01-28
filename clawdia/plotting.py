@@ -29,16 +29,20 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
     Rows must contain true values, and columns predicted values. For example,
     in a binary classification case:
 
-    | T \ P  | Pred 0  | Pred 1  |
-    |--------|---------|---------|
-    | True 0 | TP      | FN      |
-    | True 1 | FP      | TN      |
+    +---------+---------+---------+
+    |  T \ P  | Pred C1 | Pred C2 |
+    +=========+=========+=========+
+    | True C1 | TP      | FN      |
+    +---------+---------+---------+
+    | True C2 | FP      | TN      |
+    +---------+---------+---------+
 
     Where:
-    - **TP** (True Positives): Correctly predicted Class 0.
-    - **FN** (False Negatives): Class 0 incorrectly predicted as Class 1.
-    - **FP** (False Positives): Class 1 incorrectly predicted as Class 0.
-    - **TN** (True Negatives): Correctly predicted Class 1.
+
+    - **TP** (True Positives): Correctly predicted Class 1.
+    - **FN** (False Negatives): Class 1 incorrectly predicted as Class 2.
+    - **FP** (False Positives): Class 2 incorrectly predicted as Class 1.
+    - **TN** (True Negatives): Correctly predicted Class 2.
 
     Parameters
     ----------
@@ -193,20 +197,20 @@ def plot_spec_of(strain, figsize=(10,5), sf=4096, window='hann', vmin=None, vmax
 def plot_spectrogram_with_instantaneous_features(
         strain_array, time_array, sampling_rate=2**14, outseg=None, outfreq=None,
         window=sp.signal.windows.tukey(128,0.5), hop=32, mfft=2**14, vmin=-22, ax=None):
-    """
-    Plot the spectrogram, instantaneous frequency, and strain's waveform.
+    """Plot the spectrogram, instantaneous frequency, and strain's waveform.
 
     This function generates a multi-panel plot consisting of:
     
     1. A spectrogram of the gravitational wave strain, obtained using
-    Short-Time Fourier Transform (STFT), visualizing the frequency evolution
-    over time.
+       Short-Time Fourier Transform (STFT), visualizing the frequency evolution
+       over time.
     2. The instantaneous frequency of the strain, plotted on top of the
-    spectrogram to show the frequency changes in real time.
+       spectrogram to show the frequency changes in real time.
     3. The raw gravitational wave strain in the time domain, shown above the
-    spectrogram for direct comparison.
+       spectrogram for direct comparison.
 
     Key features of the plot:
+
     - **Spectrogram**: The frequency content of the gravitational wave signal
       is displayed over time using a color map (`inferno`), with the x-axis
       representing time (in milliseconds) and the y-axis representing
