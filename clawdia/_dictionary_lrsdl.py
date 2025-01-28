@@ -8,10 +8,6 @@ from . import lib
 class DictionaryLRSDL(LRSDL):
     """Interface for the Low-Rank Shared Dictionary Learning class.
 
-    NOTE: The authors of Dictol didn't provide a seed parameter for the random
-    initialization of the dictionary. If reproducibility is important, one must
-    set the global numpy's seed before callint LRSDL.__init__().
-
     Attributes
     ----------
     t_train : float
@@ -66,50 +62,94 @@ class DictionaryLRSDL(LRSDL):
     X0 : ndarray
         Shared coefficient vector of the training set given when calling
         self.fit().
+    
+    
+    Notes
+    -----
+    The authors of Dictol didn't provide a seed parameter for the random
+    initialization of the dictionary. If reproducibility is important, one must
+    set the global numpy's seed before callint ``LRSDL.__init__()``.
 
 
     References
     ----------
-    Vu, T. H.; Monga, V. (2017). Fast low-rank shared dictionary learning for image classification.
-    IEEE Transactions on Image Processing, 26(11), 5160–5175. https://doi.org/10.1109/TIP.2017.2729885
+    .. [1] Vu, T. H.; Monga, V. (2017). *Fast low-rank shared dictionary
+           learning for image classification*, IEEE Transactions on Image
+           Processing, 26(11), 5160–5175.
+           (https://doi.org/10.1109/TIP.2017.2729885)
 
     """
     def __init__(self, lambd=0.01, lambd2=0.01, eta=0.0001, k=10, k0=5,
                  updateX_iters=100, updateD_iters=100):
-        r"""Initialize the dictionary.
-        
+        r"""Initialize the LRSDL dictionary.
+
+        This method sets up the parameters required for training class-specific
+        and shared dictionaries. These dictionaries are used to represent data
+        with sparsity and low-rank properties, which can be regularized by the
+        parameters defined below.
+
         Parameters
         ----------
         lambd : float
-            Regularization parameter of the term
-                $$ \lambda  \|X\|_1. $$
-            Makes the class-specific vector sparse, symilar to the LASSO
-            regularization term.
+            Regularization parameter for the sparsity term:
+
+            .. math::
+
+               \lambda \|X\|_1
+
+            This encourages sparsity in the class-specific dictionary, similar
+            to the LASSO regularization term.
 
         lambd2 : float
-            Regularization parameter of the term
-                $$ \frac{\lambda_2}{2} \|X^0 - M^0\|^2. $$
-            Makes the shared vector (selection of shared atoms) sparse and close to
-            the mean shared vector, i.e. all {X⁰} close between them.
+            Regularization parameter for the reconstruction term:
+
+            .. math::
+
+               \frac{\lambda_2}{2} \|X^0 - M^0\|^2
+
+            This ensures that the shared vector (used to select shared atoms)
+            is sparse and close to the mean shared vector, ensuring consistency
+            across all :math:`X^0`.
 
         eta : float
-            Regularization parameter of the term
-                $$ \eta  \| D^0 \|_{\*}, $$
-            where $\|\cdot\|_*$ is the nuclear norm. Enforces the shared
-            dictionary to be low-rank.
+            Regularization parameter for the low-rank term:
+
+            .. math::
+
+               \eta \| D^0 \|_*
+
+            Here, :math:`\|\cdot\|_*` is the `nuclear norm
+            <https://encyclopediaofmath.org/wiki/Nuclear_norm>`_, which
+            enforces the shared dictionary to have low rank.
 
         k : int
             Number of class-specific atoms for each class. The total number of
-            atoms in the class-specific dictionary is then `k * nc` where 'nc' is
-            the number of classes.
-        
+            atoms in the class-specific dictionary is given by :math:`k \times
+            C`, where :math:`C` is the number of classes.
+
         k0 : int
-            Total number of shared atoms. k0=0 is equivalent to the case when there
-            is no shared dictionary.
-        
+            Total number of shared atoms. A value of :math:`k_0 = 0` indicates
+            that no shared dictionary is used.
+
         updateX_iters, updateD_iters : int
-            *I think they are not used in this class at all.*
-        
+            These parameters are passed to the parent class
+            :meth:`LRSDL.__init__`. However, they are suspected to be **dummy
+            parameters** because no usage of them could be found in the
+            original implementation. They are retained here for compatibility
+            but appear to have no functional effect in this class.
+
+        Warnings
+        --------
+        The `updateX_iters` and `updateD_iters` parameters are inherited from the 
+        parent class :class:`LRSDL`, but they appear to be unused in this 
+        implementation. Consider verifying their relevance before relying on them.
+
+        Notes
+        -----
+        - The parameters `lambd`, `lambd2`, and `eta` control the sparsity and
+          low-rank properties of the dictionaries.
+        - Setting ``k0 = 0`` disables the shared dictionary.
+
         """
         super().__init__(
             lambd=lambd, lambd2=lambd2, eta=eta, k=k, k0=k0,
