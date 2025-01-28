@@ -54,21 +54,22 @@ def l2_normalize(array, axis=-1):
 
 
 def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbose=False):
-    """Semi-boolean bisection method for solving f(x).
+    """Semi-boolean bisection method for solving ``f(x)``.
 
     Find the boundary point ``x0`` in the interval [a, b] using a modified
     bisection method such that:
 
-        f(x) > 0 for x <= x0, f(x) == 0 for x > x0,
+    - ``f(x) > 0 for x <= x0``
+    - ``f(x) == 0 for x > x0``
 
     or vice versa. One of the two endpoints of the interval [a, b] must
-    satisfy ``f(x) = 0``. This algorithm is based on the
-    `scipy.optimize.bisect` method but includes modifications for this specific
-    boundary behavior.
-
+    satisfy ``f(x) = 0``.
     The method iteratively narrows down the interval [a, b] until the
     solution is found to within the specified tolerances `xtol` and `rtol`, or
     the maximum number of iterations is reached.
+    
+    This algorithm is based on the `scipy.optimize.bisect` method, but includes
+    modifications for this specific boundary behavior.
 
     Parameters
     ----------
@@ -96,17 +97,18 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     -------
     solver_stats : dict
         A dictionary containing information about the solution:
-        - `'x'` : float
-            The last point where `f(x) != 0`. Approximates the boundary point
-            ``x0``.
-        - `'f'` : float
-            The value of ``f(x)`` at the solution.
-        - `'converged'` : bool
-            Indicates whether the algorithm converged to a solution.
-        - `'niters'` : int
-            The number of iterations performed.
-        - `'funcalls'` : int
-            The total number of function evaluations.
+        
+        - `x` : float
+           The last point where ``f(x) != 0``. Approximates the boundary point
+           `x0`.
+        - `f` : float
+           The value of ``f(x)`` at the solution.
+        - `converged` : bool
+           Indicates whether the algorithm converged to a solution.
+        - `niters` : int
+           The number of iterations performed.
+        - `funcalls` : int
+           The total number of function evaluations.
 
     Raises
     ------
@@ -122,13 +124,13 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     - The `xtol` parameter controls the absolute precision of the solution,
       while the `rtol` parameter ensures relative precision with respect to the
       value of `x`.
-    - This method assumes that ``f(x)`` is continuous over [a, b] and that
-      there is exactly one boundary point in the interval.
+    - This method assumes that ``f(x)`` contains exactly one boundary point
+      within [a, b].
 
     Examples
     --------
     >>> def f(x):
-    ...     return 1 if x < 2 else 0
+    ...     return 0 if x < 2 else x
     >>> result = semibool_bisect(f, 0, 4)
     >>> print(result['x'])
     2.0
