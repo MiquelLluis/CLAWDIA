@@ -5,6 +5,11 @@ classification pipeline. This implementation assumes that the dictionaries
 have already been trained and that all necessary hyperparameters and 
 post-training parameters are provided.
 
+.. warning::
+
+    This module is still under development and has not been thoroughly tested. 
+    API changes or unexpected behavior may occur in future updates.
+
 """
 
 
