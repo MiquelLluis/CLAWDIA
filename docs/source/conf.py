@@ -28,6 +28,7 @@ extensions = [
 
 autosummary_generate = True
 autosummary_generate_overwrite = True  # Overwrite existing stub files
+autosummary_generate_output = os.path.join(os.path.abspath('.'), '_autosummary')
 autosummary_imported_members = True  # Include members imported from other modules
 autodoc_default_options = {
     "members": True,
