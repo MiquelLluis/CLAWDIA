@@ -14,13 +14,22 @@ Welcome to CLAWDIA's documentation!
            padding: 12px 24px;
            font-size: 1.1rem;
            color: white;
-           background-color: #0078d4;
+           background-color:rgb(132, 0, 188);
            border-radius: 6px;
            text-decoration: none;
        ">
            Explore the Documentation
        </a>
    </div>
+
+
+Contents
+========
+
+.. toctree::
+   :maxdepth: 3
+
+   modules
 
 
 
