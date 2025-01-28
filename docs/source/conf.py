@@ -26,18 +26,20 @@ extensions = [
     'sphinx.ext.intersphinx',  # Allows references to external libraries
 ]
 
-# autosummary_generate = True
+autosummary_generate = False
 # autosummary_generate_overwrite = True  # Overwrite existing stub files
 # autosummary_generate_output = os.path.join(os.path.abspath('.'), '_autosummary')
 # autosummary_imported_members = True  # Include members imported from other modules
 autodoc_default_options = {
     "members": True,
-    "undoc-members": False,
+    "undoc-members": True,
     "special-members": "__init__",
     "inherited-members": True,
     "show-inheritance": True,
 }
 exclude_patterns = []
+
+suppress_warnings = ["autosummary"]
 
 # Add explicit anchors to methods and class members
 numpydoc_class_members_toctree = True  # Ensures class methods are linked in the "On this page" section
