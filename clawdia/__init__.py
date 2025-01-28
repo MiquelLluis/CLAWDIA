@@ -17,15 +17,12 @@ The workflow is divided into two main stages:
 CLAWDIA's modular design ensures adaptability to a wide range of applications,
 making it a versatile tool for gravitational-wave data analysis.
 
-
-Notes
------
 CLAWDIA was developed as part of the PhD thesis:
-    *Gravitational-wave signal denoising, reconstruction and classification via
-    parse dictionary learning* (2025).
 
-Future updates will focus on enhancements to dictionary training and further 
-modularization of utility functions to improve usability and performance.
+   Llorens-Monteagudo, M., 2025, *Gravitational-wave signal denoising,
+   reconstruction and classification via Sparse Dictionary Learning*,
+   PhD thesis, Universitat de València, Spain.
+
 
 """
 from . import dictionaries
