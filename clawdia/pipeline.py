@@ -5,13 +5,6 @@ classification pipeline. This implementation assumes that the dictionaries
 have already been trained and that all necessary hyperparameters and 
 post-training parameters are provided.
 
-Classes
--------
-Pipeline
-    Implements a basic classification pipeline that preprocesses input 
-    gravitational-wave strain data using a denoising dictionary and 
-    subsequently classifies it using a classification dictionary.
-
 """
 import yaml
 
@@ -23,6 +16,12 @@ from . import lib
 
 
 class Pipeline:
+    """
+    Implements a basic classification pipeline that preprocesses input 
+    gravitational-wave strain data using a denoising dictionary and 
+    subsequently classifies it using a classification dictionary.
+    
+    """
     def __init__(self, *, dico_den, dico_den_params, dico_clas, dico_clas_params):
         if dico_den.components.shape[0] > dico_clas.D.shape[0]:
             raise ValueError(
