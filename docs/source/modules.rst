@@ -1,6 +1,3 @@
-CLAWDIA
-=======
-
 .. raw:: html
 
    <h1 style="text-align: right; font-family: 'Times New Roman', Times, serif;">
@@ -13,6 +10,8 @@ CLAWDIA
    <div style="height: 20px;"></div>
 
 
+Introduction
+============
 
 .. automodule:: clawdia
    :members:
