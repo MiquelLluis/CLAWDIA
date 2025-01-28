@@ -59,9 +59,6 @@ html_css_files = [
 ]
 
 html_theme_options = {
-    "secondary_sidebar_items": ["page-toc"],
-    "show_toc_level": 2,
-
     # HEADER ------------------------------------------------------------------
 
     # "external_links": [
@@ -79,5 +76,13 @@ html_theme_options = {
             "type": "fontawesome",
         }
    ],
+
+
+   # SECONDARY SIDEBAR (RIGHT) ------------------------------------------------
+
+   "secondary_sidebar_items": ["page-toc"],
+    "show_nav_level": 0,
+    "show_toc_level": 2,
+    "navigation_depth": 3,
 }
 
