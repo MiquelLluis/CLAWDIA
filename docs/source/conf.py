@@ -22,14 +22,14 @@ extensions = [
     'sphinx.ext.autodoc',  # Auto-generates documentation from docstrings
     'sphinx.ext.viewcode', # Adds links to highlighted source code
     'sphinx.ext.mathjax',  # Renders math equations
-    'sphinx.ext.autosummary',  # Generate summary tables
+    # 'sphinx.ext.autosummary',  # Generate summary tables
     'sphinx.ext.intersphinx',  # Allows references to external libraries
 ]
 
-autosummary_generate = True
-autosummary_generate_overwrite = True  # Overwrite existing stub files
-autosummary_generate_output = os.path.join(os.path.abspath('.'), '_autosummary')
-autosummary_imported_members = True  # Include members imported from other modules
+# autosummary_generate = True
+# autosummary_generate_overwrite = True  # Overwrite existing stub files
+# autosummary_generate_output = os.path.join(os.path.abspath('.'), '_autosummary')
+# autosummary_imported_members = True  # Include members imported from other modules
 autodoc_default_options = {
     "members": True,
     "undoc-members": False,

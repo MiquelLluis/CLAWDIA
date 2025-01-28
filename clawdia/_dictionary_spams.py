@@ -67,7 +67,7 @@ class DictionarySpams:
     References
     ----------
     .. [1] SPAMS (for python), (http://spams-devel.gforge.inria.fr/).
-               Last accessed in October 2018.
+           Last accessed in October 2018.
     
     """
     def __init__(self,
