@@ -1,7 +1,17 @@
+.. raw:: html
 
-Welcome to CLAWDIA's documentation!
-===================================
+   <h1 style="text-align: right; font-family: 'Times New Roman', Times, serif;">
+       CLAWDIA
+   </h1>
+   <p style="text-align: right; font-style: italic; font-size: 1.6em;">
+       Classification of Waves via Dictionary-Based Algorithms
+   </p>
 
+   <div style="height: 20px;"></div>
+
+
+Introduction
+============
 
 .. automodule:: clawdia
 
