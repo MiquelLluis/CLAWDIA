@@ -8,28 +8,6 @@ While not essential for CLAWDIA's core processing, these functions are useful
 for presenting and analyzing outcomes, such as confusion matrices, dictionary
 atoms, and spectrograms.
 
-Functions
----------
-plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None,
-        cmap="PaleBlues", **kwargs)
-    Plot a pre-computed confusion matrix, with options for absolute values,
-    percentages, or both.
-
-plot_dictionary(array, c=None, ylim=None, **plot_kw)
-    Visualize dictionary atoms in a squared grid format.
-
-plot_spec_of(strain, figsize=(10, 5), sf=4096, window='hann', vmin=None,
-        vmax=None)
-    Plot the spectrogram of a given strain signal using a Short-Time Fourier
-    Transform (STFT).
-
-plot_spectrogram_with_instantaneous_features(strain_array, time_array,
-        sampling_rate=2**14, outseg=None, outfreq=None,
-        window=sp.signal.windows.tukey(128, 0.5), hop=32, mfft=2**14, vmin=-22,
-        ax=None)
-    Generate a multi-panel plot showing the spectrogram, instantaneous
-    frequency, and time-domain waveform of a gravitational-wave strain signal.
-
 """
 from colorsys import rgb_to_hls, hls_to_rgb
 import itertools as it
