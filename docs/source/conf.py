@@ -58,6 +58,8 @@ html_css_files = [
     'custom.css',
 ]
 
+html_logo = "_static/clawdia-logo.svg"
+
 html_theme_options = {
     # HEADER ------------------------------------------------------------------
 
