@@ -121,6 +121,10 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
     
     ax.grid(False)
 
+    # Change the frame (axes spines) color to gray
+    for spine in ax.spines.values():
+        spine.set_edgecolor('gray')
+
     # Set X and Y labels
     ax.set_xlabel("Predicted")
     ax.set_ylabel("True")
