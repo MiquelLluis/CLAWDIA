@@ -1,0 +1,747 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clawdia.lib &#8212; CLAWDIA 0.4.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=6e061ff1" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5bfaad31"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/clawdia/lib';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.4.3" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item"><div class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand" style="color: inherit; cursor: pointer;">
+        <img src="_static/clawdia-logo.svg" class="navbar-project-icon" />
+        <span class="navbar-project-name">CLAWDIA</span>
+        <span class="navbar-project-version">v0.4.3</span>
+    </a>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../modules.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MiquelLluis/clawdia" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../modules.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MiquelLluis/clawdia" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">clawdia.lib</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for clawdia.lib</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Collection of auxiliary functions.</span>
+
+<span class="sd">This module provides a temporary collection of various utility functions, </span>
+<span class="sd">including mathematical operations, signal normalization, optimization routines, </span>
+<span class="sd">and signal patching utilities.</span>
+
+<span class="sd">Notes</span>
+<span class="sd">-----</span>
+<span class="sd">As the CLAWDIA pipeline grows, these functions will be organized into more</span>
+<span class="sd">semantically appropriate modules.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="c1"># Default values same as Scipy&#39;s `optimize._zeros_py.py` module.</span>
+<span class="c1"># Ref: https://github.com/scipy/scipy/blob/v1.15.0/scipy/optimize/_zeros_py.py</span>
+<span class="n">_xtol</span> <span class="o">=</span> <span class="mf">2e-12</span>
+<span class="n">_rtol</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+
+
+<div class="viewcode-block" id="BoundaryError">
+<a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.BoundaryError">[docs]</a>
+<span class="k">class</span> <span class="nc">BoundaryError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception raised when a boundary condition is violated.</span>
+<span class="sd">    </span>
+<span class="sd">    This exception is a subclass of `ValueError` and is used to signal</span>
+<span class="sd">    issues with input values exceeding or falling below defined boundaries.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="abs_normalize">
+<a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.abs_normalize">[docs]</a>
+<span class="k">def</span> <span class="nf">abs_normalize</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TODO</span>
+<span class="sd">    Normalitza inplace un array ignorant els errors de divissió entre 0 i</span>
+<span class="sd">    canviant els nan a 0.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+        <span class="n">array</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">array</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="l2_normalize">
+<a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.l2_normalize">[docs]</a>
+<span class="k">def</span> <span class="nf">l2_normalize</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TODO</span>
+<span class="sd">    Normalitza inplace un array amb la norma L2 ignorant els errors de divissió</span>
+<span class="sd">    entre 0 i canviant els nan a 0.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+        <span class="n">array</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="semibool_bisect">
+<a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.semibool_bisect">[docs]</a>
+<span class="k">def</span> <span class="nf">semibool_bisect</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">xtol</span><span class="o">=</span><span class="n">_xtol</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">_rtol</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Semi-boolean bisection method for solving ``f(x)``.</span>
+
+<span class="sd">    Find the boundary point ``x0`` in the interval [a, b] using a modified</span>
+<span class="sd">    bisection method such that:</span>
+
+<span class="sd">    - ``f(x) &gt; 0 for x &lt;= x0``</span>
+<span class="sd">    - ``f(x) == 0 for x &gt; x0``</span>
+
+<span class="sd">    or vice versa. One of the two endpoints of the interval [a, b] must</span>
+<span class="sd">    satisfy ``f(x) = 0``.</span>
+<span class="sd">    The method iteratively narrows down the interval [a, b] until the</span>
+<span class="sd">    solution is found to within the specified tolerances `xtol` and `rtol`, or</span>
+<span class="sd">    the maximum number of iterations is reached.</span>
+<span class="sd">    </span>
+<span class="sd">    This algorithm is based on the `scipy.optimize.bisect` method, but includes</span>
+<span class="sd">    modifications for this specific boundary behavior.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    f : callable</span>
+<span class="sd">        A continuous function of a single variable, ``f(x)``. The function must</span>
+<span class="sd">        accept a single positional argument and any additional arguments via</span>
+<span class="sd">        `args`.</span>
+<span class="sd">    a : float</span>
+<span class="sd">        Lower bound of the interval [a, b].</span>
+<span class="sd">    b : float</span>
+<span class="sd">        Upper bound of the interval [a, b].</span>
+<span class="sd">    args : tuple, optional</span>
+<span class="sd">        Additional arguments to pass to the function `f`.</span>
+<span class="sd">    xtol : float, optional</span>
+<span class="sd">        Absolute tolerance for the solution. Default is ``2e-12``.</span>
+<span class="sd">    rtol : float, optional</span>
+<span class="sd">        Relative tolerance for the solution. Default is `_rtol`.</span>
+<span class="sd">    maxiter : int, optional</span>
+<span class="sd">        Maximum number of iterations to perform. Default is 100.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If `True`, prints the progress of each iteration, including the</span>
+<span class="sd">        evaluation of ``f(x)`` at the midpoint. Default is `False`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    solver_stats : dict</span>
+<span class="sd">        A dictionary containing information about the solution:</span>
+<span class="sd">        </span>
+<span class="sd">        - `x` : float</span>
+<span class="sd">           The last point where ``f(x) != 0``. Approximates the boundary point</span>
+<span class="sd">           `x0`.</span>
+<span class="sd">        - `f` : float</span>
+<span class="sd">           The value of ``f(x)`` at the solution.</span>
+<span class="sd">        - `converged` : bool</span>
+<span class="sd">           Indicates whether the algorithm converged to a solution.</span>
+<span class="sd">        - `niters` : int</span>
+<span class="sd">           The number of iterations performed.</span>
+<span class="sd">        - `funcalls` : int</span>
+<span class="sd">           The total number of function evaluations.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    BoundaryError</span>
+<span class="sd">        If the initial interval [a, b] does not satisfy the condition that</span>
+<span class="sd">        one endpoint evaluates to ``f(x) = 0``.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the function is not continuous or if `a` and `b` are not proper</span>
+<span class="sd">        bounds.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - The `xtol` parameter controls the absolute precision of the solution,</span>
+<span class="sd">      while the `rtol` parameter ensures relative precision with respect to the</span>
+<span class="sd">      value of `x`.</span>
+<span class="sd">    - This method assumes that ``f(x)`` contains exactly one boundary point</span>
+<span class="sd">      within [a, b].</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; def f(x):</span>
+<span class="sd">    ...     return 0 if x &lt; 2 else x</span>
+<span class="sd">    &gt;&gt;&gt; result = semibool_bisect(f, 0, 4)</span>
+<span class="sd">    &gt;&gt;&gt; print(result[&#39;x&#39;])</span>
+<span class="sd">    2.0</span>
+<span class="sd">    &gt;&gt;&gt; print(result[&#39;converged&#39;])</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fa</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">fb</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">solver_stats</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;funcalls&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fa</span><span class="o">*</span><span class="n">fb</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">fa</span> <span class="o">==</span> <span class="n">fb</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">BoundaryError</span><span class="p">(</span><span class="s2">&quot;There isn&#39;t a boundary point in the 0 zone&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fa</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span>
+        <span class="n">fa</span><span class="p">,</span> <span class="n">fb</span> <span class="o">=</span> <span class="n">fb</span><span class="p">,</span> <span class="n">fa</span>
+    
+    <span class="n">dm</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">a</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxiter</span><span class="p">):</span>
+        <span class="n">dm</span> <span class="o">*=</span> <span class="mf">0.5</span>
+        <span class="n">xm</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">dm</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; iteration </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">, evaluating f(</span><span class="si">{</span><span class="n">xm</span><span class="si">}</span><span class="s2">) ...&quot;</span><span class="p">)</span>
+        <span class="n">fm</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">xm</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">solver_stats</span><span class="p">[</span><span class="s1">&#39;funcalls&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">fm</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">xm</span>
+            <span class="n">fa</span> <span class="o">=</span> <span class="n">fm</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">xtol</span> <span class="o">+</span> <span class="n">rtol</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">xm</span><span class="p">):</span>
+            <span class="n">solver_stats</span><span class="p">[</span><span class="s1">&#39;converged&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">solver_stats</span><span class="p">[</span><span class="s1">&#39;niters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+            <span class="n">solver_stats</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>  <span class="c1"># Last point where f(x) != 0</span>
+            <span class="n">solver_stats</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fa</span>
+            <span class="k">return</span> <span class="n">solver_stats</span>
+
+    <span class="c1"># Not converged</span>
+    <span class="n">solver_stats</span><span class="p">[</span><span class="s1">&#39;converged&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">solver_stats</span><span class="p">[</span><span class="s1">&#39;niters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">solver_stats</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="n">solver_stats</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fa</span>
+    
+    <span class="k">return</span> <span class="n">solver_stats</span></div>
+
+
+
+<div class="viewcode-block" id="extract_patches">
+<a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.extract_patches">[docs]</a>
+<span class="k">def</span> <span class="nf">extract_patches</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">,</span> <span class="n">n_patches</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">patch_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2_normed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">return_norm_coefs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_allzeros</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract patches from &#39;signals&#39;.</span>
+
+<span class="sd">    TODO</span>
+
+<span class="sd">    Note that if randomly selected, it is not prevented to repeat patches.</span>
+
+<span class="sd">    PARAMETERS</span>
+<span class="sd">    ----------</span>
+<span class="sd">    signals: ndarray</span>
+<span class="sd">        If 2d-array, must be in C-contiguous order with shape</span>
+<span class="sd">        (n_signals, l_signal).</span>
+
+<span class="sd">    patch_size: int</span>
+<span class="sd">        Length of the patches to extract.</span>
+
+<span class="sd">    limits: ndarray, optional</span>
+<span class="sd">        Limit(s) in &#39;signals&#39; such that:</span>
+<span class="sd">            </span>
+<span class="sd">            ```</span>
+<span class="sd">            i0, i1 = limits[i_signal]</span>
+<span class="sd">            signal = signals[i_signal, i0:i1]</span>
+<span class="sd">            ```</span>
+
+<span class="sd">    patch_min: int, optional</span>
+<span class="sd">        When &#39;limits&#39; are given, patch_min is the minimum samples inside the</span>
+<span class="sd">        limits to be included in the extracted patches.</span>
+<span class="sd">        Defaults to 1.</span>
+
+<span class="sd">    n_patches: int, optional</span>
+<span class="sd">        Total number of patches to extract. If None (default) extract the</span>
+<span class="sd">        maximum amount.</span>
+
+<span class="sd">    random_state: {None, int, array_like[ints], SeedSequence, BitGenerator, Generator}, optional</span>
+<span class="sd">        Given to &#39;numpy.random.PCG64(random_state)&#39;.</span>
+
+<span class="sd">    step: int, optional</span>
+<span class="sd">        Minimum windowing step (separation between patches).</span>
+
+<span class="sd">    l2_normed: bool, optional</span>
+<span class="sd">        If True will norm each patch to its L2 norm. False by default.</span>
+
+<span class="sd">    return_norm_coefs: bool, optional</span>
+<span class="sd">        If True, return also the coefficients used to normalize the signals</span>
+<span class="sd">        (useful for when &#39;signals&#39; come from a windowed signal that will be</span>
+<span class="sd">        reassembled afterwards).</span>
+<span class="sd">        False by default.</span>
+
+<span class="sd">    allow_allzeros: bool, optional</span>
+<span class="sd">        When extracting random patches, if False and `l2_normed == True`,</span>
+<span class="sd">        generate another random window position until the l2 norm is != 0.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">signals</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;signals&#39; must be 2d-array at most&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">limits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">patch_min</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;there is at least one signal according to its &#39;limits&#39; shorter&quot;</span>
+            <span class="s2">&quot; than &#39;patch_min&#39;&quot;</span>
+        <span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">signals</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">signals</span> <span class="o">=</span> <span class="n">signals</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span>
+
+    
+
+    <span class="c1"># Compute the maximum patches per signal that can be obtained with the</span>
+    <span class="c1"># given &#39;step&#39; ignoring the limits.</span>
+
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PCG64</span><span class="p">(</span><span class="n">random_state</span><span class="p">))</span>
+    <span class="n">n_signals</span><span class="p">,</span> <span class="n">l_signals</span> <span class="o">=</span> <span class="n">signals</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">max_pps</span> <span class="o">=</span> <span class="p">(</span><span class="n">l_signals</span> <span class="o">-</span> <span class="n">patch_size</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">max_pps</span><span class="o">.</span><span class="n">is_integer</span><span class="p">()</span> <span class="ow">and</span> <span class="n">limits</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n_signals</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;&#39;signals&#39; cannot be fully divided into patches, the last&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="p">(</span><span class="n">max_pps</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">step</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">step</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> bins of each signal will be left out&quot;</span><span class="p">,</span>
+            <span class="ne">RuntimeWarning</span>
+        <span class="p">)</span>
+    <span class="n">max_pps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_pps</span><span class="p">)</span>
+
+
+    
+    <span class="c1"># Compute the maximum TOTAL number of patches and the limits from where to</span>
+    <span class="c1"># extract patches for each signal.</span>
+
+    <span class="k">if</span> <span class="n">limits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">window_limits</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="n">l_signals</span><span class="o">-</span><span class="n">patch_size</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="o">*</span> <span class="n">n_signals</span>
+        <span class="n">max_patches</span> <span class="o">=</span> <span class="n">max_pps</span> <span class="o">*</span> <span class="n">n_signals</span>
+    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">window_limits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">max_patches</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span> <span class="ow">in</span> <span class="n">limits</span><span class="p">:</span>
+            <span class="n">p0</span> <span class="o">+=</span> <span class="n">patch_min</span> <span class="o">-</span> <span class="n">patch_size</span>
+            <span class="n">p1</span> <span class="o">-=</span> <span class="n">patch_min</span>
+            <span class="k">if</span> <span class="n">p0</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">p0</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">p1</span> <span class="o">+</span> <span class="n">patch_size</span> <span class="o">&gt;=</span> <span class="n">l_signals</span><span class="p">:</span>
+                <span class="n">p1</span> <span class="o">=</span> <span class="n">l_signals</span> <span class="o">-</span> <span class="n">patch_size</span>
+            
+            <span class="n">window_limits</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">))</span>
+            <span class="n">max_patches</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">p1</span><span class="o">-</span><span class="n">p0</span><span class="p">)</span><span class="o">/</span><span class="n">step</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">n_patches</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">n_patches</span> <span class="o">=</span> <span class="n">max_patches</span>
+    
+    <span class="k">elif</span> <span class="n">n_patches</span> <span class="o">&gt;</span> <span class="n">max_patches</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;the keyword argument &#39;n_patches&#39; (</span><span class="si">{</span><span class="n">n_patches</span><span class="si">}</span><span class="s2">) exceeds&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; the maximum number of patches that can be extracted (</span><span class="si">{</span><span class="n">max_patches</span><span class="si">}</span><span class="s2">).&quot;</span>
+        <span class="p">)</span>
+    
+    
+    
+    <span class="n">patches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_patches</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">signals</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="c1"># Extract all possible patches.</span>
+    <span class="k">if</span> <span class="n">n_patches</span> <span class="o">==</span> <span class="n">max_patches</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_signals</span><span class="p">):</span>
+            <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">window_limits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+                <span class="n">patches</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">signals</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">patch_size</span><span class="p">]</span>
+                <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="c1"># Extract a limited number of patches randomly selected.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_patches</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_signals</span><span class="p">)</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="o">*</span><span class="n">window_limits</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">signal_aux</span> <span class="o">=</span> <span class="n">signals</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">patch_size</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_allzeros</span><span class="p">:</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="n">signal_aux</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="n">j</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="o">*</span><span class="n">window_limits</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="n">signal_aux</span> <span class="o">=</span> <span class="n">signals</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">patch_size</span><span class="p">]</span>
+            <span class="n">patches</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal_aux</span>
+
+    <span class="c1"># Normalize each patch to its L2 norm</span>
+    <span class="k">if</span> <span class="n">l2_normed</span><span class="p">:</span>
+        <span class="n">coefs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">patches</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Ignore x/0 and 0/0 cases</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+            <span class="n">patches</span> <span class="o">/=</span> <span class="n">coefs</span>
+        <span class="n">patches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">patches</span><span class="p">)</span>
+
+        <span class="n">coefs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">coefs</span><span class="p">)</span>
+    
+    <span class="k">elif</span> <span class="n">return_norm_coefs</span><span class="p">:</span>
+        <span class="n">coefs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_patches</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">patches</span><span class="p">,</span> <span class="n">coefs</span><span class="p">)</span> <span class="k">if</span> <span class="n">return_norm_coefs</span> <span class="k">else</span> <span class="n">patches</span></div>
+
+
+
+<div class="viewcode-block" id="reconstruct_from_patches_1d">
+<a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.reconstruct_from_patches_1d">[docs]</a>
+<span class="k">def</span> <span class="nf">reconstruct_from_patches_1d</span><span class="p">(</span><span class="n">patches</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+    <span class="n">n_patches</span><span class="p">,</span> <span class="n">l_patches</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">total_len</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_patches</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">step</span> <span class="o">+</span> <span class="n">l_patches</span>
+    
+    <span class="n">reconstructed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">total_len</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">patches</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">normalizer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">reconstructed</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_patches</span><span class="p">):</span>
+        <span class="n">reconstructed</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">step</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="n">step</span><span class="o">+</span><span class="n">l_patches</span><span class="p">]</span> <span class="o">+=</span> <span class="n">patches</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">normalizer</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">step</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="n">step</span><span class="o">+</span><span class="n">l_patches</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">normalizer</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">step</span><span class="o">+</span><span class="n">l_patches</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">reconstructed</span> <span class="o">/=</span> <span class="n">normalizer</span>
+
+    <span class="k">return</span> <span class="n">reconstructed</span></div>
+
+
+
+<span class="n">FINISHED</span> <span class="o">=</span> <span class="s2">&quot;FINISHED &quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="si">{</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">(</span><span class="mi">9995</span><span class="p">,</span><span class="mi">128524</span><span class="p">,</span><span class="mi">128076</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Miquel Lluís Llorens Monteagudo.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

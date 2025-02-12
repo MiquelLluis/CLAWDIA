@@ -1,0 +1,1168 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>clawdia.dictionaries &#8212; CLAWDIA 0.4.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=6e061ff1" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=5bfaad31"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'clawdia.dictionaries';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="clawdia.estimators" href="clawdia.estimators.html" />
+    <link rel="prev" title="API Documentation" href="modules.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.4.3" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item"><div class="navbar-logo">
+    <a href="index.html" class="navbar-brand" style="color: inherit; cursor: pointer;">
+        <img src="_static/clawdia-logo.svg" class="navbar-project-icon" />
+        <span class="navbar-project-name">CLAWDIA</span>
+        <span class="navbar-project-version">v0.4.3</span>
+    </a>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="modules.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MiquelLluis/clawdia" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="modules.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MiquelLluis/clawdia" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">clawdia.dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clawdia.estimators.html">clawdia.estimators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clawdia.lib.html">clawdia.lib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clawdia.pipeline.html">clawdia.pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clawdia.plotting.html">clawdia.plotting</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="modules.html" class="nav-link">API Documentation</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">clawdia.dictionaries</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-clawdia.dictionaries">
+<span id="clawdia-dictionaries"></span><h1>clawdia.dictionaries<a class="headerlink" href="#module-clawdia.dictionaries" title="Link to this heading">#</a></h1>
+<p>Main module for managing all SDL models.</p>
+<p>This module serves as the central interface for handling dictionary models 
+included in the CLAWDIA pipeline. It provides classes and functions to load, 
+save, and manage different types of dictionary models used in Sparse Dictionary 
+Learning (SDL). Support is included for both SPAMS-based dictionaries and 
+Low-Rank Sparse Dictionary Learning (LRSDL) models, ensuring compatibility and 
+ease of use.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionaryLRSDL">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clawdia.dictionaries.</span></span><span class="sig-name descname"><span class="pre">DictionaryLRSDL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lambd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambd2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updateX_iters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updateD_iters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_lrsdl.html#DictionaryLRSDL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionaryLRSDL" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LRSDL</span></code></p>
+<p>Interface for the Low-Rank Shared Dictionary Learning class.</p>
+<p class="rubric">Notes</p>
+<p>The authors of Dictol didn’t provide a seed parameter for the random
+initialization of the dictionary. If reproducibility is important, one must
+set the global numpy’s seed before callint <code class="docutils literal notranslate"><span class="pre">LRSDL.__init__()</span></code>.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="r76f04e1bfe8f-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>Vu, T. H.; Monga, V. (2017). <em>Fast low-rank shared dictionary
+learning for image classification</em>, IEEE Transactions on Image
+Processing, 26(11), 5160–5175.
+(<a class="reference external" href="https://doi.org/10.1109/TIP.2017.2729885">https://doi.org/10.1109/TIP.2017.2729885</a>)</p>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>t_train</strong><span class="classifier">float</span></dt><dd><p>Training time in seconds.</p>
+</dd>
+<dt><strong>lambd</strong><span class="classifier">float</span></dt><dd><p>See self.__init__() for details.</p>
+</dd>
+<dt><strong>lambd2</strong><span class="classifier">float</span></dt><dd><p>See self.__init__() for details.</p>
+</dd>
+<dt><strong>eta</strong><span class="classifier">float</span></dt><dd><p>See self.__init__() for details.</p>
+</dd>
+<dt><strong>D</strong><span class="classifier">ndarray</span></dt><dd><p>Class-specific dictionary.</p>
+</dd>
+<dt><strong>X</strong><span class="classifier">ndarray</span></dt><dd><p>Class-specific coefficient vector of the training set given when
+calling self.fit().</p>
+</dd>
+<dt><strong>Y</strong><span class="classifier">ndarray</span></dt><dd><p>Class-specific target vector (the training set) given when calling
+self.fit().</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>See self.__init__() for details.</p>
+</dd>
+<dt><strong>k0</strong><span class="classifier">int</span></dt><dd><p>See self.__init__() for details.</p>
+</dd>
+<dt><strong>updateX_iters</strong><span class="classifier">int</span></dt><dd><p>See self.__init__() for details.</p>
+</dd>
+<dt><strong>updateD_iters</strong><span class="classifier">int</span></dt><dd><p>See self.__init__() for details.</p>
+</dd>
+<dt><strong>D_range</strong><span class="classifier">list[int]</span></dt><dd><p>Auxiliar list containing the range of indices of each class in D.</p>
+</dd>
+<dt><strong>D0</strong><span class="classifier">ndarray</span></dt><dd><p>Shared dictionary.</p>
+</dd>
+<dt><strong>Y_range</strong><span class="classifier">list[→nt]</span></dt><dd><p>Auxiliar list containing the range of indices of each class in Y.
+Derived directly from ‘train_label’, equivalent to the ‘y_true’ labels.
+Example: given train_label = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1], then
+Y_range = [0, 4, 6]. The first value is always 0, marking the
+start of the first class, and the last value is always the number of
+classes + 1.</p>
+</dd>
+<dt><strong>X0</strong><span class="classifier">ndarray</span></dt><dd><p>Shared coefficient vector of the training set given when calling
+self.fit().</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionaryLRSDL.fit" title="clawdia.dictionaries.DictionaryLRSDL.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(X, *, y_true, l_atoms, iterations[, ...])</p></td>
+<td><p>Train the LRSDL dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionaryLRSDL.predict" title="clawdia.dictionaries.DictionaryLRSDL.predict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict</span></code></a>(X, *[, threshold, offset, with_losses])</p></td>
+<td><p>Predict the class of each window in X.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionaryLRSDL.save" title="clawdia.dictionaries.DictionaryLRSDL.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(file)</p></td>
+<td><p>Save the dictionary to a file.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><p><strong>evaluate</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>loss</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionaryLRSDL.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lambd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambd2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updateX_iters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updateD_iters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_lrsdl.html#DictionaryLRSDL.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionaryLRSDL.__init__" title="Link to this definition">#</a></dt>
+<dd><p>Initialize the LRSDL dictionary.</p>
+<p>This method sets up the parameters required for training class-specific
+and shared dictionaries. These dictionaries are used to represent data
+with sparsity and low-rank properties, which can be regularized by the
+parameters defined below.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>lambd</strong><span class="classifier">float</span></dt><dd><p>Regularization parameter for the sparsity term:</p>
+<div class="math notranslate nohighlight">
+\[\lambda \|X\|_1\]</div>
+<p>This encourages sparsity in the class-specific dictionary, similar
+to the LASSO regularization term.</p>
+</dd>
+<dt><strong>lambd2</strong><span class="classifier">float</span></dt><dd><p>Regularization parameter for the reconstruction term:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\lambda_2}{2} \|X^0 - M^0\|^2\]</div>
+<p>This ensures that the shared vector (used to select shared atoms)
+is sparse and close to the mean shared vector, ensuring consistency
+across all <span class="math notranslate nohighlight">\(X^0\)</span>.</p>
+</dd>
+<dt><strong>eta</strong><span class="classifier">float</span></dt><dd><p>Regularization parameter for the low-rank term:</p>
+<div class="math notranslate nohighlight">
+\[\eta \| D^0 \|_*\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(\|\cdot\|_*\)</span> is the <a class="reference external" href="https://encyclopediaofmath.org/wiki/Nuclear_norm">nuclear norm</a>, which
+enforces the shared dictionary to have low rank.</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>Number of class-specific atoms for each class. The total number of
+atoms in the class-specific dictionary is given by <span class="math notranslate nohighlight">\(k \times
+C\)</span>, where <span class="math notranslate nohighlight">\(C\)</span> is the number of classes.</p>
+</dd>
+<dt><strong>k0</strong><span class="classifier">int</span></dt><dd><p>Total number of shared atoms. A value of <span class="math notranslate nohighlight">\(k_0 = 0\)</span> indicates
+that no shared dictionary is used.</p>
+</dd>
+<dt><strong>updateX_iters, updateD_iters</strong><span class="classifier">int</span></dt><dd><p>These parameters are passed to the parent class
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">LRSDL.__init__()</span></code>. However, they are suspected to be <strong>dummy
+parameters</strong> because no usage of them could be found in the
+original implementation. They are retained here for compatibility
+but appear to have no functional effect in this class.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <cite>updateX_iters</cite> and <cite>updateD_iters</cite> parameters are inherited from the 
+parent class <code class="xref py py-class docutils literal notranslate"><span class="pre">LRSDL</span></code>, but they appear to be unused in this 
+implementation. Consider verifying their relevance before relying on them.</p>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The parameters <cite>lambd</cite>, <cite>lambd2</cite>, and <cite>eta</cite> control the sparsity and
+low-rank properties of the dictionaries.</p></li>
+<li><p>Setting <code class="docutils literal notranslate"><span class="pre">k0</span> <span class="pre">=</span> <span class="pre">0</span></code> disables the shared dictionary.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionaryLRSDL.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clawdia.dictionaries.DictionaryLRSDL.evaluate" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionaryLRSDL.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_after</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_lrsdl.html#DictionaryLRSDL.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionaryLRSDL.fit" title="Link to this definition">#</a></dt>
+<dd><p>Train the LRSDL dictionary.</p>
+<p>This method trains the dictionary using the provided data and allows
+for several configuration options:</p>
+<ul class="simple">
+<li><p>Split the input data <cite>X</cite> into sliding windows of length <cite>l_atoms</cite>.</p></li>
+<li><p>Use the entire input as a single window.</p></li>
+<li><p>Discard training windows whose L2-norm is below a specified
+threshold.</p></li>
+</ul>
+<p>The splitting behavior depends on the <cite>step</cite> parameter. If <cite>step</cite> is
+<cite>None</cite>, the entire input is treated as a single window. Otherwise,
+overlapping patches of size <cite>l_atoms</cite> are created with the specified
+step size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">ndarray of shape (n_samples, n_features)</span></dt><dd><p>Training samples. The number of features must be equal to or
+greater than the dictionary’s atom size.</p>
+</dd>
+<dt><strong>y_true</strong><span class="classifier">ndarray of shape (n_samples,)</span></dt><dd><p>Labels corresponding to the samples in <cite>X</cite>. The length of <cite>y_true</cite>
+must equal the number of samples in <cite>X</cite>.</p>
+</dd>
+<dt><strong>l_atoms</strong><span class="classifier">int</span></dt><dd><p>Length of the dictionary’s atoms.</p>
+</dd>
+<dt><strong>iterations</strong><span class="classifier">int</span></dt><dd><p>Number of training iterations.</p>
+</dd>
+<dt><strong>step</strong><span class="classifier">int, optional</span></dt><dd><p>The step size for splitting input samples into patches of length
+<cite>l_atoms</cite>. If not specified, the entire input is used as a single
+window.</p>
+</dd>
+<dt><strong>threshold</strong><span class="classifier">float, optional</span></dt><dd><p>L2-norm threshold (relative to the maximum L2-norm in each strain).
+Training windows with L2-norm below this value will be discarded.
+Default is 0 (no threshold applied).</p>
+</dd>
+<dt><strong>random_seed</strong><span class="classifier">int, optional</span></dt><dd><p>Random seed for reproducibility. Default is <cite>None</cite>.</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, print verbose output during training. Default is False.</p>
+</dd>
+<dt><strong>show_after</strong><span class="classifier">int, optional</span></dt><dd><p>If <cite>verbose</cite> is True, progress will be displayed every <cite>show_after</cite>
+iterations. Default is 5.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><cite>None</cite></dt><dd><p>The method trains the dictionary in place.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionaryLRSDL.loss">
+<span class="sig-name descname"><span class="pre">loss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#clawdia.dictionaries.DictionaryLRSDL.loss" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionaryLRSDL.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_losses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_lrsdl.html#DictionaryLRSDL.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionaryLRSDL.predict" title="Link to this definition">#</a></dt>
+<dd><p>Predict the class of each window in X.</p>
+<p>The class of a window is the class of the closest codeword to that
+window in the dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">2d-array, shape=(n_signals, n_samples)</span></dt><dd><p>Input signals, with equal or more samples than the atoms’.</p>
+</dd>
+<dt><strong>threshold</strong><span class="classifier">float, optional</span></dt><dd><p>Loss threshold ABOVE which signals will be marked as “unknown” class,
+which corresponds to the label value -1.
+Zero by default, all signals will be classified.</p>
+</dd>
+<dt><strong>offset</strong><span class="classifier">int, optional</span></dt><dd><p>Index i0 at which to crop the input signals X.
+The i1 will be <cite>offset + l_atoms</cite>. By default 0.</p>
+</dd>
+<dt><strong>with_losses</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, return a tuple with the class predictions and the
+corresponding losses.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>y_pred</strong><span class="classifier">1d-array, shape=(n_signals)</span></dt><dd><p>Class predictions for each input signal.</p>
+</dd>
+<dt><strong>losses</strong><span class="classifier">1d-array, shape=(n_signals), optional</span></dt><dd><p>Losses of the closest codewords to each input signal.
+Only returned if with_losses=True.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionaryLRSDL.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/clawdia/_dictionary_lrsdl.html#DictionaryLRSDL.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionaryLRSDL.save" title="Link to this definition">#</a></dt>
+<dd><p>Save the dictionary to a file.</p>
+<p>Save the dictionary attributes using NumPy’s ‘np.savez()’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>file</strong><span class="classifier">str</span></dt><dd><p>Path to the file where to save the dictionary.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clawdia.dictionaries.</span></span><span class="sig-name descname"><span class="pre">DictionarySpams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_pool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l2_normed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_allzeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_completeness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trained</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode_traindl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modeD_traindl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode_lasso</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Sparse Dictionary Learning (SDL) model for waveform denoising via SPAMS.</p>
+<p>This class provides an object-oriented implementation of a Sparse
+Dictionary Learning model, designed for the denoising and reconstruction
+of waveforms. At its core, it utilizes the <cite>trainDL</cite> function for
+dictionary learning and the <cite>lasso</cite> function for sparse coding from the
+SPAMS-python library <a class="reference internal" href="#r73782e8fdc2e-1" id="id2">[1]</a>.</p>
+<p>It extends these core functionalities to arbitrarily long signals and
+minibatch processing for large datasets. Additionally, the class includes
+various utilities for signal preprocessing, composite models of denoising
+(such as iterative reconstruction), and the ability to easily save and
+load the dictionary’s state.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="r73782e8fdc2e-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p>SPAMS (for python), (<a class="reference external" href="http://spams-devel.gforge.inria.fr/">http://spams-devel.gforge.inria.fr/</a>).
+Last accessed in October 2018.</p>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dict_init</strong><span class="classifier">ndarray</span></dt><dd><p>Atoms of the initial dictionary. Remains unaltered after training.</p>
+</dd>
+<dt><strong>components</strong><span class="classifier">ndarray</span></dt><dd><p>Atoms of the current (trained) dictionary.</p>
+</dd>
+<dt><strong>model</strong><span class="classifier">tuple</span></dt><dd><p>SPAMS’ trainDL model components in the form (A, B, iter).</p>
+</dd>
+<dt><strong>d_size</strong><span class="classifier">int</span></dt><dd><p>Number of atoms in the dictionary (dictionary size).</p>
+</dd>
+<dt><strong>a_length</strong><span class="classifier">int</span></dt><dd><p>Length of each atom in the dictionary (patch size).</p>
+</dd>
+<dt><strong>lambda1</strong><span class="classifier">float</span></dt><dd><p>Regularization parameter for training the dictionary.</p>
+</dd>
+<dt><strong>batch_size</strong><span class="classifier">int</span></dt><dd><p>Batch size used in mini-batch training.</p>
+</dd>
+<dt><strong>n_iter</strong><span class="classifier">int</span></dt><dd><p>Number of iterations performed during training.</p>
+</dd>
+<dt><strong>t_train</strong><span class="classifier">float</span></dt><dd><p>Total training time in seconds.</p>
+</dd>
+<dt><strong>trained</strong><span class="classifier">bool</span></dt><dd><p>Indicates whether the dictionary has been trained.</p>
+</dd>
+<dt><strong>n_train</strong><span class="classifier">int</span></dt><dd><p>Number of patches used during training.</p>
+</dd>
+<dt><strong>mode_traindl</strong><span class="classifier">int</span></dt><dd><p>Training mode for SPAMS’ <cite>trainDL</cite> function.</p>
+</dd>
+<dt><strong>modeD_traindl</strong><span class="classifier">int</span></dt><dd><p>Dictionary mode for SPAMS’ <cite>trainDL</cite> function.</p>
+</dd>
+<dt><strong>mode_lasso</strong><span class="classifier">int</span></dt><dd><p>Mode for SPAMS’ <cite>lasso</cite> function.</p>
+</dd>
+<dt><strong>identifier</strong><span class="classifier">str</span></dt><dd><p>Optional identifier or note for distinguishing the dictionary.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionarySpams.copy" title="clawdia.dictionaries.DictionarySpams.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
+<td><p>Return a copy of the dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionarySpams.optimum_reconstruct" title="clawdia.dictionaries.DictionarySpams.optimum_reconstruct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimum_reconstruct</span></code></a>(strain, *, reference, ...)</p></td>
+<td><p>Find the best reconstruction of a signal w.r.t.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionarySpams.reconstruct" title="clawdia.dictionaries.DictionarySpams.reconstruct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconstruct</span></code></a>(signal, sc_lambda[, step, ...])</p></td>
+<td><p>Reconstruct a signal as a sparse combination of dictionary atoms.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionarySpams.reconstruct_auto" title="clawdia.dictionaries.DictionarySpams.reconstruct_auto"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconstruct_auto</span></code></a>(signal, *, zero_marg, ...)</p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionarySpams.reconstruct_batch" title="clawdia.dictionaries.DictionarySpams.reconstruct_batch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconstruct_batch</span></code></a>(signals, sc_lambda[, out, ...])</p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionarySpams.reconstruct_iterative_minibatch" title="clawdia.dictionaries.DictionarySpams.reconstruct_iterative_minibatch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconstruct_iterative_minibatch</span></code></a>(signals[, ...])</p></td>
+<td><p>Reconstruct multiple signals using iterative residual subtraction.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionarySpams.reconstruct_minibatch" title="clawdia.dictionaries.DictionarySpams.reconstruct_minibatch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconstruct_minibatch</span></code></a>(signals, *, sc_lambda)</p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionarySpams.reset" title="clawdia.dictionaries.DictionarySpams.reset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset</span></code></a>()</p></td>
+<td><p>Reset the dictionary to its initial (untrained) state.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionarySpams.save" title="clawdia.dictionaries.DictionarySpams.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(file)</p></td>
+<td><p>Save the current state of the DictionarySpams object to a file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#clawdia.dictionaries.DictionarySpams.train" title="clawdia.dictionaries.DictionarySpams.train"><code class="xref py py-obj docutils literal notranslate"><span class="pre">train</span></code></a>(patches[, lambda1, n_iter, ...])</p></td>
+<td><p>Train the dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_pool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l2_normed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_allzeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_completeness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trained</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode_traindl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modeD_traindl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode_lasso</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams.__init__" title="Link to this definition">#</a></dt>
+<dd><p>Initialize the dictionary.</p>
+<p>There are two ways to initialize the dictionary:</p>
+<ol class="arabic simple">
+<li><p>By directly providing the initial dictionary with <cite>dict_init</cite>.</p></li>
+<li><p>By providing a collection of signals (<cite>signal_pool</cite>) from which
+atoms are randomly extracted to form the initial dictionary.</p></li>
+</ol>
+<p>If the second option is used, <cite>a_length</cite> and <cite>d_size</cite> must be
+explicitly specified to define the size of the dictionary. Additional
+optional parameters provide more control over this process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dict_init</strong><span class="classifier">ndarray of shape (d_size, a_length), optional</span></dt><dd><p>Atoms of the initial dictionary. If <cite>None</cite>, <cite>signal_pool</cite> must be
+provided.</p>
+</dd>
+<dt><strong>model</strong><span class="classifier">dict, optional</span></dt><dd><p>SPAMS’ <cite>trainDL</cite> model components as a dictionary with elements {A,
+B, iter}. Must be provided if continuing training from a previous
+state.</p>
+</dd>
+<dt><strong>signal_pool</strong><span class="classifier">ndarray of shape (n_signals, n_samples), optional</span></dt><dd><p>A collection of signals from which atoms are extracted to form the
+initial dictionary. Ignored if <cite>dict_init</cite> is provided.</p>
+</dd>
+<dt><strong>a_length</strong><span class="classifier">int, optional</span></dt><dd><p>Length of each atom in the dictionary (patch size). Required if
+<cite>signal_pool</cite> is provided.</p>
+</dd>
+<dt><strong>d_size</strong><span class="classifier">int, optional</span></dt><dd><p>Number of atoms in the dictionary. Required if <cite>signal_pool</cite> is
+provided.</p>
+</dd>
+<dt><strong>wave_pos</strong><span class="classifier">array-like of shape (n_signals, 2), optional</span></dt><dd><p>Positions of waveforms within <cite>signal_pool</cite> to extract atoms from.
+If <cite>None</cite>, the entire array is used.</p>
+</dd>
+<dt><strong>patch_min</strong><span class="classifier">int, default=1</span></dt><dd><p>Minimum number of samples for each extracted patch. Ignored if
+<cite>wave_pos</cite> is <cite>None</cite>.</p>
+</dd>
+<dt><strong>l2_normed</strong><span class="classifier">bool, default=True</span></dt><dd><p>If <cite>True</cite>, normalize extracted atoms to their L2 norm.</p>
+</dd>
+<dt><strong>allow_allzeros</strong><span class="classifier">bool, default=True</span></dt><dd><p>If <cite>False</cite>, random atoms with all zeros are excluded from the
+initial dictionary.</p>
+</dd>
+<dt><strong>random_state</strong><span class="classifier">int, optional</span></dt><dd><p>Seed for random sampling from <cite>signal_pool</cite>.</p>
+</dd>
+<dt><strong>ignore_completeness</strong><span class="classifier">bool, optional, default=False</span></dt><dd><p>If <cite>False</cite>, the dictionary must be overcomplete (<cite>d_size &gt;
+a_length</cite>).</p>
+</dd>
+<dt><strong>lambda1</strong><span class="classifier">float, optional</span></dt><dd><p>Regularization parameter for training.</p>
+</dd>
+<dt><strong>batch_size</strong><span class="classifier">int, default=64</span></dt><dd><p>Batch size used during training.</p>
+</dd>
+<dt><strong>n_iter</strong><span class="classifier">int, optional</span></dt><dd><p>Total number of iterations for training. If <cite>None</cite>, this must be
+set when calling the <cite>train</cite> method.</p>
+</dd>
+<dt><strong>n_train</strong><span class="classifier">int, optional</span></dt><dd><p>Number of patches used for training. Informational only.</p>
+</dd>
+<dt><strong>trained</strong><span class="classifier">bool, default=False</span></dt><dd><p>Indicates whether the dictionary is already trained.</p>
+</dd>
+<dt><strong>mode_traindl</strong><span class="classifier">int, default=0</span></dt><dd><p>Training mode for SPAMS’ <cite>trainDL</cite> function. See SPAMS
+documentation.</p>
+</dd>
+<dt><strong>modeD_traindl</strong><span class="classifier">int, default=0</span></dt><dd><p>Dictionary mode for SPAMS’ <cite>trainDL</cite> function. See SPAMS
+documentation.</p>
+</dd>
+<dt><strong>mode_lasso</strong><span class="classifier">int, default=2</span></dt><dd><p>Mode for SPAMS’ <cite>lasso</cite> function. See SPAMS documentation.</p>
+</dd>
+<dt><strong>identifier</strong><span class="classifier">str, optional</span></dt><dd><p>A note or label for identifying the dictionary.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method initializes the dictionary but does not train it. Use the
+<cite>train</cite> method for training.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams.copy" title="Link to this definition">#</a></dt>
+<dd><p>Return a copy of the dictionary.</p>
+<p>Returns a new instance of the same dictionary with the same values
+and state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dico_copy</strong><span class="classifier">DictionarySpams</span></dt><dd><p>A copy of the current dictionary.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams.optimum_reconstruct">
+<span class="sig-name descname"><span class="pre">optimum_reconstruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strain</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_minimize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lasso</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams.optimum_reconstruct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams.optimum_reconstruct" title="Link to this definition">#</a></dt>
+<dd><p>Find the best reconstruction of a signal w.r.t. a reference.</p>
+<p>Find the lambda which produces a reconstruction of the
+input ‘strain’ closest to the given ‘reference’, comparing them with
+the SSIM estimator. The search is performed by the SciPy’s function
+‘minimize_scalar’ with bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>strain: ndarray</strong></dt><dd><p>Input strain to be reconstructed (and optimized).</p>
+</dd>
+<dt><strong>reference: ndarray</strong></dt><dd><p>Reference strain which to compare the reconstruction to.</p>
+</dd>
+<dt><strong>kwargs_minimize: dict</strong></dt><dd><p>Passed to SciPy’s <cite>minimize_scalar(**kwargs_minimize)</cite>.</p>
+</dd>
+<dt><strong>kwargs_lasso: dict</strong></dt><dd><p>Passed to Python-Spams’ <cite>lasso(**kwargs_lasso)</cite>.</p>
+</dd>
+<dt><strong>step: int, optional</strong></dt><dd><p>Separation in samples between each window into which the input
+strain is split up to be reconstructed by the dictionary. Defaults
+to 1.</p>
+</dd>
+<dt><strong>limits: array-like, optional</strong></dt><dd><p>Indices of limits to where compute the loss between the
+reconstruction and the reference strain.</p>
+</dd>
+<dt><strong>normed: bool, optional</strong></dt><dd><p>If True, returns the signal normed to its maximum absolute amplitude.</p>
+</dd>
+<dt><strong>verbose: bool, optional</strong></dt><dd><p>Print info about the minimization results. False by default.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>rec: ndarray</dt><dd><p>Optimum reconstruction found.</p>
+</dd>
+<dt>l_opt: float</dt><dd><p>Optimum value for lambda.</p>
+</dd>
+<dt>loss: float</dt><dd><p>ISSIM (1 - SSIM) between the optimized reconstruction and the
+reference.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams.reconstruct">
+<span class="sig-name descname"><span class="pre">reconstruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc_lambda</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams.reconstruct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams.reconstruct" title="Link to this definition">#</a></dt>
+<dd><p>Reconstruct a signal as a sparse combination of dictionary atoms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>signal</strong><span class="classifier">ndarray</span></dt><dd><p>Sample to be reconstructed.</p>
+</dd>
+<dt><strong>sc_lambda</strong><span class="classifier">float</span></dt><dd><p>Regularization parameter of the sparse coding transformation.</p>
+</dd>
+<dt><strong>step</strong><span class="classifier">int, 1 by default</span></dt><dd><p>Sample interval between each patch extracted from signal.
+Determines the number of patches to be extracted. 1 by default.</p>
+</dd>
+<dt><strong>normed</strong><span class="classifier">boolean, True by default</span></dt><dd><p>Normalize the result to the maximum absolute value.</p>
+</dd>
+<dt><strong>with_code</strong><span class="classifier">boolean, False by default.</span></dt><dd><p>If True, also returns the coefficients array.</p>
+</dd>
+<dt><strong>**kwargs</strong></dt><dd><p>Passed directly to the external learning function.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>signal_rec</strong><span class="classifier">array</span></dt><dd><p>Reconstructed signal.</p>
+</dd>
+<dt><strong>code</strong><span class="classifier">array(a_length, d_size), optional</span></dt><dd><p>Transformed data, encoded as a sparse combination of atoms.
+Returned when ‘with_code’ is True.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams.reconstruct_auto">
+<span class="sig-name descname"><span class="pre">reconstruct_auto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_marg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_lims</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_bisect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lasso</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams.reconstruct_auto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams.reconstruct_auto" title="Link to this definition">#</a></dt>
+<dd><p>TODO</p>
+<p>Reconstrueix un únic senyal buscant per bisecció la lambda que
+minimitza el senyal reconstruit al marge esquerre del senyal, la mida
+dels quals ve determinada per ‘zero_marg’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams.reconstruct_batch">
+<span class="sig-name descname"><span class="pre">reconstruct_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc_lambda</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams.reconstruct_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams.reconstruct_batch" title="Link to this definition">#</a></dt>
+<dd><p>TODO</p>
+<p>Reconstruct multiple signals, each one as a sparse combination of
+dictionary atoms.</p>
+<p>WARNING: Only viable for small ‘signals’ set, it is really memory
+expensive (all patches are stored in a single array in memory).</p>
+<p>WARNING: ‘out’ deprecated, left for backwards compatibility but will
+be ignored if given.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams.reconstruct_iterative_minibatch">
+<span class="sig-name descname"><span class="pre">reconstruct_iterative_minibatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc_lambda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batchsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lasso</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams.reconstruct_iterative_minibatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams.reconstruct_iterative_minibatch" title="Link to this definition">#</a></dt>
+<dd><p>Reconstruct multiple signals using iterative residual subtraction.</p>
+<p>This method reconstructs each signal by iteratively updating and
+accumulating reconstructions. In the first iteration, the original 
+input signal is reconstructed and then subtracted from itself to 
+obtain the initial residual. In each subsequent iteration, a new 
+reconstruction is generated from the current residual and subtracted 
+from it, producing an updated residual for the next iteration, while 
+also being added to the cumulative reconstruction. The process 
+repeats until the Euclidean norm of the difference between consecutive 
+residuals falls below a specified threshold, which sets the convergence 
+criterion.</p>
+<p>NOTE: In contrast with the usual procedure, the windows into which each
+signal is split are not normalized. This is needed to enhance the
+dictionary discrimination. Otherwise, the residuals are amplified at
+each iteration, the algorithm takes longer to converge, and some
+ad-hoc tests showed it also messes up with the resulting shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>signals</strong><span class="classifier">ndarray</span></dt><dd><p>Input signals to be reconstructed, with each signal along the first dimension.</p>
+</dd>
+<dt><strong>sc_lambda</strong><span class="classifier">float, optional</span></dt><dd><p>Sparsity control parameter for reconstruction.</p>
+</dd>
+<dt><strong>step</strong><span class="classifier">int, optional</span></dt><dd><p>Step size for the reconstruction.</p>
+</dd>
+<dt><strong>batchsize</strong><span class="classifier">int, optional</span></dt><dd><p>Number of signals processed in each minibatch.</p>
+</dd>
+<dt><strong>max_iter</strong><span class="classifier">int, optional</span></dt><dd><p>Maximum number of iterations before stopping.</p>
+</dd>
+<dt><strong>threshold</strong><span class="classifier">float, optional</span></dt><dd><p>Convergence threshold based on the relative change in residuals.</p>
+</dd>
+<dt><strong>normed</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, the reconstructed signals are normalized after convergence.</p>
+</dd>
+<dt><strong>full_output</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, returns additional output values (residuals and iteration counts).</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, prints progress information at each iteration.</p>
+</dd>
+<dt><strong>kwargs_lasso</strong><span class="classifier">dict, optional</span></dt><dd><p>Additional arguments for the Lasso reconstruction method.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>ndarray or tuple</dt><dd><p>The final reconstructed signals. If <cite>full_output</cite> is True, also returns the residuals
+and the number of iterations per signal.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams.reconstruct_minibatch">
+<span class="sig-name descname"><span class="pre">reconstruct_minibatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signals</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc_lambda</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batchsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normed_windows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams.reconstruct_minibatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams.reconstruct_minibatch" title="Link to this definition">#</a></dt>
+<dd><p>TODO</p>
+<p>Reconstruct multiple signals, each one as a sparse combination of
+dictionary atoms. Minibatch version.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams.reset" title="Link to this definition">#</a></dt>
+<dd><p>Reset the dictionary to its initial (untrained) state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams.save" title="Link to this definition">#</a></dt>
+<dd><p>Save the current state of the DictionarySpams object to a file.</p>
+<p>This method saves all attributes of the object as a <cite>.npz</cite> file. 
+If the object has not been trained, certain attributes (<cite>lambda1</cite>, 
+<cite>n_train</cite>, and <cite>t_train</cite>) are removed to avoid potential issues when 
+reloading the state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>file</strong><span class="classifier">str or file-like object</span></dt><dd><p>The file path or file object where the state of the object will 
+be saved. If a string is provided, it specifies the path to the 
+<cite>.npz</cite> file. If a file-like object is given, it must be writable 
+in binary mode.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clawdia.dictionaries.DictionarySpams.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patches</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warm_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/_dictionary_spams.html#DictionarySpams.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.DictionarySpams.train" title="Link to this definition">#</a></dt>
+<dd><p>Train the dictionary.</p>
+<p>Train the dictionary with the given patches.</p>
+<p>This also allows a warm start using the previous components as initial
+dictionary, but only if the lambda1 parameter is the same. It can be
+thought of as adding more iterations to the training. Hence, providing
+different patches is discouraged and untested.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>patches</strong><span class="classifier">2d-array(signals, samples)</span></dt><dd><p>Training patches.</p>
+</dd>
+<dt><strong>lambda1</strong><span class="classifier">float, optional</span></dt><dd><p>Regularization parameter of the learning algorithm.
+It is not needed if already specified at initialization.</p>
+</dd>
+<dt><strong>n_iter</strong><span class="classifier">int, optional</span></dt><dd><p>Total number of iterations to perform.
+If a negative number is provided it will perform the computation
+during the corresponding number of seconds.
+For instance <cite>n_iter = -5</cite> trains the dictionary during 5 seconds.</p>
+</dd>
+<dt><strong>warm_start</strong><span class="classifier">bool</span></dt><dd><p>If True, use the previous components as initial dictionary.
+It can be thought of as adding more iterations to the training.
+Providing different patches is discouraged and untested.</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier">bool, optional</span></dt><dd><p>If True print the iterations (might not be shown in real time).</p>
+</dd>
+<dt><strong>threads</strong><span class="classifier">int, optional</span></dt><dd><p>Number of threads to use during training, see [1].</p>
+</dd>
+<dt><strong>**kwargs</strong></dt><dd><p>Passed directly to ‘spams.trainDL’, see [1].</p>
+</dd>
+<dt><strong>Additional parameters will be passed to the SPAMS training function.</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clawdia.dictionaries.load">
+<span class="sig-prename descclassname"><span class="pre">clawdia.dictionaries.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/dictionaries.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.load" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clawdia.dictionaries.save">
+<span class="sig-prename descclassname"><span class="pre">clawdia.dictionaries.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dico</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/dictionaries.html#save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.dictionaries.save" title="Link to this definition">#</a></dt>
+<dd><p>Same as using the dictionary’s save method.</p>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="modules.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">API Documentation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="clawdia.estimators.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">clawdia.estimators</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionaryLRSDL"><code class="docutils literal notranslate"><span class="pre">DictionaryLRSDL</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionaryLRSDL.__init__"><code class="docutils literal notranslate"><span class="pre">DictionaryLRSDL.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionaryLRSDL.evaluate"><code class="docutils literal notranslate"><span class="pre">DictionaryLRSDL.evaluate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionaryLRSDL.fit"><code class="docutils literal notranslate"><span class="pre">DictionaryLRSDL.fit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionaryLRSDL.loss"><code class="docutils literal notranslate"><span class="pre">DictionaryLRSDL.loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionaryLRSDL.predict"><code class="docutils literal notranslate"><span class="pre">DictionaryLRSDL.predict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionaryLRSDL.save"><code class="docutils literal notranslate"><span class="pre">DictionaryLRSDL.save()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams"><code class="docutils literal notranslate"><span class="pre">DictionarySpams</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams.__init__"><code class="docutils literal notranslate"><span class="pre">DictionarySpams.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams.copy"><code class="docutils literal notranslate"><span class="pre">DictionarySpams.copy()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams.optimum_reconstruct"><code class="docutils literal notranslate"><span class="pre">DictionarySpams.optimum_reconstruct()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams.reconstruct"><code class="docutils literal notranslate"><span class="pre">DictionarySpams.reconstruct()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams.reconstruct_auto"><code class="docutils literal notranslate"><span class="pre">DictionarySpams.reconstruct_auto()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams.reconstruct_batch"><code class="docutils literal notranslate"><span class="pre">DictionarySpams.reconstruct_batch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams.reconstruct_iterative_minibatch"><code class="docutils literal notranslate"><span class="pre">DictionarySpams.reconstruct_iterative_minibatch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams.reconstruct_minibatch"><code class="docutils literal notranslate"><span class="pre">DictionarySpams.reconstruct_minibatch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams.reset"><code class="docutils literal notranslate"><span class="pre">DictionarySpams.reset()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams.save"><code class="docutils literal notranslate"><span class="pre">DictionarySpams.save()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.DictionarySpams.train"><code class="docutils literal notranslate"><span class="pre">DictionarySpams.train()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.dictionaries.save"><code class="docutils literal notranslate"><span class="pre">save()</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Miquel Lluís Llorens Monteagudo.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1228 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clawdia._dictionary_spams &#8212; CLAWDIA 0.4.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=6e061ff1" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5bfaad31"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/clawdia/_dictionary_spams';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.4.3" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item"><div class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand" style="color: inherit; cursor: pointer;">
+        <img src="_static/clawdia-logo.svg" class="navbar-project-icon" />
+        <span class="navbar-project-name">CLAWDIA</span>
+        <span class="navbar-project-version">v0.4.3</span>
+    </a>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../modules.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MiquelLluis/clawdia" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../modules.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MiquelLluis/clawdia" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">clawdia._dictionary_spams</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for clawdia._dictionary_spams</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.optimize</span>
+<span class="kn">import</span> <span class="nn">spams</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">estimators</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">lib</span>
+
+
+<span class="c1"># Remove warning from OpenMP, present in older versions of python-spams.</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;__version__&#39;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">spams</span><span class="p">)</span> <span class="ow">or</span> <span class="n">spams</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&lt;=</span> <span class="s1">&#39;2.6.5.4&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_WARNINGS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;FALSE&#39;</span>
+
+
+<div class="viewcode-block" id="DictionarySpams">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams">[docs]</a>
+<span class="k">class</span> <span class="nc">DictionarySpams</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sparse Dictionary Learning (SDL) model for waveform denoising via SPAMS.</span>
+
+<span class="sd">    This class provides an object-oriented implementation of a Sparse</span>
+<span class="sd">    Dictionary Learning model, designed for the denoising and reconstruction</span>
+<span class="sd">    of waveforms. At its core, it utilizes the `trainDL` function for</span>
+<span class="sd">    dictionary learning and the `lasso` function for sparse coding from the</span>
+<span class="sd">    SPAMS-python library [1]_.</span>
+
+<span class="sd">    It extends these core functionalities to arbitrarily long signals and</span>
+<span class="sd">    minibatch processing for large datasets. Additionally, the class includes</span>
+<span class="sd">    various utilities for signal preprocessing, composite models of denoising</span>
+<span class="sd">    (such as iterative reconstruction), and the ability to easily save and</span>
+<span class="sd">    load the dictionary&#39;s state.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dict_init : ndarray</span>
+<span class="sd">        Atoms of the initial dictionary. Remains unaltered after training.</span>
+<span class="sd">    components : ndarray</span>
+<span class="sd">        Atoms of the current (trained) dictionary.</span>
+<span class="sd">    model : tuple</span>
+<span class="sd">        SPAMS&#39; trainDL model components in the form (A, B, iter).</span>
+<span class="sd">    d_size : int</span>
+<span class="sd">        Number of atoms in the dictionary (dictionary size).</span>
+<span class="sd">    a_length : int</span>
+<span class="sd">        Length of each atom in the dictionary (patch size).</span>
+<span class="sd">    lambda1 : float</span>
+<span class="sd">        Regularization parameter for training the dictionary.</span>
+<span class="sd">    batch_size : int</span>
+<span class="sd">        Batch size used in mini-batch training.</span>
+<span class="sd">    n_iter : int</span>
+<span class="sd">        Number of iterations performed during training.</span>
+<span class="sd">    t_train : float</span>
+<span class="sd">        Total training time in seconds.</span>
+<span class="sd">    trained : bool</span>
+<span class="sd">        Indicates whether the dictionary has been trained.</span>
+<span class="sd">    n_train : int</span>
+<span class="sd">        Number of patches used during training.</span>
+<span class="sd">    mode_traindl : int</span>
+<span class="sd">        Training mode for SPAMS&#39; `trainDL` function.</span>
+<span class="sd">    modeD_traindl : int</span>
+<span class="sd">        Dictionary mode for SPAMS&#39; `trainDL` function.</span>
+<span class="sd">    mode_lasso : int</span>
+<span class="sd">        Mode for SPAMS&#39; `lasso` function.</span>
+<span class="sd">    identifier : str</span>
+<span class="sd">        Optional identifier or note for distinguishing the dictionary.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] SPAMS (for python), (http://spams-devel.gforge.inria.fr/).</span>
+<span class="sd">           Last accessed in October 2018.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DictionarySpams.__init__">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+             <span class="n">dict_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">signal_pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wave_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">patch_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2_normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_allzeros</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+             <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_completeness</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">lambda1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_train</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">trained</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode_traindl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">modeD_traindl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode_lasso</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+             <span class="n">identifier</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the dictionary.</span>
+
+<span class="sd">        There are two ways to initialize the dictionary:</span>
+<span class="sd">        </span>
+<span class="sd">        1. By directly providing the initial dictionary with `dict_init`.</span>
+<span class="sd">        2. By providing a collection of signals (`signal_pool`) from which</span>
+<span class="sd">           atoms are randomly extracted to form the initial dictionary.</span>
+
+<span class="sd">        If the second option is used, `a_length` and `d_size` must be</span>
+<span class="sd">        explicitly specified to define the size of the dictionary. Additional</span>
+<span class="sd">        optional parameters provide more control over this process.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dict_init : ndarray of shape (d_size, a_length), optional</span>
+<span class="sd">            Atoms of the initial dictionary. If `None`, `signal_pool` must be</span>
+<span class="sd">            provided.</span>
+<span class="sd">        model : dict, optional</span>
+<span class="sd">            SPAMS&#39; `trainDL` model components as a dictionary with elements {A,</span>
+<span class="sd">            B, iter}. Must be provided if continuing training from a previous</span>
+<span class="sd">            state.</span>
+<span class="sd">        signal_pool : ndarray of shape (n_signals, n_samples), optional</span>
+<span class="sd">            A collection of signals from which atoms are extracted to form the</span>
+<span class="sd">            initial dictionary. Ignored if `dict_init` is provided.</span>
+<span class="sd">        a_length : int, optional</span>
+<span class="sd">            Length of each atom in the dictionary (patch size). Required if</span>
+<span class="sd">            `signal_pool` is provided.</span>
+<span class="sd">        d_size : int, optional</span>
+<span class="sd">            Number of atoms in the dictionary. Required if `signal_pool` is</span>
+<span class="sd">            provided.</span>
+<span class="sd">        wave_pos : array-like of shape (n_signals, 2), optional</span>
+<span class="sd">            Positions of waveforms within `signal_pool` to extract atoms from.</span>
+<span class="sd">            If `None`, the entire array is used.</span>
+<span class="sd">        patch_min : int, default=1</span>
+<span class="sd">            Minimum number of samples for each extracted patch. Ignored if</span>
+<span class="sd">            `wave_pos` is `None`.</span>
+<span class="sd">        l2_normed : bool, default=True</span>
+<span class="sd">            If `True`, normalize extracted atoms to their L2 norm.</span>
+<span class="sd">        allow_allzeros : bool, default=True</span>
+<span class="sd">            If `False`, random atoms with all zeros are excluded from the</span>
+<span class="sd">            initial dictionary.</span>
+<span class="sd">        random_state : int, optional</span>
+<span class="sd">            Seed for random sampling from `signal_pool`.</span>
+<span class="sd">        ignore_completeness : bool, optional, default=False</span>
+<span class="sd">            If `False`, the dictionary must be overcomplete (`d_size &gt;</span>
+<span class="sd">            a_length`).</span>
+<span class="sd">        lambda1 : float, optional</span>
+<span class="sd">            Regularization parameter for training.</span>
+<span class="sd">        batch_size : int, default=64</span>
+<span class="sd">            Batch size used during training.</span>
+<span class="sd">        n_iter : int, optional</span>
+<span class="sd">            Total number of iterations for training. If `None`, this must be</span>
+<span class="sd">            set when calling the `train` method.</span>
+<span class="sd">        n_train : int, optional</span>
+<span class="sd">            Number of patches used for training. Informational only.</span>
+<span class="sd">        trained : bool, default=False</span>
+<span class="sd">            Indicates whether the dictionary is already trained.</span>
+<span class="sd">        mode_traindl : int, default=0</span>
+<span class="sd">            Training mode for SPAMS&#39; `trainDL` function. See SPAMS</span>
+<span class="sd">            documentation.</span>
+<span class="sd">        modeD_traindl : int, default=0</span>
+<span class="sd">            Dictionary mode for SPAMS&#39; `trainDL` function. See SPAMS</span>
+<span class="sd">            documentation.</span>
+<span class="sd">        mode_lasso : int, default=2</span>
+<span class="sd">            Mode for SPAMS&#39; `lasso` function. See SPAMS documentation.</span>
+<span class="sd">        identifier : str, optional</span>
+<span class="sd">            A note or label for identifying the dictionary.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This method initializes the dictionary but does not train it. Use the</span>
+<span class="sd">        `train` method for training.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span> <span class="o">=</span> <span class="n">dict_init</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">dict_init</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a_length</span> <span class="o">=</span> <span class="n">a_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_size</span> <span class="o">=</span> <span class="n">d_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lambda1</span> <span class="o">=</span> <span class="n">lambda1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">=</span> <span class="n">n_iter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">=</span> <span class="o">-</span><span class="n">n_iter</span> <span class="k">if</span> <span class="n">n_iter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n_iter</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trained</span> <span class="o">=</span> <span class="n">trained</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_train</span> <span class="o">=</span> <span class="n">n_train</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode_traindl</span> <span class="o">=</span> <span class="n">mode_traindl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modeD_traindl</span> <span class="o">=</span> <span class="n">modeD_traindl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode_lasso</span> <span class="o">=</span> <span class="n">mode_lasso</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_initial_parameters</span><span class="p">(</span><span class="n">signal_pool</span><span class="p">,</span> <span class="n">ignore_completeness</span><span class="p">)</span>
+
+        <span class="c1"># Explicit initial dictionary (trained or not).</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">d_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="c1"># Get the initial atoms from a set of signals.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_patches</span><span class="p">(</span>
+                <span class="n">signal_pool</span><span class="p">,</span>
+                <span class="n">patch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a_length</span><span class="p">,</span>
+                <span class="n">limits</span><span class="o">=</span><span class="n">wave_pos</span><span class="p">,</span>
+                <span class="n">n_patches</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">d_size</span><span class="p">,</span>
+                <span class="n">l2_normed</span><span class="o">=</span><span class="n">l2_normed</span><span class="p">,</span>
+                <span class="n">allow_allzeros</span><span class="o">=</span><span class="n">allow_allzeros</span><span class="p">,</span>
+                <span class="n">patch_min</span><span class="o">=</span><span class="n">patch_min</span><span class="p">,</span>
+                <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span></div>
+
+
+<div class="viewcode-block" id="DictionarySpams.train">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.train">[docs]</a>
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patches</span><span class="p">,</span> <span class="n">lambda1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">warm_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threads</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Train the dictionary.</span>
+
+<span class="sd">        Train the dictionary with the given patches.</span>
+
+<span class="sd">        This also allows a warm start using the previous components as initial</span>
+<span class="sd">        dictionary, but only if the lambda1 parameter is the same. It can be</span>
+<span class="sd">        thought of as adding more iterations to the training. Hence, providing</span>
+<span class="sd">        different patches is discouraged and untested.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        patches : 2d-array(signals, samples)</span>
+<span class="sd">            Training patches.</span>
+
+<span class="sd">        lambda1 : float, optional</span>
+<span class="sd">            Regularization parameter of the learning algorithm.</span>
+<span class="sd">            It is not needed if already specified at initialization.</span>
+
+<span class="sd">        n_iter : int, optional</span>
+<span class="sd">            Total number of iterations to perform.</span>
+<span class="sd">            If a negative number is provided it will perform the computation</span>
+<span class="sd">            during the corresponding number of seconds.</span>
+<span class="sd">            For instance `n_iter = -5` trains the dictionary during 5 seconds.</span>
+
+<span class="sd">        warm_start : bool</span>
+<span class="sd">            If True, use the previous components as initial dictionary.</span>
+<span class="sd">            It can be thought of as adding more iterations to the training.</span>
+<span class="sd">            Providing different patches is discouraged and untested.</span>
+
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            If True print the iterations (might not be shown in real time).</span>
+
+<span class="sd">        threads : int, optional</span>
+<span class="sd">            Number of threads to use during training, see [1].</span>
+
+<span class="sd">        **kwargs</span>
+<span class="sd">            Passed directly to &#39;spams.trainDL&#39;, see [1].</span>
+
+<span class="sd">        Additional parameters will be passed to the SPAMS training function.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trained</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">warm_start</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;the dictionary has already been trained&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">lambda1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lambda1</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambda1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;the &#39;lambda1&#39; parameter must be the same &quot;</span>
+                                 <span class="s2">&quot;as the one used at the previous training&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">patches</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_length</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;the length of &#39;patches&#39; must be the same as the&quot;</span>
+                             <span class="s2">&quot; atoms of the dictionary&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">n_iter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;n_iter&#39; not specified&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">n_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span>
+            
+        <span class="k">if</span> <span class="n">lambda1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambda1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;lambda1&#39; not specified&quot;</span><span class="p">)</span>
+            
+            <span class="n">lambda1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambda1</span>
+
+        <span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">components</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">spams</span><span class="o">.</span><span class="n">trainDL</span><span class="p">(</span>
+            <span class="n">patches</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>            <span class="c1"># SPAMS works with Fortran order.</span>
+            <span class="n">D</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1">#</span>
+            <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">batchsize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="n">K</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">d_size</span><span class="p">,</span>  <span class="c1"># In SPAMS argo, the dictionary size is the number of atoms.</span>
+            <span class="n">lambda1</span><span class="o">=</span><span class="n">lambda1</span><span class="p">,</span>
+            <span class="nb">iter</span><span class="o">=</span><span class="n">n_iter</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode_traindl</span><span class="p">,</span>
+            <span class="n">modeD</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">modeD_traindl</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="n">numThreads</span><span class="o">=</span><span class="n">threads</span><span class="p">,</span>
+            <span class="n">return_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">components</span><span class="o">.</span><span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="n">tac</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">warm_start</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n_iter</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">+=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;iter&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">+=</span> <span class="o">-</span><span class="n">n_iter</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">+=</span> <span class="n">n_iter</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">+=</span> <span class="n">tac</span> <span class="o">-</span> <span class="n">tic</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trained</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lambda1</span> <span class="o">=</span> <span class="n">lambda1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_train</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">n_iter</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;iter&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">=</span> <span class="o">-</span><span class="n">n_iter</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">=</span> <span class="n">n_iter</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">=</span> <span class="n">tac</span> <span class="o">-</span> <span class="n">tic</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_reconstruct_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lasso</span><span class="p">):</span>
+        <span class="c1"># TODO: Add kwarg option to disable the patch normalization.</span>
+        <span class="c1"># This might be usefull for tasks such detection or when a heavy</span>
+        <span class="c1"># discrimination is needed.</span>
+        <span class="n">patches</span><span class="p">,</span> <span class="n">norms</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_patches</span><span class="p">(</span>
+            <span class="n">signal</span><span class="p">,</span>
+            <span class="n">patch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a_length</span><span class="p">,</span>
+            <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span>
+            <span class="n">l2_normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">return_norm_coefs</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">spams</span><span class="o">.</span><span class="n">lasso</span><span class="p">(</span>
+            <span class="n">patches</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>            <span class="c1"># SPAMS works with Fortran order.</span>
+            <span class="n">D</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1">#</span>
+            <span class="n">lambda1</span><span class="o">=</span><span class="n">sc_lambda</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode_lasso</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs_lasso</span>
+        <span class="p">)</span>
+        <span class="n">patches</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">code</span><span class="p">)</span> <span class="o">*</span> <span class="n">norms</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">signal_rec</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">reconstruct_from_patches_1d</span><span class="p">(</span><span class="n">patches</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">signal_rec</span><span class="p">,</span> <span class="n">code</span>
+
+<div class="viewcode-block" id="DictionarySpams.reconstruct">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct">[docs]</a>
+    <span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_code</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reconstruct a signal as a sparse combination of dictionary atoms.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        signal : ndarray</span>
+<span class="sd">            Sample to be reconstructed.</span>
+
+<span class="sd">        sc_lambda : float</span>
+<span class="sd">            Regularization parameter of the sparse coding transformation.</span>
+
+<span class="sd">        step : int, 1 by default</span>
+<span class="sd">            Sample interval between each patch extracted from signal.</span>
+<span class="sd">            Determines the number of patches to be extracted. 1 by default.</span>
+
+<span class="sd">        normed : boolean, True by default</span>
+<span class="sd">            Normalize the result to the maximum absolute value.</span>
+
+<span class="sd">        with_code : boolean, False by default.</span>
+<span class="sd">            If True, also returns the coefficients array.</span>
+
+<span class="sd">        **kwargs</span>
+<span class="sd">            Passed directly to the external learning function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        signal_rec : array</span>
+<span class="sd">            Reconstructed signal.</span>
+
+<span class="sd">        code : array(a_length, d_size), optional</span>
+<span class="sd">            Transformed data, encoded as a sparse combination of atoms.</span>
+<span class="sd">            Returned when &#39;with_code&#39; is True.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;signal&#39; must be a numpy array&quot;</span><span class="p">)</span>
+
+        <span class="n">signal_rec</span><span class="p">,</span> <span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reconstruct_single</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">normed</span> <span class="ow">and</span> <span class="n">signal_rec</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">signal_rec</span><span class="p">))</span>
+            <span class="n">signal_rec</span> <span class="o">/=</span> <span class="n">norm</span>
+            <span class="n">code</span> <span class="o">/=</span> <span class="n">norm</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">signal_rec</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span> <span class="k">if</span> <span class="n">with_code</span> <span class="k">else</span> <span class="n">signal_rec</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_reconstruct_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strains</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normed_windows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ns</span> <span class="o">=</span> <span class="n">strains</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">patches</span><span class="p">,</span> <span class="n">norms</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_patches</span><span class="p">(</span>
+            <span class="n">strains</span><span class="p">,</span> <span class="n">patch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a_length</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">l2_normed</span><span class="o">=</span><span class="n">normed_windows</span><span class="p">,</span>
+            <span class="n">return_norm_coefs</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">codes</span> <span class="o">=</span> <span class="n">spams</span><span class="o">.</span><span class="n">lasso</span><span class="p">(</span>
+            <span class="n">patches</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>            <span class="c1"># SPAMS works with Fortran order.</span>
+            <span class="n">D</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1">#</span>
+            <span class="n">lambda1</span><span class="o">=</span><span class="n">sc_lambda</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode_lasso</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        
+        <span class="n">patches</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">codes</span><span class="p">)</span> <span class="o">*</span> <span class="n">norms</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">lp</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">np_</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="n">ns</span>  <span class="c1"># Number of patches per strain</span>
+        <span class="n">patches</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">np_</span><span class="p">,</span> <span class="n">lp</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+
+        <span class="n">reconstructions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">strains</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ns</span><span class="p">):</span>
+            <span class="n">reconstructions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">reconstruct_from_patches_1d</span><span class="p">(</span><span class="n">patches</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">step</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">reconstructions</span>
+
+<div class="viewcode-block" id="DictionarySpams.reconstruct_batch">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct_batch">[docs]</a>
+    <span class="k">def</span> <span class="nf">reconstruct_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO</span>
+
+<span class="sd">        Reconstruct multiple signals, each one as a sparse combination of</span>
+<span class="sd">        dictionary atoms.</span>
+
+<span class="sd">        WARNING: Only viable for small &#39;signals&#39; set, it is really memory</span>
+<span class="sd">        expensive (all patches are stored in a single array in memory).</span>
+
+<span class="sd">        WARNING: &#39;out&#39; deprecated, left for backwards compatibility but will</span>
+<span class="sd">        be ignored if given.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reconstruct_batch</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="o">=</span><span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">normed</span> <span class="ow">and</span> <span class="n">out</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+                <span class="n">out</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="DictionarySpams.reconstruct_minibatch">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct_minibatch">[docs]</a>
+    <span class="k">def</span> <span class="nf">reconstruct_minibatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batchsize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">normed_windows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO</span>
+
+<span class="sd">        Reconstruct multiple signals, each one as a sparse combination of</span>
+<span class="sd">        dictionary atoms. Minibatch version.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_signals</span> <span class="o">=</span> <span class="n">signals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">n_minibatch</span> <span class="o">=</span> <span class="n">n_signals</span> <span class="o">//</span> <span class="n">batchsize</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_minibatch</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">loop</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">ibatch</span> <span class="ow">in</span> <span class="n">loop</span><span class="p">:</span>
+            <span class="n">i0</span> <span class="o">=</span> <span class="n">ibatch</span> <span class="o">*</span> <span class="n">batchsize</span>
+            <span class="n">i1</span> <span class="o">=</span> <span class="n">i0</span> <span class="o">+</span> <span class="n">batchsize</span>
+            <span class="n">minibatch</span> <span class="o">=</span> <span class="n">signals</span><span class="p">[</span><span class="n">i0</span><span class="p">:</span><span class="n">i1</span><span class="p">]</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">i0</span><span class="p">:</span><span class="n">i1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reconstruct_batch</span><span class="p">(</span>
+                <span class="n">minibatch</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="o">=</span><span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">normed_windows</span><span class="o">=</span><span class="n">normed_windows</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_minibatch</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># In case there was no point in using a minibatch:</span>
+            <span class="n">i1</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># If &#39;n_signals&#39; was not divisible by &#39;batchsize&#39; reconstruct the</span>
+        <span class="c1"># remaining signals:</span>
+        <span class="k">if</span> <span class="n">i1</span> <span class="o">&lt;</span> <span class="n">n_signals</span><span class="p">:</span>
+            <span class="n">i0</span> <span class="o">=</span> <span class="n">i1</span>
+            <span class="n">minibatch</span> <span class="o">=</span> <span class="n">signals</span><span class="p">[</span><span class="n">i0</span><span class="p">:]</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">i0</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reconstruct_batch</span><span class="p">(</span>
+                <span class="n">minibatch</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="o">=</span><span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">normed</span> <span class="ow">and</span> <span class="n">out</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+                <span class="n">out</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="DictionarySpams.reconstruct_auto">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct_auto">[docs]</a>
+    <span class="k">def</span> <span class="nf">reconstruct_auto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">zero_marg</span><span class="p">,</span> <span class="n">lambda_lims</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kwargs_bisect</span><span class="o">=</span><span class="p">{},</span> <span class="n">kwargs_lasso</span><span class="o">=</span><span class="p">{}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO</span>
+
+<span class="sd">        Reconstrueix un únic senyal buscant per bisecció la lambda que</span>
+<span class="sd">        minimitza el senyal reconstruit al marge esquerre del senyal, la mida</span>
+<span class="sd">        dels quals ve determinada per &#39;zero_marg&#39;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Margins of the signals to be zeroed</span>
+        <span class="n">margin</span> <span class="o">=</span> <span class="n">signal</span><span class="p">[:</span><span class="n">zero_marg</span><span class="p">]</span>
+        <span class="c1"># Function to be bisected.</span>
+        <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">sc_lambda</span><span class="p">):</span>
+            <span class="n">rec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reconstruct_single</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lasso</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rec</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+                <span class="c1"># Ignore specific warning from extract_patches since here we do</span>
+                <span class="c1"># not care about reconstructing the entire strain (margin).</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&#39;signals&#39; cannot be fully divided into patches.*&quot;</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">semibool_bisect</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="o">*</span><span class="n">lambda_lims</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_bisect</span><span class="p">)</span>
+        
+        <span class="k">except</span> <span class="n">lib</span><span class="o">.</span><span class="n">BoundaryError</span><span class="p">:</span>
+            <span class="n">rec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+            <span class="n">code</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">lambda_lims</span><span class="p">),</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="s1">&#39;converged&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;niters&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;funcalls&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rec</span><span class="p">,</span> <span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reconstruct_single</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lasso</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">normed</span> <span class="ow">and</span> <span class="n">rec</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rec</span><span class="p">))</span>
+                <span class="n">rec</span> <span class="o">/=</span> <span class="n">norm</span>
+                <span class="n">code</span> <span class="o">/=</span> <span class="n">norm</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="n">full_output</span> <span class="k">else</span> <span class="n">rec</span></div>
+
+
+<div class="viewcode-block" id="DictionarySpams.reconstruct_iterative_minibatch">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct_iterative_minibatch">[docs]</a>
+    <span class="k">def</span> <span class="nf">reconstruct_iterative_minibatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batchsize</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+                                        <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                        <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kwargs_lasso</span><span class="o">=</span><span class="p">{}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reconstruct multiple signals using iterative residual subtraction.</span>
+
+<span class="sd">        This method reconstructs each signal by iteratively updating and</span>
+<span class="sd">        accumulating reconstructions. In the first iteration, the original </span>
+<span class="sd">        input signal is reconstructed and then subtracted from itself to </span>
+<span class="sd">        obtain the initial residual. In each subsequent iteration, a new </span>
+<span class="sd">        reconstruction is generated from the current residual and subtracted </span>
+<span class="sd">        from it, producing an updated residual for the next iteration, while </span>
+<span class="sd">        also being added to the cumulative reconstruction. The process </span>
+<span class="sd">        repeats until the Euclidean norm of the difference between consecutive </span>
+<span class="sd">        residuals falls below a specified threshold, which sets the convergence </span>
+<span class="sd">        criterion.</span>
+
+<span class="sd">        NOTE: In contrast with the usual procedure, the windows into which each</span>
+<span class="sd">        signal is split are not normalized. This is needed to enhance the</span>
+<span class="sd">        dictionary discrimination. Otherwise, the residuals are amplified at</span>
+<span class="sd">        each iteration, the algorithm takes longer to converge, and some</span>
+<span class="sd">        ad-hoc tests showed it also messes up with the resulting shape.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        signals : ndarray</span>
+<span class="sd">            Input signals to be reconstructed, with each signal along the first dimension.</span>
+<span class="sd">        sc_lambda : float, optional</span>
+<span class="sd">            Sparsity control parameter for reconstruction.</span>
+<span class="sd">        step : int, optional</span>
+<span class="sd">            Step size for the reconstruction.</span>
+<span class="sd">        batchsize : int, optional</span>
+<span class="sd">            Number of signals processed in each minibatch.</span>
+<span class="sd">        max_iter : int, optional</span>
+<span class="sd">            Maximum number of iterations before stopping.</span>
+<span class="sd">        threshold : float, optional</span>
+<span class="sd">            Convergence threshold based on the relative change in residuals.</span>
+<span class="sd">        normed : bool, optional</span>
+<span class="sd">            If True, the reconstructed signals are normalized after convergence.</span>
+<span class="sd">        full_output : bool, optional</span>
+<span class="sd">            If True, returns additional output values (residuals and iteration counts).</span>
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            If True, prints progress information at each iteration.</span>
+<span class="sd">        kwargs_lasso : dict, optional</span>
+<span class="sd">            Additional arguments for the Lasso reconstruction method.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray or tuple</span>
+<span class="sd">            The final reconstructed signals. If `full_output` is True, also returns the residuals</span>
+<span class="sd">            and the number of iterations per signal.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_signals</span> <span class="o">=</span> <span class="n">signals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># First iteration outside:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Iteration 0&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Signals remaining: </span><span class="si">{</span><span class="n">n_signals</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">step_reconstructions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstruct_minibatch</span><span class="p">(</span>
+            <span class="n">signals</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="o">=</span><span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">batchsize</span><span class="o">=</span><span class="n">batchsize</span><span class="p">,</span>
+            <span class="n">normed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Normalization is (optionally) applied at the END.</span>
+            <span class="n">normed_windows</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># See NOTE in the docstring.</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lasso</span>
+        <span class="p">)</span>
+        <span class="n">final_reconstructions</span> <span class="o">=</span> <span class="n">step_reconstructions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">residuals</span> <span class="o">=</span> <span class="n">signals</span> <span class="o">-</span> <span class="n">step_reconstructions</span>
+
+        <span class="c1"># Stop conditions</span>
+        <span class="n">iters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_signals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">finished</span> <span class="o">=</span> <span class="o">~</span><span class="n">step_reconstructions</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># In case any reconstructions are 0 already.</span>
+        <span class="n">residuals_old</span> <span class="o">=</span> <span class="n">residuals</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">finished</span><span class="p">)</span> <span class="ow">and</span> <span class="n">iters</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">max_iter</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Iteration </span><span class="si">{</span><span class="n">iters</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Signals remaining: </span><span class="si">{</span><span class="p">(</span><span class="o">~</span><span class="n">finished</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">^13d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">step_reconstructions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstruct_minibatch</span><span class="p">(</span>
+                <span class="n">residuals</span><span class="p">[</span><span class="o">~</span><span class="n">finished</span><span class="p">],</span>
+                <span class="n">sc_lambda</span><span class="o">=</span><span class="n">sc_lambda</span><span class="p">,</span>
+                <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span>
+                <span class="n">batchsize</span><span class="o">=</span><span class="n">batchsize</span><span class="p">,</span>
+                <span class="n">normed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Normalization is (optionally) applied at the END.</span>
+                <span class="n">normed_windows</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># See NOTE in the docstring.</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs_lasso</span>
+            <span class="p">)</span>
+            <span class="n">final_reconstructions</span><span class="p">[</span><span class="o">~</span><span class="n">finished</span><span class="p">]</span> <span class="o">+=</span> <span class="n">step_reconstructions</span>
+            <span class="n">residuals</span><span class="p">[</span><span class="o">~</span><span class="n">finished</span><span class="p">]</span> <span class="o">-=</span> <span class="n">step_reconstructions</span>
+
+            <span class="c1"># Stop conditions</span>
+            <span class="n">iters</span><span class="p">[</span><span class="o">~</span><span class="n">finished</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">residual_decrease</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">residuals</span><span class="p">[</span><span class="o">~</span><span class="n">finished</span><span class="p">]</span> <span class="o">-</span> <span class="n">residuals_old</span><span class="p">[</span><span class="o">~</span><span class="n">finished</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">finished</span><span class="p">[</span><span class="o">~</span><span class="n">finished</span><span class="p">]</span> <span class="o">=</span> <span class="n">residual_decrease</span> <span class="o">&lt;</span> <span class="n">threshold</span>
+            <span class="n">residuals_old</span> <span class="o">=</span> <span class="n">residuals</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;CURRENT RESIDUAL DECREASE:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Max: </span><span class="si">{</span><span class="n">residual_decrease</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Mean: </span><span class="si">{</span><span class="n">residual_decrease</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Min: </span><span class="si">{</span><span class="n">residual_decrease</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">finished</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: reached max_iter before finishing all the reconstructions&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">normed</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+                <span class="n">final_reconstructions</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">final_reconstructions</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">final_reconstructions</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="p">(</span><span class="n">final_reconstructions</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span> <span class="n">iters</span><span class="p">)</span> <span class="k">if</span> <span class="n">full_output</span> <span class="k">else</span> <span class="n">final_reconstructions</span></div>
+
+
+
+<div class="viewcode-block" id="DictionarySpams.optimum_reconstruct">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.optimum_reconstruct">[docs]</a>
+    <span class="k">def</span> <span class="nf">optimum_reconstruct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strain</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">kwargs_minimize</span><span class="p">,</span> <span class="n">kwargs_lasso</span><span class="p">,</span>
+                            <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the best reconstruction of a signal w.r.t. a reference.</span>
+
+<span class="sd">        Find the lambda which produces a reconstruction of the</span>
+<span class="sd">        input &#39;strain&#39; closest to the given &#39;reference&#39;, comparing them with</span>
+<span class="sd">        the SSIM estimator. The search is performed by the SciPy&#39;s function</span>
+<span class="sd">        &#39;minimize_scalar&#39; with bounds.</span>
+
+<span class="sd">        PARAMETERS</span>
+<span class="sd">        ----------</span>
+<span class="sd">        strain: ndarray</span>
+<span class="sd">            Input strain to be reconstructed (and optimized).</span>
+
+<span class="sd">        reference: ndarray</span>
+<span class="sd">            Reference strain which to compare the reconstruction to.</span>
+
+<span class="sd">        kwargs_minimize: dict</span>
+<span class="sd">            Passed to SciPy&#39;s `minimize_scalar(**kwargs_minimize)`.</span>
+
+<span class="sd">        kwargs_lasso: dict</span>
+<span class="sd">            Passed to Python-Spams&#39; `lasso(**kwargs_lasso)`.</span>
+
+<span class="sd">        step: int, optional</span>
+<span class="sd">            Separation in samples between each window into which the input</span>
+<span class="sd">            strain is split up to be reconstructed by the dictionary. Defaults</span>
+<span class="sd">            to 1.</span>
+
+<span class="sd">        limits: array-like, optional</span>
+<span class="sd">            Indices of limits to where compute the loss between the</span>
+<span class="sd">            reconstruction and the reference strain.</span>
+
+<span class="sd">        normed: bool, optional</span>
+<span class="sd">            If True, returns the signal normed to its maximum absolute amplitude.</span>
+
+<span class="sd">        verbose: bool, optional</span>
+<span class="sd">            Print info about the minimization results. False by default.</span>
+
+<span class="sd">        RETURNS</span>
+<span class="sd">        -------</span>
+<span class="sd">        rec: ndarray</span>
+<span class="sd">            Optimum reconstruction found.</span>
+
+<span class="sd">        l_opt: float</span>
+<span class="sd">            Optimum value for lambda.</span>
+
+<span class="sd">        loss: float</span>
+<span class="sd">            ISSIM (1 - SSIM) between the optimized reconstruction and the</span>
+<span class="sd">            reference.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">aa</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">bb</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># max(issim) x bb as the minimu value for the auxiliar line function.</span>
+        <span class="n">rec</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">limits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sl</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sl</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="o">*</span><span class="n">limits</span><span class="p">)</span>
+        <span class="n">reference_</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">l_rec_log</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Function to be minimized.&quot;&quot;&quot;</span>
+            <span class="k">nonlocal</span> <span class="n">rec</span>
+            <span class="n">l_rec</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">l_rec_log</span>  <span class="c1"># Opitimizes lambda in log. space!</span>
+            <span class="n">rec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">strain</span><span class="p">,</span> <span class="n">l_rec</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="n">normed</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lasso</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">rec</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">estimators</span><span class="o">.</span><span class="n">issim</span><span class="p">(</span><span class="n">rec</span><span class="p">[</span><span class="n">sl</span><span class="p">],</span> <span class="n">reference_</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">aa</span> <span class="o">*</span> <span class="n">l_rec</span> <span class="o">+</span> <span class="n">bb</span>
+            <span class="k">return</span> <span class="n">loss</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">minimize_scalar</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_minimize</span><span class="p">)</span>
+        <span class="n">l_opt</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;fun&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Optimization results:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&gt; Minimization success: </span><span class="si">{</span><span class="n">success</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;  Reason</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;  ------</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="o">+</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;  ------&quot;</span>
+                <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&gt; Lambda optimized: </span><span class="si">{</span><span class="n">l_opt</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&gt; Iterations performed: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;nit&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&gt; Final loss: </span><span class="si">{</span><span class="n">loss</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">rec</span><span class="p">,</span> <span class="n">l_opt</span><span class="p">,</span> <span class="n">loss</span></div>
+
+
+<div class="viewcode-block" id="DictionarySpams.save">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.save">[docs]</a>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the current state of the DictionarySpams object to a file.</span>
+
+<span class="sd">        This method saves all attributes of the object as a `.npz` file. </span>
+<span class="sd">        If the object has not been trained, certain attributes (`lambda1`, </span>
+<span class="sd">        `n_train`, and `t_train`) are removed to avoid potential issues when </span>
+<span class="sd">        reloading the state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file : str or file-like object</span>
+<span class="sd">            The file path or file object where the state of the object will </span>
+<span class="sd">            be saved. If a string is provided, it specifies the path to the </span>
+<span class="sd">            `.npz` file. If a file-like object is given, it must be writable </span>
+<span class="sd">            in binary mode.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vars_</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">to_remove</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">trained</span><span class="p">:</span>
+            <span class="c1"># To avoid silent bugs in the future</span>
+            <span class="n">to_remove</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;lambda1&#39;</span><span class="p">,</span> <span class="s1">&#39;n_train&#39;</span><span class="p">,</span> <span class="s1">&#39;t_train&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">to_remove</span><span class="p">:</span>
+            <span class="n">vars_</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+        <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="o">**</span><span class="n">vars_</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DictionarySpams.copy">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a copy of the dictionary.</span>
+
+<span class="sd">        Returns a new instance of the same dictionary with the same values</span>
+<span class="sd">        and state.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dico_copy : DictionarySpams</span>
+<span class="sd">            A copy of the current dictionary.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dico_copy</span> <span class="o">=</span> <span class="n">DictionarySpams</span><span class="p">(</span>
+            <span class="n">dict_init</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">lambda1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lambda1</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="n">n_iter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span><span class="p">,</span>
+            <span class="n">n_train</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">t_train</span><span class="p">,</span>
+            <span class="n">trained</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trained</span><span class="p">,</span>
+            <span class="n">mode_traindl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode_traindl</span><span class="p">,</span>
+            <span class="n">modeD_traindl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">modeD_traindl</span><span class="p">,</span>
+            <span class="n">mode_lasso</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode_lasso</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trained</span><span class="p">:</span>
+            <span class="c1"># Retain the initial components of the dictionary.</span>
+            <span class="n">dico_copy</span><span class="o">.</span><span class="n">dict_init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span>
+
+        <span class="k">return</span> <span class="n">dico_copy</span></div>
+
+    
+<div class="viewcode-block" id="DictionarySpams.reset">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reset">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the dictionary to its initial (untrained) state.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trained</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_train</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_check_initial_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal_pool</span><span class="p">,</span> <span class="n">ignore_completeness</span><span class="p">):</span>
+        <span class="c1"># Explicit initial dictionary.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; is not a valid &#39;dict_init&#39;&quot;</span>
+                <span class="p">)</span>
+            
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">c_contiguous</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;dict_init&#39; must be a C-contiguous array&quot;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="ow">not</span> <span class="n">ignore_completeness</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;the dictionary must be overcomplete (d_size &gt; a_length)&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Signal pool from where to extract the initial dictionary.</span>
+        <span class="k">elif</span> <span class="n">signal_pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">signal_pool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">signal_pool</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; is not a valid &#39;signal_pool&#39;&quot;</span>
+                <span class="p">)</span>
+            
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">signal_pool</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">c_contiguous</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;signal_pool&#39; must be a C-contiguous array&quot;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_size</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;a_length&#39; and &#39;d_size&#39; must be explicitly provided along &#39;signal_pool&#39;&quot;</span>
+                <span class="p">)</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a_length</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_size</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ignore_completeness</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;the dictionary must be overcomplete (d_size &gt; a_length)&quot;</span><span class="p">)</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;either &#39;dict_init&#39; or &#39;signal_pool&#39; must be provided&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Miquel Lluís Llorens Monteagudo.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

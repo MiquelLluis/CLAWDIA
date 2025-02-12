@@ -1,0 +1,760 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clawdia._dictionary_lrsdl &#8212; CLAWDIA 0.4.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=6e061ff1" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5bfaad31"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/clawdia/_dictionary_lrsdl';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.4.3" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item"><div class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand" style="color: inherit; cursor: pointer;">
+        <img src="_static/clawdia-logo.svg" class="navbar-project-icon" />
+        <span class="navbar-project-name">CLAWDIA</span>
+        <span class="navbar-project-version">v0.4.3</span>
+    </a>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../modules.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MiquelLluis/clawdia" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../modules.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MiquelLluis/clawdia" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">clawdia._dictionary_lrsdl</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for clawdia._dictionary_lrsdl</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">dictol.LRSDL</span> <span class="kn">import</span> <span class="n">LRSDL</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">lib</span>
+
+
+<div class="viewcode-block" id="DictionaryLRSDL">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionaryLRSDL">[docs]</a>
+<span class="k">class</span> <span class="nc">DictionaryLRSDL</span><span class="p">(</span><span class="n">LRSDL</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Interface for the Low-Rank Shared Dictionary Learning class.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t_train : float</span>
+<span class="sd">        Training time in seconds.</span>
+
+<span class="sd">    lambd : float</span>
+<span class="sd">        See self.__init__() for details.</span>
+<span class="sd">    </span>
+<span class="sd">    lambd2 : float</span>
+<span class="sd">        See self.__init__() for details.</span>
+<span class="sd">    </span>
+<span class="sd">    eta : float</span>
+<span class="sd">        See self.__init__() for details.</span>
+<span class="sd">    </span>
+<span class="sd">    D : ndarray</span>
+<span class="sd">        Class-specific dictionary.</span>
+<span class="sd">    </span>
+<span class="sd">    X : ndarray</span>
+<span class="sd">        Class-specific coefficient vector of the training set given when</span>
+<span class="sd">        calling self.fit().</span>
+<span class="sd">    </span>
+<span class="sd">    Y : ndarray</span>
+<span class="sd">        Class-specific target vector (the training set) given when calling</span>
+<span class="sd">        self.fit().</span>
+<span class="sd">    </span>
+<span class="sd">    k : int</span>
+<span class="sd">        See self.__init__() for details.</span>
+<span class="sd">    </span>
+<span class="sd">    k0 : int</span>
+<span class="sd">        See self.__init__() for details.</span>
+<span class="sd">    </span>
+<span class="sd">    updateX_iters : int</span>
+<span class="sd">        See self.__init__() for details.</span>
+<span class="sd">    </span>
+<span class="sd">    updateD_iters : int</span>
+<span class="sd">        See self.__init__() for details.</span>
+<span class="sd">    </span>
+<span class="sd">    D_range : list[int]</span>
+<span class="sd">        Auxiliar list containing the range of indices of each class in D.</span>
+<span class="sd">    </span>
+<span class="sd">    D0 : ndarray</span>
+<span class="sd">        Shared dictionary.</span>
+<span class="sd">    </span>
+<span class="sd">    Y_range : list[→nt]</span>
+<span class="sd">        Auxiliar list containing the range of indices of each class in Y.</span>
+<span class="sd">        Derived directly from &#39;train_label&#39;, equivalent to the &#39;y_true&#39; labels.</span>
+<span class="sd">        Example: given train_label = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1], then</span>
+<span class="sd">        Y_range = [0, 4, 6]. The first value is always 0, marking the</span>
+<span class="sd">        start of the first class, and the last value is always the number of</span>
+<span class="sd">        classes + 1.</span>
+<span class="sd">    </span>
+<span class="sd">    X0 : ndarray</span>
+<span class="sd">        Shared coefficient vector of the training set given when calling</span>
+<span class="sd">        self.fit().</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The authors of Dictol didn&#39;t provide a seed parameter for the random</span>
+<span class="sd">    initialization of the dictionary. If reproducibility is important, one must</span>
+<span class="sd">    set the global numpy&#39;s seed before callint ``LRSDL.__init__()``.</span>
+
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Vu, T. H.; Monga, V. (2017). *Fast low-rank shared dictionary</span>
+<span class="sd">           learning for image classification*, IEEE Transactions on Image</span>
+<span class="sd">           Processing, 26(11), 5160–5175.</span>
+<span class="sd">           (https://doi.org/10.1109/TIP.2017.2729885)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DictionaryLRSDL.__init__">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionaryLRSDL.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lambd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">lambd2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k0</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                 <span class="n">updateX_iters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">updateD_iters</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Initialize the LRSDL dictionary.</span>
+
+<span class="sd">        This method sets up the parameters required for training class-specific</span>
+<span class="sd">        and shared dictionaries. These dictionaries are used to represent data</span>
+<span class="sd">        with sparsity and low-rank properties, which can be regularized by the</span>
+<span class="sd">        parameters defined below.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lambd : float</span>
+<span class="sd">            Regularization parameter for the sparsity term:</span>
+
+<span class="sd">            .. math::</span>
+
+<span class="sd">               \lambda \|X\|_1</span>
+
+<span class="sd">            This encourages sparsity in the class-specific dictionary, similar</span>
+<span class="sd">            to the LASSO regularization term.</span>
+
+<span class="sd">        lambd2 : float</span>
+<span class="sd">            Regularization parameter for the reconstruction term:</span>
+
+<span class="sd">            .. math::</span>
+
+<span class="sd">               \frac{\lambda_2}{2} \|X^0 - M^0\|^2</span>
+
+<span class="sd">            This ensures that the shared vector (used to select shared atoms)</span>
+<span class="sd">            is sparse and close to the mean shared vector, ensuring consistency</span>
+<span class="sd">            across all :math:`X^0`.</span>
+
+<span class="sd">        eta : float</span>
+<span class="sd">            Regularization parameter for the low-rank term:</span>
+
+<span class="sd">            .. math::</span>
+
+<span class="sd">               \eta \| D^0 \|_*</span>
+
+<span class="sd">            Here, :math:`\|\cdot\|_*` is the `nuclear norm</span>
+<span class="sd">            &lt;https://encyclopediaofmath.org/wiki/Nuclear_norm&gt;`_, which</span>
+<span class="sd">            enforces the shared dictionary to have low rank.</span>
+
+<span class="sd">        k : int</span>
+<span class="sd">            Number of class-specific atoms for each class. The total number of</span>
+<span class="sd">            atoms in the class-specific dictionary is given by :math:`k \times</span>
+<span class="sd">            C`, where :math:`C` is the number of classes.</span>
+
+<span class="sd">        k0 : int</span>
+<span class="sd">            Total number of shared atoms. A value of :math:`k_0 = 0` indicates</span>
+<span class="sd">            that no shared dictionary is used.</span>
+
+<span class="sd">        updateX_iters, updateD_iters : int</span>
+<span class="sd">            These parameters are passed to the parent class</span>
+<span class="sd">            :meth:`LRSDL.__init__`. However, they are suspected to be **dummy</span>
+<span class="sd">            parameters** because no usage of them could be found in the</span>
+<span class="sd">            original implementation. They are retained here for compatibility</span>
+<span class="sd">            but appear to have no functional effect in this class.</span>
+
+<span class="sd">        Warnings</span>
+<span class="sd">        --------</span>
+<span class="sd">        The `updateX_iters` and `updateD_iters` parameters are inherited from the </span>
+<span class="sd">        parent class :class:`LRSDL`, but they appear to be unused in this </span>
+<span class="sd">        implementation. Consider verifying their relevance before relying on them.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - The parameters `lambd`, `lambd2`, and `eta` control the sparsity and</span>
+<span class="sd">          low-rank properties of the dictionaries.</span>
+<span class="sd">        - Setting ``k0 = 0`` disables the shared dictionary.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">lambd</span><span class="o">=</span><span class="n">lambd</span><span class="p">,</span> <span class="n">lambd2</span><span class="o">=</span><span class="n">lambd2</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">eta</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">k0</span><span class="o">=</span><span class="n">k0</span><span class="p">,</span>
+            <span class="n">updateX_iters</span><span class="o">=</span><span class="n">updateX_iters</span><span class="p">,</span> <span class="n">updateD_iters</span><span class="o">=</span><span class="n">updateD_iters</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="DictionaryLRSDL.fit">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionaryLRSDL.fit">[docs]</a>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">l_atoms</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_after</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Train the LRSDL dictionary.</span>
+
+<span class="sd">        This method trains the dictionary using the provided data and allows</span>
+<span class="sd">        for several configuration options:</span>
+<span class="sd">        </span>
+<span class="sd">        - Split the input data `X` into sliding windows of length `l_atoms`.</span>
+<span class="sd">        - Use the entire input as a single window.</span>
+<span class="sd">        - Discard training windows whose L2-norm is below a specified</span>
+<span class="sd">          threshold.</span>
+
+<span class="sd">        The splitting behavior depends on the `step` parameter. If `step` is</span>
+<span class="sd">        `None`, the entire input is treated as a single window. Otherwise,</span>
+<span class="sd">        overlapping patches of size `l_atoms` are created with the specified</span>
+<span class="sd">        step size.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : ndarray of shape (n_samples, n_features)</span>
+<span class="sd">            Training samples. The number of features must be equal to or</span>
+<span class="sd">            greater than the dictionary&#39;s atom size.</span>
+
+<span class="sd">        y_true : ndarray of shape (n_samples,)</span>
+<span class="sd">            Labels corresponding to the samples in `X`. The length of `y_true`</span>
+<span class="sd">            must equal the number of samples in `X`.</span>
+
+<span class="sd">        l_atoms : int</span>
+<span class="sd">            Length of the dictionary&#39;s atoms.</span>
+
+<span class="sd">        iterations : int</span>
+<span class="sd">            Number of training iterations.</span>
+
+<span class="sd">        step : int, optional</span>
+<span class="sd">            The step size for splitting input samples into patches of length</span>
+<span class="sd">            `l_atoms`. If not specified, the entire input is used as a single</span>
+<span class="sd">            window.</span>
+
+<span class="sd">        threshold : float, optional</span>
+<span class="sd">            L2-norm threshold (relative to the maximum L2-norm in each strain).</span>
+<span class="sd">            Training windows with L2-norm below this value will be discarded.</span>
+<span class="sd">            Default is 0 (no threshold applied).</span>
+
+<span class="sd">        random_seed : int, optional</span>
+<span class="sd">            Random seed for reproducibility. Default is `None`.</span>
+
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            If True, print verbose output during training. Default is False.</span>
+
+<span class="sd">        show_after : int, optional</span>
+<span class="sd">            If `verbose` is True, progress will be displayed every `show_after`</span>
+<span class="sd">            iterations. Default is 5.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `None`</span>
+<span class="sd">            The method trains the dictionary in place.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;y_true&#39; must be a numpy array.&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">l_atoms</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;X must have at least &#39;l_atoms&#39; features.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check that there are at least &#39;self.k&#39; samples of each class in the</span>
+        <span class="c1"># training set.</span>
+        <span class="n">_least_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">y_true</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">_least_samples</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">:</span>
+            <span class="n">i_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">y_true</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;there are less than </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="si">}</span><span class="s2"> samples of class </span><span class="si">{</span><span class="n">i_class</span><span class="si">}</span><span class="s2"> in&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; the training set ()&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Sort `X` and `y_true` so that labels are consecutive and begin with 1.</span>
+        <span class="n">i_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span>
+        <span class="n">y_true</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[</span><span class="n">i_sorted</span><span class="p">]</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">i_sorted</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">y_true</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;labels in &#39;y_true&#39; must be integers starting from 1&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="n">l_atoms</span>
+
+        <span class="n">n_x</span><span class="p">,</span> <span class="n">l_x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">n_wps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">l_x</span> <span class="o">-</span> <span class="n">l_atoms</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Number of windows per strain</span>
+        <span class="n">y_windowed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">n_wps</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_x</span><span class="p">,</span> <span class="n">n_wps</span><span class="p">)</span>
+        
+        <span class="c1"># Split X -&gt; X_windowed:</span>
+        <span class="n">X_windowed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_x</span><span class="p">,</span> <span class="n">n_wps</span><span class="p">,</span> <span class="n">l_atoms</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_x</span><span class="p">):</span>
+            <span class="n">X_windowed</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_patches</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span> <span class="n">patch_size</span><span class="o">=</span><span class="n">l_atoms</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
+
+
+        <span class="c1"># Filter windows: Discard those which their L2-norm is lower than the</span>
+        <span class="c1"># specified by the relative threshold:</span>
+        <span class="n">norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">X_windowed</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>         <span class="c1"># (n_x, n_wps)</span>
+        <span class="n">l2_maxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">norms</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>     <span class="c1"># (n_x, 1)</span>
+        <span class="n">m_keep</span> <span class="o">=</span> <span class="n">norms</span> <span class="o">&gt;=</span> <span class="n">l2_maxs</span><span class="o">*</span><span class="n">threshold</span>                <span class="c1"># (n_x, n_wps)  Mask of windows to keep.</span>
+
+        <span class="n">m_alltrue</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">m_keep</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">i_ends</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">m_keep</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># (n_x, 1)</span>
+        <span class="n">m_out</span> <span class="o">=</span> <span class="n">i_ends</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">m_keep</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>      <span class="c1"># (n_x, n_wps)</span>
+        <span class="n">m_out</span><span class="p">[</span><span class="n">m_alltrue</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">m_keep</span> <span class="o">=</span> <span class="o">~</span><span class="n">m_out</span>
+
+        <span class="n">X_filtered</span> <span class="o">=</span> <span class="n">X_windowed</span><span class="p">[</span><span class="n">m_keep</span><span class="p">]</span>  <span class="c1"># (n_filtered, l_atoms)</span>
+        <span class="n">y_filtered</span> <span class="o">=</span> <span class="n">y_windowed</span><span class="p">[</span><span class="n">m_keep</span><span class="p">]</span>  <span class="c1"># (n_filtered)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">n_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">m_out</span><span class="p">)</span>
+            <span class="n">n_keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">m_keep</span><span class="p">)</span>
+            <span class="n">frac_keep</span> <span class="o">=</span> <span class="n">n_keep</span> <span class="o">/</span> <span class="n">m_keep</span><span class="o">.</span><span class="n">size</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;filtered: </span><span class="si">{</span><span class="n">n_out</span><span class="si">}</span><span class="se">\t</span><span class="s2"> kept: </span><span class="si">{</span><span class="n">n_keep</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">frac_keep</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check that there are enough windows to build the dictionary:</span>
+        <span class="n">n_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">y_true</span><span class="p">))</span>
+        <span class="n">minimum_windows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">*</span> <span class="n">n_classes</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span>
+        <span class="k">if</span> <span class="n">X_filtered</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">minimum_windows</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;there are not enough training samples for the requested &quot;</span>
+                <span class="s2">&quot;dimensions of the dictionary. Either try to lower the &#39;treshold&#39; &quot;</span>
+                <span class="s2">&quot;parameter or provide more training samples.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Train the dictionary</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
+        <span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+            <span class="n">X_filtered</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">y_filtered</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">iterations</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">show_after</span><span class="o">=</span><span class="n">show_after</span>
+        <span class="p">)</span>
+        <span class="n">tac</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">=</span> <span class="n">tac</span> <span class="o">-</span> <span class="n">tic</span></div>
+
+
+<div class="viewcode-block" id="DictionaryLRSDL.predict">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionaryLRSDL.predict">[docs]</a>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">with_losses</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict the class of each window in X.</span>
+
+<span class="sd">        The class of a window is the class of the closest codeword to that</span>
+<span class="sd">        window in the dictionary.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : 2d-array, shape=(n_signals, n_samples)</span>
+<span class="sd">            Input signals, with equal or more samples than the atoms&#39;.</span>
+
+<span class="sd">        threshold : float, optional</span>
+<span class="sd">            Loss threshold ABOVE which signals will be marked as &quot;unknown&quot; class,</span>
+<span class="sd">            which corresponds to the label value -1.</span>
+<span class="sd">            Zero by default, all signals will be classified.</span>
+
+<span class="sd">        offset : int, optional</span>
+<span class="sd">            Index i0 at which to crop the input signals X.</span>
+<span class="sd">            The i1 will be `offset + l_atoms`. By default 0.</span>
+
+<span class="sd">        with_losses : bool, optional</span>
+<span class="sd">            If True, return a tuple with the class predictions and the</span>
+<span class="sd">            corresponding losses.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y_pred : 1d-array, shape=(n_signals)</span>
+<span class="sd">            Class predictions for each input signal.</span>
+
+<span class="sd">        losses : 1d-array, shape=(n_signals), optional</span>
+<span class="sd">            Losses of the closest codewords to each input signal.</span>
+<span class="sd">            Only returned if with_losses=True.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Cut signals to dico&#39;s length and discard the rest:</span>
+        <span class="n">i0</span> <span class="o">=</span> <span class="n">offset</span>
+        <span class="n">i1</span> <span class="o">=</span> <span class="n">i0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">X_cut</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span><span class="n">i0</span><span class="p">:</span><span class="n">i1</span><span class="p">]</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+            <span class="n">X_cut</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">X_cut</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># E: losses of all strains, shape: (class, strain)</span>
+        <span class="n">y_pred</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_cut</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">loss_mat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">losses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">threshold</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">discarded</span> <span class="o">=</span> <span class="n">losses</span> <span class="o">&gt;=</span> <span class="n">threshold</span>
+            <span class="n">y_pred</span><span class="p">[</span><span class="n">discarded</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">losses</span><span class="p">)</span> <span class="k">if</span> <span class="n">with_losses</span> <span class="k">else</span> <span class="n">y_pred</span></div>
+
+
+<div class="viewcode-block" id="DictionaryLRSDL.save">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionaryLRSDL.save">[docs]</a>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the dictionary to a file.</span>
+
+<span class="sd">        Save the dictionary attributes using NumPy&#39;s &#39;np.savez()&#39;.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file : str</span>
+<span class="sd">            Path to the file where to save the dictionary.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vars_</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="o">**</span><span class="n">vars_</span><span class="p">)</span></div>
+</div>
+
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Miquel Lluís Llorens Monteagudo.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
