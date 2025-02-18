@@ -229,7 +229,9 @@ class DictionarySpams:
         **kwargs
             Passed directly to 'spams.trainDL', see [1].
 
-        Additional parameters will be passed to the SPAMS training function.
+        See Also
+        --------
+        clawdia.lib.extract_patches : Useful for generating the training `patches`.
 
         """
         if self.trained:
