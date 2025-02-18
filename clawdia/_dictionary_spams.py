@@ -74,7 +74,7 @@ class DictionarySpams:
              dict_init=None,
              model=None,
              signal_pool=None, a_length=None, d_size=None, wave_pos=None,
-             patch_min=1, l2_normed=True, allow_allzeros=True,
+             patch_min=1, l2_normed=True, allow_allzeros=False,
              random_state=None, ignore_completeness=False,
              lambda1=None, batch_size=64, n_iter=None, n_train=None,
              trained=False, mode_traindl=0, modeD_traindl=0, mode_lasso=2,
@@ -117,9 +117,9 @@ class DictionarySpams:
             `wave_pos` is `None`.
         l2_normed : bool, default=True
             If `True`, normalize extracted atoms to their L2 norm.
-        allow_allzeros : bool, default=True
-            If `False`, random atoms with all zeros are excluded from the
-            initial dictionary.
+        allow_allzeros : bool, default=False
+            By default, random atoms with all zeros are excluded from the
+            initial dictionary. If `allow_allzeros=True`, they are allowed.
         random_state : int, optional
             Seed for random sampling from `signal_pool`.
         ignore_completeness : bool, optional, default=False
