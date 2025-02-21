@@ -18,17 +18,6 @@ This pipeline was developed as part of my PhD thesis _Gravitational-wave signal 
 
 
 
-# References
-1. T. H. Vu and V. Monga, _Fast Low-Rank Shared Dictionary Learning for Image Classification_, in IEEE Transactions on Image Processing, vol. 26, no. 11, pp. 5160-5175, Nov. 2017, doi: 10.1109/TIP.2017.2729885.
-
-
-
-
-
-
-
-
-
 # TODO
 
 - The training function of LRSDL is from an older version that "expands" the training dataset by obtaining multiple windows from each signal using the usual sliding window. This needs to be reviewed to determine whether it is positive, negative, or unnecessary. In any case, since this step in the dictionary is exclusively about increasing the samples, it should either be removed or placed in a separate function.
@@ -55,35 +44,32 @@ Below are some notes about different parts of the code.
 
 In the `spams.trainDL` function:
 
-- **`mode=0`** and **`mode=1`** both formulate dictionary learning as optimization problems, but they differ in **how the sparsity constraint on** $ \alpha_i $ (the sparse representations of the data $ x_i $ in terms of dictionary $ D $) is applied:
+- **`mode=0`** and **`mode=1`** both formulate dictionary learning as optimization problems, but they differ in **how the sparsity constraint on** $\alpha_i$ (the sparse representations of the data $x_i$ in terms of dictionary $D$) is applied:
 
 **Key Differences Between `mode=0` and `mode=1`**
 
 1. **Objective Function Structure**:
-   - **`mode=0`** minimizes the **reconstruction error** (the squared Euclidean distance between $ x_i $ and $ D \alpha_i $), with an **L1-norm constraint on** $ \alpha_i $.
-     $$
-     \min_{D \in C} \frac{1}{n} \sum_{i=1}^n \frac{1}{2} \| x_i - D \alpha_i \|_2^2 \quad \text{s.t. } \| \alpha_i \|_1 \leq \lambda_1
-     $$
-   - **`mode=1`** minimizes the **L1-norm of** $ \alpha_i $ directly, subject to a constraint on the **reconstruction error**.
-     $$
-     \min_{D \in C} \frac{1}{n} \sum_{i=1}^n \| \alpha_i \|_1 \quad \text{s.t. } \| x_i - D \alpha_i \|_2^2 \leq \lambda_1
-     $$
+   - **`mode=0`** minimizes the **reconstruction error** (the squared Euclidean distance between $x_i$ and $D \alpha_i$), with an **L1-norm constraint on** $\alpha_i$.\
+     $$\min_{D \in C} \frac{1}{n} \sum_{i=1}^n \frac{1}{2} \| x_i - D \alpha_i \|_2^2 \quad \text{s.t. } \| \alpha_i \|_1 \leq \lambda_1$$
 
-2. **Interpretation of the Constraint**:
-   - **In `mode=0`**, the L1 constraint ($ \| \alpha_i \|_1 \leq \lambda_1 $) **limits the sparsity of** $ \alpha_i $ directly by restricting the sum of absolute values of its entries. The goal is to minimize the reconstruction error, subject to a sparsity constraint on $ \alpha_i $.
-   - **In `mode=1`**, the **reconstruction error is constrained** ($ \| x_i - D \alpha_i \|_2^2 \leq \lambda_1 $), while the objective is to minimize the L1-norm of $ \alpha_i $. Here, `lambda1` controls the allowed reconstruction error, and the algorithm seeks the sparsest representation that meets this accuracy threshold.
+   - **`mode=1`** minimizes the **L1-norm of** $\alpha_i$ directly, subject to a constraint on the **reconstruction error**.\
+     $$\min_{D \in C} \frac{1}{n} \sum_{i=1}^n \| \alpha_i \|_1 \quad \text{s.t. } \| x_i - D \alpha_i \|_2^2 \leq \lambda_1$$
 
-3. **Effect on Sparsity and Reconstruction**:
-   - **`mode=0`** typically yields representations that aim for **good reconstruction quality**, limited by the sparsity of $ \alpha_i $. The solution tries to fit the data within the allowed sparsity level.
-   - **`mode=1`** typically yields **sparser representations** at the expense of some flexibility in reconstruction error. Here, the solution prioritizes minimizing $ \| \alpha_i \|_1 $ while only requiring that the reconstruction error stay within a set limit, leading to fewer non-zero elements in $ \alpha_i $ if this constraint can be met.
+3. **Interpretation of the Constraint**:
+   - **In `mode=0`**, the L1 constraint ($\| \alpha_i \|_1 \leq \lambda_1$) **limits the sparsity of** $\alpha_i$ directly by restricting the sum of absolute values of its entries. The goal is to minimize the reconstruction error, subject to a sparsity constraint on $\alpha_i$.
+   - **In `mode=1`**, the **reconstruction error is constrained** ($\| x_i - D \alpha_i \|_2^2 \leq \lambda_1$), while the objective is to minimize the L1-norm of $\alpha_i$. Here, `lambda1` controls the allowed reconstruction error, and the algorithm seeks the sparsest representation that meets this accuracy threshold.
+
+4. **Effect on Sparsity and Reconstruction**:
+   - **`mode=0`** typically yields representations that aim for **good reconstruction quality**, limited by the sparsity of $\alpha_i$. The solution tries to fit the data within the allowed sparsity level.
+   - **`mode=1`** typically yields **sparser representations** at the expense of some flexibility in reconstruction error. Here, the solution prioritizes minimizing $\| \alpha_i \|_1$ while only requiring that the reconstruction error stay within a set limit, leading to fewer non-zero elements in $\alpha_i$ if this constraint can be met.
 
 **Why Use `mode=1`?**
 
-If your primary goal is to **obtain sparse representations**, even if it means a small sacrifice in reconstruction quality, `mode=1` is appropriate. By minimizing $ \| \alpha_i \|_1 $, the algorithm finds the most compact (sparse) representation for each $ x_i $ that still reconstructs it within the desired error limit.
+If your primary goal is to **obtain sparse representations**, even if it means a small sacrifice in reconstruction quality, `mode=1` is appropriate. By minimizing $\| \alpha_i \|_1$, the algorithm finds the most compact (sparse) representation for each $x_i$ that still reconstructs it within the desired error limit.
   
 **Why Use `mode=0`?**
 
-If **reconstruction accuracy** is the main focus, with sparsity as a secondary goal, `mode=0` may be better. It minimizes reconstruction error directly, only applying the L1 constraint on $ \alpha_i $ as a limit on how sparse the representation can be.
+If **reconstruction accuracy** is the main focus, with sparsity as a secondary goal, `mode=0` may be better. It minimizes reconstruction error directly, only applying the L1 constraint on $\alpha_i$ as a limit on how sparse the representation can be.
 
 
 ### Mini-batch relevance and `batch_size` parameter
