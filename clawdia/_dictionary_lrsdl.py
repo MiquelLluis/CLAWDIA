@@ -193,8 +193,9 @@ class DictionaryLRSDL(LRSDL):
 
         step : int, optional
             The step size for splitting input samples into patches of length
-            `l_atoms`. If not specified, the entire input is used as a single
-            window.
+            `l_atoms`. If not specified, it is set the same (`step = l_atoms`)
+            so that all information abailable is extracted from `X` without any
+            repetition (overlap).
 
         threshold : float, optional
             L2-norm threshold (relative to the maximum L2-norm in each strain).
