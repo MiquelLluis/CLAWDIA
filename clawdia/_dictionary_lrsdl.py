@@ -157,6 +157,54 @@ class DictionaryLRSDL(LRSDL):
         )
 
         self.t_train = None
+    
+    def __str__(self):
+        params = [
+            f"lambd={self.lambd}",
+            f"lambd2={self.lambd2}",
+            f"eta={self.eta}",
+            f"k={self.k}",
+            f"k0={self.k0}",
+            f"updateX_iters={self.updateX_iters}",
+            f"updateD_iters={self.updateD_iters}"
+        ]
+        params_str = ", ".join(params)
+        state = []
+        
+        # Training time
+        if self.t_train is not None:
+            state.append(f"Training time: {self.t_train:.2f} sec")
+        else:
+            state.append("Not trained")
+        
+        # Dictionary and coefficients
+        state_attrs = [
+            ('D', 'D'),
+            ('D0', 'D0'),
+            ('X', 'X'),
+            ('X0', 'X0'),
+            ('Y', 'Y'),
+            ('Y_range', 'Y_range'),
+            ('D_range', 'D_range')
+        ]
+        for attr_name, display_name in state_attrs:
+            attr = getattr(self, attr_name, None)
+            if attr is not None:
+                if isinstance(attr, np.ndarray):
+                    if attr_name in ('Y_range', 'D_range'):
+                        state.append(f"{display_name}: {attr}")
+                    else:
+                        state.append(f"{display_name}: shape={attr.shape}")
+                elif isinstance(attr, list):
+                    state.append(f"{display_name}: length={len(attr)}")
+                else:
+                    state.append(f"{display_name}: {attr}")
+            else:
+                state.append(f"{display_name}: Not initialized")
+        
+        state_str = "\n  ".join(state)
+        
+        return f"DictionaryLRSDL({params_str})\n  {state_str}"
 
     def fit(self, X, *, y_true, l_atoms, iterations, step=None,
             threshold=0, random_seed=None, verbose=False, show_after=5):
