@@ -200,7 +200,7 @@ class DictionaryLRSDL(LRSDL):
         threshold : float, optional
             L2-norm threshold (relative to the maximum L2-norm in each strain).
             Training windows with L2-norm below this value will be discarded.
-            Default is 0 (no threshold applied).
+            Default is 0 (only null arrays are discarded).
 
         random_seed : int, optional
             Random seed for reproducibility. Default is `None`.
