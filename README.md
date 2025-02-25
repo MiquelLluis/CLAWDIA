@@ -20,8 +20,6 @@ This pipeline was developed as part of my PhD thesis _Gravitational-wave signal 
 
 # TODO
 
-- The training function of LRSDL is from an older version that "expands" the training dataset by obtaining multiple windows from each signal using the usual sliding window. This needs to be reviewed to determine whether it is positive, negative, or unnecessary. In any case, since this step in the dictionary is exclusively about increasing the samples, it should either be removed or placed in a separate function.
-
 - Vectorize `snr()` to estimate multiple signals (rfft accepts multidimensional arrays).
 
 - Make it explicit when iterating over labels by updating the relevant variables: avoid referring to different dictionaries and instead refer to different labels.
