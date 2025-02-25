@@ -307,20 +307,14 @@ class DictionaryLRSDL(LRSDL):
         # specified by the relative threshold:
         norms = np.linalg.norm(X_windowed, axis=2)         # (n_x, n_wps)
         l2_maxs = np.max(norms, axis=1, keepdims=True)     # (n_x, 1)
-        m_keep = norms >= l2_maxs*threshold                # (n_x, n_wps)  Mask of windows to keep.
-
-        m_alltrue = np.all(m_keep, axis=1)
-        i_ends = np.argmin(m_keep, axis=1, keepdims=True)  # (n_x, 1)
-        m_out = i_ends <= np.arange(m_keep.shape[1])      # (n_x, n_wps)
-        m_out[m_alltrue] = False
-        m_keep = ~m_out
+        m_keep = (norms > l2_maxs*threshold)              # (n_x, n_wps)  Mask of windows to keep per signal
 
         X_filtered = X_windowed[m_keep]  # (n_filtered, l_atoms)
         y_filtered = y_windowed[m_keep]  # (n_filtered)
 
         if verbose:
-            n_out = np.sum(m_out)
             n_keep = np.sum(m_keep)
+            n_out = m_keep.size - n_keep
             frac_keep = n_keep / m_keep.size
             print(f"filtered: {n_out}\t kept: {n_keep} ({frac_keep:.1%})")
 
