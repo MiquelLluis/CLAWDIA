@@ -236,6 +236,11 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
             "there is at least one signal according to its 'limits' shorter"
             " than 'patch_min'"
         )
+    if not allow_allzeros and not signals.any():
+        raise ValueError(
+            "'allow_allzeros' is False, but 'signals' contains only zeros. "
+            "Random patch extraction would result in an infinite loop."
+        )
     
     if signals.ndim == 1:
         signals = signals[np.newaxis,:]
