@@ -164,11 +164,59 @@ class TestExtractPatches:
         expected = np.array([[1, 2, 3, 4], [2, 3, 4, 5]])
         np.testing.assert_array_equal(patches, expected)
 
-    def test_odd_length_signal_splitting(self):
-        """Test splitting signal with odd length and no step."""
-        signal = np.array([0, 1, 2, 3, 4])  # Length 5
-        patches = lib.extract_patches(signal, patch_size=2)
-        assert patches.shape == (4, 2)  # 5-2+1=4 patches
+    def test_extract_patches_inexact_fit_no_padding(self):
+        """
+        Test signal split when the combination of patch length and step
+        don't match the exact size of the input signal, and no padding is
+        allowed.
+
+        A fraction of the end of the signal will be lost, and the number of
+        patches extracted will be:
+
+        .. code-block:: python
+
+            N_patches = int((len(signal) - patch_size) / step) + 1
+        
+        """
+        signal = np.arange(127)
+        patches = lib.extract_patches(
+            signal, 
+            patch_size=64,
+            step=16
+        )
+        assert patches.shape == (4, 64)
+        assert patches[-1,-1] != signal[-1]  # Only valid for this example.
+
+    def test_extract_patches_inexact_fit_with_padding(self):
+        """
+        Test signal split when the combination of patch length and step
+        don't match the exact size of the input signal, but padding is allowed.
+
+        No signal is lost, extra samples (zero-pad) are added for the full
+        coverage of the input signal, and the number of patches extracted
+        will be:
+
+        .. code-block:: python
+
+            N_patches = np.ceil((len(signal) - patch_size) / step) + 1
+        
+        """
+        patch_size = 64
+        step = 16
+        signal = np.arange(127)
+
+        patches = lib.extract_patches(
+            signal, 
+            patch_size=patch_size,
+            step=step,
+            allow_padding=True
+        )
+
+        n_patches = np.ceil((len(signal) - patch_size) / step) + 1
+        assert patches.shape == (n_patches, patch_size)
+
+        len_pad = patch_size - (len(signal) - patch_size) % step
+        assert np.all(patches[-1,-len_pad:]==0)  # Only valid for this example.
 
     def test_l2_normalization_without_coefs(self, basic_1d_signal):
         """Test L2 normalization without returning coefficients."""
