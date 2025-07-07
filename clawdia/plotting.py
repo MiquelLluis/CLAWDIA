@@ -200,7 +200,8 @@ def plot_spec_of(strain, figsize=(10,5), sf=4096, window='hann', vmin=None, vmax
 
 def plot_spectrogram_with_instantaneous_features(
         strain_array, time_array, sampling_rate=2**14, outseg=None, outfreq=None,
-        window=sp.signal.windows.tukey(128,0.5), hop=32, mfft=None, vmin=-22, ax=None):
+        window=sp.signal.windows.tukey(128,0.5), hop=32, mfft=None, vmin=-22,
+        if_line_width=2, ax=None):
     """Plot the spectrogram, instantaneous frequency, and strain's waveform.
 
     This function generates a multi-panel plot consisting of:
@@ -268,6 +269,9 @@ def plot_spectrogram_with_instantaneous_features(
     vmin : float, optional
         The minimum value for the color scale in the spectrogram (default
         is -22). This controls the dynamic range of the color map.
+
+    if_line_width : int | float, optional
+        The line width of the instantaneous frequency plot (default is 2).
     
     ax : matplotlib.axes.Axes, optional
         The axes object on which to plot the spectrogram. If `None`, a new
@@ -329,7 +333,7 @@ def plot_spectrogram_with_instantaneous_features(
     mask = instant_freq >= 0  # Remove non-physical frequencies
     instant_freq = instant_freq[mask]
     instant_time = instant_time[mask]
-    ax.plot(instant_time, instant_freq, 'purple', lw=2)
+    ax.plot(instant_time, instant_freq, 'purple', lw=if_line_width)
     
     # COLORBAR (ax2)
     ax_pos = ax.get_position()
