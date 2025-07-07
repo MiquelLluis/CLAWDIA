@@ -201,7 +201,7 @@ def plot_spec_of(strain, figsize=(10,5), sf=4096, window='hann', vmin=None, vmax
 def plot_spectrogram_with_instantaneous_features(
         strain_array, time_array, sampling_rate=2**14, outseg=None, outfreq=None,
         window=sp.signal.windows.tukey(128,0.5), hop=32, mfft=None, vmin=-22,
-        if_line_width=2, ax=None):
+        spec_interpol='lanczos', if_line_width=2, ax=None):
     """Plot the spectrogram, instantaneous frequency, and strain's waveform.
 
     This function generates a multi-panel plot consisting of:
@@ -270,6 +270,10 @@ def plot_spectrogram_with_instantaneous_features(
         The minimum value for the color scale in the spectrogram (default
         is -22). This controls the dynamic range of the color map.
 
+    spec_interpol : str, optional
+        Interpolation used for visual representation (default 'Lanczos').
+        See `matplotlib.pyplot.imshow` for other options.
+
     if_line_width : int | float, optional
         The line width of the instantaneous frequency plot (default is 2).
     
@@ -322,7 +326,7 @@ def plot_spectrogram_with_instantaneous_features(
 
     # SPECTROGRAM (ax1)
     ax.imshow(normalized_Sxx, cmap='inferno', origin='lower', aspect='auto',
-              extent=(t0,t1,f0,f1), interpolation='lanczos', vmin=vmin)
+              extent=(t0,t1,f0,f1), interpolation=spec_interpol, vmin=vmin)
     # ...and Instant Frequency
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", RuntimeWarning)
