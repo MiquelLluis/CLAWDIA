@@ -201,7 +201,7 @@ def plot_spec_of(strain, figsize=(10,5), sf=4096, window='hann', vmin=None, vmax
 def plot_spectrogram_with_instantaneous_features(
         strain_array, time_array, sampling_rate=2**14, outseg=None, outfreq=None,
         window=sp.signal.windows.tukey(128,0.5), hop=32, mfft=None, vmin=-22,
-        spec_interpol='lanczos', if_line_width=2, ax=None):
+        spec_interpol='lanczos', if_line_width=2):
     """Plot the spectrogram, instantaneous frequency, and strain's waveform.
 
     This function generates a multi-panel plot consisting of:
@@ -277,10 +277,6 @@ def plot_spectrogram_with_instantaneous_features(
     if_line_width : int | float, optional
         The line width of the instantaneous frequency plot (default is 2).
     
-    ax : matplotlib.axes.Axes, optional
-        The axes object on which to plot the spectrogram. If `None`, a new
-        figure and axes are created.
-    
     Returns
     -------
     fig : matplotlib.figure.Figure
@@ -319,13 +315,24 @@ def plot_spectrogram_with_instantaneous_features(
     t0 += t_origin
     t1 += t_origin
 
-    if ax is None:
-        fig, ax = plt.subplots()
-    else:
-        fig = ax.get_figure()
+    # Create a figure with adequate height
+    fig = plt.figure(figsize=(10, 6))
+
+    # Define a grid with 5 rows: top waveform (1), gap (1), spectrogram (3)
+    gs = mpl.gridspec.GridSpec(
+        nrows=4, ncols=2,
+        width_ratios=[60, 1],  # Main plot vs narrow colorbar
+        height_ratios=[1, 0.05, 6, 0.05],  # Top waveform, small gap, spectrogram
+        hspace=0.05, wspace=0.02
+    )
+
+    # Axes
+    ax3 = fig.add_subplot(gs[0, 0])  # Top waveform
+    ax = fig.add_subplot(gs[2, 0], sharex=ax3)  # Spectrogram
+    ax2 = fig.add_subplot(gs[2, 1])  # Colorbar
 
     # SPECTROGRAM (ax1)
-    ax.imshow(normalized_Sxx, cmap='inferno', origin='lower', aspect='auto',
+    im = ax.imshow(normalized_Sxx, cmap='inferno', origin='lower', aspect='auto',
               extent=(t0,t1,f0,f1), interpolation=spec_interpol, vmin=vmin)
     # ...and Instant Frequency
     with warnings.catch_warnings():
@@ -340,12 +347,7 @@ def plot_spectrogram_with_instantaneous_features(
     ax.plot(instant_time, instant_freq, 'purple', lw=if_line_width)
     
     # COLORBAR (ax2)
-    ax_pos = ax.get_position()
-    ax2_width = 0.015  # Set the width of the colorbar axis
-    ax2_pad = 0.01    # Set the padding between the spectrogram and colorbar
-    ax2_x = ax_pos.x1 + ax2_pad
-    ax2 = fig.add_axes([ax2_x, ax_pos.y0, ax2_width, ax_pos.height])
-    cbar = fig.colorbar(ax.images[-1], cax=ax2)
+    cbar = fig.colorbar(im, cax=ax2)
     
     # LABELS, LIMITS, ETC
     ax.grid(True, ls='--', alpha=.4)
@@ -374,30 +376,12 @@ def plot_spectrogram_with_instantaneous_features(
     ax.set_facecolor('black')
 
     # GW IN TIME-DOMAIN ON TOP OF THE SPECTROGRAM (ax3)
-    ax3 = fig.add_axes([ax_pos.x0, ax_pos.y0+ax_pos.height+0.03, ax_pos.width, ax_pos.height*0.2])
     ax3.plot(time_array, strain_array, c='black', lw=1, alpha=1)
     ax3.set_xlim(ax.get_xlim())
     ax3.set_ylim(np.min(strain_array), np.max(strain_array))
     ax3.axis('off')
 
-    # # DEBUG AXES AREA [
-    # from matplotlib import patches
-    # ax3_pos = ax3.get_position()
-    # ax2_pos = ax2.get_position()
-    # # Create a rectangle for the main axis (ax)
-    # ax_rect = patches.Rectangle((ax_pos.x0, ax_pos.y0), ax_pos.width, ax_pos.height,
-    #                             linewidth=3, edgecolor='r', facecolor='none', label='ax')
-    # # Create a rectangle for the colorbar axis (ax2)
-    # ax2_rect = patches.Rectangle((ax2_pos.x0, ax2_pos.y0), ax2_pos.width, ax2_pos.height,
-    #                             linewidth=3, edgecolor='b', facecolor='none', label='ax2')
-    # # Create a rectangle for the time-domain axis (ax3)
-    # ax3_rect = patches.Rectangle((ax3_pos.x0, ax3_pos.y0), ax3_pos.width, ax3_pos.height,
-    #                             linewidth=3, edgecolor='g', facecolor='none', label='ax3')
-    # # Add the rectangles to the figure
-    # fig.add_artist(ax_rect)
-    # fig.add_artist(ax2_rect)
-    # fig.add_artist(ax3_rect)
-    # # ]
+    fig.subplots_adjust(left=0.08, right=0.91, top=0.96, bottom=0.08)
     
     return fig, [ax, ax2, ax3], Sxx
 
