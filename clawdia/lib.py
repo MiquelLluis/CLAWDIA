@@ -231,6 +231,10 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
     """
     if signals.ndim > 2:
         raise ValueError("'signals' must be 2d-array at most")
+    if limits.shape[1] != 2:
+        raise ValueError(
+            f"'limits' has a wrong shape: {limits.shape}"
+        )
     if (limits is not None) and patch_min > np.min(np.diff(limits, axis=1)):
         raise ValueError(
             "there is at least one signal according to its 'limits' shorter"

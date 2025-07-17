@@ -157,7 +157,7 @@ def plot_dictionary(array, c=None, ylim=None, **plot_kw):
     Parameters
     ----------
     array : 2d-array
-        Dictionary matrix in Fortran order with shape (a, l).
+        Dictionary matrix with shape (a, l).
     
     c : int, optional
         Number of atoms at each side of the squared matrix of plots; the total
