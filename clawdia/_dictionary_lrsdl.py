@@ -1,11 +1,11 @@
-from dictol.LRSDL import LRSDL
+import dictol.LRSDL
 import numpy as np
 from time import time
 
 from . import lib
 
 
-class DictionaryLRSDL(LRSDL):
+class DictionaryLRSDL(dictol.LRSDL.LRSDL):
     """Interface for the Low-Rank Shared Dictionary Learning class.
 
     Attributes
@@ -338,6 +338,25 @@ class DictionaryLRSDL(LRSDL):
         
         self.t_train = tac - tic
 
+    def _predict(self, Y, loss_mat=False):
+        """Adapted from DICTOL's LRSDL.predict method."""
+        N = Y.shape[1]
+        E = np.zeros((self.num_classes, N))
+        for c in range(self.num_classes):
+            # Dc in D only
+            Dc_ = dictol.utils.get_block_col(self.D, c, self.D_range)
+            # Dc in D and D0
+            Dc = np.hstack((Dc_, self.D0)) if self.k0 > 0 else Dc_
+            lasso = dictol.optimize.Lasso(Dc, lambd=self.lambd)
+            lasso.fit(Y)
+            Xc = lasso.solve()
+            residual_matrix = Y - np.dot(Dc, Xc)
+            E[c, :] = (0.5 * np.sum(residual_matrix*residual_matrix, axis=0)
+                       + self.lambd * np.sum(np.abs(Xc), axis=0))
+        pred = np.argmin(E, axis=0) + 1
+        
+        return (pred, E) if loss_mat else pred
+
     def predict(self, X, *, threshold=0, offset=0, with_losses=False):
         """Predict the class of each window in X.
 
@@ -380,7 +399,7 @@ class DictionaryLRSDL(LRSDL):
             X_cut /= np.linalg.norm(X_cut, axis=1, keepdims=True)
 
         # E: losses of all strains, shape: (class, strain)
-        y_pred, E = super().predict(X_cut.T, loss_mat=True)
+        y_pred, E = self._predict(X_cut.T, loss_mat=True)
 
         losses = np.min(E, axis=0)
         
