@@ -769,7 +769,6 @@ class DictionarySpams:
     
     def reset(self):
         """Reset the dictionary to its initial (untrained) state."""
-
         self.components = self.dict_init
         self.trained = False
         self.n_train = None

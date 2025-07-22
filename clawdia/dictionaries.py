@@ -65,5 +65,4 @@ def load(file):
 
 def save(file, dico):
     """Same as using the dictionary's save method."""
-
     dico.save(file)

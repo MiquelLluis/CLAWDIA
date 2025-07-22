@@ -7,7 +7,6 @@ from clawdia import lib
 
 class TestExtractPatches:
     """Test class for the `extract_patches` function."""
-
     # Fixtures for common test signals
     @pytest.fixture(scope="class")
     def basic_2d_signal(self):

@@ -178,13 +178,11 @@ def overlap(x, y, psd, at, window=('tukey', 0.5)):
 
 def ioverlap(x, y, psd, at, window=('tukey', 0.5)):
     """Compute `1 - Overlap()`."""
-
     return 1 - overlap(x, y, psd, at, window=window)
 
 
 def snr(strain, *, psd, at, window=('tukey',0.5)):
     """Signal to Noise Ratio."""
-
     # rFFT
     strain = np.asarray(strain)
     ns = len(strain)
