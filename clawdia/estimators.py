@@ -103,7 +103,7 @@ def softmax(x, axis=None):
     return coefs / coefs.sum(axis=axis, keepdims=True)
 
 
-def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
+def inner_product_weighted(x, y, *, at, psd=None, w_array='hann'):
     """Compute the weighted inner product (x|y) between two signals.
     
     Parameters
@@ -127,20 +127,19 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
     ns = len(x)
     if ns != len(y):
         raise ValueError("both 'x' and 'y' must be of the same length")
-    window = sp.signal.windows.get_window(window, ns)
+    w_array = sp.signal.windows.get_window(w_array, ns)
     
     # rFFT
-    hx = np.fft.rfft(x * window)
-    hy = np.fft.rfft(y * window)
+    hx = np.fft.rfft(x * w_array)
+    hy = np.fft.rfft(y * w_array)
     ff = np.fft.rfftfreq(ns, d=at)
 
     if psd is not None:
         # Lowest and highest frequency cut-off taken from the given psd
         f_min, f_max = psd[0][[0,-1]]
-        i_min = np.argmax(ff >= f_min)
-        i_max = np.argmax(ff <= f_max)
-        if i_max == 0:
-            i_max = len(ff)
+        i_min = np.searchsorted(ff, f_min, side='left')
+        i_max = np.searchsorted(ff, f_max, side='left')
+        
         hx = hx[i_min:i_max]
         hy = hy[i_min:i_max]
         ff = ff[i_min:i_max]
@@ -181,7 +180,7 @@ def overlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     """
     x = np.asarray(x)
     y = np.asarray(y)
-    inner = lambda a, b: inner_product_weighted(a, b, at=at, psd=psd, window=window)
+    inner = lambda a, b: inner_product_weighted(a, b, at=at, psd=psd, w_array=window)
 
     with np.errstate(divide='ignore', invalid='ignore'):
         overlap = inner(x, y) / np.sqrt(inner(x, x) * inner(y, y))
