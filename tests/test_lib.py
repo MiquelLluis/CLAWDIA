@@ -61,6 +61,54 @@ class TestExtractPatches:
         expected = [[0, 1, 2], [1, 2, 3], [2, 3, 4]]
         assert np.array_equal(patches, expected)
 
+    def test_extract_patches_inexact_fit_no_padding(self):
+        """
+        Test signal split when the combination of patch length and step
+        don't match the exact size of the input signal, and no padding is
+        allowed.
+
+        A fraction of the end of the signal will be lost, and the number of
+        patches extracted will be:
+
+        .. code-block:: python
+
+            N_patches = int((len(signal) - patch_size) / step) + 1
+        
+        """
+        signal = np.arange(127)
+        patches = lib.extract_patches(
+            signal, 
+            patch_size=64,
+            step=16
+        )
+        assert patches.shape == (4, 64)
+        assert patches[-1,-1] != signal[-1]  # Only valid for this example.
+
+    def test_extract_patches_inexact_fit_with_padding(self):
+        """
+        Test signal split when the combination of patch length and step
+        don't match the exact size of the input signal.
+
+        No signal should be lost, zero-padding is used for the full
+        coverage of the input signal.
+        
+        """
+        patch_size = 64
+        step = 16
+        signal = np.arange(127)
+
+        patches = lib.extract_patches(
+            signal, 
+            patch_size=patch_size,
+            step=step
+        )
+
+        n_patches = int(np.ceil((len(signal) - patch_size) / step) + 1)
+        assert patches.shape == (n_patches, patch_size)
+
+        len_pad = patch_size - (len(signal) - patch_size) % step
+        assert np.all(patches[-1,-len_pad:]==0)  # Only valid for this example.
+
     # Test random extraction
     def test_random_extraction_reproducible(self, basic_1d_signal):
         """Test random extraction with fixed random_state is reproducible."""
@@ -69,6 +117,22 @@ class TestExtractPatches:
         patches1 = lib.extract_patches(basic_1d_signal, patch_size=patch_size, n_patches=n_patches, random_state=42)
         patches2 = lib.extract_patches(basic_1d_signal, patch_size=patch_size, n_patches=n_patches, random_state=42)
         assert np.array_equal(patches1, patches2)
+
+    def test_error_random_patches_all_zeros(self):
+        n_signals = 10
+        l_signals = 128
+        patch_size = 64
+        n_patches = 5
+        signals = np.zeros((n_signals, l_signals), dtype=float)
+
+        with pytest.raises(ValueError, match=r"'allow_allzeros' is False, but 'signals' contains only zeros"):
+            lib.extract_patches(
+                signals,
+                patch_size=patch_size,
+                n_patches=n_patches,
+                random_state=1989,
+                allow_allzeros=False  # NEEDED to throw the error!
+            )
 
     # Test step parameter
     def test_step_parameter(self, basic_1d_signal):
@@ -162,60 +226,6 @@ class TestExtractPatches:
         # Valid patches must have ≥3 elements within 2-5:
         expected = np.array([[1, 2, 3, 4], [2, 3, 4, 5]])
         np.testing.assert_array_equal(patches, expected)
-
-    def test_extract_patches_inexact_fit_no_padding(self):
-        """
-        Test signal split when the combination of patch length and step
-        don't match the exact size of the input signal, and no padding is
-        allowed.
-
-        A fraction of the end of the signal will be lost, and the number of
-        patches extracted will be:
-
-        .. code-block:: python
-
-            N_patches = int((len(signal) - patch_size) / step) + 1
-        
-        """
-        signal = np.arange(127)
-        patches = lib.extract_patches(
-            signal, 
-            patch_size=64,
-            step=16
-        )
-        assert patches.shape == (4, 64)
-        assert patches[-1,-1] != signal[-1]  # Only valid for this example.
-
-    def test_extract_patches_inexact_fit_with_padding(self):
-        """
-        Test signal split when the combination of patch length and step
-        don't match the exact size of the input signal, but padding is allowed.
-
-        No signal is lost, extra samples (zero-pad) are added for the full
-        coverage of the input signal, and the number of patches extracted
-        will be:
-
-        .. code-block:: python
-
-            N_patches = np.ceil((len(signal) - patch_size) / step) + 1
-        
-        """
-        patch_size = 64
-        step = 16
-        signal = np.arange(127)
-
-        patches = lib.extract_patches(
-            signal, 
-            patch_size=patch_size,
-            step=step,
-            allow_padding=True
-        )
-
-        n_patches = np.ceil((len(signal) - patch_size) / step) + 1
-        assert patches.shape == (n_patches, patch_size)
-
-        len_pad = patch_size - (len(signal) - patch_size) % step
-        assert np.all(patches[-1,-len_pad:]==0)  # Only valid for this example.
 
     def test_l2_normalization_without_coefs(self, basic_1d_signal):
         """Test L2 normalization without returning coefficients."""
