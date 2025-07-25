@@ -103,7 +103,7 @@ def softmax(x, axis=None):
     return coefs / coefs.sum(axis=axis, keepdims=True)
 
 
-def inner_product_weighted(x, y, *, at, psd=None, w_array='hann'):
+def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
     """Compute the weighted inner product (x|y) between two signals.
     
     Parameters
@@ -132,7 +132,7 @@ def inner_product_weighted(x, y, *, at, psd=None, w_array='hann'):
     if not np.isrealobj(y):
         raise ValueError(f"'y' cannot be complex")
     
-    w_array = sp.signal.windows.get_window(w_array, ns)
+    w_array = sp.signal.windows.get_window(window, ns)
     
     # rFFT
     hx = np.fft.rfft(x * w_array)
@@ -185,7 +185,7 @@ def overlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     """
     x = np.asarray(x)
     y = np.asarray(y)
-    inner = lambda a, b: inner_product_weighted(a, b, at=at, psd=psd, w_array=window)
+    inner = lambda a, b: inner_product_weighted(a, b, at=at, psd=psd, window=window)
 
     with np.errstate(divide='ignore', invalid='ignore'):
         overlap = inner(x, y) / np.sqrt(inner(x, x) * inner(y, y))
@@ -194,9 +194,9 @@ def overlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     return overlap
 
 
-def ioverlap(x, y, psd, at, window=('tukey', 0.5)):
+def ioverlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     """Compute `1 - Overlap()`."""
-    return 1 - overlap(x, y, psd, at, window=window)
+    return 1 - overlap(x, y, at=at, psd=psd, window=window)
 
 
 def snr(strain, *, psd, at, window=('tukey',0.5)):
