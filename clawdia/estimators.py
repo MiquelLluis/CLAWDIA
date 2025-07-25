@@ -103,20 +103,25 @@ def softmax(x, axis=None):
     return coefs / coefs.sum(axis=axis, keepdims=True)
 
 
-def _weighted_inner(x, y, psd, at, window):
-    """Compute the (x|y) between two signals as described in Ref.
+def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
+    """Compute the weighted inner product (x|y) between two signals.
     
-    Note: The coefficients are ommited since they cancel themselve in the overlap computation.
-    
-    x, y: array
+    Parameters
+    ----------
+    x, y: ndarray
         Signals to compare.
+
+    at: float
+        Sample time step.
     
-    psd: 2d-array
+    psd: 2d-array, optional
         PSD to weight the overlap, will be linearly interpolated to the right frequencies.
         psd[0] = frequencies
         psd[1] = psd samples
     
-    Ref: Eq. 12, DOI: 10.48550/arxiv.2210.06194
+    References
+    ----------
+    [1]: Eq. 12, DOI: 10.48550/arxiv.2210.06194
     
     """    
     ns = len(x)
@@ -129,48 +134,57 @@ def _weighted_inner(x, y, psd, at, window):
     hy = np.fft.rfft(y * window)
     ff = np.fft.rfftfreq(ns, d=at)
 
-    # Lowest and highest frequency cut-off taken from the given psd
-    f_min, f_max = psd[0][[0,-1]]
-    i_min = np.argmax(ff >= f_min)
-    i_max = np.argmax(ff <= f_max)
-    if i_max == 0:
-        i_max = len(ff)
-    hx = hx[i_min:i_max]
-    hy = hy[i_min:i_max]
-    ff = ff[i_min:i_max]
+    if psd is not None:
+        # Lowest and highest frequency cut-off taken from the given psd
+        f_min, f_max = psd[0][[0,-1]]
+        i_min = np.argmax(ff >= f_min)
+        i_max = np.argmax(ff <= f_max)
+        if i_max == 0:
+            i_max = len(ff)
+        hx = hx[i_min:i_max]
+        hy = hy[i_min:i_max]
+        ff = ff[i_min:i_max]
+    
     af = ff[1]
     
     # Compute (x|y)
-    psd_interp = sp.interpolate.interp1d(*psd, bounds_error=True)(ff)
-    xy = np.sum((hx*hy.conj() + hx.conj()*hy) / psd_interp).real
+    if psd is None:
+        inner = 2 * np.sum((hx*hy.conj() + hx.conj()*hy)).real * af
+    else:
+        psd_interp = sp.interpolate.interp1d(*psd, bounds_error=True)(ff)
+        inner = 2 * np.sum((hx*hy.conj() + hx.conj()*hy) / psd_interp).real * af
     
-    return xy
+    return inner
 
 
-def overlap(x, y, psd, at, window=('tukey', 0.5)):
+def overlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     """Compute the Overlap between two signals:
-        Ov = (x|y) / sqrt((x|x) · (y|y))
+        O = (x|y) / sqrt((x|x) · (y|y))
 
     x, y: array
         Signals to compare.
 
-    psd: 2d-array
-        PSD to weight the overlap, will be linearly interpolated to the right frequencies.
-        psd[0] = frequencies
-        psd[1] = psd samples
-
     at: float
-        Time step, inverse of sampling rate of 'x' and 'y'.
+        Sample time step.
+
+    psd: 2d-array, optional
+        PSD to weight the overlap, will be linearly interpolated to the right
+        frequencies.
+
+            psd[0] = frequencies
+            psd[1] = psd samples
     
-    Ref: Badger C. et al., 2022 (10.48550/arxiv.2210.06194)
+    References
+    ----------
+    [1]: Badger C. et al., 2022 (10.48550/arxiv.2210.06194)
     
     """
     x = np.asarray(x)
     y = np.asarray(y)
-    wei = lambda a, b: _weighted_inner(a, b, psd, at, window)
+    inner = lambda a, b: inner_product_weighted(a, b, at=at, psd=psd, window=window)
 
     with np.errstate(divide='ignore', invalid='ignore'):
-        overlap = wei(x, y) / np.sqrt(wei(x, x) * wei(y, y))
+        overlap = inner(x, y) / np.sqrt(inner(x, x) * inner(y, y))
         np.nan_to_num(overlap, copy=False)
 
     return overlap
