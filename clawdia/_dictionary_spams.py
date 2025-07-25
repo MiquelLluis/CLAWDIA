@@ -458,7 +458,7 @@ class DictionarySpams:
 
         return out
 
-    def reconstruct_auto(self, signal, *, zero_marg, lambda_lims, step=1, normed=True,
+    def reconstruct_margin_constrained(self, signal, *, zero_marg, lambda_lims, step=1, normed=True,
                          full_output=False, kwargs_bisect={}, kwargs_lasso={}):
         """TODO
 
@@ -611,7 +611,7 @@ class DictionarySpams:
         return (final_reconstructions, residuals, iters) if full_output else final_reconstructions
 
 
-    def optimum_reconstruct(self, strain, *, reference, kwargs_minimize, kwargs_lasso,
+    def reconstruct_optimum_lambda(self, strain, *, reference, kwargs_minimize, kwargs_lasso,
                             step=1, limits=None, normed=True, verbose=False):
         """Find the best reconstruction of a signal w.r.t. a reference.
 
