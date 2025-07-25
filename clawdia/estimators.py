@@ -127,6 +127,11 @@ def inner_product_weighted(x, y, *, at, psd=None, w_array='hann'):
     ns = len(x)
     if ns != len(y):
         raise ValueError("both 'x' and 'y' must be of the same length")
+    if not np.isrealobj(x):
+        raise ValueError(f"'x' cannot be complex")
+    if not np.isrealobj(y):
+        raise ValueError(f"'y' cannot be complex")
+    
     w_array = sp.signal.windows.get_window(w_array, ns)
     
     # rFFT
@@ -148,10 +153,10 @@ def inner_product_weighted(x, y, *, at, psd=None, w_array='hann'):
     
     # Compute (x|y)
     if psd is None:
-        inner = 2 * np.sum((hx*hy.conj() + hx.conj()*hy)).real * af
+        inner = 4 * af * np.sum(hx * hy.conj()).real
     else:
         psd_interp = sp.interpolate.interp1d(*psd, bounds_error=True)(ff)
-        inner = 2 * np.sum((hx*hy.conj() + hx.conj()*hy) / psd_interp).real * af
+        inner = 4 * af * np.sum((hx * hy.conj()) / psd_interp).real
     
     return inner
 
