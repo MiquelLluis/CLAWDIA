@@ -165,6 +165,14 @@ def overlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     """Compute the Overlap between two signals:
         O = (x|y) / sqrt((x|x) · (y|y))
 
+    Reference values:
+
+         1 → Perfect correlation.
+         0 → No correlation.
+        -1 → Perfect anticorrelation.
+
+    Parameters
+    ----------
     x, y: array
         Signals to compare.
 
@@ -181,7 +189,6 @@ def overlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     References
     ----------
     [1]: Badger C. et al., 2022 (10.48550/arxiv.2210.06194)
-    
     """
     x = np.asarray(x)
     y = np.asarray(y)
@@ -195,7 +202,26 @@ def overlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
 
 
 def ioverlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
-    """Compute `1 - Overlap()`."""
+    """Compute `1 - Overlap()`.
+    
+    Inverts the range of reference values, useful to use the overlap as a
+    loss function.
+
+    Parameters
+    ----------
+    x, y: array
+        Signals to compare.
+
+    at: float
+        Sample time step.
+
+    psd: 2d-array, optional
+        PSD to weight the overlap, will be linearly interpolated to the right
+        frequencies.
+
+            psd[0] = frequencies
+            psd[1] = psd samples
+    """
     return 1 - overlap(x, y, at=at, psd=psd, window=window)
 
 
