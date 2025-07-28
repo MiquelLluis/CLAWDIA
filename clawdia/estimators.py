@@ -31,10 +31,11 @@ def ssim(x, y):
     similarity between two signals or images, accounting for luminance,
     contrast, and structure [1]_, [2]_.
 
-    The SSIM value ranges from -1 to 1:
-        -  1: Perfect similarity.
-        -  0: No similarity.
-        - -1: Perfect anti-correlation.
+    Reference values:
+
+         1 → Perfect similarity.
+         0 → No similarity.
+        -1 → Perfect anti-correlation.
 
     Parameters
     ----------
@@ -45,7 +46,7 @@ def ssim(x, y):
 
     Returns
     -------
-    ssim : float
+    res : float
         The Structural Similarity Index Measure between the signals `x` and `y`.
 
     References
@@ -75,7 +76,14 @@ def ssim(x, y):
 
 
 def dssim(x, y):
-    """Structural Dissimilarity."""
+    """Structural Dissimilarity.
+    
+    Reference values:
+
+        0 → Perfect correlation.
+        ½ → No correlation.
+        1 → Perfect anticorrelation.
+    """
     return (1 - ssim(x, y)) / 2
 
 
@@ -205,11 +213,16 @@ def overlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     return float(overlap)
 
 
-def ioverlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
-    """Compute `1 - Overlap()`.
+def doverlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
+    """Compute the Overlap pseudo-distance.
     
-    Inverts the range of reference values, useful to use the overlap as a
-    loss function.
+    Useful to use the overlap as loss function.
+
+    Reference values:
+
+        0 → Perfect correlation.
+        ½ → No correlation.
+        1 → Perfect anticorrelation.
 
     Parameters
     ----------
@@ -226,7 +239,7 @@ def ioverlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
             psd[0] = frequencies
             psd[1] = psd samples
     """
-    return 1 - overlap(x, y, at=at, psd=psd, window=window)
+    return (1 - overlap(x, y, at=at, psd=psd, window=window)) / 2
 
 
 def snr(strain, *, psd, at, window=('tukey',0.5)):
