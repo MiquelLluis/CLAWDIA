@@ -15,12 +15,12 @@ import scipy as sp
 
 def mse(x, y):
     """Mean Squared Error."""
-    return np.mean((x-y)**2) / len(x)
+    return float(np.mean((x-y)**2) / len(x))
 
 
 def medse(x, y):
     """Median Squared Error."""
-    return np.median((x-y)**2)
+    return float(np.median((x-y)**2))
 
 
 def ssim(x, y):
@@ -66,8 +66,12 @@ def ssim(x, y):
     c1 = (0.01*l_) ** 2
     c2 = (0.03*l_) ** 2
 
-    return ((2*mux*muy+c1) * (2*sxy+c2)
-            / ((mux**2+muy**2+c1) * (sx2+sy2+c2)))
+    res = float(
+        (2 * mux * muy + c1) * (2 * sxy + c2)
+        / ((mux**2 + muy**2 + c1) * (sx2 + sy2 + c2))
+    )
+    
+    return res
 
 
 def dssim(x, y):
