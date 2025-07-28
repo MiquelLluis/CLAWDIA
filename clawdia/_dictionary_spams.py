@@ -645,9 +645,14 @@ class DictionarySpams:
             Indices of limits to where compute the loss between the
             reconstruction and the reference strain.
 
-        loss_func: str, optional
-            Can be 'ssim' (default) or 'overlap'. Refer to their documentation
-            in 'clawdia.estimators' for more details.
+        loss_func: str | callable, optional
+            If 'str', can be 'ssim' (default) or 'overlap'. In both cases,
+            their pseudo-distance is used. Refer to their documentation in
+            'clawdia.estimators' for more details.
+            If 'callable', it must be a symmetric function of 2 arguments,
+            over whose the 'reference' signal and the denoised signal will be
+            passed. It must return a distance-like score between 0 (best) and
+            1 (worst) to guide the minimisation algorithm.
 
         normed: bool, optional
             If True, returns the signal normed to its maximum absolute amplitude.
@@ -664,8 +669,8 @@ class DictionarySpams:
             Optimum value for lambda.
 
         loss: float
-            iOverlap (1 - Overlap) or ISSIM (1 - SSIM) between the optimized
-            reconstruction and the reference.
+            dOverlap `(1 - Overlap)/2` or DSSIM `(1 - SSIM)/2` between the
+            optimized reconstruction and the reference.
 
         """
         aa = 10
@@ -681,9 +686,11 @@ class DictionarySpams:
 
         # Set the loss function:
         if loss_func == 'ssim':
-            lossf = lambda x: estimators.issim(x[sl], reference_)
+            lossf = lambda x: estimators.dssim(x[sl], reference_)
         elif loss_func == 'overlap':
-            lossf = lambda x: estimators.ioverlap(x[sl], reference_, at=1, window=('tukey', 0.2))  # `at` cancels out.
+            lossf = lambda x: estimators.doverlap(x[sl], reference_, at=1, window=('tukey', 0.2))  # `at` cancels out.
+        elif callable(loss_func):
+            lossf = lambda x: loss_func(x[sl], reference_)
         else:
             raise ValueError(f"loss function '{loss_func}' not implemented")
 
