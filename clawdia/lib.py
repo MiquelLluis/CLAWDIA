@@ -304,12 +304,30 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
 
     # Extract all possible patches.
     if n_patches == max_patches:
-        k = 0
-        for i in range(n_signals):
-            p0, p1 = window_limits[i]
-            for j in range(p0, p1, step):
-                patches[k] = signals[i, j:j+patch_size]
-                k += 1
+        if allow_allzeros:
+            k = 0
+            for i in range(n_signals):
+                p0, p1 = window_limits[i]
+                for j in range(p0, p1, step):
+                    patches[k] = signals[i, j:j+patch_size]
+                    k += 1
+        else:
+            # Discard all-zero patches; shrink output accordingly.
+            collected = []
+            for i in range(n_signals):
+                p0, p1 = window_limits[i]
+                for j in range(p0, p1, step):
+                    patch = signals[i, j:j+patch_size]
+                    if patch.any():
+                        collected.append(patch)
+            if collected:
+                patches = np.vstack(collected).astype(signals.dtype, copy=False)
+            else:
+                raise ValueError(
+                    "no non-zero patches could be extracted with the given "
+                    "signals, limits and parameters (all patches are all-zero)"
+                )
+            n_patches = patches.shape[0]
     
     # Extract a limited number of patches randomly selected.
     else:
