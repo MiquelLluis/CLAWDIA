@@ -13,6 +13,7 @@ semantically appropriate modules.
 import warnings
 
 import numpy as np
+from numpy.typing import NDArray
 
 
 # Default values same as Scipy's `optimize._zeros_py.py` module.
@@ -174,9 +175,11 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     return solver_stats
 
 
-def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
-                    step=1, limits=None, patch_min=1, l2_normed=False,
-                    return_norm_coefs=False, allow_allzeros=True):
+def extract_patches(
+    signals, *, patch_size, n_patches=None, random_state=None,
+    step=1, limits=None, patch_min=1, l2_normed=False,
+    return_norm_coefs=False, allow_allzeros=True
+) -> tuple[NDArray, NDArray] | NDArray:
     """Extract patches from 'signals'.
 
     TODO
