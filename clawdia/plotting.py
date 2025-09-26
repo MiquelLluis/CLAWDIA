@@ -14,7 +14,8 @@ import itertools as it
 import warnings
 
 import matplotlib as mpl
-from matplotlib import pyplot as plt
+from matplotlib.gridspec import GridSpec
+import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
 
@@ -199,7 +200,7 @@ def plot_spec_of(strain, figsize=(10,5), sf=4096, window='hann', vmin=None, vmax
 
 
 def plot_spectrogram_with_instantaneous_features(
-        strain_array, time_array, sampling_rate=2**14, outseg=None, outfreq=None,
+        strain_array, time_array, fs=2**14, outseg=None, outfreq=None,
         window=sp.signal.windows.tukey(128,0.5), hop=32, mfft=None, vmin=-22,
         spec_interpol='lanczos', if_line_width=2):
     """Plot the spectrogram, instantaneous frequency, and strain's waveform.
@@ -243,8 +244,8 @@ def plot_spectrogram_with_instantaneous_features(
     time_array : numpy.ndarray
         Array of time stamps corresponding to the strain data.
     
-    sampling_rate : int, optional
-        The sampling rate of the data in Hz (default is 2^14, or 16384 Hz).
+    fs : int, optional
+        The sampling frequency of the data in Hz (default is 2^14, or 16384 Hz).
     
     outseg : tuple, optional
         A tuple specifying the time range (start, end) in seconds for the
@@ -303,7 +304,7 @@ def plot_spectrogram_with_instantaneous_features(
 
     # Compute the spectrogram using the ShortTimeFFT class.
     stfft_model = sp.signal.ShortTimeFFT(
-        win=window, hop=hop, fs=sampling_rate, mfft=mfft,
+        win=window, hop=hop, fs=fs, mfft=mfft,
         fft_mode='onesided', scale_to='psd'
     )
     Sxx = stfft_model.spectrogram(strain_array)
@@ -319,7 +320,7 @@ def plot_spectrogram_with_instantaneous_features(
     fig = plt.figure(figsize=(10, 6))
 
     # Define a grid with 5 rows: top waveform (1), gap (1), spectrogram (3)
-    gs = mpl.gridspec.GridSpec(
+    gs = GridSpec(
         nrows=4, ncols=2,
         width_ratios=[60, 1],  # Main plot vs narrow colorbar
         height_ratios=[1, 0.05, 6, 0.05],  # Top waveform, small gap, spectrogram
@@ -337,9 +338,9 @@ def plot_spectrogram_with_instantaneous_features(
     # ...and Instant Frequency
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", RuntimeWarning)
-        instant_freq = instant_frequency(strain_array, sample_rate=sampling_rate)
+        instant_freq = instant_frequency(strain_array, fs=fs)
     length = len(strain_array)
-    t1_instant = t_origin + (length-1)/sampling_rate
+    t1_instant = t_origin + (length-1)/fs
     instant_time = np.linspace(t_origin, t1_instant, length)
     mask = instant_freq >= 0  # Remove non-physical frequencies
     instant_freq = instant_freq[mask]
@@ -357,15 +358,15 @@ def plot_spectrogram_with_instantaneous_features(
     else:
         ax.set_xlim(*outseg)
     if outfreq is None:
-        ax.set_ylim(0, sampling_rate/2)
+        ax.set_ylim(0, fs/2)
     else:
         ax.set_ylim(*outfreq)
     # ...labels.
     ax.set_xlabel('Time [ms]')
-    ax.set_ylabel('Frequency [kHz]')
+    ax.set_ylabel('Frequency [Hz]')
     cbar.set_label('Normalized energy')
-    # ...Y ticks to kHz
-    ax.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(lambda x, pos: f'{x / 1000:.0f}'))
+    # # ...Y ticks to kHz
+    # ax.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(lambda x, pos: f'{x / 1000:.0f}'))
     # ...X ticks to milliseconds and avoid roundoff errors.
     # ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))  # Set style first, for new ticklabels.
     xticks = ax.get_xticks()
