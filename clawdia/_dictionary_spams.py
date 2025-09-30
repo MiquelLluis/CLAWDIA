@@ -2,6 +2,7 @@ import time
 import warnings
 
 import numpy as np
+from numpy.typing import NDArray
 import scipy.optimize
 import spams
 from tqdm import tqdm
@@ -458,17 +459,36 @@ class DictionarySpams:
 
         return out
 
-    def reconstruct_margin_constrained(self, signal, *, zero_marg, lambda_lims, step=1, normed=True,
-                         full_output=False, kwargs_bisect={}, kwargs_lasso={}):
-        """TODO
+    def reconstruct_margin_constrained(
+        self,
+        signal: NDArray,
+        *,
+        margin: int|tuple|list|NDArray,
+        lambda_lims: tuple|list,
+        step: int = 1,
+        normed=True,
+        full_output=False,
+        kwargs_bisect={},
+        kwargs_lasso={}
+    ) -> tuple[NDArray, NDArray, NDArray] | NDArray:
+        """TODO"""
 
-        Reconstrueix un únic senyal buscant per bisecció la lambda que
-        minimitza el senyal reconstruit al marge esquerre del senyal, la mida
-        dels quals ve determinada per 'zero_marg'.
-
-        """
-        # Margins of the signals to be zeroed
-        margin = signal[:zero_marg]
+        if isinstance(margin, int):
+            margin = signal[:margin]
+        elif isinstance(margin, (tuple, list)):
+            if len(margin) != 2:
+                raise ValueError(
+                    "'margin': when given 'tuple' or 'list', it can contain "
+                    "only 2 integers."
+                )
+            margin = signal[slice(*margin)]
+        elif isinstance(margin, np.ndarray):
+            pass
+        else:
+            raise TypeError(
+                "'margin': expected types 'int', 'tuple' or 'NDArray'; "
+                f"got '{type(margin).__name__}'."
+            )
         # Function to be bisected.
         def fun(sc_lambda):
             rec, _ = self._reconstruct_single(margin, sc_lambda, step, **kwargs_lasso)
