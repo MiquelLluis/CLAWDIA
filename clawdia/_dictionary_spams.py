@@ -631,13 +631,28 @@ class DictionarySpams:
         return (final_reconstructions, residuals, iters) if full_output else final_reconstructions
 
 
-    def reconstruct_optimum_lambda(self, strain, *, reference, kwargs_minimize, kwargs_lasso={},
-                            step=1, limits=None, loss_func='ssim', normed=True, verbose=False):
+    def reconstruct_optimum_lambda(
+        self,
+        strain,
+        *,
+        reference,
+        step=1,
+        limits=None,
+        loss_func='match',
+        normed=True,
+        kwargs_minimize={
+            'method': 'bounded',
+            'bounds': (-2,1),
+            'options': {'maxiter': 100, 'xatol': 0.04}
+        },
+        kwargs_lasso={},
+        verbose=False
+    ):
         """Find the best reconstruction of a signal w.r.t. a reference.
 
         Find the lambda which produces a reconstruction of the
         input 'strain' closest to the given 'reference', according to a chosen
-        loss function: the Overlap match, or SSIM estimator.
+        loss function: Match, Overlap, SSIM, or a custom one.
 
         The minimisation is performed by SciPy's 'minimize_scalar', with
         options specified through `kwargs_minimize`.
@@ -650,12 +665,6 @@ class DictionarySpams:
         reference: ndarray
             Reference strain which to compare the reconstruction to.
 
-        kwargs_minimize: dict
-            Passed to SciPy's `minimize_scalar(**kwargs_minimize)`.
-
-        kwargs_lasso: dict, optional
-            Passed to Python-Spams' `lasso(**kwargs_lasso)`.
-
         step: int, optional
             Separation in samples between each window into which the input
             strain is split up to be reconstructed by the dictionary. Defaults
@@ -666,9 +675,9 @@ class DictionarySpams:
             reconstruction and the reference strain.
 
         loss_func: str | callable, optional
-            If 'str', can be 'ssim' (default) or 'overlap'. In both cases,
-            their pseudo-distance is used. Refer to their documentation in
-            'clawdia.estimators' for more details.
+            If 'str', can be 'match' (default), 'overlap' or 'ssim'. In both
+            cases, their pseudo-distance is used. Refer to their documentation
+            in 'clawdia.estimators' for more details.
             If 'callable', it must be a symmetric function of 2 arguments,
             over whose the 'reference' signal and the denoised signal will be
             passed. It must return a distance-like score between 0 (best) and
@@ -677,8 +686,16 @@ class DictionarySpams:
         normed: bool, optional
             If True, returns the signal normed to its maximum absolute amplitude.
 
+        kwargs_minimize: dict
+            Passed to SciPy's `minimize_scalar(**kwargs_minimize)`.
+            Bracket or boundary values must be passed as `np.log10(bounds)`.
+
+        kwargs_lasso: dict, optional
+            Passed to Python-Spams' `lasso(**kwargs_lasso)`.
+
         verbose: bool, optional
-            Print info about the minimization results. False by default.
+            Set the maximum verbosity (`'disp': 3`) to SciPy's `minimize_scalar`
+            and print info about the minimization results. False by default.
 
         RETURNS
         -------
@@ -693,41 +710,84 @@ class DictionarySpams:
             optimized reconstruction and the reference.
 
         """
-        aa = 10
-        bb = 10  # max(issim) x bb as the minimu value for the auxiliar line function.
-        rec = None
-
-        # Trim reference if limits are specified.
-        if limits is None:
-            sl = slice(None)
-        else:
-            sl = slice(*limits)
+        # Trim strain and reference if limits are specified.
+        sl = slice(None) if limits is None else slice(*limits)
         reference_ = reference[sl]
+        strain_ = strain[sl]
 
         # Set the loss function:
-        if loss_func == 'ssim':
-            lossf = lambda x: estimators.dssim(x[sl], reference_)
+        if loss_func == 'match':
+            lossf = lambda x: estimators.imatch(x, reference_)
+            _worst = 1.0
+            _eps = 1e-2    # start a hair above worst
+        elif loss_func == 'ssim':
+            lossf = lambda x: estimators.dssim(x, reference_)
+            _worst = 0.5
+            _eps = 1e-2    # start a hair above worst
         elif loss_func == 'overlap':
-            lossf = lambda x: estimators.doverlap(x[sl], reference_, at=1, window=('tukey', 0.2))  # `at` cancels out.
+            lossf = lambda x: estimators.doverlap(x, reference_)
+            _worst = 0.5   # dOverlap in [0, ~0.5] in practice; theoretical worst = 1.0 for full anticorrelation
+            _eps = 1e-3    # keep this very close to 0.5
         elif callable(loss_func):
-            lossf = lambda x: loss_func(x[sl], reference_)
+            lossf = lambda x: loss_func(x, reference_)
+            _worst = 1.0   # conservative default
+            _eps = 1e-2
         else:
             raise ValueError(f"loss function '{loss_func}' not implemented")
+        
+        # Extract log10-lambda search bounds if provided; else default to [0.01, 10] => [-2, 1]
+        log_bounds = kwargs_minimize.get('bounds', (np.log10(0.01), np.log10(10.0)))
+        if log_bounds[0] > log_bounds[1]:
+            log_bounds = log_bounds[::-1]
+        log_l_min, log_l_max = float(log_bounds[0]), float(log_bounds[1])
+        if not np.isfinite(log_l_min) or not np.isfinite(log_l_max):
+            # Fall back
+            log_l_min, log_l_max = -2.0, 1.0
+        
+        # Build a gentle positive slope so the penalty increases with
+        # log10(lambda). Make it span a modest delta across the search range;
+        # this keeps it dominant only when rec==0. For dOverlap keep the rise
+        # small; for DSSIM allow a bit more headroom.
+        span = 0.10 if loss_func == 'overlap' else 0.25
+        slope = span / (log_l_max - log_l_min)
+        intercept = _worst + _eps  # start just above the worst value
 
+        def _null_penalty(l_rec_log: float) -> float:
+            # Affine function in log-space: at log_l_min it's ~worst+eps and
+            # then rises linearly
+            return intercept + slope * (l_rec_log - log_l_min)
+
+        rec = None
         def cost_function(l_rec_log):
             """Function to be minimized."""
             nonlocal rec
             l_rec = 10 ** l_rec_log  # Opitimizes lambda in log. space!
-            rec = self.reconstruct(strain, l_rec, step=step, normed=normed, **kwargs_lasso)
+            rec = self.reconstruct(strain_, l_rec, step=step, normed=normed, **kwargs_lasso)
             if rec.any():
-                loss = lossf(rec)
+                return lossf(rec)
+            # If reconstruction is identically zero, steer away from larger lambda:
+            return _null_penalty(l_rec_log)
+
+        if verbose:
+            # Add maximum verbosity to `scipy.optimize.minimize_scalar`, unless
+            # the `disp` option is present.
+            if 'options' in kwargs_minimize:
+                if 'disp' not in kwargs_minimize['options']:
+                    kwargs_minimize['options']['disp'] = 3
             else:
-                loss = aa * l_rec + bb
-            return loss
+                kwargs_minimize['options'] = {'disp': 3}
 
         result = scipy.optimize.minimize_scalar(cost_function, **kwargs_minimize)
         l_opt = 10 ** result['x']
         loss = result['fun']
+
+        # If the section to be optimised was shorter than the whole strain,
+        # we need to reconstruct the whole strain with the found lambda.
+        # Otherwise, we keep the `rec` value directly from the cost function.
+        if limits is not None:
+            if verbose:
+                print("Reconstructing the whole strain with the optimal lambda found.")
+            rec = self.reconstruct(strain, l_opt, step=step, normed=normed, **kwargs_lasso)
 
         if verbose:
             success = result['success']
