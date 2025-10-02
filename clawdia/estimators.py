@@ -173,7 +173,7 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
     return inner
 
 
-def overlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
+def overlap(x, y, *, at=1, psd=None, window=('tukey', 0.5)):
     """Compute the Overlap between two signals:
         O = (x|y) / sqrt((x|x) · (y|y))
 
@@ -189,7 +189,7 @@ def overlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
         Signals to compare.
 
     at: float
-        Sample time step.
+        Sample time step. Leave as `at=1` if signals in whitened space.
 
     psd: 2d-array, optional
         PSD to weight the overlap, will be linearly interpolated to the right
@@ -242,7 +242,7 @@ def doverlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     return (1 - overlap(x, y, at=at, psd=psd, window=window)) / 2
 
 
-def match(x, y, *, at, psd=None, window=('tukey', 0.5), return_lag=False):
+def match(x, y, *, at=1, psd=None, window=('tukey', 0.5), return_lag=False):
     """Time/phase–maximised match between two (whitened) signals.
 
     This computes the PSD-weighted, normalised inner product maximised over
@@ -259,6 +259,8 @@ def match(x, y, *, at, psd=None, window=('tukey', 0.5), return_lag=False):
     psd : 2d-array, optional
         If given, weights the frequency-domain inner product; linearly
         interpolated to FFT frequencies. psd[0]=freqs, psd[1]=PSD samples.
+        If None, the signal is assumed to be whitened, and therefore `at` can
+        be left `at=1` since it cancels out.
     window : str | tuple, optional
         Any scipy.signal window spec; applied equally to x and y.
     return_lag : bool, optional
@@ -348,10 +350,9 @@ def match(x, y, *, at, psd=None, window=('tukey', 0.5), return_lag=False):
     return m
 
 
-def imatch(x, y, *, at, psd=None, window=('tukey', 0.5), return_lag=False):
+def imatch(x, y, *, at=1, psd=None, window=('tukey', 0.5), return_lag=False):
     """Shorthand for `1 - match()`."""
-
-    return match(x, y, at=at, psd=psd, window=window, return_lag=return_lag)
+    return 1 - match(x, y, at=at, psd=psd, window=window, return_lag=return_lag)
 
 
 def snr(strain, *, psd, at, window=('tukey',0.5)):
