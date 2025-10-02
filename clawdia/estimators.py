@@ -208,7 +208,7 @@ def overlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
 
     with np.errstate(divide='ignore', invalid='ignore'):
         overlap = inner(x, y) / np.sqrt(inner(x, x) * inner(y, y))
-        np.nan_to_num(overlap, copy=False)
+        overlap = np.nan_to_num(overlap)
 
     return float(overlap)
 
