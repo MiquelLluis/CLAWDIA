@@ -248,6 +248,8 @@ def match(x, y, *, at, psd=None, window=('tukey', 0.5), return_lag=False):
     This computes the PSD-weighted, normalised inner product maximised over
     a cyclic time shift (lag) and over phase (by taking the absolute value).
 
+    TODO: The values don't seem to match exactly PyCBC's `match` function. Check.
+
     Parameters
     ----------
     x, y : ndarray
