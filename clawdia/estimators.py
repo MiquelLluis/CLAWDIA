@@ -155,7 +155,7 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
         # Lowest and highest frequency cut-off taken from the given psd
         f_min, f_max = psd[0][[0,-1]]
         i_min = np.searchsorted(ff, f_min, side='left')
-        i_max = np.searchsorted(ff, f_max, side='left')
+        i_max = np.searchsorted(ff, f_max, side='right')
         
         hx = hx[i_min:i_max]
         hy = hy[i_min:i_max]
@@ -240,6 +240,116 @@ def doverlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
             psd[1] = psd samples
     """
     return (1 - overlap(x, y, at=at, psd=psd, window=window)) / 2
+
+
+def match(x, y, *, at, psd=None, window=('tukey', 0.5), return_lag=False):
+    """Time/phase–maximised match between two (whitened) signals.
+
+    This computes the PSD-weighted, normalised inner product maximised over
+    a cyclic time shift (lag) and over phase (by taking the absolute value).
+
+    Parameters
+    ----------
+    x, y : ndarray
+        Signals to compare (same length).
+    at : float
+        Sample time step (seconds).
+    psd : 2d-array, optional
+        If given, weights the frequency-domain inner product; linearly
+        interpolated to FFT frequencies. psd[0]=freqs, psd[1]=PSD samples.
+    window : str | tuple, optional
+        Any scipy.signal window spec; applied equally to x and y.
+    return_lag : bool, optional
+        If True, also return (lag_samples, lag_seconds) at which the maximum
+        match is attained (cyclic correlation notion).
+
+    Returns
+    -------
+    m : float
+        Match in [0, 1].
+    (k, tau) : tuple[int, float], optional
+        Index lag and time lag in seconds (only if return_lag=True).
+    """
+    x = np.asarray(x)
+    y = np.asarray(y)
+
+    n = len(x)
+    if n != len(y):
+        raise ValueError("both 'x' and 'y' must be of the same length")
+    if not np.isrealobj(x) or not np.isrealobj(y):
+        raise ValueError("inputs must be real-valued")
+
+    # Window and FFT
+    w = sp.signal.windows.get_window(window, n)
+    Xf = np.fft.rfft(x * w)
+    Yf = np.fft.rfft(y * w)
+    ff = np.fft.rfftfreq(n, d=at)
+
+    # Optional band-limit from PSD
+    if psd is not None:
+        f_min, f_max = psd[0][[0, -1]]
+        i_min = np.searchsorted(ff, f_min, side='left')
+        i_max = np.searchsorted(ff, f_max, side='right')
+    else:
+        i_min, i_max = 0, Xf.size
+    if i_max - i_min <= 0:
+        return (0.0, (0, 0.0)) if return_lag else 0.0
+
+    df = ff[1] - ff[0] if ff.size > 1 else 1.0 / (n * at)
+
+    # Weighting (flat for whitened data)
+    if psd is None:
+        W_band = 1.0
+    else:
+        psd_interp = sp.interpolate.interp1d(*psd, bounds_error=True)(ff[i_min:i_max])
+        W_band = 1.0 / psd_interp
+
+    Xb = Xf[i_min:i_max]
+    Yb = Yf[i_min:i_max]
+
+    # Norms <x|x>, <y|y> (on the band)
+    nx = 4.0 * df * np.sum((Xb * Xb.conj() * W_band).real)
+    ny = 4.0 * df * np.sum((Yb * Yb.conj() * W_band).real)
+    denom = np.sqrt(nx * ny)
+    if not np.isfinite(denom) or denom == 0.0:
+        return (0.0, (0, 0.0)) if return_lag else 0.0
+
+    # Cross-spectrum on the band
+    Xcross_band = (Xb * Yb.conj()) * W_band
+
+    # ---- Correct one-sided scaling for irfft ----
+    Z = np.zeros(n // 2 + 1, dtype=np.complex128)
+    Z[i_min:i_max] = (4.0 * df / denom) * Xcross_band
+
+    # Halve all interior bins; keep DC (0) and Nyquist (if present) unhalved
+    weights = np.full_like(Z, 0.5, dtype=np.float64)
+    weights[0] = 1.0
+    if n % 2 == 0:
+        weights[-1] = 1.0
+    Z *= weights
+    # ---------------------------------------------
+
+    # Correlation vs cyclic lag (irfft has 1/n)
+    cc = np.fft.irfft(Z, n=n) * n
+
+    k = int(np.argmax(np.abs(cc)))
+    m = float(np.abs(cc[k]))
+    # tiny numerical guard
+    if 1.0 < m < 1.0 + 1e-10:
+        m = 1.0
+
+    if return_lag:
+        # map to signed lag
+        k_signed = k if k <= n // 2 else k - n
+        tau = k_signed * at
+        return m, (k_signed, tau)
+    return m
+
+
+def imatch(x, y, *, at, psd=None, window=('tukey', 0.5), return_lag=False):
+    """Shorthand for `1 - match()`."""
+
+    return match(x, y, at=at, psd=psd, window=window, return_lag=return_lag)
 
 
 def snr(strain, *, psd, at, window=('tukey',0.5)):
