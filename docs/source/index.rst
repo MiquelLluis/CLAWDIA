@@ -4,7 +4,7 @@
         CLAWDIA
     </h1>
     <p style="text-align: right; font-style: italic; font-size: 1.6em;">
-        <b>C</b>lawdia's <b>L</b>ibrary for the <b>A</b>nalysis of <b>W</b>aves<br>
+        <b>C</b>omprehensive <b>L</b>ibrary for the <b>A</b>nalysis of <b>W</b>aves<br>
         via <b>Di</b>ctionary-based <b>A</b>lgorithms
     </p>
 
