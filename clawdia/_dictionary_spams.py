@@ -631,7 +631,7 @@ class DictionarySpams:
         return (final_reconstructions, residuals, iters) if full_output else final_reconstructions
 
 
-    def reconstruct_optimum_lambda(
+    def reconstruct_loss_optimised(
         self,
         strain,
         *,
