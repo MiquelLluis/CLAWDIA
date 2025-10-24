@@ -515,7 +515,7 @@ class DictionarySpams:
 
         return (rec, code, result) if full_output else rec
 
-    def reconstruct_iterative_minibatch(self, signals, sc_lambda=0.01, step=1, batchsize=64,
+    def reconstruct_iterative(self, signals, sc_lambda=0.01, step=1, batchsize=64,
                                         max_iter=100, threshold=0.001, normed=True,
                                         full_output=False, verbose=True, kwargs_lasso={}):
         """Reconstruct multiple signals using iterative residual subtraction.
