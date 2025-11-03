@@ -113,7 +113,12 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
     ax.imshow(cmat_perc, cmap=cmap, vmin=vmin, vmax=vmax)
     
     for i_true, i_pred in it.product(range(n_classes), repeat=2):
-        ax.annotate(cmat_str[i_true, i_pred], xy=(i_pred, i_true), ha='center', va='center')
+        ax.annotate(
+            cmat_str[i_true, i_pred],
+            xy=(i_pred, i_true),
+            ha='center',
+            va='center'
+        )
     
     ax.grid(False)
 
@@ -133,8 +138,8 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
     ax.set_ylim([n_classes-0.5, -0.5])  # Invert Y-axis
 
     if labels is not None:
-        ax.set_xticklabels(labels)
-        ax.set_yticklabels(labels)
+        ax.set_xticklabels(labels, rotation=45)
+        ax.set_yticklabels(labels, rotation=45)
 
     # Move X-axis ticks and label to the top
     ax.xaxis.tick_top()
