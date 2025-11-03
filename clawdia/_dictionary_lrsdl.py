@@ -265,22 +265,18 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
         `None`
             The method trains the dictionary in place.
 
+        Notes
+        -----
+        Per-class sufficiency is now checked on the *effective* number of
+        training windows (after patching and thresholding), not on the raw
+        number of input strains per class.
+
         """
         if not isinstance(y_true, np.ndarray):
             raise TypeError("'y_true' must be a numpy array.")
         
         if X.shape[1] < l_atoms:
             raise ValueError("X must have at least 'l_atoms' features.")
-
-        # Check that there are at least 'self.k' samples of each class in the
-        # training set.
-        _least_samples = np.min(np.bincount(y_true)[1:])
-        if _least_samples < self.k:
-            i_class = np.argmin(np.bincount(y_true)[1:]) + 1
-            raise ValueError(
-                f"there are less than {self.k} samples of class {i_class} in"
-                f" the training set ()"
-            )
 
         # Sort `X` and `y_true` so that labels are consecutive and begin with 1.
         i_sorted = np.argsort(y_true)
@@ -295,6 +291,10 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
 
         n_x, l_x = X.shape
         n_wps = int((l_x - l_atoms) / step + 1)  # Number of windows per strain
+        if n_wps <= 0:
+            raise ValueError(
+                "No windows can be extracted with the given 'l_atoms' and 'step'."
+            )
         y_windowed = np.repeat(y_true, n_wps).reshape(n_x, n_wps)
         
         # Split X -> X_windowed:
@@ -318,14 +318,27 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
             frac_keep = n_keep / m_keep.size
             print(f"filtered: {n_out}\t kept: {n_keep} ({frac_keep:.1%})")
 
-        # Check that there are enough windows to build the dictionary:
+        # ---- Check: enough windows to build the dictionary ----
         n_classes = len(set(y_true))
+        # Ensure all classes are represented with minlength.
+        per_class_counts = np.bincount(y_filtered, minlength=n_classes + 1)[1:]  # drop 0-bin
+        least_eff = int(np.min(per_class_counts))
+        if least_eff < self.k:
+            i_class = int(np.argmin(per_class_counts) + 1)
+            raise ValueError(
+                "insufficient effective training windows after patching/thresholding: "
+                f"class {i_class} has {per_class_counts[i_class-1]} < k={self.k}. "
+                "Consider lowering 'threshold', using a smaller 'step' (more overlap), "
+                "or providing more training data."
+            )
+        # Also ensure global sufficiency for class-specific + shared atoms:
         minimum_windows = self.k * n_classes + self.k0
         if X_filtered.shape[0] < minimum_windows:
             raise ValueError(
                 "there are not enough training samples for the requested "
-                "dimensions of the dictionary. Either try to lower the 'treshold' "
-                "parameter or provide more training samples."
+                "dimensions of the dictionary. Either try to lower the 'threshold' "
+                "parameter, reduce 'step' to extract more patches, or provide "
+                "more training samples."
             )
 
         # Train the dictionary
