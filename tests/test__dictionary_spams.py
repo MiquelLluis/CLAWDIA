@@ -61,12 +61,12 @@ def reconstructions_iterative_iters_target(reconstructions_iterative):
 
 
 @pytest.fixture
-def target_reconstruct_auto():
+def target_reconstruct_margin_constrained():
     return np.load('tests/data/_dictionary_spams/reconstruct_auto.npz', allow_pickle=True)
 
 
 @pytest.fixture
-def target_optimum_reconstruct():
+def target_optimum_lambda():
     return np.load('tests/data/_dictionary_spams/optimum_reconstruct.npz')
 
 
@@ -262,9 +262,9 @@ def test_reconstruct_iterative_minibatch(dico_trained, reconstructions_iterative
     )
 
 
-def test_reconstruct_auto(dico_trained, target_reconstruct_auto):
-    strain_input = target_reconstruct_auto['input']
-    reconstruction, code, result = dico_trained.reconstruct_auto(
+def test_reconstruct_margin_constrained(dico_trained, target_reconstruct_margin_constrained):
+    strain_input = target_reconstruct_margin_constrained['input']
+    reconstruction, code, result = dico_trained.reconstruct_margin_constrained(
         strain_input,
         zero_marg=100,
         lambda_lims=(0.01, 10),
@@ -274,17 +274,17 @@ def test_reconstruct_auto(dico_trained, target_reconstruct_auto):
     )
     code = code.toarray()
 
-    np.testing.assert_array_almost_equal(reconstruction, target_reconstruct_auto['reconstruction'], decimal=9)
-    np.testing.assert_array_almost_equal(code, target_reconstruct_auto['code'], decimal=9)
-    assert result == pytest.approx(target_reconstruct_auto['result'].item())
+    np.testing.assert_array_almost_equal(reconstruction, target_reconstruct_margin_constrained['reconstruction'], decimal=9)
+    np.testing.assert_array_almost_equal(code, target_reconstruct_margin_constrained['code'], decimal=9)
+    assert result == pytest.approx(target_reconstruct_margin_constrained['result'].item())
 
 
-def test_optimum_reconstruct(dico_trained, target_optimum_reconstruct):
-    strain_input = target_optimum_reconstruct['input']
-    strain_ref = target_optimum_reconstruct['reference']
-    strain_limits = target_optimum_reconstruct['limits']
+def test_optimum_lambda(dico_trained, target_optimum_lambda):
+    strain_input = target_optimum_lambda['input']
+    strain_ref = target_optimum_lambda['reference']
+    strain_limits = target_optimum_lambda['limits']
 
-    rec, l_opt, loss = dico_trained.optimum_reconstruct(
+    rec, l_opt, loss = dico_trained.reconstruct_optimum_lambda(
         strain_input,
         reference=strain_ref,
         kwargs_minimize={},
@@ -294,9 +294,9 @@ def test_optimum_reconstruct(dico_trained, target_optimum_reconstruct):
         normed=True
     )
 
-    np.testing.assert_array_almost_equal(rec, target_optimum_reconstruct['reconstruction'], decimal=9)
-    assert l_opt == pytest.approx(target_optimum_reconstruct['l_opt'].item())
-    assert loss == pytest.approx(target_optimum_reconstruct['loss'].item())
+    np.testing.assert_array_almost_equal(rec, target_optimum_lambda['reconstruction'], decimal=9)
+    assert l_opt == pytest.approx(target_optimum_lambda['l_opt'].item())
+    assert loss == pytest.approx(target_optimum_lambda['loss'].item())
 
 
 def test_reset(dico_initial, dico_trained):

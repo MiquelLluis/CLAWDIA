@@ -4,7 +4,8 @@
         CLAWDIA
     </h1>
     <p style="text-align: right; font-style: italic; font-size: 1.6em;">
-        Classification of Waves via Dictionary-Based Algorithms
+        <b>C</b>omprehensive <b>L</b>ibrary for the <b>A</b>nalysis of <b>W</b>aves<br>
+        via <b>Di</b>ctionary-based <b>A</b>lgorithms
     </p>
 
     <div style="height: 20px;"></div>
@@ -28,6 +29,12 @@
             Explore the Documentation
         </a>
     </div>
+
+
+.. literalinclude:: ../../requirements.txt
+    :language: none
+    :caption: Required Dependencies
+
 
 
 .. toctree::

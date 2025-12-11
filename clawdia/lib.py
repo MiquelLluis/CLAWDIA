@@ -13,6 +13,7 @@ semantically appropriate modules.
 import warnings
 
 import numpy as np
+from numpy.typing import NDArray
 
 
 # Default values same as Scipy's `optimize._zeros_py.py` module.
@@ -174,9 +175,11 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     return solver_stats
 
 
-def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
-                    step=1, limits=None, patch_min=1, l2_normed=False,
-                    return_norm_coefs=False, allow_allzeros=True):
+def extract_patches(
+    signals, *, patch_size, n_patches=None, random_state=None,
+    step=1, limits=None, patch_min=1, l2_normed=False,
+    return_norm_coefs=False, allow_allzeros=True
+) -> tuple[NDArray, NDArray] | NDArray:
     """Extract patches from 'signals'.
 
     TODO
@@ -231,10 +234,20 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
     """
     if signals.ndim > 2:
         raise ValueError("'signals' must be 2d-array at most")
-    if (limits is not None) and patch_min > np.min(np.diff(limits, axis=1)):
+    if limits is not None:
+        if limits.shape[1] != 2:
+            raise ValueError(
+                f"'limits' has a wrong shape: {limits.shape}"
+            )
+        if patch_min > np.min(np.diff(limits, axis=1)):
+            raise ValueError(
+                "there is at least one signal according to its 'limits' shorter"
+                " than 'patch_min'"
+            )
+    if not allow_allzeros and not signals.any():
         raise ValueError(
-            "there is at least one signal according to its 'limits' shorter"
-            " than 'patch_min'"
+            "'allow_allzeros' is False, but 'signals' contains only zeros. "
+            "Random patch extraction would result in an infinite loop."
         )
     
     if signals.ndim == 1:
@@ -294,12 +307,30 @@ def extract_patches(signals, *, patch_size, n_patches=None, random_state=None,
 
     # Extract all possible patches.
     if n_patches == max_patches:
-        k = 0
-        for i in range(n_signals):
-            p0, p1 = window_limits[i]
-            for j in range(p0, p1, step):
-                patches[k] = signals[i, j:j+patch_size]
-                k += 1
+        if allow_allzeros:
+            k = 0
+            for i in range(n_signals):
+                p0, p1 = window_limits[i]
+                for j in range(p0, p1, step):
+                    patches[k] = signals[i, j:j+patch_size]
+                    k += 1
+        else:
+            # Discard all-zero patches; shrink output accordingly.
+            collected = []
+            for i in range(n_signals):
+                p0, p1 = window_limits[i]
+                for j in range(p0, p1, step):
+                    patch = signals[i, j:j+patch_size]
+                    if patch.any():
+                        collected.append(patch)
+            if collected:
+                patches = np.vstack(collected).astype(signals.dtype, copy=False)
+            else:
+                raise ValueError(
+                    "no non-zero patches could be extracted with the given "
+                    "signals, limits and parameters (all patches are all-zero)"
+                )
+            n_patches = patches.shape[0]
     
     # Extract a limited number of patches randomly selected.
     else:

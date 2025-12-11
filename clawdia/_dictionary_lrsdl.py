@@ -1,11 +1,11 @@
-from dictol.LRSDL import LRSDL
+import dictol.LRSDL
 import numpy as np
 from time import time
 
 from . import lib
 
 
-class DictionaryLRSDL(LRSDL):
+class DictionaryLRSDL(dictol.LRSDL.LRSDL):
     """Interface for the Low-Rank Shared Dictionary Learning class.
 
     Attributes
@@ -157,6 +157,54 @@ class DictionaryLRSDL(LRSDL):
         )
 
         self.t_train = None
+    
+    def __str__(self):
+        params = [
+            f"lambd={self.lambd}",
+            f"lambd2={self.lambd2}",
+            f"eta={self.eta}",
+            f"k={self.k}",
+            f"k0={self.k0}",
+            f"updateX_iters={self.updateX_iters}",
+            f"updateD_iters={self.updateD_iters}"
+        ]
+        params_str = ", ".join(params)
+        state = []
+        
+        # Training time
+        if self.t_train is not None:
+            state.append(f"Training time: {self.t_train:.2f} sec")
+        else:
+            state.append("Not trained")
+        
+        # Dictionary and coefficients
+        state_attrs = [
+            ('D', 'D'),
+            ('D0', 'D0'),
+            ('X', 'X'),
+            ('X0', 'X0'),
+            ('Y', 'Y'),
+            ('Y_range', 'Y_range'),
+            ('D_range', 'D_range')
+        ]
+        for attr_name, display_name in state_attrs:
+            attr = getattr(self, attr_name, None)
+            if attr is not None:
+                if isinstance(attr, np.ndarray):
+                    if attr_name in ('Y_range', 'D_range'):
+                        state.append(f"{display_name}: {attr}")
+                    else:
+                        state.append(f"{display_name}: shape={attr.shape}")
+                elif isinstance(attr, list):
+                    state.append(f"{display_name}: length={len(attr)}")
+                else:
+                    state.append(f"{display_name}: {attr}")
+            else:
+                state.append(f"{display_name}: Not initialized")
+        
+        state_str = "\n  ".join(state)
+        
+        return f"DictionaryLRSDL({params_str})\n  {state_str}"
 
     def fit(self, X, *, y_true, l_atoms, iterations, step=None,
             threshold=0, random_seed=None, verbose=False, show_after=5):
@@ -193,13 +241,14 @@ class DictionaryLRSDL(LRSDL):
 
         step : int, optional
             The step size for splitting input samples into patches of length
-            `l_atoms`. If not specified, the entire input is used as a single
-            window.
+            `l_atoms`. If not specified, it is set the same (`step = l_atoms`)
+            so that all information abailable is extracted from `X` without any
+            repetition (overlap).
 
         threshold : float, optional
             L2-norm threshold (relative to the maximum L2-norm in each strain).
             Training windows with L2-norm below this value will be discarded.
-            Default is 0 (no threshold applied).
+            Default is 0 (only null arrays are discarded).
 
         random_seed : int, optional
             Random seed for reproducibility. Default is `None`.
@@ -216,22 +265,18 @@ class DictionaryLRSDL(LRSDL):
         `None`
             The method trains the dictionary in place.
 
+        Notes
+        -----
+        Per-class sufficiency is now checked on the *effective* number of
+        training windows (after patching and thresholding), not on the raw
+        number of input strains per class.
+
         """
         if not isinstance(y_true, np.ndarray):
             raise TypeError("'y_true' must be a numpy array.")
         
         if X.shape[1] < l_atoms:
             raise ValueError("X must have at least 'l_atoms' features.")
-
-        # Check that there are at least 'self.k' samples of each class in the
-        # training set.
-        _least_samples = np.min(np.bincount(y_true)[1:])
-        if _least_samples < self.k:
-            i_class = np.argmin(np.bincount(y_true)[1:]) + 1
-            raise ValueError(
-                f"there are less than {self.k} samples of class {i_class} in"
-                f" the training set ()"
-            )
 
         # Sort `X` and `y_true` so that labels are consecutive and begin with 1.
         i_sorted = np.argsort(y_true)
@@ -246,6 +291,10 @@ class DictionaryLRSDL(LRSDL):
 
         n_x, l_x = X.shape
         n_wps = int((l_x - l_atoms) / step + 1)  # Number of windows per strain
+        if n_wps <= 0:
+            raise ValueError(
+                "No windows can be extracted with the given 'l_atoms' and 'step'."
+            )
         y_windowed = np.repeat(y_true, n_wps).reshape(n_x, n_wps)
         
         # Split X -> X_windowed:
@@ -258,31 +307,38 @@ class DictionaryLRSDL(LRSDL):
         # specified by the relative threshold:
         norms = np.linalg.norm(X_windowed, axis=2)         # (n_x, n_wps)
         l2_maxs = np.max(norms, axis=1, keepdims=True)     # (n_x, 1)
-        m_keep = norms >= l2_maxs*threshold                # (n_x, n_wps)  Mask of windows to keep.
-
-        m_alltrue = np.all(m_keep, axis=1)
-        i_ends = np.argmin(m_keep, axis=1, keepdims=True)  # (n_x, 1)
-        m_out = i_ends <= np.arange(m_keep.shape[1])      # (n_x, n_wps)
-        m_out[m_alltrue] = False
-        m_keep = ~m_out
+        m_keep = (norms > l2_maxs*threshold)              # (n_x, n_wps)  Mask of windows to keep per signal
 
         X_filtered = X_windowed[m_keep]  # (n_filtered, l_atoms)
         y_filtered = y_windowed[m_keep]  # (n_filtered)
 
         if verbose:
-            n_out = np.sum(m_out)
             n_keep = np.sum(m_keep)
+            n_out = m_keep.size - n_keep
             frac_keep = n_keep / m_keep.size
             print(f"filtered: {n_out}\t kept: {n_keep} ({frac_keep:.1%})")
 
-        # Check that there are enough windows to build the dictionary:
+        # ---- Check: enough windows to build the dictionary ----
         n_classes = len(set(y_true))
+        # Ensure all classes are represented with minlength.
+        per_class_counts = np.bincount(y_filtered, minlength=n_classes + 1)[1:]  # drop 0-bin
+        least_eff = int(np.min(per_class_counts))
+        if least_eff < self.k:
+            i_class = int(np.argmin(per_class_counts) + 1)
+            raise ValueError(
+                "insufficient effective training windows after patching/thresholding: "
+                f"class {i_class} has {per_class_counts[i_class-1]} < k={self.k}. "
+                "Consider lowering 'threshold', using a smaller 'step' (more overlap), "
+                "or providing more training data."
+            )
+        # Also ensure global sufficiency for class-specific + shared atoms:
         minimum_windows = self.k * n_classes + self.k0
         if X_filtered.shape[0] < minimum_windows:
             raise ValueError(
                 "there are not enough training samples for the requested "
-                "dimensions of the dictionary. Either try to lower the 'treshold' "
-                "parameter or provide more training samples."
+                "dimensions of the dictionary. Either try to lower the 'threshold' "
+                "parameter, reduce 'step' to extract more patches, or provide "
+                "more training samples."
             )
 
         # Train the dictionary
@@ -294,6 +350,25 @@ class DictionaryLRSDL(LRSDL):
         tac = time()
         
         self.t_train = tac - tic
+
+    def _predict(self, Y, loss_mat=False):
+        """Adapted from DICTOL's LRSDL.predict method."""
+        N = Y.shape[1]
+        E = np.zeros((self.num_classes, N))
+        for c in range(self.num_classes):
+            # Dc in D only
+            Dc_ = dictol.utils.get_block_col(self.D, c, self.D_range)
+            # Dc in D and D0
+            Dc = np.hstack((Dc_, self.D0)) if self.k0 > 0 else Dc_
+            lasso = dictol.optimize.Lasso(Dc, lambd=self.lambd)
+            lasso.fit(Y)
+            Xc = lasso.solve()
+            residual_matrix = Y - np.dot(Dc, Xc)
+            E[c, :] = (0.5 * np.sum(residual_matrix*residual_matrix, axis=0)
+                       + self.lambd * np.sum(np.abs(Xc), axis=0))
+        pred = np.argmin(E, axis=0) + 1
+        
+        return (pred, E) if loss_mat else pred
 
     def predict(self, X, *, threshold=0, offset=0, with_losses=False):
         """Predict the class of each window in X.
@@ -337,7 +412,7 @@ class DictionaryLRSDL(LRSDL):
             X_cut /= np.linalg.norm(X_cut, axis=1, keepdims=True)
 
         # E: losses of all strains, shape: (class, strain)
-        y_pred, E = super().predict(X_cut.T, loss_mat=True)
+        y_pred, E = self._predict(X_cut.T, loss_mat=True)
 
         losses = np.min(E, axis=0)
         
