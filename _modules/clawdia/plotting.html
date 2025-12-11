@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>clawdia.plotting &#8212; CLAWDIA 0.4.3 documentation</title>
+    <title>clawdia.plotting &#8212; CLAWDIA 0.5.0 documentation</title>
   
   
   
@@ -29,7 +29,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=6e061ff1" />
   
   <!-- So that users can add custom icons -->
@@ -38,15 +38,15 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=5bfaad31"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/clawdia/plotting';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.4.3" />
+  <meta name="docsearch:version" content="0.5.0" />
   </head>
   
   
@@ -99,7 +99,7 @@
     <a href="../../index.html" class="navbar-brand" style="color: inherit; cursor: pointer;">
         <img src="_static/clawdia-logo.svg" class="navbar-project-icon" />
         <span class="navbar-project-name">CLAWDIA</span>
-        <span class="navbar-project-version">v0.4.3</span>
+        <span class="navbar-project-version">v0.5.0</span>
     </a>
 </div></div>
     
@@ -317,21 +317,17 @@
 <span class="sd">atoms, and spectrograms.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">colorsys</span> <span class="kn">import</span> <span class="n">rgb_to_hls</span><span class="p">,</span> <span class="n">hls_to_rgb</span>
-<span class="kn">import</span> <span class="nn">itertools</span> <span class="k">as</span> <span class="nn">it</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">colorsys</span><span class="w"> </span><span class="kn">import</span> <span class="n">rgb_to_hls</span><span class="p">,</span> <span class="n">hls_to_rgb</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">it</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
-
-<span class="c1"># from gwadama.fat import instant_frequency  # IMPORTED INSIDE THE SPECTROGRAM FUNCTION</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
 <div class="viewcode-block" id="plot_confusion">
 <a class="viewcode-back" href="../../clawdia.plotting.html#clawdia.plotting.plot_confusion">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_confusion</span><span class="p">(</span><span class="n">cmat</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_confusion</span><span class="p">(</span><span class="n">cmat</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;PaleBlues&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot a confusion matrix.</span>
 
@@ -427,7 +423,12 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cmat_perc</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
     
     <span class="k">for</span> <span class="n">i_true</span><span class="p">,</span> <span class="n">i_pred</span> <span class="ow">in</span> <span class="n">it</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_classes</span><span class="p">),</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">cmat_str</span><span class="p">[</span><span class="n">i_true</span><span class="p">,</span> <span class="n">i_pred</span><span class="p">],</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">i_pred</span><span class="p">,</span> <span class="n">i_true</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+            <span class="n">cmat_str</span><span class="p">[</span><span class="n">i_true</span><span class="p">,</span> <span class="n">i_pred</span><span class="p">],</span>
+            <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">i_pred</span><span class="p">,</span> <span class="n">i_true</span><span class="p">),</span>
+            <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+            <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span>
+        <span class="p">)</span>
     
     <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
@@ -447,8 +448,8 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">n_classes</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">])</span>  <span class="c1"># Invert Y-axis</span>
 
     <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
 
     <span class="c1"># Move X-axis ticks and label to the top</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">tick_top</span><span class="p">()</span>
@@ -461,16 +462,15 @@
 
 
 
-
 <div class="viewcode-block" id="plot_dictionary">
 <a class="viewcode-back" href="../../clawdia.plotting.html#clawdia.plotting.plot_dictionary">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_dictionary</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_kw</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_dictionary</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_kw</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot atoms from a dictionary in a squared matrix.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    array : 2d-array</span>
-<span class="sd">        Dictionary matrix in Fortran order with shape (a, l).</span>
+<span class="sd">        Dictionary matrix with shape (a, l).</span>
 <span class="sd">    </span>
 <span class="sd">    c : int, optional</span>
 <span class="sd">        Number of atoms at each side of the squared matrix of plots; the total</span>
@@ -496,225 +496,7 @@
 
 
 
-<div class="viewcode-block" id="plot_spec_of">
-<a class="viewcode-back" href="../../clawdia.plotting.html#clawdia.plotting.plot_spec_of">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_spec_of</span><span class="p">(</span><span class="n">strain</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">sf</span><span class="o">=</span><span class="mi">4096</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="s1">&#39;hann&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
-    <span class="n">ff</span><span class="p">,</span> <span class="n">tt</span><span class="p">,</span> <span class="n">spec</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">spectrogram</span><span class="p">(</span>
-        <span class="n">strain</span><span class="p">,</span>
-        <span class="n">fs</span><span class="o">=</span><span class="n">sf</span><span class="p">,</span>
-        <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span>
-        <span class="n">nperseg</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
-        <span class="n">nfft</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">sf</span><span class="p">,</span>
-        <span class="n">noverlap</span><span class="o">=</span><span class="mi">256</span><span class="o">-</span><span class="mi">32</span>
-    <span class="p">)</span>
-    <span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">clip</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
-    <span class="n">pcm</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">tt</span><span class="p">,</span> <span class="n">ff</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">pcm</span></div>
-
-
-
-<div class="viewcode-block" id="plot_spectrogram_with_instantaneous_features">
-<a class="viewcode-back" href="../../clawdia.plotting.html#clawdia.plotting.plot_spectrogram_with_instantaneous_features">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_spectrogram_with_instantaneous_features</span><span class="p">(</span>
-        <span class="n">strain_array</span><span class="p">,</span> <span class="n">time_array</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">14</span><span class="p">,</span> <span class="n">outseg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outfreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">window</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">windows</span><span class="o">.</span><span class="n">tukey</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">hop</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">mfft</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">14</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">22</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot the spectrogram, instantaneous frequency, and strain&#39;s waveform.</span>
-
-<span class="sd">    This function generates a multi-panel plot consisting of:</span>
-<span class="sd">    </span>
-<span class="sd">    1. A spectrogram of the gravitational wave strain, obtained using</span>
-<span class="sd">       Short-Time Fourier Transform (STFT), visualizing the frequency evolution</span>
-<span class="sd">       over time.</span>
-<span class="sd">    2. The instantaneous frequency of the strain, plotted on top of the</span>
-<span class="sd">       spectrogram to show the frequency changes in real time.</span>
-<span class="sd">    3. The raw gravitational wave strain in the time domain, shown above the</span>
-<span class="sd">       spectrogram for direct comparison.</span>
-
-<span class="sd">    Key features of the plot:</span>
-
-<span class="sd">    - **Spectrogram**: The frequency content of the gravitational wave signal</span>
-<span class="sd">      is displayed over time using a color map (`inferno`), with the x-axis</span>
-<span class="sd">      representing time (in milliseconds) and the y-axis representing</span>
-<span class="sd">      frequency (in Hz).</span>
-<span class="sd">    - **Instantaneous Frequency**: Plots the instantaneous frequency of the</span>
-<span class="sd">      strain over time, highlighting the frequency variations.</span>
-<span class="sd">    - **Energy Normalization**: The spectrogram uses a logarithmic scale for</span>
-<span class="sd">      the energy (power spectral density, PSD), normalized by the maximum</span>
-<span class="sd">      energy value in the signal.</span>
-<span class="sd">    - **Dynamic Range Control**: The color scale of the spectrogram can be</span>
-<span class="sd">      adjusted via the `vmin` parameter to emphasize specific energy levels.</span>
-<span class="sd">    - **Time-Domain Waveform**: A plot of the original strain data in the time</span>
-<span class="sd">      domain is shown above the spectrogram, providing context for the signal&#39;s</span>
-<span class="sd">      evolution.</span>
-<span class="sd">    - **Segmentation**: The user can specify the time (`outseg`) and frequency</span>
-<span class="sd">      (`outfreq`) ranges to focus on specific parts of the data.</span>
-<span class="sd">    - **Customization**: The plot has a black background, white grid lines,</span>
-<span class="sd">      and labeled colorbars for clarity.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    strain_array : numpy.ndarray</span>
-<span class="sd">        The time-domain strain data of the gravitational wave signal.</span>
-<span class="sd">    </span>
-<span class="sd">    time_array : numpy.ndarray</span>
-<span class="sd">        Array of time stamps corresponding to the strain data.</span>
-<span class="sd">    </span>
-<span class="sd">    sampling_rate : int, optional</span>
-<span class="sd">        The sampling rate of the data in Hz (default is 2^14, or 16384 Hz).</span>
-<span class="sd">    </span>
-<span class="sd">    outseg : tuple, optional</span>
-<span class="sd">        A tuple specifying the time range (start, end) in seconds for the</span>
-<span class="sd">        x-axis. If `None`, the entire time range of the input data is used.</span>
-<span class="sd">    </span>
-<span class="sd">    outfreq : tuple, optional</span>
-<span class="sd">        A tuple specifying the frequency range (start, end) in Hz for the</span>
-<span class="sd">        y-axis. If `None`, the full frequency range (up to Nyquist frequency)</span>
-<span class="sd">        is used.</span>
-<span class="sd">    </span>
-<span class="sd">    window : numpy.ndarray, optional</span>
-<span class="sd">        The window function applied during STFT computation (default is a</span>
-<span class="sd">        Tukey window).</span>
-<span class="sd">    </span>
-<span class="sd">    hop : int, optional</span>
-<span class="sd">        The hop size between successive STFT windows (default is 32).</span>
-<span class="sd">    </span>
-<span class="sd">    mfft : int, optional</span>
-<span class="sd">        The number of points in the FFT used for STFT computation (default</span>
-<span class="sd">        is 2^14).</span>
-<span class="sd">    </span>
-<span class="sd">    vmin : float, optional</span>
-<span class="sd">        The minimum value for the color scale in the spectrogram (default</span>
-<span class="sd">        is -22). This controls the dynamic range of the color map.</span>
-<span class="sd">    </span>
-<span class="sd">    ax : matplotlib.axes.Axes, optional</span>
-<span class="sd">        The axes object on which to plot the spectrogram. If `None`, a new</span>
-<span class="sd">        figure and axes are created.</span>
-<span class="sd">    </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    fig : matplotlib.figure.Figure</span>
-<span class="sd">        The figure object containing the complete plot.</span>
-<span class="sd">    </span>
-<span class="sd">    axs : List[matplotlib.axes.Axes]</span>
-<span class="sd">        A list of axes objects containing the spectrogram, the colorbar, and</span>
-<span class="sd">        the time-domain plots.</span>
-<span class="sd">    </span>
-<span class="sd">    Sxx : numpy.ndarray</span>
-<span class="sd">        The computed spectrogram (PSD values) of the input strain data.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    - The spectrogram normalization is performed on the square root of the </span>
-<span class="sd">      Power Spectral Density (PSD), converted to a logarithmic scale.</span>
-<span class="sd">    - The y-axis of the spectrogram uses a kilohertz scale for readability.</span>
-<span class="sd">    - The time-domain waveform is plotted without axes labels for simplicity.</span>
-<span class="sd">    - Instantaneous frequency values below zero are masked to avoid displaying </span>
-<span class="sd">      non-physical results.</span>
-<span class="sd">    </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">gwadama.fat</span> <span class="kn">import</span> <span class="n">instant_frequency</span>
-
-    <span class="c1"># Compute the spectrogram using the ShortTimeFFT class.</span>
-    <span class="n">stfft_model</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">ShortTimeFFT</span><span class="p">(</span>
-        <span class="n">win</span><span class="o">=</span><span class="n">window</span><span class="p">,</span> <span class="n">hop</span><span class="o">=</span><span class="n">hop</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">sampling_rate</span><span class="p">,</span> <span class="n">mfft</span><span class="o">=</span><span class="n">mfft</span><span class="p">,</span>
-        <span class="n">fft_mode</span><span class="o">=</span><span class="s1">&#39;onesided&#39;</span><span class="p">,</span> <span class="n">scale_to</span><span class="o">=</span><span class="s1">&#39;psd&#39;</span>
-    <span class="p">)</span>
-    <span class="n">Sxx</span> <span class="o">=</span> <span class="n">stfft_model</span><span class="o">.</span><span class="n">spectrogram</span><span class="p">(</span><span class="n">strain_array</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
-        <span class="n">normalized_Sxx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Sxx</span><span class="p">))</span>
-    <span class="n">normalized_Sxx</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">normalized_Sxx</span><span class="p">)</span>
-    <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">f0</span><span class="p">,</span> <span class="n">f1</span> <span class="o">=</span> <span class="n">stfft_model</span><span class="o">.</span><span class="n">extent</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">strain_array</span><span class="p">))</span>
-    <span class="n">t_origin</span> <span class="o">=</span> <span class="n">time_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">t0</span> <span class="o">+=</span> <span class="n">t_origin</span>
-    <span class="n">t1</span> <span class="o">+=</span> <span class="n">t_origin</span>
-
-    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">fig</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
-
-    <span class="c1"># SPECTROGRAM (ax1)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">normalized_Sxx</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
-              <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">f0</span><span class="p">,</span><span class="n">f1</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;lanczos&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">)</span>
-    <span class="c1"># ...and Instant Frequency</span>
-    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
-        <span class="n">instant_freq</span> <span class="o">=</span> <span class="n">instant_frequency</span><span class="p">(</span><span class="n">strain_array</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="n">sampling_rate</span><span class="p">)</span>
-    <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">strain_array</span><span class="p">)</span>
-    <span class="n">t1_instant</span> <span class="o">=</span> <span class="n">t_origin</span> <span class="o">+</span> <span class="p">(</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">sampling_rate</span>
-    <span class="n">instant_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t_origin</span><span class="p">,</span> <span class="n">t1_instant</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">instant_freq</span> <span class="o">&gt;=</span> <span class="mi">0</span>  <span class="c1"># Remove non-physical frequencies</span>
-    <span class="n">instant_freq</span> <span class="o">=</span> <span class="n">instant_freq</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
-    <span class="n">instant_time</span> <span class="o">=</span> <span class="n">instant_time</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">instant_time</span><span class="p">,</span> <span class="n">instant_freq</span><span class="p">,</span> <span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    
-    <span class="c1"># COLORBAR (ax2)</span>
-    <span class="n">ax_pos</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
-    <span class="n">ax2_width</span> <span class="o">=</span> <span class="mf">0.015</span>  <span class="c1"># Set the width of the colorbar axis</span>
-    <span class="n">ax2_pad</span> <span class="o">=</span> <span class="mf">0.01</span>    <span class="c1"># Set the padding between the spectrogram and colorbar</span>
-    <span class="n">ax2_x</span> <span class="o">=</span> <span class="n">ax_pos</span><span class="o">.</span><span class="n">x1</span> <span class="o">+</span> <span class="n">ax2_pad</span>
-    <span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="n">ax2_x</span><span class="p">,</span> <span class="n">ax_pos</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span> <span class="n">ax2_width</span><span class="p">,</span> <span class="n">ax_pos</span><span class="o">.</span><span class="n">height</span><span class="p">])</span>
-    <span class="n">cbar</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">cax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
-    
-    <span class="c1"># LABELS, LIMITS, ETC</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.4</span><span class="p">)</span>
-    <span class="c1"># ...limits</span>
-    <span class="k">if</span> <span class="n">outseg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">time_array</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time_array</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">*</span><span class="n">outseg</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">outfreq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">*</span><span class="n">outfreq</span><span class="p">)</span>
-    <span class="c1"># ...labels.</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time [ms]&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Frequency [kHz]&#39;</span><span class="p">)</span>
-    <span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;Normalized energy&#39;</span><span class="p">)</span>
-    <span class="c1"># ...Y ticks to kHz</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">FuncFormatter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">x</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">))</span>
-    <span class="c1"># ...X ticks to milliseconds and avoid roundoff errors.</span>
-    <span class="c1"># ax.xaxis.set_major_formatter(FormatStrFormatter(&#39;%d&#39;))  # Set style first, for new ticklabels.</span>
-    <span class="n">xticks</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xticks</span><span class="p">)</span>
-    <span class="c1"># ax.set_xticklabels(np.round(xticks * 1000).astype(int))</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">xticks</span><span class="o">*</span><span class="mi">1000</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-    <span class="c1"># ...background in black to match the colormap.</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
-
-    <span class="c1"># GW IN TIME-DOMAIN ON TOP OF THE SPECTROGRAM (ax3)</span>
-    <span class="n">ax3</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="n">ax_pos</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="n">ax_pos</span><span class="o">.</span><span class="n">y0</span><span class="o">+</span><span class="n">ax_pos</span><span class="o">.</span><span class="n">height</span><span class="o">+</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">ax_pos</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">ax_pos</span><span class="o">.</span><span class="n">height</span><span class="o">*</span><span class="mf">0.2</span><span class="p">])</span>
-    <span class="n">ax3</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_array</span><span class="p">,</span> <span class="n">strain_array</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">ax3</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">())</span>
-    <span class="n">ax3</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">strain_array</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">strain_array</span><span class="p">))</span>
-    <span class="n">ax3</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
-
-    <span class="c1"># # DEBUG AXES AREA [</span>
-    <span class="c1"># from matplotlib import patches</span>
-    <span class="c1"># ax3_pos = ax3.get_position()</span>
-    <span class="c1"># ax2_pos = ax2.get_position()</span>
-    <span class="c1"># # Create a rectangle for the main axis (ax)</span>
-    <span class="c1"># ax_rect = patches.Rectangle((ax_pos.x0, ax_pos.y0), ax_pos.width, ax_pos.height,</span>
-    <span class="c1">#                             linewidth=3, edgecolor=&#39;r&#39;, facecolor=&#39;none&#39;, label=&#39;ax&#39;)</span>
-    <span class="c1"># # Create a rectangle for the colorbar axis (ax2)</span>
-    <span class="c1"># ax2_rect = patches.Rectangle((ax2_pos.x0, ax2_pos.y0), ax2_pos.width, ax2_pos.height,</span>
-    <span class="c1">#                             linewidth=3, edgecolor=&#39;b&#39;, facecolor=&#39;none&#39;, label=&#39;ax2&#39;)</span>
-    <span class="c1"># # Create a rectangle for the time-domain axis (ax3)</span>
-    <span class="c1"># ax3_rect = patches.Rectangle((ax3_pos.x0, ax3_pos.y0), ax3_pos.width, ax3_pos.height,</span>
-    <span class="c1">#                             linewidth=3, edgecolor=&#39;g&#39;, facecolor=&#39;none&#39;, label=&#39;ax3&#39;)</span>
-    <span class="c1"># # Add the rectangles to the figure</span>
-    <span class="c1"># fig.add_artist(ax_rect)</span>
-    <span class="c1"># fig.add_artist(ax2_rect)</span>
-    <span class="c1"># fig.add_artist(ax3_rect)</span>
-    <span class="c1"># # ]</span>
-    
-    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="p">[</span><span class="n">ax</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">ax3</span><span class="p">],</span> <span class="n">Sxx</span></div>
-
-
-
-<span class="k">def</span> <span class="nf">_desaturate_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">desaturation_factor</span><span class="p">,</span> <span class="n">brightness_boost</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_desaturate_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">desaturation_factor</span><span class="p">,</span> <span class="n">brightness_boost</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Desaturate and brighten a colormap.</span>
 
@@ -793,7 +575,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>

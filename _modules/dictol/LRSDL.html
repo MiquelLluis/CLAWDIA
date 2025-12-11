@@ -1,0 +1,784 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dictol.LRSDL &#8212; CLAWDIA 0.4.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=6e061ff1" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5bfaad31"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/dictol/LRSDL';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.4.3" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item"><div class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand" style="color: inherit; cursor: pointer;">
+        <img src="_static/clawdia-logo.svg" class="navbar-project-icon" />
+        <span class="navbar-project-name">CLAWDIA</span>
+        <span class="navbar-project-version">v0.4.3</span>
+    </a>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../modules.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MiquelLluis/clawdia" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../modules.html">
+    API Documentation
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MiquelLluis/clawdia" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">dictol.LRSDL</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for dictol.LRSDL</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Low-rank Shared Dictionary Learning</span>
+<span class="sd">and Fisher Discriminant Dictionary Learning</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">optimize</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span><span class="p">,</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">normF2</span><span class="p">,</span> <span class="n">norm1</span><span class="p">,</span> <span class="n">get_block_col</span><span class="p">,</span> <span class="n">get_block_row</span><span class="p">,</span> <span class="n">nuclearnorm</span><span class="p">,</span> <span class="n">build_mean_matrix</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.ODL</span> <span class="kn">import</span> <span class="n">ODL</span>
+
+<span class="n">_zero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="k">class</span> <span class="nc">_UpdateXX0</span><span class="p">(</span><span class="n">optimize</span><span class="o">.</span><span class="n">Fista</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    solve XX0 in LRSDL using Fista</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Y_range</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">D_range</span><span class="p">,</span> <span class="n">D0</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">lambd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">lambd2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span> <span class="o">=</span> <span class="n">Y_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y_range</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">D</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span> <span class="o">=</span> <span class="n">D_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D0</span> <span class="o">=</span> <span class="n">D0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">=</span> <span class="n">k0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span> <span class="o">=</span> <span class="n">lambd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span> <span class="o">=</span> <span class="n">lambd2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DtD</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D_0</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">buildMhat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DtD</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Dhat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_0</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D0tD0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">_zero</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">D0tD0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k0</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">_zero</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DtD0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">D0</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">_zero</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D0tD</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DtD0</span><span class="o">.</span><span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D0tY2</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">_zero</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">DtY0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">max_eig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Dhat</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">+=</span> <span class="n">utils</span><span class="o">.</span><span class="n">max_eig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_extract_fromX1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X1</span><span class="p">):</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">X1</span><span class="p">[:</span><span class="n">K</span><span class="p">,</span> <span class="p">:],</span> <span class="n">X1</span><span class="p">[</span><span class="n">K</span><span class="p">:,</span> <span class="p">:])</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="n">X1</span><span class="p">[:</span><span class="n">K</span><span class="p">,</span> <span class="p">:],</span> <span class="n">_zero</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X1</span><span class="p">):</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">X0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_fromX1</span><span class="p">(</span><span class="n">X1</span><span class="p">)</span>
+        <span class="n">DtY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DtY0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DtD0</span><span class="p">,</span> <span class="n">X0</span><span class="p">)</span>
+        <span class="n">Y_0</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">buildMhat</span><span class="p">(</span><span class="n">DtY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Dhat</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">-</span> <span class="n">Y_0</span> <span class="o">+</span> <span class="n">utils</span><span class="o">.</span><span class="n">buildM_2Mbar</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">g0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">X0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">D0tY2</span> <span class="o">+</span>\
+                <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D0tD</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">buildMhat</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">))</span> <span class="o">-</span>\
+                <span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span><span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">build_mean_matrix</span><span class="p">(</span><span class="n">X0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">g</span><span class="p">,</span> <span class="n">g0</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_fidelity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        * Calculating the fidelity term in FDDL[[4]](#fn_fdd):</span>
+<span class="sd">        * $\sum_{c=1}^C \Big(\|Y_c - D_cX^c_c\|_F^2 +</span>
+<span class="sd">            \sum_{i \neq c} \|D_c X^c_i\|_F^2\Big)$</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">):</span>
+            <span class="n">Yc</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+            <span class="n">Dc</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">)</span>
+            <span class="n">Xc</span> <span class="o">=</span> <span class="n">get_block_row</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">)</span>
+            <span class="n">Xcc</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="n">Xc</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+            <span class="n">cost</span> <span class="o">+=</span> <span class="n">normF2</span><span class="p">(</span><span class="n">Yc</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Dc</span><span class="p">,</span> <span class="n">Xcc</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">c</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">Xci</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="n">Xc</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+                <span class="n">cost</span> <span class="o">+=</span> <span class="n">normF2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Dc</span><span class="p">,</span> <span class="n">Xci</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">_discriminative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        * calculating the discriminative term in</span>
+<span class="sd">        * $\|X\|_F^2 + \sum_{c=1}^C (\|Xc - Mc\|_F^2 - \|Mc - M\|_F^2) $</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="n">normF2</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">):</span>
+            <span class="n">Xc</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+            <span class="n">Mc</span> <span class="o">=</span> <span class="n">build_mean_matrix</span><span class="p">(</span><span class="n">Xc</span><span class="p">)</span>
+            <span class="n">cost</span> <span class="o">+=</span> <span class="n">normF2</span><span class="p">(</span><span class="n">Xc</span> <span class="o">-</span> <span class="n">Mc</span><span class="p">)</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">repmat</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Xc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">cost</span> <span class="o">-=</span> <span class="n">normF2</span><span class="p">(</span><span class="n">Mc</span> <span class="o">-</span> <span class="n">M</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">_calc_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X1</span><span class="p">):</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">X0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_fromX1</span><span class="p">(</span><span class="n">X1</span><span class="p">)</span>
+        <span class="n">Ybar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="p">,</span> <span class="n">X0</span><span class="p">)</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">normF2</span><span class="p">(</span><span class="n">Ybar</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="n">X</span><span class="p">))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fidelity</span><span class="p">(</span><span class="n">X</span><span class="p">))</span> <span class="o">+</span> \
+            <span class="mf">0.5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_discriminative</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="n">normF2</span><span class="p">(</span><span class="n">X0</span> <span class="o">-</span> <span class="n">utils</span><span class="o">.</span><span class="n">build_mean_matrix</span><span class="p">(</span><span class="n">X0</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">lossF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X1</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_f</span><span class="p">(</span><span class="n">X1</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span><span class="o">*</span><span class="n">norm1</span><span class="p">(</span><span class="n">X1</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">LRSDL</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Low-Rank Shared Dictionary Learning</span>
+
+<span class="sd">    WARNING: They didn&#39;t provide a seed parameter for the random initialization</span>
+<span class="sd">    of the dictionary. If reproducibility is important, one must set the global</span>
+<span class="sd">    numpy&#39;s seed before callint LRSDL.__init__().</span>
+
+<span class="sd">    PARAMETERS</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lambd: float</span>
+<span class="sd">        Regularization term:</span>
+<span class="sd">            lambd * ||X||_1</span>
+<span class="sd">        Makes the class-specific vector sparse, symilar to the LASSO</span>
+<span class="sd">        regularization term.</span>
+
+<span class="sd">    lambd2: float</span>
+<span class="sd">        Regularization term:</span>
+<span class="sd">            lambd2 / 2 * ||X⁰-M⁰||²</span>
+<span class="sd">        Makes the shared vector (selection of shared atoms) sparse and close to</span>
+<span class="sd">        the mean shared vector, i.e. all {X⁰} close between them.</span>
+
+<span class="sd">    eta: float</span>
+<span class="sd">        Regularization term:</span>
+<span class="sd">            eta * ||D⁰||_*</span>
+<span class="sd">        Enforces the shared dictionary to be low-rank.</span>
+
+<span class="sd">    k: int</span>
+<span class="sd">        Number of class-specific atoms for each class. The total number of</span>
+<span class="sd">        atoms in the class-specific dictionary is then `k * nc` where &#39;nc&#39; is</span>
+<span class="sd">        the number of classes.</span>
+<span class="sd">        NOTE: There can be weird indexing errors depending on the number of</span>
+<span class="sd">        training signals while fitting and the parity of &#39;k&#39;. Play around...</span>
+<span class="sd">    </span>
+<span class="sd">    k0: int</span>
+<span class="sd">        Total number of shared atoms. k0=0 is equivalent to the case when there</span>
+<span class="sd">        is no shared dictionary.</span>
+<span class="sd">    </span>
+<span class="sd">    updateX_iters, updateD_iters</span>
+<span class="sd">        *I think they are not used in this class at all.*</span>
+
+
+<span class="sd">    REFERENCE</span>
+<span class="sd">    ---------</span>
+<span class="sd">    Vu, T. H.; Monga, V. (2017). Fast low-rank shared dictionary learning for image classification.</span>
+<span class="sd">    IEEE Transactions on Image Processing, 26(11), 5160–5175. https://doi.org/10.1109/TIP.2017.2729885</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lambd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">lambd2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
+            <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k0</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">updateX_iters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">updateD_iters</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span> <span class="o">=</span> <span class="n">lambd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span> <span class="o">=</span> <span class="n">lambd2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">=</span> <span class="n">k0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateX_iters</span> <span class="o">=</span> <span class="n">updateX_iters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateD_iters</span> <span class="o">=</span> <span class="n">updateD_iters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D0</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X0</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_getYc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">get_block_col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">train_label</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">show_after</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Train the LRSDL dictionary.</span>
+
+<span class="sd">        NOTE: There can be weird indexing errors depending on the number of</span>
+<span class="sd">        training signals while fitting and the parity of &#39;k&#39;. Play around...</span>
+
+<span class="sd">        PARAMETERS</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Y: 2d-array, shape = (n-features, n-samples)</span>
+<span class="sd">            Train set shaped in Fortran notation, where the first axis are the</span>
+<span class="sd">            features (bins of the strain) and the second axis are the samples</span>
+<span class="sd">            (number of strains).</span>
+<span class="sd">            Despite being in Fortran notation it seems it is not optimized,</span>
+<span class="sd">            arrays in this class are stored in memory in C-order. Either they</span>
+<span class="sd">            are reshaped internally when updating the dictionary, or the</span>
+<span class="sd">            performance can be heavily increased by re-mapping them.</span>
+
+<span class="sd">        train_label: array-like</span>
+<span class="sd">            Label of each strain in Y.</span>
+<span class="sd">            Must accomply `len(train_label) == Y.shape[1]`.</span>
+
+<span class="sd">        verbose: bool</span>
+<span class="sd">            If True prints progression every &#39;show_after&#39; iterations.</span>
+
+<span class="sd">        iterations: int</span>
+<span class="sd">            Actual number of times the dictionary is updated over all the &#39;Y&#39;</span>
+<span class="sd">            dataset.</span>
+
+<span class="sd">        show_after: int</span>
+<span class="sd">            If verbose is True, number of iterations to skip printing the</span>
+<span class="sd">            progression of the training.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">label_to_range</span><span class="p">(</span><span class="n">train_label</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="o">*</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">X0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">k0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="c1"># init</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;initializing ... &#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;initial loss </span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">())</span>
+
+        <span class="c1"># train</span>
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="c1"># update D</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_updateD</span><span class="p">()</span>
+            <span class="c1"># update D0</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_updateD0</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_updateXX0</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="p">(</span><span class="n">it</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">it</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">show_after</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;iter </span><span class="se">\t</span><span class="si">%3d</span><span class="s1">/</span><span class="si">%3d</span><span class="s1"> </span><span class="se">\t</span><span class="s1"> loss </span><span class="si">%.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">it</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">()))</span>
+
+    <span class="k">def</span> <span class="nf">_updateD</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X0</span><span class="p">)</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">buildMhat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">buildMhat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">ODL_updateD</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">F</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_extract_fromX1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X1</span><span class="p">):</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">X1</span><span class="p">[:</span><span class="n">K</span><span class="p">,</span> <span class="p">:],</span> <span class="n">X1</span><span class="p">[</span><span class="n">K</span><span class="p">:,</span> <span class="p">:])</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="n">X1</span><span class="p">[:</span><span class="n">K</span><span class="p">,</span> <span class="p">:],</span> <span class="n">_zero</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_updateXX0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">clf</span> <span class="o">=</span> <span class="n">_UpdateXX0</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">k0</span><span class="p">,</span> <span class="n">lambd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd</span><span class="p">,</span> <span class="n">lambd2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span><span class="p">)</span>
+
+        <span class="n">X1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X0</span><span class="p">))</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span>
+        <span class="n">X1</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">Xinit</span><span class="o">=</span><span class="n">X1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_fromX1</span><span class="p">(</span><span class="n">X1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_buildYhat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Yhat = [Yhat_1, Yhat_2, ..., Yhat_C]</span>
+<span class="sd">        where Yhat_c = Yc - Dc*Xcc</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Yhat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">):</span>
+            <span class="n">Yc</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+            <span class="n">Dc</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">)</span>
+            <span class="n">Xcc</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+            <span class="n">Yhat</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">[</span><span class="n">c</span><span class="p">]:</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">[</span><span class="n">c</span><span class="o">+</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Yc</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Dc</span><span class="p">,</span> <span class="n">Xcc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Yhat</span>
+
+    <span class="k">def</span> <span class="nf">_updateD0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Ybar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ybar</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buildYhat</span><span class="p">())</span><span class="o">/</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D0</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">min_rank_dict</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">Dinit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">):</span>
+            <span class="n">clf</span> <span class="o">=</span> <span class="n">ODL</span><span class="p">(</span><span class="n">lambd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">[</span><span class="n">c</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+            <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getYc</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">[</span><span class="n">c</span><span class="p">]:</span><span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">[</span><span class="n">c</span><span class="o">+</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">D</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">[</span><span class="n">c</span><span class="p">]:</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">[</span><span class="n">c</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">[</span><span class="n">c</span><span class="p">]:</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">[</span><span class="n">c</span><span class="o">+</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">X</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">odl</span> <span class="o">=</span> <span class="n">ODL</span><span class="p">(</span><span class="n">lambd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">k0</span><span class="p">)</span>
+            <span class="n">odl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D0</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">D</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">X0</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">X</span>
+
+    <span class="k">def</span> <span class="nf">_fidelity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculating the fidelity term in FDDL</span>
+<span class="sd">        sum_{c=1}^C ||Y_c - D_cX^c_c||_F^2 + sum_{i != c} ||D_c X^c_i||_F^2$</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X0</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">):</span>
+            <span class="n">Yc</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+            <span class="n">Dc</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">)</span>
+            <span class="n">Xc</span> <span class="o">=</span> <span class="n">get_block_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">)</span>
+            <span class="n">Xcc</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="n">Xc</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+            <span class="n">cost</span> <span class="o">+=</span> <span class="n">normF2</span><span class="p">(</span><span class="n">Yc</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Dc</span><span class="p">,</span> <span class="n">Xcc</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">c</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">Xci</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="n">Xc</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+                <span class="n">cost</span> <span class="o">+=</span> <span class="n">normF2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Dc</span><span class="p">,</span> <span class="n">Xci</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">_discriminative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        * calculating the discriminative term in FDDL[[4]](#fn_fdd):</span>
+<span class="sd">        * $\|X\|_F^2 + \sum_{c=1}^C (\|Xc - Mc\|_F^2 - \|Mc - M\|_F^2) $</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="n">normF2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">):</span>
+            <span class="n">Xc</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_range</span><span class="p">)</span>
+            <span class="n">Mc</span> <span class="o">=</span> <span class="n">build_mean_matrix</span><span class="p">(</span><span class="n">Xc</span><span class="p">)</span>
+            <span class="n">cost</span> <span class="o">+=</span> <span class="n">normF2</span><span class="p">(</span><span class="n">Xc</span> <span class="o">-</span> <span class="n">Mc</span><span class="p">)</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">repmat</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Xc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">cost</span> <span class="o">-=</span> <span class="n">normF2</span><span class="p">(</span><span class="n">Mc</span> <span class="o">-</span> <span class="n">M</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">Y</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X0</span><span class="p">)</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">normF2</span><span class="p">(</span><span class="n">Y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">))</span> <span class="o">+</span> \
+            <span class="mf">0.5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_fidelity</span><span class="p">()</span> <span class="o">+</span> \
+            <span class="mf">0.5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_discriminative</span><span class="p">()</span> <span class="o">+</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span><span class="o">*</span><span class="n">norm1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cost</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span><span class="o">*</span><span class="n">norm1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X0</span><span class="p">)</span> <span class="o">+</span> \
+                <span class="mf">0.5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span><span class="o">*</span><span class="n">normF2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X0</span> <span class="o">-</span> <span class="n">build_mean_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X0</span><span class="p">))</span> \
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="o">*</span><span class="n">nuclearnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">loss_mat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">):</span>
+            <span class="c1"># Dc in D only</span>
+            <span class="n">Dc_</span> <span class="o">=</span> <span class="n">get_block_col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">)</span>
+            <span class="c1"># Dc in D and D0</span>
+            <span class="n">Dc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">Dc_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="p">))</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Dc_</span>
+            <span class="n">lasso</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">Lasso</span><span class="p">(</span><span class="n">Dc</span><span class="p">,</span> <span class="n">lambd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd</span><span class="p">)</span>
+            <span class="n">lasso</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+            <span class="n">Xc</span> <span class="o">=</span> <span class="n">lasso</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+            <span class="n">residual_matrix</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Dc</span><span class="p">,</span> <span class="n">Xc</span><span class="p">)</span>
+            <span class="n">E</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">residual_matrix</span><span class="o">*</span><span class="n">residual_matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span>\
+                <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Xc</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span> <span class="k">if</span> <span class="n">loss_mat</span> <span class="k">else</span> <span class="n">pred</span>
+
+
+<span class="k">def</span> <span class="nf">mini_test_unit</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">================================================================&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mini Unit test: Low-rank shared Dictionary Learning&#39;</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="s1">&#39;myYaleB&#39;</span>
+    <span class="n">N_train</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">label_train</span><span class="p">,</span> <span class="n">label_test</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">N_train</span><span class="p">)</span>
+    <span class="nb">breakpoint</span><span class="p">()</span>
+    <span class="n">lrsdl</span> <span class="o">=</span> <span class="n">LRSDL</span><span class="p">(</span><span class="n">lambd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">lambd2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">k0</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">lrsdl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span> <span class="n">label_train</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">lrsdl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">label_test</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">mini_test_unit_FDDL</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">================================================================&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mini Unit test: Fisher Disrciminant Dicationary Learning&#39;</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="s1">&#39;myYaleB&#39;</span>
+    <span class="n">N_train</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">label_train</span><span class="p">,</span> <span class="n">label_test</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">N_train</span><span class="p">)</span>
+    <span class="n">lrsdl</span> <span class="o">=</span> <span class="n">LRSDL</span><span class="p">(</span><span class="n">lambd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">lambd2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">k0</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">lrsdl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span> <span class="n">label_train</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">lrsdl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">label_test</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">test_unit_FDDL</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">================================================================&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unit test: Fisher Disrciminant Dicationary Learning&#39;</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="s1">&#39;myYaleB&#39;</span>
+    <span class="n">N_train</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">label_train</span><span class="p">,</span> <span class="n">label_test</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">N_train</span><span class="p">)</span>
+    <span class="n">lrsdl</span> <span class="o">=</span> <span class="n">LRSDL</span><span class="p">(</span><span class="n">lambd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">lambd2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">k0</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">lrsdl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span> <span class="n">label_train</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">lrsdl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">label_test</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">test_unit</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">================================================================&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unit test: Low-rank shared Dictionary Learning&#39;</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="s1">&#39;myYaleB&#39;</span>
+    <span class="n">N_train</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">label_train</span><span class="p">,</span> <span class="n">label_test</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">N_train</span><span class="p">)</span>
+    <span class="n">lrsdl</span> <span class="o">=</span> <span class="n">LRSDL</span><span class="p">(</span><span class="n">lambd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">lambd2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">k0</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">lrsdl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span> <span class="n">label_train</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">lrsdl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">label_test</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">mini_test_unit_FDDL</span><span class="p">()</span>
+    <span class="n">mini_test_unit</span><span class="p">()</span>
+    <span class="n">test_unit_FDDL</span><span class="p">()</span>
+    <span class="n">test_unit</span><span class="p">()</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Miquel Lluís Llorens Monteagudo.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

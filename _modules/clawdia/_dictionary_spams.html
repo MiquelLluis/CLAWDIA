@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>clawdia._dictionary_spams &#8212; CLAWDIA 0.4.3 documentation</title>
+    <title>clawdia._dictionary_spams &#8212; CLAWDIA 0.5.0 documentation</title>
   
   
   
@@ -29,7 +29,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=6e061ff1" />
   
   <!-- So that users can add custom icons -->
@@ -38,15 +38,15 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=5bfaad31"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/clawdia/_dictionary_spams';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.4.3" />
+  <meta name="docsearch:version" content="0.5.0" />
   </head>
   
   
@@ -99,7 +99,7 @@
     <a href="../../index.html" class="navbar-brand" style="color: inherit; cursor: pointer;">
         <img src="_static/clawdia-logo.svg" class="navbar-project-icon" />
         <span class="navbar-project-name">CLAWDIA</span>
-        <span class="navbar-project-version">v0.4.3</span>
+        <span class="navbar-project-version">v0.5.0</span>
     </a>
 </div></div>
     
@@ -306,27 +306,28 @@
                 <article class="bd-article">
                   
   <h1>Source code for clawdia._dictionary_spams</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.optimize</span>
-<span class="kn">import</span> <span class="nn">spams</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NDArray</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">spams</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">estimators</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">lib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimators</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">lib</span>
 
 
 <span class="c1"># Remove warning from OpenMP, present in older versions of python-spams.</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;__version__&#39;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">spams</span><span class="p">)</span> <span class="ow">or</span> <span class="n">spams</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&lt;=</span> <span class="s1">&#39;2.6.5.4&#39;</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_WARNINGS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;FALSE&#39;</span>
 
 
 <div class="viewcode-block" id="DictionarySpams">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams">[docs]</a>
-<span class="k">class</span> <span class="nc">DictionarySpams</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DictionarySpams</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sparse Dictionary Learning (SDL) model for waveform denoising via SPAMS.</span>
 
 <span class="sd">    This class provides an object-oriented implementation of a Sparse</span>
@@ -382,11 +383,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="DictionarySpams.__init__">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
              <span class="n">dict_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">signal_pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wave_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">patch_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2_normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_allzeros</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+             <span class="n">patch_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2_normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_allzeros</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_completeness</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">lambda1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_train</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">trained</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode_traindl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">modeD_traindl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode_lasso</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -429,9 +430,9 @@
 <span class="sd">            `wave_pos` is `None`.</span>
 <span class="sd">        l2_normed : bool, default=True</span>
 <span class="sd">            If `True`, normalize extracted atoms to their L2 norm.</span>
-<span class="sd">        allow_allzeros : bool, default=True</span>
-<span class="sd">            If `False`, random atoms with all zeros are excluded from the</span>
-<span class="sd">            initial dictionary.</span>
+<span class="sd">        allow_allzeros : bool, default=False</span>
+<span class="sd">            By default, random atoms with all zeros are excluded from the</span>
+<span class="sd">            initial dictionary. If `allow_allzeros=True`, they are allowed.</span>
 <span class="sd">        random_state : int, optional</span>
 <span class="sd">            Seed for random sampling from `signal_pool`.</span>
 <span class="sd">        ignore_completeness : bool, optional, default=False</span>
@@ -504,7 +505,7 @@
 
 <div class="viewcode-block" id="DictionarySpams.train">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.train">[docs]</a>
-    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patches</span><span class="p">,</span> <span class="n">lambda1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">warm_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patches</span><span class="p">,</span> <span class="n">lambda1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">warm_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
               <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threads</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Train the dictionary.</span>
 
@@ -544,7 +545,9 @@
 <span class="sd">        **kwargs</span>
 <span class="sd">            Passed directly to &#39;spams.trainDL&#39;, see [1].</span>
 
-<span class="sd">        Additional parameters will be passed to the SPAMS training function.</span>
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        clawdia.lib.extract_patches : Useful for generating the training `patches`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trained</span><span class="p">:</span>
@@ -611,7 +614,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">=</span> <span class="n">tac</span> <span class="o">-</span> <span class="n">tic</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_reconstruct_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lasso</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reconstruct_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lasso</span><span class="p">):</span>
         <span class="c1"># TODO: Add kwarg option to disable the patch normalization.</span>
         <span class="c1"># This might be usefull for tasks such detection or when a heavy</span>
         <span class="c1"># discrimination is needed.</span>
@@ -637,7 +640,7 @@
 
 <div class="viewcode-block" id="DictionarySpams.reconstruct">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct">[docs]</a>
-    <span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_code</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reconstruct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_code</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reconstruct a signal as a sparse combination of dictionary atoms.</span>
 
 <span class="sd">        Parameters</span>
@@ -684,7 +687,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">signal_rec</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span> <span class="k">if</span> <span class="n">with_code</span> <span class="k">else</span> <span class="n">signal_rec</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_reconstruct_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strains</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normed_windows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reconstruct_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strains</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normed_windows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">ns</span> <span class="o">=</span> <span class="n">strains</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">patches</span><span class="p">,</span> <span class="n">norms</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_patches</span><span class="p">(</span>
@@ -712,7 +715,7 @@
 
 <div class="viewcode-block" id="DictionarySpams.reconstruct_batch">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct_batch">[docs]</a>
-    <span class="k">def</span> <span class="nf">reconstruct_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reconstruct_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                           <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO</span>
 
@@ -738,7 +741,7 @@
 
 <div class="viewcode-block" id="DictionarySpams.reconstruct_minibatch">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct_minibatch">[docs]</a>
-    <span class="k">def</span> <span class="nf">reconstruct_minibatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batchsize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reconstruct_minibatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batchsize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                               <span class="n">normed_windows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO</span>
 
@@ -781,21 +784,40 @@
         <span class="k">return</span> <span class="n">out</span></div>
 
 
-<div class="viewcode-block" id="DictionarySpams.reconstruct_auto">
-<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct_auto">[docs]</a>
-    <span class="k">def</span> <span class="nf">reconstruct_auto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">zero_marg</span><span class="p">,</span> <span class="n">lambda_lims</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                         <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kwargs_bisect</span><span class="o">=</span><span class="p">{},</span> <span class="n">kwargs_lasso</span><span class="o">=</span><span class="p">{}):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO</span>
+<div class="viewcode-block" id="DictionarySpams.reconstruct_margin_constrained">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct_margin_constrained">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reconstruct_margin_constrained</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">signal</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">margin</span><span class="p">:</span> <span class="nb">int</span><span class="o">|</span><span class="nb">tuple</span><span class="o">|</span><span class="nb">list</span><span class="o">|</span><span class="n">NDArray</span><span class="p">,</span>
+        <span class="n">lambda_lims</span><span class="p">:</span> <span class="nb">tuple</span><span class="o">|</span><span class="nb">list</span><span class="p">,</span>
+        <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">kwargs_bisect</span><span class="o">=</span><span class="p">{},</span>
+        <span class="n">kwargs_lasso</span><span class="o">=</span><span class="p">{}</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]</span> <span class="o">|</span> <span class="n">NDArray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO&quot;&quot;&quot;</span>
 
-<span class="sd">        Reconstrueix un únic senyal buscant per bisecció la lambda que</span>
-<span class="sd">        minimitza el senyal reconstruit al marge esquerre del senyal, la mida</span>
-<span class="sd">        dels quals ve determinada per &#39;zero_marg&#39;.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Margins of the signals to be zeroed</span>
-        <span class="n">margin</span> <span class="o">=</span> <span class="n">signal</span><span class="p">[:</span><span class="n">zero_marg</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">margin</span> <span class="o">=</span> <span class="n">signal</span><span class="p">[:</span><span class="n">margin</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">margin</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;margin&#39;: when given &#39;tuple&#39; or &#39;list&#39;, it can contain &quot;</span>
+                    <span class="s2">&quot;only 2 integers.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">margin</span> <span class="o">=</span> <span class="n">signal</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="o">*</span><span class="n">margin</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;margin&#39;: expected types &#39;int&#39;, &#39;tuple&#39; or &#39;NDArray&#39;; &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;got &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">margin</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+            <span class="p">)</span>
         <span class="c1"># Function to be bisected.</span>
-        <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">sc_lambda</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">fun</span><span class="p">(</span><span class="n">sc_lambda</span><span class="p">):</span>
             <span class="n">rec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reconstruct_single</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lasso</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rec</span><span class="p">))</span>
 
@@ -821,9 +843,9 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="n">full_output</span> <span class="k">else</span> <span class="n">rec</span></div>
 
 
-<div class="viewcode-block" id="DictionarySpams.reconstruct_iterative_minibatch">
-<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct_iterative_minibatch">[docs]</a>
-    <span class="k">def</span> <span class="nf">reconstruct_iterative_minibatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batchsize</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+<div class="viewcode-block" id="DictionarySpams.reconstruct_iterative">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct_iterative">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reconstruct_iterative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">sc_lambda</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batchsize</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
                                         <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                         <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kwargs_lasso</span><span class="o">=</span><span class="p">{}):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reconstruct multiple signals using iterative residual subtraction.</span>
@@ -940,16 +962,33 @@
 
 
 
-<div class="viewcode-block" id="DictionarySpams.optimum_reconstruct">
-<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.optimum_reconstruct">[docs]</a>
-    <span class="k">def</span> <span class="nf">optimum_reconstruct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strain</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">kwargs_minimize</span><span class="p">,</span> <span class="n">kwargs_lasso</span><span class="p">,</span>
-                            <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DictionarySpams.reconstruct_loss_optimised">
+<a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reconstruct_loss_optimised">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reconstruct_loss_optimised</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">strain</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">reference</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">loss_func</span><span class="o">=</span><span class="s1">&#39;match&#39;</span><span class="p">,</span>
+        <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kwargs_minimize</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;bounded&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;bounds&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;xatol&#39;</span><span class="p">:</span> <span class="mf">0.04</span><span class="p">}</span>
+        <span class="p">},</span>
+        <span class="n">kwargs_lasso</span><span class="o">=</span><span class="p">{},</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the best reconstruction of a signal w.r.t. a reference.</span>
 
 <span class="sd">        Find the lambda which produces a reconstruction of the</span>
-<span class="sd">        input &#39;strain&#39; closest to the given &#39;reference&#39;, comparing them with</span>
-<span class="sd">        the SSIM estimator. The search is performed by the SciPy&#39;s function</span>
-<span class="sd">        &#39;minimize_scalar&#39; with bounds.</span>
+<span class="sd">        input &#39;strain&#39; closest to the given &#39;reference&#39;, according to a chosen</span>
+<span class="sd">        loss function: Match, Overlap, SSIM, or a custom one.</span>
+
+<span class="sd">        The minimisation is performed by SciPy&#39;s &#39;minimize_scalar&#39;, with</span>
+<span class="sd">        options specified through `kwargs_minimize`.</span>
 
 <span class="sd">        PARAMETERS</span>
 <span class="sd">        ----------</span>
@@ -958,12 +997,6 @@
 
 <span class="sd">        reference: ndarray</span>
 <span class="sd">            Reference strain which to compare the reconstruction to.</span>
-
-<span class="sd">        kwargs_minimize: dict</span>
-<span class="sd">            Passed to SciPy&#39;s `minimize_scalar(**kwargs_minimize)`.</span>
-
-<span class="sd">        kwargs_lasso: dict</span>
-<span class="sd">            Passed to Python-Spams&#39; `lasso(**kwargs_lasso)`.</span>
 
 <span class="sd">        step: int, optional</span>
 <span class="sd">            Separation in samples between each window into which the input</span>
@@ -974,11 +1007,28 @@
 <span class="sd">            Indices of limits to where compute the loss between the</span>
 <span class="sd">            reconstruction and the reference strain.</span>
 
+<span class="sd">        loss_func: str | callable, optional</span>
+<span class="sd">            If &#39;str&#39;, can be &#39;match&#39; (default), &#39;overlap&#39; or &#39;ssim&#39;. In both</span>
+<span class="sd">            cases, their pseudo-distance is used. Refer to their documentation</span>
+<span class="sd">            in &#39;clawdia.estimators&#39; for more details.</span>
+<span class="sd">            If &#39;callable&#39;, it must be a symmetric function of 2 arguments,</span>
+<span class="sd">            over whose the &#39;reference&#39; signal and the denoised signal will be</span>
+<span class="sd">            passed. It must return a distance-like score between 0 (best) and</span>
+<span class="sd">            1 (worst) to guide the minimisation algorithm.</span>
+
 <span class="sd">        normed: bool, optional</span>
 <span class="sd">            If True, returns the signal normed to its maximum absolute amplitude.</span>
 
+<span class="sd">        kwargs_minimize: dict</span>
+<span class="sd">            Passed to SciPy&#39;s `minimize_scalar(**kwargs_minimize)`.</span>
+<span class="sd">            Bracket or boundary values must be passed as `np.log10(bounds)`.</span>
+
+<span class="sd">        kwargs_lasso: dict, optional</span>
+<span class="sd">            Passed to Python-Spams&#39; `lasso(**kwargs_lasso)`.</span>
+
 <span class="sd">        verbose: bool, optional</span>
-<span class="sd">            Print info about the minimization results. False by default.</span>
+<span class="sd">            Set the maximum verbosity (`&#39;disp&#39;: 3`) to SciPy&#39;s `minimize_scalar`</span>
+<span class="sd">            and print info about the minimization results. False by default.</span>
 
 <span class="sd">        RETURNS</span>
 <span class="sd">        -------</span>
@@ -989,33 +1039,88 @@
 <span class="sd">            Optimum value for lambda.</span>
 
 <span class="sd">        loss: float</span>
-<span class="sd">            ISSIM (1 - SSIM) between the optimized reconstruction and the</span>
-<span class="sd">            reference.</span>
+<span class="sd">            dOverlap `(1 - Overlap)/2` or DSSIM `(1 - SSIM)/2` between the</span>
+<span class="sd">            optimized reconstruction and the reference.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">aa</span> <span class="o">=</span> <span class="mi">10</span>
-        <span class="n">bb</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># max(issim) x bb as the minimu value for the auxiliar line function.</span>
-        <span class="n">rec</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">limits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">sl</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">sl</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="o">*</span><span class="n">limits</span><span class="p">)</span>
+        <span class="c1"># Trim strain and reference if limits are specified.</span>
+        <span class="n">sl</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">limits</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">slice</span><span class="p">(</span><span class="o">*</span><span class="n">limits</span><span class="p">)</span>
         <span class="n">reference_</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span>
+        <span class="n">strain_</span> <span class="o">=</span> <span class="n">strain</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span>
 
-        <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">l_rec_log</span><span class="p">):</span>
+        <span class="c1"># Set the loss function:</span>
+        <span class="k">if</span> <span class="n">loss_func</span> <span class="o">==</span> <span class="s1">&#39;match&#39;</span><span class="p">:</span>
+            <span class="n">lossf</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">estimators</span><span class="o">.</span><span class="n">imatch</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reference_</span><span class="p">)</span>
+            <span class="n">_worst</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">_eps</span> <span class="o">=</span> <span class="mf">1e-2</span>    <span class="c1"># start a hair above worst</span>
+        <span class="k">elif</span> <span class="n">loss_func</span> <span class="o">==</span> <span class="s1">&#39;ssim&#39;</span><span class="p">:</span>
+            <span class="n">lossf</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">estimators</span><span class="o">.</span><span class="n">dssim</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reference_</span><span class="p">)</span>
+            <span class="n">_worst</span> <span class="o">=</span> <span class="mf">0.5</span>
+            <span class="n">_eps</span> <span class="o">=</span> <span class="mf">1e-2</span>    <span class="c1"># start a hair above worst</span>
+        <span class="k">elif</span> <span class="n">loss_func</span> <span class="o">==</span> <span class="s1">&#39;overlap&#39;</span><span class="p">:</span>
+            <span class="n">lossf</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">estimators</span><span class="o">.</span><span class="n">doverlap</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reference_</span><span class="p">)</span>
+            <span class="n">_worst</span> <span class="o">=</span> <span class="mf">0.5</span>   <span class="c1"># dOverlap in [0, ~0.5] in practice; theoretical worst = 1.0 for full anticorrelation</span>
+            <span class="n">_eps</span> <span class="o">=</span> <span class="mf">1e-3</span>    <span class="c1"># keep this very close to 0.5</span>
+        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">loss_func</span><span class="p">):</span>
+            <span class="n">lossf</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reference_</span><span class="p">)</span>
+            <span class="n">_worst</span> <span class="o">=</span> <span class="mf">1.0</span>   <span class="c1"># conservative default</span>
+            <span class="n">_eps</span> <span class="o">=</span> <span class="mf">1e-2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;loss function &#39;</span><span class="si">{</span><span class="n">loss_func</span><span class="si">}</span><span class="s2">&#39; not implemented&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Extract log10-lambda search bounds if provided; else default to [0.01, 10] =&gt; [-2, 1]</span>
+        <span class="n">log_bounds</span> <span class="o">=</span> <span class="n">kwargs_minimize</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bounds&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.01</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">log_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">log_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">log_bounds</span> <span class="o">=</span> <span class="n">log_bounds</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">log_l_min</span><span class="p">,</span> <span class="n">log_l_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">log_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">log_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">log_l_min</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">log_l_max</span><span class="p">):</span>
+            <span class="c1"># Fall back</span>
+            <span class="n">log_l_min</span><span class="p">,</span> <span class="n">log_l_max</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span>
+        
+        <span class="c1"># Build a gentle positive slope so the penalty increases with</span>
+        <span class="c1"># log10(lambda). Make it span a modest delta across the search range;</span>
+        <span class="c1"># this keeps it dominant only when rec==0. For dOverlap keep the rise</span>
+        <span class="c1"># small; for DSSIM allow a bit more headroom.</span>
+        <span class="n">span</span> <span class="o">=</span> <span class="mf">0.10</span> <span class="k">if</span> <span class="n">loss_func</span> <span class="o">==</span> <span class="s1">&#39;overlap&#39;</span> <span class="k">else</span> <span class="mf">0.25</span>
+        <span class="n">slope</span> <span class="o">=</span> <span class="n">span</span> <span class="o">/</span> <span class="p">(</span><span class="n">log_l_max</span> <span class="o">-</span> <span class="n">log_l_min</span><span class="p">)</span>
+        <span class="n">intercept</span> <span class="o">=</span> <span class="n">_worst</span> <span class="o">+</span> <span class="n">_eps</span>  <span class="c1"># start just above the worst value</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_null_penalty</span><span class="p">(</span><span class="n">l_rec_log</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+            <span class="c1"># Affine function in log-space: at log_l_min it&#39;s ~worst+eps and</span>
+            <span class="c1"># then rises linearly</span>
+            <span class="k">return</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="p">(</span><span class="n">l_rec_log</span> <span class="o">-</span> <span class="n">log_l_min</span><span class="p">)</span>
+
+        <span class="n">rec</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">cost_function</span><span class="p">(</span><span class="n">l_rec_log</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Function to be minimized.&quot;&quot;&quot;</span>
             <span class="k">nonlocal</span> <span class="n">rec</span>
             <span class="n">l_rec</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">l_rec_log</span>  <span class="c1"># Opitimizes lambda in log. space!</span>
-            <span class="n">rec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">strain</span><span class="p">,</span> <span class="n">l_rec</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="n">normed</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lasso</span><span class="p">)</span>
+            <span class="n">rec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">strain_</span><span class="p">,</span> <span class="n">l_rec</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="n">normed</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lasso</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">rec</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                <span class="n">loss</span> <span class="o">=</span> <span class="n">estimators</span><span class="o">.</span><span class="n">issim</span><span class="p">(</span><span class="n">rec</span><span class="p">[</span><span class="n">sl</span><span class="p">],</span> <span class="n">reference_</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">loss</span> <span class="o">=</span> <span class="n">aa</span> <span class="o">*</span> <span class="n">l_rec</span> <span class="o">+</span> <span class="n">bb</span>
-            <span class="k">return</span> <span class="n">loss</span>
+                <span class="k">return</span> <span class="n">lossf</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+            <span class="c1"># If reconstruction is identically zero, steer away from larger lambda:</span>
+            <span class="k">return</span> <span class="n">_null_penalty</span><span class="p">(</span><span class="n">l_rec_log</span><span class="p">)</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">minimize_scalar</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_minimize</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="c1"># Add maximum verbosity to `scipy.optimize.minimize_scalar`, unless</span>
+            <span class="c1"># the `disp` option is present.</span>
+            <span class="k">if</span> <span class="s1">&#39;options&#39;</span> <span class="ow">in</span> <span class="n">kwargs_minimize</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;disp&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs_minimize</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">]:</span>
+                    <span class="n">kwargs_minimize</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">][</span><span class="s1">&#39;disp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kwargs_minimize</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;disp&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">minimize_scalar</span><span class="p">(</span><span class="n">cost_function</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_minimize</span><span class="p">)</span>
         <span class="n">l_opt</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;fun&#39;</span><span class="p">]</span>
+
+        <span class="c1"># If the section to be optimised was shorter than the whole strain,</span>
+        <span class="c1"># we need to reconstruct the whole strain with the found lambda.</span>
+        <span class="c1"># Otherwise, we keep the `rec` value directly from the cost function.</span>
+        <span class="k">if</span> <span class="n">limits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reconstructing the whole strain with the optimal lambda found.&quot;</span><span class="p">)</span>
+            <span class="n">rec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">strain</span><span class="p">,</span> <span class="n">l_opt</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="n">normed</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lasso</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="n">success</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span>
@@ -1041,7 +1146,7 @@
 
 <div class="viewcode-block" id="DictionarySpams.save">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.save">[docs]</a>
-    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the current state of the DictionarySpams object to a file.</span>
 
 <span class="sd">        This method saves all attributes of the object as a `.npz` file. </span>
@@ -1073,7 +1178,7 @@
 
 <div class="viewcode-block" id="DictionarySpams.copy">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.copy">[docs]</a>
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a copy of the dictionary.</span>
 
 <span class="sd">        Returns a new instance of the same dictionary with the same values</span>
@@ -1107,16 +1212,15 @@
     
 <div class="viewcode-block" id="DictionarySpams.reset">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionarySpams.reset">[docs]</a>
-    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the dictionary to its initial (untrained) state.&quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trained</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_train</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_check_initial_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal_pool</span><span class="p">,</span> <span class="n">ignore_completeness</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_initial_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal_pool</span><span class="p">,</span> <span class="n">ignore_completeness</span><span class="p">):</span>
         <span class="c1"># Explicit initial dictionary.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_init</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -1202,7 +1306,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>

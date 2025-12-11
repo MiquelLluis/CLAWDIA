@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>clawdia.plotting &#8212; CLAWDIA 0.4.3 documentation</title>
+    <title>clawdia.plotting &#8212; CLAWDIA 0.5.0 documentation</title>
   
   
   
@@ -30,7 +30,7 @@
   <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=6e061ff1" />
   
   <!-- So that users can add custom icons -->
@@ -39,8 +39,8 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=5bfaad31"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'clawdia.plotting';</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -48,7 +48,7 @@
     <link rel="prev" title="clawdia.pipeline" href="clawdia.pipeline.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.4.3" />
+  <meta name="docsearch:version" content="0.5.0" />
   </head>
   
   
@@ -101,7 +101,7 @@
     <a href="index.html" class="navbar-brand" style="color: inherit; cursor: pointer;">
         <img src="_static/clawdia-logo.svg" class="navbar-project-icon" />
         <span class="navbar-project-name">CLAWDIA</span>
-        <span class="navbar-project-version">v0.4.3</span>
+        <span class="navbar-project-version">v0.5.0</span>
     </a>
 </div></div>
     
@@ -407,7 +407,7 @@ Defaults to ‘both’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>array</strong><span class="classifier">2d-array</span></dt><dd><p>Dictionary matrix in Fortran order with shape (a, l).</p>
+<dt><strong>array</strong><span class="classifier">2d-array</span></dt><dd><p>Dictionary matrix with shape (a, l).</p>
 </dd>
 <dt><strong>c</strong><span class="classifier">int, optional</span></dt><dd><p>Number of atoms at each side of the squared matrix of plots; the total
 number of plotted atoms will be <cite>c ** 2</cite>.
@@ -418,101 +418,6 @@ If not given, it is computed as <cite>int(np.sqrt(a))</cite>.</p>
 </dl>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clawdia.plotting.plot_spec_of">
-<span class="sig-prename descclassname"><span class="pre">clawdia.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_spec_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">5)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4096</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hann'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/plotting.html#plot_spec_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.plotting.plot_spec_of" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clawdia.plotting.plot_spectrogram_with_instantaneous_features">
-<span class="sig-prename descclassname"><span class="pre">clawdia.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_spectrogram_with_instantaneous_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strain_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16384</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outseg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([0.,</span> <span class="pre">0.00244567,</span> <span class="pre">0.00975876,</span> <span class="pre">0.02186772,</span> <span class="pre">0.03865409,</span> <span class="pre">0.05995367,</span> <span class="pre">0.08555808,</span> <span class="pre">0.11521684,</span> <span class="pre">0.14863981,</span> <span class="pre">0.18550003,</span> <span class="pre">0.2254369,</span> <span class="pre">0.26805974,</span> <span class="pre">0.31295157,</span> <span class="pre">0.35967324,</span> <span class="pre">0.40776768,</span> <span class="pre">0.4567644,</span> <span class="pre">0.50618408,</span> <span class="pre">0.55554326,</span> <span class="pre">0.60435908,</span> <span class="pre">0.65215399,</span> <span class="pre">0.69846043,</span> <span class="pre">0.74282539,</span> <span class="pre">0.78481486,</span> <span class="pre">0.82401809,</span> <span class="pre">0.86005154,</span> <span class="pre">0.89256273,</span> <span class="pre">0.9212336,</span> <span class="pre">0.94578368,</span> <span class="pre">0.9659728,</span> <span class="pre">0.98160345,</span> <span class="pre">0.99252273,</span> <span class="pre">0.99862382,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">1.,</span> <span class="pre">0.99862382,</span> <span class="pre">0.99252273,</span> <span class="pre">0.98160345,</span> <span class="pre">0.9659728,</span> <span class="pre">0.94578368,</span> <span class="pre">0.9212336,</span> <span class="pre">0.89256273,</span> <span class="pre">0.86005154,</span> <span class="pre">0.82401809,</span> <span class="pre">0.78481486,</span> <span class="pre">0.74282539,</span> <span class="pre">0.69846043,</span> <span class="pre">0.65215399,</span> <span class="pre">0.60435908,</span> <span class="pre">0.55554326,</span> <span class="pre">0.50618408,</span> <span class="pre">0.4567644,</span> <span class="pre">0.40776768,</span> <span class="pre">0.35967324,</span> <span class="pre">0.31295157,</span> <span class="pre">0.26805974,</span> <span class="pre">0.2254369,</span> <span class="pre">0.18550003,</span> <span class="pre">0.14863981,</span> <span class="pre">0.11521684,</span> <span class="pre">0.08555808,</span> <span class="pre">0.05995367,</span> <span class="pre">0.03865409,</span> <span class="pre">0.02186772,</span> <span class="pre">0.00975876,</span> <span class="pre">0.00244567,</span> <span class="pre">0.])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mfft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16384</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-22</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/clawdia/plotting.html#plot_spectrogram_with_instantaneous_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clawdia.plotting.plot_spectrogram_with_instantaneous_features" title="Link to this definition">#</a></dt>
-<dd><p>Plot the spectrogram, instantaneous frequency, and strain’s waveform.</p>
-<p>This function generates a multi-panel plot consisting of:</p>
-<ol class="arabic simple">
-<li><p>A spectrogram of the gravitational wave strain, obtained using
-Short-Time Fourier Transform (STFT), visualizing the frequency evolution
-over time.</p></li>
-<li><p>The instantaneous frequency of the strain, plotted on top of the
-spectrogram to show the frequency changes in real time.</p></li>
-<li><p>The raw gravitational wave strain in the time domain, shown above the
-spectrogram for direct comparison.</p></li>
-</ol>
-<p>Key features of the plot:</p>
-<ul class="simple">
-<li><p><strong>Spectrogram</strong>: The frequency content of the gravitational wave signal
-is displayed over time using a color map (<cite>inferno</cite>), with the x-axis
-representing time (in milliseconds) and the y-axis representing
-frequency (in Hz).</p></li>
-<li><p><strong>Instantaneous Frequency</strong>: Plots the instantaneous frequency of the
-strain over time, highlighting the frequency variations.</p></li>
-<li><p><strong>Energy Normalization</strong>: The spectrogram uses a logarithmic scale for
-the energy (power spectral density, PSD), normalized by the maximum
-energy value in the signal.</p></li>
-<li><p><strong>Dynamic Range Control</strong>: The color scale of the spectrogram can be
-adjusted via the <cite>vmin</cite> parameter to emphasize specific energy levels.</p></li>
-<li><p><strong>Time-Domain Waveform</strong>: A plot of the original strain data in the time
-domain is shown above the spectrogram, providing context for the signal’s
-evolution.</p></li>
-<li><p><strong>Segmentation</strong>: The user can specify the time (<cite>outseg</cite>) and frequency
-(<cite>outfreq</cite>) ranges to focus on specific parts of the data.</p></li>
-<li><p><strong>Customization</strong>: The plot has a black background, white grid lines,
-and labeled colorbars for clarity.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>strain_array</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>The time-domain strain data of the gravitational wave signal.</p>
-</dd>
-<dt><strong>time_array</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Array of time stamps corresponding to the strain data.</p>
-</dd>
-<dt><strong>sampling_rate</strong><span class="classifier">int, optional</span></dt><dd><p>The sampling rate of the data in Hz (default is 2^14, or 16384 Hz).</p>
-</dd>
-<dt><strong>outseg</strong><span class="classifier">tuple, optional</span></dt><dd><p>A tuple specifying the time range (start, end) in seconds for the
-x-axis. If <cite>None</cite>, the entire time range of the input data is used.</p>
-</dd>
-<dt><strong>outfreq</strong><span class="classifier">tuple, optional</span></dt><dd><p>A tuple specifying the frequency range (start, end) in Hz for the
-y-axis. If <cite>None</cite>, the full frequency range (up to Nyquist frequency)
-is used.</p>
-</dd>
-<dt><strong>window</strong><span class="classifier">numpy.ndarray, optional</span></dt><dd><p>The window function applied during STFT computation (default is a
-Tukey window).</p>
-</dd>
-<dt><strong>hop</strong><span class="classifier">int, optional</span></dt><dd><p>The hop size between successive STFT windows (default is 32).</p>
-</dd>
-<dt><strong>mfft</strong><span class="classifier">int, optional</span></dt><dd><p>The number of points in the FFT used for STFT computation (default
-is 2^14).</p>
-</dd>
-<dt><strong>vmin</strong><span class="classifier">float, optional</span></dt><dd><p>The minimum value for the color scale in the spectrogram (default
-is -22). This controls the dynamic range of the color map.</p>
-</dd>
-<dt><strong>ax</strong><span class="classifier">matplotlib.axes.Axes, optional</span></dt><dd><p>The axes object on which to plot the spectrogram. If <cite>None</cite>, a new
-figure and axes are created.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>fig</strong><span class="classifier">matplotlib.figure.Figure</span></dt><dd><p>The figure object containing the complete plot.</p>
-</dd>
-<dt><strong>axs</strong><span class="classifier">List[matplotlib.axes.Axes]</span></dt><dd><p>A list of axes objects containing the spectrogram, the colorbar, and
-the time-domain plots.</p>
-</dd>
-<dt><strong>Sxx</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>The computed spectrogram (PSD values) of the input strain data.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>The spectrogram normalization is performed on the square root of the 
-Power Spectral Density (PSD), converted to a logarithmic scale.</p></li>
-<li><p>The y-axis of the spectrogram uses a kilohertz scale for readability.</p></li>
-<li><p>The time-domain waveform is plotted without axes labels for simplicity.</p></li>
-<li><p>Instantaneous frequency values below zero are masked to avoid displaying 
-non-physical results.</p></li>
-</ul>
 </dd></dl>
 
 </section>
@@ -557,8 +462,6 @@ non-physical results.</p></li>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.plotting.plot_confusion"><code class="docutils literal notranslate"><span class="pre">plot_confusion()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.plotting.plot_dictionary"><code class="docutils literal notranslate"><span class="pre">plot_dictionary()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.plotting.plot_spec_of"><code class="docutils literal notranslate"><span class="pre">plot_spec_of()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clawdia.plotting.plot_spectrogram_with_instantaneous_features"><code class="docutils literal notranslate"><span class="pre">plot_spectrogram_with_instantaneous_features()</span></code></a></li>
 </ul>
   </nav></div>
 
@@ -596,7 +499,7 @@ non-physical results.</p></li>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>

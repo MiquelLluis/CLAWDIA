@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>clawdia._dictionary_lrsdl &#8212; CLAWDIA 0.4.3 documentation</title>
+    <title>clawdia._dictionary_lrsdl &#8212; CLAWDIA 0.5.0 documentation</title>
   
   
   
@@ -29,7 +29,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=6e061ff1" />
   
   <!-- So that users can add custom icons -->
@@ -38,15 +38,15 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=5bfaad31"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/clawdia/_dictionary_lrsdl';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.4.3" />
+  <meta name="docsearch:version" content="0.5.0" />
   </head>
   
   
@@ -99,7 +99,7 @@
     <a href="../../index.html" class="navbar-brand" style="color: inherit; cursor: pointer;">
         <img src="_static/clawdia-logo.svg" class="navbar-project-icon" />
         <span class="navbar-project-name">CLAWDIA</span>
-        <span class="navbar-project-version">v0.4.3</span>
+        <span class="navbar-project-version">v0.5.0</span>
     </a>
 </div></div>
     
@@ -306,16 +306,16 @@
                 <article class="bd-article">
                   
   <h1>Source code for clawdia._dictionary_lrsdl</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">dictol.LRSDL</span> <span class="kn">import</span> <span class="n">LRSDL</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">dictol.LRSDL</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">time</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">lib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">lib</span>
 
 
 <div class="viewcode-block" id="DictionaryLRSDL">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionaryLRSDL">[docs]</a>
-<span class="k">class</span> <span class="nc">DictionaryLRSDL</span><span class="p">(</span><span class="n">LRSDL</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DictionaryLRSDL</span><span class="p">(</span><span class="n">dictol</span><span class="o">.</span><span class="n">LRSDL</span><span class="o">.</span><span class="n">LRSDL</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interface for the Low-Rank Shared Dictionary Learning class.</span>
 
 <span class="sd">    Attributes</span>
@@ -391,7 +391,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="DictionaryLRSDL.__init__">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionaryLRSDL.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lambd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">lambd2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k0</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lambd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">lambd2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">k0</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                  <span class="n">updateX_iters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">updateD_iters</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Initialize the LRSDL dictionary.</span>
 
@@ -470,10 +470,58 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">=</span> <span class="kc">None</span></div>
 
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;lambd=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;lambd2=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;eta=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;k=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;k0=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">k0</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;updateX_iters=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">updateX_iters</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;updateD_iters=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">updateD_iters</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">]</span>
+        <span class="n">params_str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Training time</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training time: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">t_train</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> sec&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Not trained&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Dictionary and coefficients</span>
+        <span class="n">state_attrs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;D0&#39;</span><span class="p">,</span> <span class="s1">&#39;D0&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;X0&#39;</span><span class="p">,</span> <span class="s1">&#39;X0&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;Y_range&#39;</span><span class="p">,</span> <span class="s1">&#39;Y_range&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;D_range&#39;</span><span class="p">,</span> <span class="s1">&#39;D_range&#39;</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">display_name</span> <span class="ow">in</span> <span class="n">state_attrs</span><span class="p">:</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">attr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Y_range&#39;</span><span class="p">,</span> <span class="s1">&#39;D_range&#39;</span><span class="p">):</span>
+                        <span class="n">state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">display_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">display_name</span><span class="si">}</span><span class="s2">: shape=</span><span class="si">{</span><span class="n">attr</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">display_name</span><span class="si">}</span><span class="s2">: length=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">display_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">display_name</span><span class="si">}</span><span class="s2">: Not initialized&quot;</span><span class="p">)</span>
+        
+        <span class="n">state_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;DictionaryLRSDL(</span><span class="si">{</span><span class="n">params_str</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="n">state_str</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="DictionaryLRSDL.fit">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionaryLRSDL.fit">[docs]</a>
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">l_atoms</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">l_atoms</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_after</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Train the LRSDL dictionary.</span>
 
@@ -508,13 +556,14 @@
 
 <span class="sd">        step : int, optional</span>
 <span class="sd">            The step size for splitting input samples into patches of length</span>
-<span class="sd">            `l_atoms`. If not specified, the entire input is used as a single</span>
-<span class="sd">            window.</span>
+<span class="sd">            `l_atoms`. If not specified, it is set the same (`step = l_atoms`)</span>
+<span class="sd">            so that all information abailable is extracted from `X` without any</span>
+<span class="sd">            repetition (overlap).</span>
 
 <span class="sd">        threshold : float, optional</span>
 <span class="sd">            L2-norm threshold (relative to the maximum L2-norm in each strain).</span>
 <span class="sd">            Training windows with L2-norm below this value will be discarded.</span>
-<span class="sd">            Default is 0 (no threshold applied).</span>
+<span class="sd">            Default is 0 (only null arrays are discarded).</span>
 
 <span class="sd">        random_seed : int, optional</span>
 <span class="sd">            Random seed for reproducibility. Default is `None`.</span>
@@ -531,22 +580,18 @@
 <span class="sd">        `None`</span>
 <span class="sd">            The method trains the dictionary in place.</span>
 
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Per-class sufficiency is now checked on the *effective* number of</span>
+<span class="sd">        training windows (after patching and thresholding), not on the raw</span>
+<span class="sd">        number of input strains per class.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;y_true&#39; must be a numpy array.&quot;</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">l_atoms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;X must have at least &#39;l_atoms&#39; features.&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Check that there are at least &#39;self.k&#39; samples of each class in the</span>
-        <span class="c1"># training set.</span>
-        <span class="n">_least_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">y_true</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="k">if</span> <span class="n">_least_samples</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">:</span>
-            <span class="n">i_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">y_true</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;there are less than </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="si">}</span><span class="s2"> samples of class </span><span class="si">{</span><span class="n">i_class</span><span class="si">}</span><span class="s2"> in&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; the training set ()&quot;</span>
-            <span class="p">)</span>
 
         <span class="c1"># Sort `X` and `y_true` so that labels are consecutive and begin with 1.</span>
         <span class="n">i_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span>
@@ -561,6 +606,10 @@
 
         <span class="n">n_x</span><span class="p">,</span> <span class="n">l_x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">n_wps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">l_x</span> <span class="o">-</span> <span class="n">l_atoms</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Number of windows per strain</span>
+        <span class="k">if</span> <span class="n">n_wps</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;No windows can be extracted with the given &#39;l_atoms&#39; and &#39;step&#39;.&quot;</span>
+            <span class="p">)</span>
         <span class="n">y_windowed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">n_wps</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_x</span><span class="p">,</span> <span class="n">n_wps</span><span class="p">)</span>
         
         <span class="c1"># Split X -&gt; X_windowed:</span>
@@ -573,31 +622,38 @@
         <span class="c1"># specified by the relative threshold:</span>
         <span class="n">norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">X_windowed</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>         <span class="c1"># (n_x, n_wps)</span>
         <span class="n">l2_maxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">norms</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>     <span class="c1"># (n_x, 1)</span>
-        <span class="n">m_keep</span> <span class="o">=</span> <span class="n">norms</span> <span class="o">&gt;=</span> <span class="n">l2_maxs</span><span class="o">*</span><span class="n">threshold</span>                <span class="c1"># (n_x, n_wps)  Mask of windows to keep.</span>
-
-        <span class="n">m_alltrue</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">m_keep</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">i_ends</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">m_keep</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># (n_x, 1)</span>
-        <span class="n">m_out</span> <span class="o">=</span> <span class="n">i_ends</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">m_keep</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>      <span class="c1"># (n_x, n_wps)</span>
-        <span class="n">m_out</span><span class="p">[</span><span class="n">m_alltrue</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">m_keep</span> <span class="o">=</span> <span class="o">~</span><span class="n">m_out</span>
+        <span class="n">m_keep</span> <span class="o">=</span> <span class="p">(</span><span class="n">norms</span> <span class="o">&gt;</span> <span class="n">l2_maxs</span><span class="o">*</span><span class="n">threshold</span><span class="p">)</span>              <span class="c1"># (n_x, n_wps)  Mask of windows to keep per signal</span>
 
         <span class="n">X_filtered</span> <span class="o">=</span> <span class="n">X_windowed</span><span class="p">[</span><span class="n">m_keep</span><span class="p">]</span>  <span class="c1"># (n_filtered, l_atoms)</span>
         <span class="n">y_filtered</span> <span class="o">=</span> <span class="n">y_windowed</span><span class="p">[</span><span class="n">m_keep</span><span class="p">]</span>  <span class="c1"># (n_filtered)</span>
 
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="n">n_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">m_out</span><span class="p">)</span>
             <span class="n">n_keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">m_keep</span><span class="p">)</span>
+            <span class="n">n_out</span> <span class="o">=</span> <span class="n">m_keep</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="n">n_keep</span>
             <span class="n">frac_keep</span> <span class="o">=</span> <span class="n">n_keep</span> <span class="o">/</span> <span class="n">m_keep</span><span class="o">.</span><span class="n">size</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;filtered: </span><span class="si">{</span><span class="n">n_out</span><span class="si">}</span><span class="se">\t</span><span class="s2"> kept: </span><span class="si">{</span><span class="n">n_keep</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">frac_keep</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Check that there are enough windows to build the dictionary:</span>
+        <span class="c1"># ---- Check: enough windows to build the dictionary ----</span>
         <span class="n">n_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">y_true</span><span class="p">))</span>
+        <span class="c1"># Ensure all classes are represented with minlength.</span>
+        <span class="n">per_class_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">y_filtered</span><span class="p">,</span> <span class="n">minlength</span><span class="o">=</span><span class="n">n_classes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># drop 0-bin</span>
+        <span class="n">least_eff</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">per_class_counts</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">least_eff</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">:</span>
+            <span class="n">i_class</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">per_class_counts</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;insufficient effective training windows after patching/thresholding: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;class </span><span class="si">{</span><span class="n">i_class</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="n">per_class_counts</span><span class="p">[</span><span class="n">i_class</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> &lt; k=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="s2">&quot;Consider lowering &#39;threshold&#39;, using a smaller &#39;step&#39; (more overlap), &quot;</span>
+                <span class="s2">&quot;or providing more training data.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># Also ensure global sufficiency for class-specific + shared atoms:</span>
         <span class="n">minimum_windows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">*</span> <span class="n">n_classes</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span>
         <span class="k">if</span> <span class="n">X_filtered</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">minimum_windows</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;there are not enough training samples for the requested &quot;</span>
-                <span class="s2">&quot;dimensions of the dictionary. Either try to lower the &#39;treshold&#39; &quot;</span>
-                <span class="s2">&quot;parameter or provide more training samples.&quot;</span>
+                <span class="s2">&quot;dimensions of the dictionary. Either try to lower the &#39;threshold&#39; &quot;</span>
+                <span class="s2">&quot;parameter, reduce &#39;step&#39; to extract more patches, or provide &quot;</span>
+                <span class="s2">&quot;more training samples.&quot;</span>
             <span class="p">)</span>
 
         <span class="c1"># Train the dictionary</span>
@@ -611,9 +667,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">t_train</span> <span class="o">=</span> <span class="n">tac</span> <span class="o">-</span> <span class="n">tic</span></div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">loss_mat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adapted from DICTOL&#39;s LRSDL.predict method.&quot;&quot;&quot;</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">):</span>
+            <span class="c1"># Dc in D only</span>
+            <span class="n">Dc_</span> <span class="o">=</span> <span class="n">dictol</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_block_col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_range</span><span class="p">)</span>
+            <span class="c1"># Dc in D and D0</span>
+            <span class="n">Dc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">Dc_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D0</span><span class="p">))</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Dc_</span>
+            <span class="n">lasso</span> <span class="o">=</span> <span class="n">dictol</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">Lasso</span><span class="p">(</span><span class="n">Dc</span><span class="p">,</span> <span class="n">lambd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lambd</span><span class="p">)</span>
+            <span class="n">lasso</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+            <span class="n">Xc</span> <span class="o">=</span> <span class="n">lasso</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+            <span class="n">residual_matrix</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Dc</span><span class="p">,</span> <span class="n">Xc</span><span class="p">)</span>
+            <span class="n">E</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">residual_matrix</span><span class="o">*</span><span class="n">residual_matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                       <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Xc</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        
+        <span class="k">return</span> <span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span> <span class="k">if</span> <span class="n">loss_mat</span> <span class="k">else</span> <span class="n">pred</span>
+
 <div class="viewcode-block" id="DictionaryLRSDL.predict">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionaryLRSDL.predict">[docs]</a>
-    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">with_losses</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">with_losses</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict the class of each window in X.</span>
 
 <span class="sd">        The class of a window is the class of the closest codeword to that</span>
@@ -655,7 +730,7 @@
             <span class="n">X_cut</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">X_cut</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># E: losses of all strains, shape: (class, strain)</span>
-        <span class="n">y_pred</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_cut</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">loss_mat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">y_pred</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict</span><span class="p">(</span><span class="n">X_cut</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">loss_mat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">losses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         
@@ -668,7 +743,7 @@
 
 <div class="viewcode-block" id="DictionaryLRSDL.save">
 <a class="viewcode-back" href="../../clawdia.dictionaries.html#clawdia.dictionaries.DictionaryLRSDL.save">[docs]</a>
-    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the dictionary to a file.</span>
 
 <span class="sd">        Save the dictionary attributes using NumPy&#39;s &#39;np.savez()&#39;.</span>
@@ -734,7 +809,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>

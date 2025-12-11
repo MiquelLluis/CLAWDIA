@@ -29,7 +29,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=6e061ff1" />
   
   <!-- So that users can add custom icons -->
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=5bfaad31"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/clawdia/lib';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -318,9 +318,10 @@
 <span class="sd">semantically appropriate modules.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NDArray</span>
 
 
 <span class="c1"># Default values same as Scipy&#39;s `optimize._zeros_py.py` module.</span>
@@ -331,7 +332,7 @@
 
 <div class="viewcode-block" id="BoundaryError">
 <a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.BoundaryError">[docs]</a>
-<span class="k">class</span> <span class="nc">BoundaryError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BoundaryError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception raised when a boundary condition is violated.</span>
 <span class="sd">    </span>
 <span class="sd">    This exception is a subclass of `ValueError` and is used to signal</span>
@@ -344,7 +345,7 @@
 
 <div class="viewcode-block" id="abs_normalize">
 <a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.abs_normalize">[docs]</a>
-<span class="k">def</span> <span class="nf">abs_normalize</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">abs_normalize</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;TODO</span>
 <span class="sd">    Normalitza inplace un array ignorant els errors de divissió entre 0 i</span>
 <span class="sd">    canviant els nan a 0.</span>
@@ -358,7 +359,7 @@
 
 <div class="viewcode-block" id="l2_normalize">
 <a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.l2_normalize">[docs]</a>
-<span class="k">def</span> <span class="nf">l2_normalize</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">l2_normalize</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;TODO</span>
 <span class="sd">    Normalitza inplace un array amb la norma L2 ignorant els errors de divissió</span>
 <span class="sd">    entre 0 i canviant els nan a 0.</span>
@@ -372,7 +373,7 @@
 
 <div class="viewcode-block" id="semibool_bisect">
 <a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.semibool_bisect">[docs]</a>
-<span class="k">def</span> <span class="nf">semibool_bisect</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">xtol</span><span class="o">=</span><span class="n">_xtol</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">_rtol</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">semibool_bisect</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">xtol</span><span class="o">=</span><span class="n">_xtol</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">_rtol</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Semi-boolean bisection method for solving ``f(x)``.</span>
 
 <span class="sd">    Find the boundary point ``x0`` in the interval [a, b] using a modified</span>
@@ -496,9 +497,11 @@
 
 <div class="viewcode-block" id="extract_patches">
 <a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.extract_patches">[docs]</a>
-<span class="k">def</span> <span class="nf">extract_patches</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">,</span> <span class="n">n_patches</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">patch_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2_normed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">return_norm_coefs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_allzeros</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_patches</span><span class="p">(</span>
+    <span class="n">signals</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">,</span> <span class="n">n_patches</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">patch_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2_normed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">return_norm_coefs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_allzeros</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]</span> <span class="o">|</span> <span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract patches from &#39;signals&#39;.</span>
 
 <span class="sd">    TODO</span>
@@ -553,10 +556,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">signals</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;signals&#39; must be 2d-array at most&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">limits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">patch_min</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">limits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">limits</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;limits&#39; has a wrong shape: </span><span class="si">{</span><span class="n">limits</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">patch_min</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;there is at least one signal according to its &#39;limits&#39; shorter&quot;</span>
+                <span class="s2">&quot; than &#39;patch_min&#39;&quot;</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_allzeros</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">signals</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;there is at least one signal according to its &#39;limits&#39; shorter&quot;</span>
-            <span class="s2">&quot; than &#39;patch_min&#39;&quot;</span>
+            <span class="s2">&quot;&#39;allow_allzeros&#39; is False, but &#39;signals&#39; contains only zeros. &quot;</span>
+            <span class="s2">&quot;Random patch extraction would result in an infinite loop.&quot;</span>
         <span class="p">)</span>
     
     <span class="k">if</span> <span class="n">signals</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -616,12 +629,30 @@
 
     <span class="c1"># Extract all possible patches.</span>
     <span class="k">if</span> <span class="n">n_patches</span> <span class="o">==</span> <span class="n">max_patches</span><span class="p">:</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_signals</span><span class="p">):</span>
-            <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">window_limits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
-                <span class="n">patches</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">signals</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">patch_size</span><span class="p">]</span>
-                <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">allow_allzeros</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_signals</span><span class="p">):</span>
+                <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">window_limits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+                    <span class="n">patches</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">signals</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">patch_size</span><span class="p">]</span>
+                    <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Discard all-zero patches; shrink output accordingly.</span>
+            <span class="n">collected</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_signals</span><span class="p">):</span>
+                <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">window_limits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+                    <span class="n">patch</span> <span class="o">=</span> <span class="n">signals</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">patch_size</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">patch</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                        <span class="n">collected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">patch</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">collected</span><span class="p">:</span>
+                <span class="n">patches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">collected</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">signals</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;no non-zero patches could be extracted with the given &quot;</span>
+                    <span class="s2">&quot;signals, limits and parameters (all patches are all-zero)&quot;</span>
+                <span class="p">)</span>
+            <span class="n">n_patches</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     
     <span class="c1"># Extract a limited number of patches randomly selected.</span>
     <span class="k">else</span><span class="p">:</span>
@@ -654,7 +685,7 @@
 
 <div class="viewcode-block" id="reconstruct_from_patches_1d">
 <a class="viewcode-back" href="../../clawdia.lib.html#clawdia.lib.reconstruct_from_patches_1d">[docs]</a>
-<span class="k">def</span> <span class="nf">reconstruct_from_patches_1d</span><span class="p">(</span><span class="n">patches</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reconstruct_from_patches_1d</span><span class="p">(</span><span class="n">patches</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
     <span class="n">n_patches</span><span class="p">,</span> <span class="n">l_patches</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">total_len</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_patches</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">step</span> <span class="o">+</span> <span class="n">l_patches</span>
     
@@ -721,7 +752,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>

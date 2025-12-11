@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API Documentation &#8212; CLAWDIA 0.4.3 documentation</title>
+    <title>API Documentation &#8212; CLAWDIA 0.5.0 documentation</title>
   
   
   
@@ -30,7 +30,7 @@
   <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=6e061ff1" />
   
   <!-- So that users can add custom icons -->
@@ -39,8 +39,8 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=5bfaad31"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'modules';</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -49,7 +49,7 @@
     <link rel="prev" title="&lt;no title&gt;" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.4.3" />
+  <meta name="docsearch:version" content="0.5.0" />
   </head>
   
   
@@ -102,7 +102,7 @@
     <a href="index.html" class="navbar-brand" style="color: inherit; cursor: pointer;">
         <img src="_static/clawdia-logo.svg" class="navbar-project-icon" />
         <span class="navbar-project-name">CLAWDIA</span>
-        <span class="navbar-project-version">v0.4.3</span>
+        <span class="navbar-project-version">v0.5.0</span>
     </a>
 </div></div>
     
@@ -340,10 +340,13 @@ improve usability and performance.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="clawdia.estimators.html">clawdia.estimators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clawdia.estimators.html#clawdia.estimators.doverlap"><code class="docutils literal notranslate"><span class="pre">doverlap()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="clawdia.estimators.html#clawdia.estimators.dssim"><code class="docutils literal notranslate"><span class="pre">dssim()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="clawdia.estimators.html#clawdia.estimators.find_merger"><code class="docutils literal notranslate"><span class="pre">find_merger()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="clawdia.estimators.html#clawdia.estimators.ioverlap"><code class="docutils literal notranslate"><span class="pre">ioverlap()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clawdia.estimators.html#clawdia.estimators.imatch"><code class="docutils literal notranslate"><span class="pre">imatch()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clawdia.estimators.html#clawdia.estimators.inner_product_weighted"><code class="docutils literal notranslate"><span class="pre">inner_product_weighted()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="clawdia.estimators.html#clawdia.estimators.issim"><code class="docutils literal notranslate"><span class="pre">issim()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clawdia.estimators.html#clawdia.estimators.match"><code class="docutils literal notranslate"><span class="pre">match()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="clawdia.estimators.html#clawdia.estimators.medse"><code class="docutils literal notranslate"><span class="pre">medse()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="clawdia.estimators.html#clawdia.estimators.mse"><code class="docutils literal notranslate"><span class="pre">mse()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="clawdia.estimators.html#clawdia.estimators.overlap"><code class="docutils literal notranslate"><span class="pre">overlap()</span></code></a></li>
@@ -370,8 +373,6 @@ improve usability and performance.</p>
 <li class="toctree-l1"><a class="reference internal" href="clawdia.plotting.html">clawdia.plotting</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="clawdia.plotting.html#clawdia.plotting.plot_confusion"><code class="docutils literal notranslate"><span class="pre">plot_confusion()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="clawdia.plotting.html#clawdia.plotting.plot_dictionary"><code class="docutils literal notranslate"><span class="pre">plot_dictionary()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="clawdia.plotting.html#clawdia.plotting.plot_spec_of"><code class="docutils literal notranslate"><span class="pre">plot_spec_of()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="clawdia.plotting.html#clawdia.plotting.plot_spectrogram_with_instantaneous_features"><code class="docutils literal notranslate"><span class="pre">plot_spectrogram_with_instantaneous_features()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -445,7 +446,7 @@ improve usability and performance.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>
