@@ -38,7 +38,7 @@ training schemes, and more efficient back-ends (including compiled extensions)
 are also foreseen.
 
 
-## [DOCUMENTATION](https://miquellluis.github.io/GWADAMA/)
+## [DOCUMENTATION](https://miquellluis.github.io/CLAWDIA/)
 
 
 # Citation
