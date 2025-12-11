@@ -1,6 +1,8 @@
 ![CLAWDIA: Classification of Waves via Dictionary-based Algorithms](docs/source/_static/clawdia.svg)
 
 
+# Introduction
+
 CLAWDIA is an open-source Python framework for applying sparse dictionary
 learning (SDL) to gravitational-wave (GW) data analysis.
 
@@ -35,12 +37,11 @@ regression, and controlled data generation. Optimisation tools, curriculum-like
 training schemes, and more efficient back-ends (including compiled extensions)
 are also foreseen.
 
-CLAWDIA was developed as part of the PhD thesis:
 
-    M. Llorens-Monteagudo, 2025,
-    "Gravitational-wave signal denoising, reconstruction and classification via Sparse Dictionary Learning",
-    PhD thesis, Universitat de València, Spain.
-    Publicly available at https://hdl.handle.net/10550/110046
+## [DOCUMENTATION](https://miquellluis.github.io/GWADAMA/)
+
+
+# Citation
 
 Users of clawdia are kindly requested to cite the corresponding framework paper
 when using the software in academic work:
@@ -52,3 +53,10 @@ when using the software in academic work:
 This paper should be taken as the primary reference for clawdia, and
 provides further details together with illustrative applications to real and
 simulated GW data.
+
+CLAWDIA was developed as part of the PhD thesis:
+
+    M. Llorens-Monteagudo, 2025,
+    "Gravitational-wave signal denoising, reconstruction and classification via Sparse Dictionary Learning",
+    PhD thesis, Universitat de València, Spain.
+    Publicly available at https://hdl.handle.net/10550/110046
