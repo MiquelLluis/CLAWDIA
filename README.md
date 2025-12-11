@@ -38,8 +38,7 @@ are also foreseen.
 CLAWDIA was developed as part of the PhD thesis:
 
     M. Llorens-Monteagudo, 2025,
-    "Gravitational-wave signal denoising, reconstruction and classification via
-    Sparse Dictionary Learning",
+    "Gravitational-wave signal denoising, reconstruction and classification via Sparse Dictionary Learning",
     PhD thesis, Universitat de València, Spain.
     Publicly available at https://hdl.handle.net/10550/110046
 
@@ -47,11 +46,9 @@ Users of clawdia are kindly requested to cite the corresponding framework paper
 when using the software in academic work:
 
     M. Llorens-Monteagudo, A. Torres-Forné, and J. A. Font, 2025,
-    "CLAWDIA: A dictionary learning framework for gravitational-wave data
-    analysis",
-    arXiv:2511.16750 [astro-ph.IM], https://arxiv.org/abs/2511.16750,
-    submitted to Machine Learning: Science and Technology (IOP Publishing).
+    "CLAWDIA: A dictionary learning framework for gravitational-wave data analysis",
+    arXiv:2511.16750 [astro-ph.IM], https://arxiv.org/abs/2511.16750.
 
-The arXiv version should be taken as the primary reference for clawdia, and
+This paper should be taken as the primary reference for clawdia, and
 provides further details together with illustrative applications to real and
 simulated GW data.
