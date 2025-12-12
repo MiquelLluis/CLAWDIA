@@ -22,28 +22,19 @@ extensions = [
     'sphinx.ext.autodoc',  # Auto-generates documentation from docstrings
     'sphinx.ext.viewcode', # Adds links to highlighted source code
     'sphinx.ext.mathjax',  # Renders math equations
-    # 'sphinx.ext.autosummary',  # Generate summary tables
+    'sphinx.ext.autosummary',  # Generate summary tables
     'sphinx.ext.intersphinx',  # Allows references to external libraries
 ]
 
-autosummary_generate = False
-# autosummary_generate_overwrite = True  # Overwrite existing stub files
-# autosummary_generate_output = os.path.join(os.path.abspath('.'), '_autosummary')
-# autosummary_imported_members = True  # Include members imported from other modules
+autosummary_generate = True
 autodoc_default_options = {
-    "members": True,
-    "undoc-members": True,
     "special-members": "__init__",
     "inherited-members": True,
     "show-inheritance": True,
 }
-exclude_patterns = []
-
-suppress_warnings = ["autosummary"]
 
 # Add explicit anchors to methods and class members
-numpydoc_class_members_toctree = True  # Ensures class methods are linked in the "On this page" section
-autodoc_default_flags = ['members', 'show-inheritance']
+numpydoc_class_members_toctree = False  # Ensures class methods are linked in the "On this page" section
 
 # To Enable Cross-Referencing with Sphinx (Intersphinx)
 intersphinx_mapping = {
@@ -65,10 +56,6 @@ html_logo = "_static/clawdia-logo.svg"
 
 html_theme_options = {
     # HEADER ------------------------------------------------------------------
-
-    # "external_links": [
-    #     {"name": "GitHub", "url": "https://github.com/MiquelLluis/clawdia"},
-    # ],
     "icon_links": [
         {
             # Label for this link
