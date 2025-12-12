@@ -18,13 +18,11 @@ if not '__version__' in dir(spams) or spams.__version__ <= '2.6.5.4':
 
 
 class DictionarySpams:
-    """Sparse Dictionary Learning (SDL) model for waveform denoising via SPAMS.
+    """SPAMS-based dictionary for signal reconstruction.
 
-    This class provides an object-oriented implementation of a Sparse
-    Dictionary Learning model, designed for the denoising and reconstruction
-    of waveforms. At its core, it utilizes the `trainDL` function for
-    dictionary learning and the `lasso` function for sparse coding from the
-    SPAMS-python library [1]_.
+    This class provides an object-oriented implementation for the SDL methods
+    `spams.trainDL` and `spams.lasso`, adjusted for denoising and reconstruction
+    of waveforms [Spams]_.
 
     It extends these core functionalities to arbitrarily long signals and
     minibatch processing for large datasets. Additionally, the class includes
@@ -45,7 +43,7 @@ class DictionarySpams:
     a_length : int
         Length of each atom in the dictionary (patch size).
     lambda1 : float
-        Regularization parameter for training the dictionary.
+        Regularisation parameter for training the dictionary.
     batch_size : int
         Batch size used in mini-batch training.
     n_iter : int
@@ -67,8 +65,8 @@ class DictionarySpams:
 
     References
     ----------
-    .. [1] SPAMS (for python), (http://spams-devel.gforge.inria.fr/).
-           Last accessed in October 2018.
+    .. [Spams] SPAMS (for python), (http://spams-devel.gforge.inria.fr/).
+           Last accessed in October 2025.
     
     """
     def __init__(self,
@@ -127,7 +125,7 @@ class DictionarySpams:
             If `False`, the dictionary must be overcomplete (`d_size >
             a_length`).
         lambda1 : float, optional
-            Regularization parameter for training.
+            Regularisation parameter for training.
         batch_size : int, default=64
             Batch size used during training.
         n_iter : int, optional
@@ -207,8 +205,8 @@ class DictionarySpams:
             Training patches.
 
         lambda1 : float, optional
-            Regularization parameter of the learning algorithm.
-            It is not needed if already specified at initialization.
+            Regularisation parameter of the learning algorithm.
+            It is not needed if already specified at initialisation.
 
         n_iter : int, optional
             Total number of iterations to perform.
@@ -299,7 +297,7 @@ class DictionarySpams:
                 self.t_train = tac - tic
 
     def _reconstruct_single(self, signal, sc_lambda, step=1, **kwargs_lasso):
-        # TODO: Add kwarg option to disable the patch normalization.
+        # TODO: Add kwarg option to disable the patch normalisation.
         # This might be usefull for tasks such detection or when a heavy
         # discrimination is needed.
         patches, norms = lib.extract_patches(
@@ -331,7 +329,7 @@ class DictionarySpams:
             Sample to be reconstructed.
 
         sc_lambda : float
-            Regularization parameter of the sparse coding transformation.
+            Regularisation parameter of the sparse coding transformation.
 
         step : int, 1 by default
             Sample interval between each patch extracted from signal.
@@ -576,7 +574,7 @@ class DictionarySpams:
         
         step_reconstructions = self.reconstruct_minibatch(
             signals, sc_lambda=sc_lambda, step=step, batchsize=batchsize,
-            normed=False,  # Normalization is (optionally) applied at the END.
+            normed=False,  # Normalisation is (optionally) applied at the END.
             normed_windows=False,  # See NOTE in the docstring.
             verbose=verbose, **kwargs_lasso
         )
@@ -598,7 +596,7 @@ class DictionarySpams:
                 sc_lambda=sc_lambda,
                 step=step,
                 batchsize=batchsize,
-                normed=False,  # Normalization is (optionally) applied at the END.
+                normed=False,  # Normalisation is (optionally) applied at the END.
                 normed_windows=False,  # See NOTE in the docstring.
                 verbose=verbose,
                 **kwargs_lasso
@@ -695,7 +693,7 @@ class DictionarySpams:
 
         verbose: bool, optional
             Set the maximum verbosity (`'disp': 3`) to SciPy's `minimize_scalar`
-            and print info about the minimization results. False by default.
+            and print info about the minimisation results. False by default.
 
         RETURNS
         -------
@@ -792,8 +790,8 @@ class DictionarySpams:
         if verbose:
             success = result['success']
             print(
-                "Optimization results:\n"
-                f"> Minimization success: {success}"
+                "Optimisation results:\n"
+                f"> Minimisation success: {success}"
             )
             if not success:
                 print(

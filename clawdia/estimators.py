@@ -98,7 +98,7 @@ def issim(x, y):
 
         - -1: Perfect similarity.
 
-    Useful as a loss function to perform minimization.
+    Useful as a loss function to perform minimisation.
         
     """
     return -ssim(x, y)

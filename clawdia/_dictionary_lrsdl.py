@@ -67,7 +67,7 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
     Notes
     -----
     The authors of Dictol didn't provide a seed parameter for the random
-    initialization of the dictionary. If reproducibility is important, one must
+    initialisation of the dictionary. If reproducibility is important, one must
     set the global numpy's seed before callint ``LRSDL.__init__()``.
 
 
@@ -91,17 +91,17 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
         Parameters
         ----------
         lambd : float
-            Regularization parameter for the sparsity term:
+            Regularisation parameter for the sparsity term:
 
             .. math::
 
                \lambda \|X\|_1
 
             This encourages sparsity in the class-specific dictionary, similar
-            to the LASSO regularization term.
+            to the LASSO regularisation term.
 
         lambd2 : float
-            Regularization parameter for the reconstruction term:
+            Regularisation parameter for the reconstruction term:
 
             .. math::
 
@@ -112,7 +112,7 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
             across all :math:`X^0`.
 
         eta : float
-            Regularization parameter for the low-rank term:
+            Regularisation parameter for the low-rank term:
 
             .. math::
 

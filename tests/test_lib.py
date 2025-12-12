@@ -142,8 +142,8 @@ class TestExtractPatches:
         patches = lib.extract_patches(basic_1d_signal, patch_size=patch_size, step=step)
         assert patches.shape == (2, patch_size)
 
-    # Test L2 normalization
-    def test_l2_normalization(self, basic_1d_signal):
+    # Test L2 normalisation
+    def test_l2_normalisation(self, basic_1d_signal):
         """Test patches are L2 normalized and coefs are correct."""
         patch_size = 3
         patches, coefs = lib.extract_patches(basic_1d_signal, patch_size=patch_size, l2_normed=True, return_norm_coefs=True)
@@ -153,7 +153,7 @@ class TestExtractPatches:
         expected_coefs = np.linalg.norm(original_patches, axis=1)
         assert np.allclose(coefs, expected_coefs)
 
-    def test_zero_patch_normalization(self):
+    def test_zero_patch_normalisation(self):
         """Test all-zero patches are handled correctly."""
         signals = np.zeros((1, 6))
         patch_size = 3
@@ -227,8 +227,8 @@ class TestExtractPatches:
         expected = np.array([[1, 2, 3, 4], [2, 3, 4, 5]])
         np.testing.assert_array_equal(patches, expected)
 
-    def test_l2_normalization_without_coefs(self, basic_1d_signal):
-        """Test L2 normalization without returning coefficients."""
+    def test_l2_normalisation_without_coefs(self, basic_1d_signal):
+        """Test L2 normalisation without returning coefficients."""
         patches = lib.extract_patches(basic_1d_signal, patch_size=3, l2_normed=True)
         norms = np.linalg.norm(patches, axis=1)
         assert np.allclose(norms, 1.0, atol=1e-6) | np.allclose(norms, 0.0, atol=1e-6)

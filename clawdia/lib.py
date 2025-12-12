@@ -1,7 +1,7 @@
 """Collection of auxiliary functions.
 
 This module provides a temporary collection of various utility functions, 
-including mathematical operations, signal normalization, optimization routines, 
+including mathematical operations, signal normalisation, optimisation routines, 
 and signal patching utilities.
 
 Notes
