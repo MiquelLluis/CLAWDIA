@@ -2,3 +2,24 @@
 .bd-sidebar-primary {
     width: 20%;  /* Default is ~300px, reduce or increase as needed */
 }
+
+/* Small module-path line above the main class title */
+.bd-article p.module-path {
+  margin-top: 0;                 /* no space above */
+  margin-bottom: 0.15rem;        /* tiny gap to H1 */
+  font-size: 1.5rem;             /* a bit smaller than body text */
+  font-weight: 400;
+  
+}
+
+/* Remove the usual top margin on the first H1 after the module path */
+.bd-article p.module-path + h1 {
+  margin-top: 0;
+}
+
+
+/* Hide the "ClassName." prefix in signatures
+   (this affects both the page body and the right-hand TOC). */
+.sig-prename.descclassname {
+  display: none !important;
+}

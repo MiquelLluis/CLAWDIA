@@ -34,13 +34,20 @@ autodoc_default_options = {
 }
 
 # Add explicit anchors to methods and class members
-numpydoc_class_members_toctree = False  # Ensures class methods are linked in the "On this page" section
+numpydoc_class_members_toctree = False  # Whether class methods are linked in the "On this page" section
 
 # To Enable Cross-Referencing with Sphinx (Intersphinx)
 intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/', None),
 }
+
+# Do not prepend module names to object names in signatures
+add_module_names = False
+
+# In TOCs, only show the object name (no Class.method / module.Class.method)
+toc_object_entries_show_parents = "hide"
+
 
 
 # -- Options for HTML output -------------------------------------------------

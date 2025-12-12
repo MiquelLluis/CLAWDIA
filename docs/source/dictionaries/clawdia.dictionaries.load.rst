@@ -1,5 +1,9 @@
-﻿clawdia.dictionaries.load
-=========================
+﻿.. rst-class:: module-path
+
+   clawdia.dictionaries.
+
+load
+====
 
 .. currentmodule:: clawdia.dictionaries
 
