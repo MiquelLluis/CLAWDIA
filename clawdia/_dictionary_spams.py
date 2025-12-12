@@ -856,7 +856,7 @@ class DictionarySpams:
             batch_size=self.batch_size,
             identifier=self.identifier,
             n_iter=self.n_iter,
-            n_train=self.t_train,
+            n_train=self.n_train,
             trained=self.trained,
             mode_traindl=self.mode_traindl,
             modeD_traindl=self.modeD_traindl,
