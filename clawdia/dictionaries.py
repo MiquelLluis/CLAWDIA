@@ -20,7 +20,7 @@ __all__ = ['DictionarySpams', 'DictionaryLRSDL', 'load', 'save']
 def load(file):
     dico_raw = dict(np.load(file, allow_pickle=True))
 
-    # Initialize the correct dictionary instance.
+    # Initialise the correct dictionary instance.
     if 'lambd2' in dico_raw:  # LRSDL
         dico = DictionaryLRSDL(
             lambd=dico_raw.pop('lambd'), lambd2=dico_raw.pop('lambd2'), eta=dico_raw.pop('eta'),

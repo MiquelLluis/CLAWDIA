@@ -81,7 +81,7 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
     """
     def __init__(self, lambd=0.01, lambd2=0.01, eta=0.0001, k=10, k0=5,
                  updateX_iters=100, updateD_iters=100):
-        r"""Initialize the LRSDL dictionary.
+        r"""Initialise the LRSDL dictionary.
 
         This method sets up the parameters required for training class-specific
         and shared dictionaries. These dictionaries are used to represent data
@@ -200,7 +200,7 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
                 else:
                     state.append(f"{display_name}: {attr}")
             else:
-                state.append(f"{display_name}: Not initialized")
+                state.append(f"{display_name}: Not initialised")
         
         state_str = "\n  ".join(state)
         

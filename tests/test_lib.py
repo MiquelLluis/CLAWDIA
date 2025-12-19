@@ -144,7 +144,7 @@ class TestExtractPatches:
 
     # Test L2 normalisation
     def test_l2_normalisation(self, basic_1d_signal):
-        """Test patches are L2 normalized and coefs are correct."""
+        """Test patches are L2 normalised and coefs are correct."""
         patch_size = 3
         patches, coefs = lib.extract_patches(basic_1d_signal, patch_size=patch_size, l2_normed=True, return_norm_coefs=True)
         norms = np.linalg.norm(patches, axis=1)

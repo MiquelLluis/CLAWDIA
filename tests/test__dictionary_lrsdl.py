@@ -65,7 +65,7 @@ def reference_model():
 
 @pytest.fixture(scope="module")
 def trained_model(default_model_params, reproducibility_data, training_config):
-    """Fixture to initialize and train a dictionary model for reuse in tests."""
+    """Fixture to initialise and train a dictionary model for reuse in tests."""
     X, y_true = reproducibility_data
     model = DictionaryLRSDL(**default_model_params)
     model.fit(X, y_true=y_true, **training_config)

@@ -1,6 +1,6 @@
-"""Ad-hoc plotting functions for visualizing results.
+"""Ad-hoc plotting functions for visualising results.
 
-This module includes a variety of plotting utilities designed to help visualize 
+This module includes a variety of plotting utilities designed to help visualise 
 and interpret results during the development and debugging of the CLAWDIA
 pipeline. 
 

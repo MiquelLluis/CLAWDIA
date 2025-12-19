@@ -32,7 +32,7 @@ class BoundaryError(ValueError):
     pass
 
 
-def abs_normalize(array, axis=-1):
+def abs_normalise(array, axis=-1):
     """TODO
     Normalitza inplace un array ignorant els errors de divissió entre 0 i
     canviant els nan a 0.
@@ -43,7 +43,7 @@ def abs_normalize(array, axis=-1):
         np.nan_to_num(array, copy=False)
 
 
-def l2_normalize(array, axis=-1):
+def l2_normalise(array, axis=-1):
     """TODO
     Normalitza inplace un array amb la norma L2 ignorant els errors de divissió
     entre 0 i canviant els nan a 0.
@@ -222,7 +222,7 @@ def extract_patches(
         If True will norm each patch to its L2 norm. False by default.
 
     return_norm_coefs: bool, optional
-        If True, return also the coefficients used to normalize the signals
+        If True, return also the coefficients used to normalise the signals
         (useful for when 'signals' come from a windowed signal that will be
         reassembled afterwards).
         False by default.
@@ -344,7 +344,7 @@ def extract_patches(
                     signal_aux = signals[i, j:j+patch_size]
             patches[k] = signal_aux
 
-    # Normalize each patch to its L2 norm
+    # Normalise each patch to its L2 norm
     if l2_normed:
         coefs = np.linalg.norm(patches, axis=1, keepdims=True)
         # Ignore x/0 and 0/0 cases
@@ -365,12 +365,12 @@ def reconstruct_from_patches_1d(patches, step):
     total_len = (n_patches - 1) * step + l_patches
     
     reconstructed = np.zeros(total_len, dtype=patches.dtype)
-    normalizer = np.zeros_like(reconstructed)
+    normaliser = np.zeros_like(reconstructed)
     for i in range(n_patches):
         reconstructed[i*step:i*step+l_patches] += patches[i]
-        normalizer[i*step:i*step+l_patches] += 1
-    normalizer[i*step+l_patches:] = 1
-    reconstructed /= normalizer
+        normaliser[i*step:i*step+l_patches] += 1
+    normaliser[i*step+l_patches:] = 1
+    reconstructed /= normaliser
 
     return reconstructed
 

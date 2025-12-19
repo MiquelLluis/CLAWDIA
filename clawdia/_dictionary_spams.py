@@ -115,7 +115,7 @@ class DictionarySpams:
             Minimum number of samples for each extracted patch. Ignored if
             `wave_pos` is `None`.
         l2_normed : bool, default=True
-            If `True`, normalize extracted atoms to their L2 norm.
+            If `True`, normalise extracted atoms to their L2 norm.
         allow_allzeros : bool, default=False
             By default, random atoms with all zeros are excluded from the
             initial dictionary. If `allow_allzeros=True`, they are allowed.
@@ -148,7 +148,7 @@ class DictionarySpams:
 
         Notes
         -----
-        This method initializes the dictionary but does not train it. Use the
+        This method initialises the dictionary but does not train it. Use the
         `train` method for training.
 
         """
@@ -336,7 +336,7 @@ class DictionarySpams:
             Determines the number of patches to be extracted. 1 by default.
 
         normed : boolean, True by default
-            Normalize the result to the maximum absolute value.
+            Normalise the result to the maximum absolute value.
 
         with_code : boolean, False by default.
             If True, also returns the coefficients array.
@@ -530,7 +530,7 @@ class DictionarySpams:
         criterion.
 
         NOTE: In contrast with the usual procedure, the windows into which each
-        signal is split are not normalized. This is needed to enhance the
+        signal is split are not normalised. This is needed to enhance the
         dictionary discrimination. Otherwise, the residuals are amplified at
         each iteration, the algorithm takes longer to converge, and some
         ad-hoc tests showed it also messes up with the resulting shape.
@@ -550,7 +550,7 @@ class DictionarySpams:
         threshold : float, optional
             Convergence threshold based on the relative change in residuals.
         normed : bool, optional
-            If True, the reconstructed signals are normalized after convergence.
+            If True, the reconstructed signals are normalised after convergence.
         full_output : bool, optional
             If True, returns additional output values (residuals and iteration counts).
         verbose : bool, optional
