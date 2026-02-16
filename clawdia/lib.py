@@ -43,6 +43,47 @@ def abs_normalise(array, axis=-1):
         np.nan_to_num(array, copy=False)
 
 
+def confusion_percent_int(C: np.ndarray) -> np.ndarray:
+    """
+    Convert an (n_classes, n_classes) confusion matrix of absolute counts into
+    integer row-wise percentages (each row sums to 100) using the
+    largest-remainder rule (floor + distribute).
+
+    - Rows with zero total remain all zeros.
+    - Ties in remainders are broken deterministically by column index (lower
+    first).
+    """
+    C = np.asarray(C)
+    if C.ndim != 2:
+        raise ValueError("C must be a 2D array (confusion matrix).")
+    if np.any(C < 0):
+        raise ValueError("C must have non-negative counts.")
+
+    n_rows, n_cols = C.shape
+    out = np.zeros((n_rows, n_cols), dtype=int)
+
+    row_sums = C.sum(axis=1)
+    for i in range(n_rows):
+        n = row_sums[i]
+        if n == 0:
+            continue
+
+        exact = (C[i] * 100.0) / n
+        base = np.floor(exact).astype(int)
+
+        remainder = exact - base
+        need = int(100 - base.sum())  # number of +1s to distribute (should be >= 0)
+
+        if need > 0:
+            # Sort by remainder desc, then by column index asc for deterministic ties
+            order = np.lexsort((np.arange(n_cols), -remainder))
+            base[order[:need]] += 1
+
+        out[i] = base
+
+    return out
+
+
 def l2_normalise(array, axis=-1):
     """TODO
     Normalitza inplace un array amb la norma L2 ignorant els errors de divissió
