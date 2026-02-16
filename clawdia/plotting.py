@@ -16,6 +16,8 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 
+from . import lib
+
 
 def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None,
                    cmap="PaleBlues", **kwargs):
@@ -77,17 +79,18 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
     """
     with np.errstate(divide='ignore', invalid='ignore'):
         cmat_perc = np.nan_to_num(cmat / np.sum(cmat, axis=1, keepdims=True))
+        cmat_perc_rounded = lib.confusion_percent_int(cmat)
     
     if mode == 'both':
         if plt.rcParams["text.usetex"]:
-            format_str = lambda *args: '{}\n{:.0%}'.format(*args).replace('%', r'\,\%')
+            format_str = lambda *args: '{}\n{:d}%'.format(*args).replace('%', r'\,\%')
         else:
-            format_str = lambda *args: '{}\n{:.0%}'.format(*args)
+            format_str = lambda *args: '{}\n{:d}%'.format(*args)
     elif mode == 'percent':
         if plt.rcParams["text.usetex"]:
-            format_str = lambda *args: '{:.0%}'.format(args[1]).replace('%', r'\,\%')
+            format_str = lambda *args: '{:d}%'.format(args[1]).replace('%', r'\,\%')
         else:
-            format_str = lambda *args: '{:.0%}'.format(args[1])
+            format_str = lambda *args: '{:d}%'.format(args[1])
     elif mode == 'absolute':
         format_str = lambda *args: str(args[0])
     else:
@@ -105,7 +108,7 @@ def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None
 
     cmat_str = np.empty_like(cmat_perc, dtype=object)
     for i_true, i_pred in it.product(range(n_classes), repeat=2):
-        cmat_str[i_true, i_pred] = format_str(cmat[i_true, i_pred], cmat_perc[i_true, i_pred])
+        cmat_str[i_true, i_pred] = format_str(cmat[i_true, i_pred], cmat_perc_rounded[i_true, i_pred])
 
     if ax is None:
         fig, ax = plt.subplots(**kwargs)
