@@ -200,7 +200,7 @@ class DictionarySpams:
         # Explicit initial dictionary (trained or not).
         if self.dict_init is not None:
             self.d_size, self.a_length = self.dict_init.shape
-            self.components = dict_init
+            self.components = self.dict_init
 
         # Get the initial atoms from a set of signals.
         else:
@@ -898,6 +898,9 @@ class DictionarySpams:
     
     def reset(self):
         """Reset the dictionary to its initial (untrained) state."""
+        if self.dict_init is None:
+            raise RuntimeError("the initial dictionary is not available")
+        
         self.components = self.dict_init
         self.trained = False
         self.n_train = None
