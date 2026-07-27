@@ -49,7 +49,7 @@ def load(file):
         # For backwards compatibility with versions previous to v0.4,
         # transpose all dictionary components from Fortran to C order.
         elif value.ndim == 2 and value.flags.f_contiguous:
-            print(key)
+            print(f"Transposing matrix '{key}'.")
             value = value.T
 
         setattr(dico, key, value)

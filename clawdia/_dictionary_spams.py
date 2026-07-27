@@ -20,15 +20,15 @@ if not '__version__' in dir(spams) or spams.__version__ <= '2.6.5.4':
 class DictionarySpams:
     """SPAMS-based dictionary for signal reconstruction.
 
-    This class provides an object-oriented implementation for the SDL methods
-    `spams.trainDL` and `spams.lasso`, adjusted for denoising and reconstruction
-    of waveforms [Spams]_.
+    This class provides an object-oriented implementation of the SDL methods
+    `spams.trainDL` and `spams.lasso` [Spams]_, adjusted for denoising and reconstruction
+    of waveforms.
 
     It extends these core functionalities to arbitrarily long signals and
     minibatch processing for large datasets. Additionally, the class includes
-    various utilities for signal preprocessing, composite models of denoising
-    (such as iterative reconstruction), and the ability to easily save and
-    load the dictionary's state.
+    utilities for signal preprocessing, composite denoising strategies (such as
+    iterative reconstruction), and the ability to easily save and load the
+    dictionary state.
 
     Attributes
     ----------
@@ -36,8 +36,8 @@ class DictionarySpams:
         Atoms of the initial dictionary. Remains unaltered after training.
     components : ndarray
         Atoms of the current (trained) dictionary.
-    model : tuple
-        SPAMS' trainDL model components in the form (A, B, iter).
+    model : dict
+        SPAMS' trainDL model components identified with keys 'A', 'B', 'iter'.
     d_size : int
         Number of atoms in the dictionary (dictionary size).
     a_length : int
@@ -49,7 +49,8 @@ class DictionarySpams:
     n_iter : int
         Number of iterations performed during training.
     t_train : float
-        Total training time in seconds.
+        Total elapsed training time in seconds (or requested time when
+        `n_iter < 0`).
     trained : bool
         Indicates whether the dictionary has been trained.
     n_train : int
@@ -65,8 +66,8 @@ class DictionarySpams:
 
     References
     ----------
-    .. [Spams] SPAMS (for python), (http://spams-devel.gforge.inria.fr/).
-           Last accessed in October 2025.
+    .. [Spams] SPAMS (for Python),
+        http://spams-devel.gforge.inria.fr/, accessed October 2025.
     
     """
     def __init__(self,
@@ -78,17 +79,19 @@ class DictionarySpams:
              lambda1=None, batch_size=64, n_iter=None, n_train=None,
              trained=False, mode_traindl=0, modeD_traindl=0, mode_lasso=2,
              identifier=''):
-        """Initialize the dictionary.
+        """Initialise a SPAMS-backed dictionary for sparse reconstruction.
 
-        There are two ways to initialize the dictionary:
-        
-        1. By directly providing the initial dictionary with `dict_init`.
-        2. By providing a collection of signals (`signal_pool`) from which
-           atoms are randomly extracted to form the initial dictionary.
+        The dictionary can be initialised in one of two ways:
 
-        If the second option is used, `a_length` and `d_size` must be
-        explicitly specified to define the size of the dictionary. Additional
-        optional parameters provide more control over this process.
+        1. **Explicit dictionary**: provide `dict_init` as an array of atoms
+           with shape ``(d_size, a_length)``.
+        2. **Random extraction from signals**: provide `signal_pool` together
+           with `a_length` and `d_size`. In this case the initial atoms are
+           sampled from `signal_pool` using
+           :func:`clawdia.lib.extract_patches`.
+
+        If both `dict_init` and `signal_pool` are provided, `dict_init` takes
+        precedence and `signal_pool`-related arguments are ignored.
 
         Parameters
         ----------
