@@ -1,4 +1,5 @@
 import time
+from typing import Any
 import warnings
 
 import numpy as np
@@ -15,6 +16,30 @@ from . import lib
 if not '__version__' in dir(spams) or spams.__version__ <= '2.6.5.4': # pyright: ignore[reportAttributeAccessIssue]
     import os
     os.environ['KMP_WARNINGS'] = 'FALSE'
+
+
+def _train_dl_checked(
+    *args: Any,
+    **kwargs: Any
+) -> tuple[NDArray, dict[Any, Any]]:
+    """Call ``spams.trainDL`` and validate its expected return value.
+
+    SPAMS does not provide sufficiently precise return typing for
+    ``return_model=True``. This boundary check both informs static type
+    analysis and detects unexpected external-library behaviour at runtime.
+    """
+    result = spams.trainDL(*args, **kwargs)
+
+    if not isinstance(result, tuple) or len(result) != 2:
+        raise TypeError("spams.trainDL returned an unexpected result")
+
+    components, model = result
+    if not isinstance(components, np.ndarray):
+        raise TypeError("spams.trainDL did not return an array")
+    if not isinstance(model, dict):
+        raise TypeError("spams.trainDL did not return a model dictionary")
+
+    return components, model
 
 
 class DictionarySpams:
@@ -260,7 +285,7 @@ class DictionarySpams:
             lambda1 = self.lambda1
 
         tic = time.time()
-        components, model = spams.trainDL(
+        components, model = _train_dl_checked(
             patches.T,            # SPAMS works with Fortran order.
             D=self.components.T,  #
             model=self.model,
