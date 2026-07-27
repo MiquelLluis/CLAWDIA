@@ -10,6 +10,7 @@ As the CLAWDIA pipeline grows, these functions will be organized into more
 semantically appropriate modules.
 
 """
+from typing import Literal, overload
 import warnings
 
 import numpy as np
@@ -216,10 +217,26 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     return solver_stats
 
 
+@overload
 def extract_patches(
     signals, *, patch_size, n_patches=None, random_state=None,
     step=1, limits=None, patch_min=1, l2_normed=False,
-    return_norm_coefs=False, allow_allzeros=True
+    return_norm_coefs: Literal[True], allow_allzeros=True
+) -> tuple[NDArray, NDArray]: ...
+
+
+@overload
+def extract_patches(
+    signals, *, patch_size, n_patches=None, random_state=None,
+    step=1, limits=None, patch_min=1, l2_normed=False,
+    return_norm_coefs: Literal[False] = False, allow_allzeros=True
+) -> NDArray: ...
+
+
+def extract_patches(
+    signals, *, patch_size, n_patches=None, random_state=None,
+    step=1, limits=None, patch_min=1, l2_normed=False,
+    return_norm_coefs: bool = False, allow_allzeros=True
 ) -> tuple[NDArray, NDArray] | NDArray:
     """Extract patches from 'signals'.
 
