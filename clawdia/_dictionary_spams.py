@@ -12,7 +12,7 @@ from . import lib
 
 
 # Remove warning from OpenMP, present in older versions of python-spams.
-if not '__version__' in dir(spams) or spams.__version__ <= '2.6.5.4':
+if not '__version__' in dir(spams) or spams.__version__ <= '2.6.5.4': # pyright: ignore[reportAttributeAccessIssue]
     import os
     os.environ['KMP_WARNINGS'] = 'FALSE'
 
@@ -157,7 +157,6 @@ class DictionarySpams:
         """
         self.model = model
         self.dict_init = dict_init
-        self.components = dict_init
         self.a_length = a_length
         self.d_size = d_size
         self.lambda1 = lambda1
@@ -176,6 +175,7 @@ class DictionarySpams:
         # Explicit initial dictionary (trained or not).
         if self.dict_init is not None:
             self.d_size, self.a_length = self.dict_init.shape
+            self.components = dict_init
 
         # Get the initial atoms from a set of signals.
         else:
