@@ -342,7 +342,6 @@ def extract_patches(
     l_signals = signals.shape[1]
     max_pps = (l_signals - patch_size) // step + 1
 
-    
     # Compute the maximum TOTAL number of patches and the limits from where to
     # extract patches for each signal.
 
@@ -362,7 +361,7 @@ def extract_patches(
                 p1 = l_signals - patch_size
             
             window_limits.append((p0, p1))
-            max_patches += int(np.ceil((p1-p0)/step))
+            max_patches += max(0, int(np.ceil((p1-p0)/step)))
 
     if n_patches is None:
         n_patches = max_patches
@@ -418,6 +417,10 @@ def extract_patches(
 
     # Normalise each patch to its L2 norm
     if l2_normed:
+        # Floating and complex dtypes are NumPy "inexact" types. Promote exact
+        # types such as integers so fractional normalised values can be stored.
+        if not np.issubdtype(patches.dtype, np.inexact):
+            patches = patches.astype(np.result_type(patches.dtype, np.float32))
         coefs = np.linalg.norm(patches, axis=1, keepdims=True)
         # Ignore x/0 and 0/0 cases
         with np.errstate(divide='ignore', invalid='ignore'):
