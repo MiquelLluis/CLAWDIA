@@ -470,6 +470,16 @@ def extract_patches(
 
 
 def reconstruct_from_patches_1d(patches, step):
+    patches = np.asarray(patches)
+    if patches.ndim != 2 or patches.shape[0] == 0 or patches.shape[1] == 0:
+        raise ValueError("'patches' must be a non-empty 2d-array")
+    if isinstance(step, (bool, np.bool_)) or not isinstance(
+        step, (int, np.integer)
+    ) or not 1 <= step <= patches.shape[1]:
+        raise ValueError(
+            "'step' must be a positive integer no larger than the patch length"
+        )
+
     n_patches, l_patches = patches.shape
     total_len = (n_patches - 1) * step + l_patches
     
