@@ -283,8 +283,12 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
         y_true = y_true[i_sorted]
         X = X[i_sorted]
 
-        if y_true[0] != 1:
-            raise ValueError("labels in 'y_true' must be integers starting from 1")
+        classes = np.unique(y_true)
+        expected_classes = np.arange(1, len(classes) + 1)
+        if not np.array_equal(classes, expected_classes):
+            raise ValueError(
+                "labels in 'y_true' must be consecutive integers starting from 1"
+            )
 
         if step is None:
             step = l_atoms
