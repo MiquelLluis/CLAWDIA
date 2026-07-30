@@ -55,6 +55,10 @@ def ssim(x, y):
         Image quality assessment: From error visibility to structural similarity. 
         IEEE Transactions on Image Processing, 13(4), 600-612.
     .. [2] https://en.wikipedia.org/wiki/Structural_similarity
+
+    Notes
+    -----
+    The stabilising constants currently assume a signal data range of one.
     
     """
     mux = x.mean()
