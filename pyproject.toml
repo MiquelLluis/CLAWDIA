@@ -27,9 +27,31 @@ dependencies = [
     "tqdm>=4.66.1"
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest>=8",
+    "pytest-cov>=5"
+]
+
 [project.urls]
 Homepage = "https://github.com/MiquelLluis/clawdia"
 
 [tool.setuptools]
 packages = ["clawdia"]
 include-package-data = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--strict-markers"]
+markers = [
+    "integration: exercises multiple CLAWDIA components or iterative training",
+    "regression: compares against committed dependency-sensitive reference data"
+]
+filterwarnings = [
+    "error::RuntimeWarning:clawdia\\..*",
+    "ignore:pkg_resources is deprecated as an API:UserWarning:dictol\\.utils"
+]
+
+[tool.coverage.run]
+branch = true
+source = ["clawdia"]
