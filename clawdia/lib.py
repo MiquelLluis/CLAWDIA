@@ -221,7 +221,8 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
 def extract_patches(
     signals, *, patch_size, n_patches=None, random_state=None,
     step=1, limits=None, patch_min=1, l2_normed=False,
-    return_norm_coefs: Literal[True], allow_allzeros=True
+    return_norm_coefs: Literal[True], allow_allzeros=True,
+    allow_padding=False
 ) -> tuple[NDArray, NDArray]: ...
 
 
@@ -229,14 +230,16 @@ def extract_patches(
 def extract_patches(
     signals, *, patch_size, n_patches=None, random_state=None,
     step=1, limits=None, patch_min=1, l2_normed=False,
-    return_norm_coefs: Literal[False] = False, allow_allzeros=True
+    return_norm_coefs: Literal[False] = False, allow_allzeros=True,
+    allow_padding=False
 ) -> NDArray: ...
 
 
 def extract_patches(
     signals, *, patch_size, n_patches=None, random_state=None,
     step=1, limits=None, patch_min=1, l2_normed=False,
-    return_norm_coefs: bool = False, allow_allzeros=True
+    return_norm_coefs: bool = False, allow_allzeros=True,
+    allow_padding=False
 ) -> tuple[NDArray, NDArray] | NDArray:
     """Extract patches from 'signals'.
 
@@ -288,14 +291,24 @@ def extract_patches(
     allow_allzeros: bool, optional
         When extracting random patches, if False and `l2_normed == True`,
         generate another random window position until the l2 norm is != 0.
+
+    allow_padding: bool, optional
+        If True, right-pad signals with zeros so the final patch covers the
+        original last sample. False by default, in which case an incomplete
+        trailing interval is omitted.
     
     """
     if signals.ndim > 2:
         raise ValueError("'signals' must be 2d-array at most")
+    if signals.ndim == 1:
+        signals = signals[np.newaxis, :]
+
+    n_signals, original_length = signals.shape
     if limits is not None:
-        if limits.shape[1] != 2:
+        limits = np.asarray(limits)
+        if limits.shape != (n_signals, 2):
             raise ValueError(
-                f"'limits' has a wrong shape: {limits.shape}"
+                f"'limits' must have shape ({n_signals}, 2); got {limits.shape}"
             )
         if patch_min > np.min(np.diff(limits, axis=1)):
             raise ValueError(
@@ -307,26 +320,27 @@ def extract_patches(
             "'allow_allzeros' is False, but 'signals' contains only zeros. "
             "Random patch extraction would result in an infinite loop."
         )
-    
-    if signals.ndim == 1:
-        signals = signals[np.newaxis,:]
-
-    
 
     # Compute the maximum patches per signal that can be obtained with the
     # given 'step' ignoring the limits.
 
     rng = np.random.Generator(np.random.PCG64(random_state))
-    n_signals, l_signals = signals.shape
-    max_pps = (l_signals - patch_size) / step + 1
-    if not max_pps.is_integer() and limits is None and n_signals == 1:
+    trailing = max(original_length - patch_size, 0) % step
+    if allow_padding:
+        if original_length < patch_size:
+            padding = patch_size - original_length
+        else:
+            padding = (step - trailing) % step
+        if padding:
+            signals = np.pad(signals, ((0, 0), (0, padding)))
+    elif trailing and limits is None and n_signals == 1:
         warnings.warn(
             "'signals' cannot be fully divided into patches, the last"
-            f" {(max_pps-1)*step % step:.0f} bins of each signal will be left out",
+            f" {trailing} bins of each signal will be left out",
             RuntimeWarning
         )
-    max_pps = int(max_pps)
-
+    l_signals = signals.shape[1]
+    max_pps = (l_signals - patch_size) // step + 1
 
     
     # Compute the maximum TOTAL number of patches and the limits from where to
