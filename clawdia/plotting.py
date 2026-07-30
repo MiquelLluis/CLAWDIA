@@ -21,7 +21,7 @@ from . import lib
 
 def plot_confusion(cmat, ax=None, labels=None, mode='both', vmin=None, vmax=None,
                    cmap="PaleBlues", **kwargs):
-    """Plot a confusion matrix.
+    r"""Plot a confusion matrix.
 
     Plot a pre-computed confusion matrix `cmat`.
     Rows must contain true values, and columns predicted values. For example,
@@ -171,8 +171,18 @@ def plot_dictionary(array, c=None, ylim=None, **plot_kw):
         Passed to pyplot.subplots().
     
     """
+    array = np.asarray(array)
+    if array.ndim != 2 or array.shape[0] == 0:
+        raise ValueError("'array' must be a non-empty 2d-array")
     if c is None:
         c = int(np.sqrt(array.shape[0]))
+    if isinstance(c, (bool, np.bool_)) or not isinstance(c, (int, np.integer)):
+        raise TypeError("'c' must be an integer")
+    if c <= 0:
+        raise ValueError("'c' must be positive")
+    if c ** 2 > array.shape[0]:
+        raise ValueError("'array' does not contain enough atoms for the requested grid")
+
     fig, axs = plt.subplots(ncols=c, nrows=c, **plot_kw)
     for i in range(c**2):
         ax = axs[i//c,i%c]
