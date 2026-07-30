@@ -272,8 +272,19 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
         number of input strains per class.
 
         """
+        X = np.asarray(X)
+        if X.ndim != 2:
+            raise ValueError("'X' must be a 2d-array")
         if not isinstance(y_true, np.ndarray):
             raise TypeError("'y_true' must be a numpy array.")
+        if y_true.ndim != 1 or len(y_true) != len(X):
+            raise ValueError(
+                "'y_true' must be a 1d-array with one label per sample"
+            )
+        if len(y_true) == 0:
+            raise ValueError("'X' and 'y_true' must not be empty")
+        if not np.issubdtype(y_true.dtype, np.integer):
+            raise TypeError("'y_true' labels must be integers")
         
         if X.shape[1] < l_atoms:
             raise ValueError("X must have at least 'l_atoms' features.")
