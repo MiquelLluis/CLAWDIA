@@ -469,6 +469,6 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
             Path to the file where to save the dictionary.
         
         """
-        vars_ = vars(self)
+        vars_ = vars(self).copy()
+        vars_['_clawdia_format_version'] = 1
         np.savez(file, **vars_)
-

@@ -19,6 +19,10 @@ __all__ = ['DictionarySpams', 'DictionaryLRSDL', 'load', 'save']
 
 def load(file):
     dico_raw = dict(np.load(file, allow_pickle=True))
+    format_version = dico_raw.pop('_clawdia_format_version', None)
+    if isinstance(format_version, np.ndarray) and format_version.ndim == 0:
+        format_version = format_version.item()
+    is_legacy = format_version is None
 
     # Initialise the correct dictionary instance.
     if 'lambd2' in dico_raw:  # LRSDL
@@ -33,7 +37,7 @@ def load(file):
         
         # For backwards compatibility with versions previous to v0.4,
         # transpose it from Fortran to C order.
-        if dict_init.flags.f_contiguous:
+        if is_legacy and dict_init.flags.f_contiguous:
             print('dict_init')
             dict_init = dict_init.T
         
@@ -48,7 +52,7 @@ def load(file):
         
         # For backwards compatibility with versions previous to v0.4,
         # transpose all dictionary components from Fortran to C order.
-        elif value.ndim == 2 and value.flags.f_contiguous:
+        elif is_legacy and value.ndim == 2 and value.flags.f_contiguous:
             print(f"Transposing matrix '{key}'.")
             value = value.T
 
