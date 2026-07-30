@@ -137,7 +137,6 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
     References
     ----------
     [1]: Eq. 12, DOI: 10.48550/arxiv.2210.06194
-    
     """    
     ns = len(x)
     if ns != len(y):
@@ -355,7 +354,13 @@ def match(x, y, *, at=1, psd=None, window=('tukey', 0.5), return_lag=False):
 
 def imatch(x, y, *, at=1, psd=None, window=('tukey', 0.5), return_lag=False):
     """Shorthand for `1 - match()`."""
-    return 1 - match(x, y, at=at, psd=psd, window=window, return_lag=return_lag)
+    result = match(
+        x, y, at=at, psd=psd, window=window, return_lag=return_lag
+    )
+    if return_lag:
+        value, lag = result
+        return 1 - value, lag
+    return 1 - result
 
 
 def snr(strain, *, psd, at, window=('tukey',0.5)):
