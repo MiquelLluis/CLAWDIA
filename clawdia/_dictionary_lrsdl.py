@@ -424,6 +424,16 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
             Only returned if with_losses=True.
 
         """
+        X = np.asarray(X)
+        if X.ndim != 2:
+            raise ValueError("'X' must be a 2d-array")
+        if not hasattr(self, 'D'):
+            raise RuntimeError("the dictionary must be fitted before prediction")
+        if isinstance(offset, (bool, np.bool_)) or not isinstance(
+            offset, (int, np.integer)
+        ) or offset < 0:
+            raise ValueError("'offset' must be a non-negative integer")
+
         # Cut signals to dico's length and discard the rest:
         i0 = offset
         i1 = i0 + self.D.shape[0]
