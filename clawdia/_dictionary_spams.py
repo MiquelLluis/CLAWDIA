@@ -854,7 +854,7 @@ class DictionarySpams:
             in binary mode.
 
         """
-        vars_ = vars(self)
+        vars_ = vars(self).copy()
         to_remove = []
 
         if not self.trained:
@@ -864,6 +864,7 @@ class DictionarySpams:
         for attr in to_remove:
             vars_.pop(attr)
 
+        vars_['_clawdia_format_version'] = 1
         np.savez(file, **vars_)
 
     def copy(self):
