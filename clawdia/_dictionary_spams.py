@@ -400,7 +400,7 @@ class DictionarySpams:
 
         patches, norms = lib.extract_patches(
             strains, patch_size=self.a_length, step=step, l2_normed=normed_windows,
-            return_norm_coefs=True
+            return_norm_coefs=True, allow_padding=True
         )
         codes = spams.lasso(
             patches.T,            # SPAMS works with Fortran order.
@@ -417,7 +417,8 @@ class DictionarySpams:
 
         reconstructions = np.empty_like(strains)
         for i in range(ns):
-            reconstructions[i] = lib.reconstruct_from_patches_1d(patches[i], step)
+            reconstruction = lib.reconstruct_from_patches_1d(patches[i], step)
+            reconstructions[i] = reconstruction[:strains.shape[1]]
 
         return reconstructions
 
