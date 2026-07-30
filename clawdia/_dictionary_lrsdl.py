@@ -437,9 +437,15 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
         # Cut signals to dico's length and discard the rest:
         i0 = offset
         i1 = i0 + self.D.shape[0]
-        X_cut = X[:,i0:i1]
-        with np.errstate(divide='ignore', invalid='ignore'):
-            X_cut /= np.linalg.norm(X_cut, axis=1, keepdims=True)
+        if i1 > X.shape[1]:
+            raise ValueError(
+                "'X' does not contain enough samples for the requested offset"
+            )
+        X_cut = np.array(X[:, i0:i1], dtype=float, copy=True)
+        norms = np.linalg.norm(X_cut, axis=1, keepdims=True)
+        if np.any(norms == 0):
+            raise ValueError("prediction samples must have non-zero L2 norm")
+        X_cut /= norms
 
         # E: losses of all strains, shape: (class, strain)
         y_pred, E = self._predict(X_cut.T, loss_mat=True)
