@@ -482,13 +482,13 @@ def reconstruct_from_patches_1d(patches, step):
 
     n_patches, l_patches = patches.shape
     total_len = (n_patches - 1) * step + l_patches
-    
-    reconstructed = np.zeros(total_len, dtype=patches.dtype)
-    normaliser = np.zeros_like(reconstructed)
+
+    dtype = np.result_type(patches.dtype, np.float32)
+    reconstructed = np.zeros(total_len, dtype=dtype)
+    normaliser = np.zeros(total_len, dtype=np.int64)
     for i in range(n_patches):
         reconstructed[i*step:i*step+l_patches] += patches[i]
         normaliser[i*step:i*step+l_patches] += 1
-    normaliser[i*step+l_patches:] = 1
     reconstructed /= normaliser
 
     return reconstructed
