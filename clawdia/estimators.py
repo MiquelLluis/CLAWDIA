@@ -115,8 +115,7 @@ def residual(x, y):
 
 def softmax(x, axis=None):
     """Softmax probability distribution."""
-    coefs = np.exp(x)
-    return coefs / coefs.sum(axis=axis, keepdims=True)
+    return sp.special.softmax(x, axis=axis)
 
 
 def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
