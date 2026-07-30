@@ -184,6 +184,8 @@ def plot_dictionary(array, c=None, ylim=None, **plot_kw):
         raise ValueError("'array' does not contain enough atoms for the requested grid")
 
     fig, axs = plt.subplots(ncols=c, nrows=c, **plot_kw)
+    if c == 1:
+        axs = np.asarray(axs).reshape(1, 1)
     for i in range(c**2):
         ax = axs[i//c,i%c]
         ax.plot(array[i], lw=1)
