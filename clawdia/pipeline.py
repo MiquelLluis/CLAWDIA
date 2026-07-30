@@ -37,7 +37,9 @@ class Pipeline:
         chewed = self._preprocess(strains)
         results = self._predict(chewed, with_losses=with_losses)
         if with_preprocessed:
-            results += (chewed,)
+            if not isinstance(results, tuple):
+                results = (results,)
+            results = results + (chewed,)
         return results
 
     def _preprocess(self, strains):
