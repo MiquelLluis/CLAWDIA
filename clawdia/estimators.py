@@ -15,7 +15,7 @@ import scipy as sp
 
 def mse(x, y):
     """Mean Squared Error."""
-    return float(np.mean((x-y)**2) / len(x))
+    return float(np.mean((x-y)**2))
 
 
 def medse(x, y):
