@@ -357,12 +357,17 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
             )
 
         # Train the dictionary
-        np.random.seed(random_seed)
-        tic = time()
-        super().fit(
-            X_filtered.T, y_filtered, iterations=iterations, verbose=verbose, show_after=show_after
-        )
-        tac = time()
+        random_state = np.random.get_state()
+        try:
+            np.random.seed(random_seed)
+            tic = time()
+            super().fit(
+                X_filtered.T, y_filtered, iterations=iterations,
+                verbose=verbose, show_after=show_after
+            )
+            tac = time()
+        finally:
+            np.random.set_state(random_state)
         
         self.t_train = tac - tic
 
