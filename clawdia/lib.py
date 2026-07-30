@@ -298,18 +298,52 @@ def extract_patches(
         trailing interval is omitted.
     
     """
-    if signals.ndim > 2:
-        raise ValueError("'signals' must be 2d-array at most")
+    signals = np.asarray(signals)
+    if signals.ndim not in (1, 2):
+        raise ValueError("'signals' must be a 1d- or 2d-array")
+    if isinstance(patch_size, (bool, np.bool_)) or not isinstance(
+        patch_size, (int, np.integer)
+    ) or patch_size <= 0:
+        raise ValueError("'patch_size' must be a positive integer")
+    if isinstance(step, (bool, np.bool_)) or not isinstance(
+        step, (int, np.integer)
+    ) or step <= 0:
+        raise ValueError("'step' must be a positive integer")
+    if n_patches is not None and (
+        isinstance(n_patches, (bool, np.bool_))
+        or not isinstance(n_patches, (int, np.integer))
+        or n_patches < 0
+    ):
+        raise ValueError("'n_patches' must be a non-negative integer or None")
+    if isinstance(patch_min, (bool, np.bool_)) or not isinstance(
+        patch_min, (int, np.integer)
+    ) or not 1 <= patch_min <= patch_size:
+        raise ValueError("'patch_min' must be an integer between 1 and 'patch_size'")
+
     if signals.ndim == 1:
         signals = signals[np.newaxis, :]
 
     n_signals, original_length = signals.shape
+    if original_length == 0:
+        raise ValueError("'signals' must contain at least one sample")
+    if patch_size > original_length and not allow_padding:
+        raise ValueError(
+            "'patch_size' cannot exceed the signal length unless "
+            "'allow_padding' is True"
+        )
+
     if limits is not None:
         limits = np.asarray(limits)
         if limits.shape != (n_signals, 2):
             raise ValueError(
                 f"'limits' must have shape ({n_signals}, 2); got {limits.shape}"
             )
+        if not np.issubdtype(limits.dtype, np.integer):
+            raise TypeError("'limits' must contain integer indices")
+        if np.any(limits[:, 0] < 0) or np.any(limits[:, 1] > original_length):
+            raise ValueError("'limits' indices must lie within each signal")
+        if np.any(limits[:, 0] >= limits[:, 1]):
+            raise ValueError("each lower limit must be smaller than its upper limit")
         if patch_min > np.min(np.diff(limits, axis=1)):
             raise ValueError(
                 "there is at least one signal according to its 'limits' shorter"
