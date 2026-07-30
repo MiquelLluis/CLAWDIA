@@ -333,7 +333,8 @@ class DictionarySpams:
             patch_size=self.a_length,
             step=step,
             l2_normed=True,
-            return_norm_coefs=True
+            return_norm_coefs=True,
+            allow_padding=True
         )
         code = spams.lasso(
             patches.T,            # SPAMS works with Fortran order.
@@ -344,7 +345,7 @@ class DictionarySpams:
         )
         patches = ((self.components.T @ code) * norms).T
 
-        signal_rec = lib.reconstruct_from_patches_1d(patches, step)
+        signal_rec = lib.reconstruct_from_patches_1d(patches, step)[:signal.size]
 
         return signal_rec, code
 
