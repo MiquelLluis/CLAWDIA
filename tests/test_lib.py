@@ -4,7 +4,12 @@ import pytest
 from clawdia import lib
 
 
+def test_abs_normalise_in_place_by_axis():
+    values = np.array([[0.0, -2.0, 1.0], [0.0, 0.0, 0.0]])
+    result = lib.abs_normalise(values, axis=1)
 
+    assert result is None
+    np.testing.assert_array_equal(values, [[0.0, -1.0, 0.5], [0.0, 0.0, 0.0]])
 
 
 def test_extract_patches_returns_exact_multisignal_windows():
