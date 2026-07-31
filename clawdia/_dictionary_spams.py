@@ -765,7 +765,7 @@ class DictionarySpams:
             _worst = 0.5
             _eps = 1e-2    # start a hair above worst
         elif loss_func == 'overlap':
-            lossf = lambda x: estimators.doverlap(x, reference_)
+            lossf = lambda x: estimators.doverlap(x, reference_, at=1)
             _worst = 0.5   # dOverlap in [0, ~0.5] in practice; theoretical worst = 1.0 for full anticorrelation
             _eps = 1e-3    # keep this very close to 0.5
         elif callable(loss_func):
