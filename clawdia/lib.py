@@ -451,10 +451,6 @@ def extract_patches(
 
     # Normalise each patch to its L2 norm
     if l2_normed:
-        # Floating and complex dtypes are NumPy "inexact" types. Promote exact
-        # types such as integers so fractional normalised values can be stored.
-        if not np.issubdtype(patches.dtype, np.inexact):
-            patches = patches.astype(np.result_type(patches.dtype, np.float32))
         coefs = np.linalg.norm(patches, axis=1, keepdims=True)
         # Ignore x/0 and 0/0 cases
         with np.errstate(divide='ignore', invalid='ignore'):
@@ -483,9 +479,8 @@ def reconstruct_from_patches_1d(patches, step):
     n_patches, l_patches = patches.shape
     total_len = (n_patches - 1) * step + l_patches
 
-    dtype = np.result_type(patches.dtype, np.float32)
-    reconstructed = np.zeros(total_len, dtype=dtype)
-    normaliser = np.zeros(total_len, dtype=np.int64)
+    reconstructed = np.zeros(total_len, dtype=patches.dtype)
+    normaliser = np.zeros_like(reconstructed)
     for i in range(n_patches):
         reconstructed[i*step:i*step+l_patches] += patches[i]
         normaliser[i*step:i*step+l_patches] += 1

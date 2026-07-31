@@ -441,7 +441,7 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
             raise ValueError(
                 "'X' does not contain enough samples for the requested offset"
             )
-        X_cut = np.array(X[:, i0:i1], dtype=float, copy=True)
+        X_cut = X[:, i0:i1].copy()
         norms = np.linalg.norm(X_cut, axis=1, keepdims=True)
         if np.any(norms == 0):
             raise ValueError("prediction samples must have non-zero L2 norm")
