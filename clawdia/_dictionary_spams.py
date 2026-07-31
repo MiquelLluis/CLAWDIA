@@ -799,16 +799,27 @@ class DictionarySpams:
             # then rises linearly
             return intercept + slope * (l_rec_log - log_l_min)
 
-        rec = None
+        best_evaluation = None
+
         def cost_function(l_rec_log):
             """Function to be minimized."""
-            nonlocal rec
+            nonlocal best_evaluation
             l_rec = 10 ** l_rec_log  # Opitimizes lambda in log. space!
             rec = self.reconstruct(strain_, l_rec, step=step, normed=normed, **kwargs_lasso)
             if rec.any():
-                return lossf(rec)
-            # If reconstruction is identically zero, steer away from larger lambda:
-            return _null_penalty(l_rec_log)
+                candidate_loss = lossf(rec)
+            else:
+                # If reconstruction is identically zero, go away from larger lambda:
+                candidate_loss = _null_penalty(l_rec_log)
+
+            # Keep the best reconstruction
+            if (
+                best_evaluation is None
+                or candidate_loss <= best_evaluation[1]
+            ):
+                best_evaluation = (l_rec_log, candidate_loss, rec)
+
+            return candidate_loss
 
         if verbose:
             # Add maximum verbosity to `scipy.optimize.minimize_scalar`, unless
@@ -821,7 +832,14 @@ class DictionarySpams:
 
         result = scipy.optimize.minimize_scalar(cost_function, **kwargs_minimize)
         l_opt = 10 ** result['x']
-        loss = result['fun']
+        if best_evaluation is not None and best_evaluation[0] == result['x']:
+            _, loss, rec_optimised = best_evaluation
+        else:
+            # Custom optimisers may report a point they did not evaluate.
+            rec_optimised = self.reconstruct(
+                strain_, l_opt, step=step, normed=normed, **kwargs_lasso
+            )
+            loss = lossf(rec_optimised) if rec_optimised.any() else _null_penalty(result['x'])
 
         # If the section to be optimised was shorter than the whole strain,
         # we need to reconstruct the whole strain with the found lambda.
@@ -830,6 +848,8 @@ class DictionarySpams:
             if verbose:
                 print("Reconstructing the whole strain with the optimal lambda found.")
             rec = self.reconstruct(strain, l_opt, step=step, normed=normed, **kwargs_lasso)
+        else:
+            rec = rec_optimised
 
         if verbose:
             success = result['success']
