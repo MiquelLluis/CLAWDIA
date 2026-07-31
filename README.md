@@ -46,9 +46,10 @@ are also foreseen.
 Users of clawdia are kindly requested to cite the corresponding framework paper
 when using the software in academic work:
 
-    M. Llorens-Monteagudo, A. Torres-Forné, and J. A. Font, 2025,
-    "CLAWDIA: A dictionary learning framework for gravitational-wave data analysis",
-    arXiv:2511.16750 [astro-ph.IM], https://arxiv.org/abs/2511.16750.
+    Miquel Llorens-Monteagudo, Alejandro Torres-Forné, and José A. Font.
+    “CLAWDIA: A Dictionary Learning Framework for Gravitational-Wave Data Analysis.”
+    Machine Learning: Science and Technology 7, no. 4 (2026): 045014. https://doi.org/10.1088/2632-2153/ae7e3a.
+
 
 This paper should be taken as the primary reference for clawdia, and
 provides further details together with illustrative applications to real and
