@@ -783,6 +783,8 @@ class DictionarySpams:
         if not np.isfinite(log_l_min) or not np.isfinite(log_l_max):
             # Fall back
             log_l_min, log_l_max = -2.0, 1.0
+        if log_l_min == log_l_max:
+            raise ValueError("'bounds' must contain two distinct values")
         
         # Build a gentle positive slope so the penalty increases with
         # log10(lambda). Make it span a modest delta across the search range;
