@@ -477,7 +477,8 @@ class DictionarySpams:
             i0 = i1
             minibatch = signals[i0:]
             out[i0:] = self._reconstruct_batch(
-                minibatch, sc_lambda=sc_lambda, step=step, **kwargs
+                minibatch, sc_lambda=sc_lambda, step=step,
+                normed_windows=normed_windows, **kwargs
             )
 
         if normed and out.any():
