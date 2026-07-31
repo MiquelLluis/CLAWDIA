@@ -497,10 +497,12 @@ class DictionarySpams:
         step: int = 1,
         normed=True,
         full_output=False,
-        kwargs_bisect={},
-        kwargs_lasso={}
+        kwargs_bisect=None,
+        kwargs_lasso=None
     ) -> tuple[NDArray, NDArray, NDArray] | NDArray:
         """TODO"""
+        kwargs_bisect = {} if kwargs_bisect is None else dict(kwargs_bisect)
+        kwargs_lasso = {} if kwargs_lasso is None else dict(kwargs_lasso)
 
         if isinstance(margin, int):
             margin = signal[:margin]
@@ -546,7 +548,7 @@ class DictionarySpams:
 
     def reconstruct_iterative(self, signals, sc_lambda=0.01, step=1, batchsize=64,
                                         max_iter=100, threshold=0.001, normed=True,
-                                        full_output=False, verbose=True, kwargs_lasso={}):
+                                        full_output=False, verbose=True, kwargs_lasso=None):
         """Reconstruct multiple signals using iterative residual subtraction.
 
         This method reconstructs each signal by iteratively updating and
@@ -596,6 +598,7 @@ class DictionarySpams:
             and the number of iterations per signal.
 
         """
+        kwargs_lasso = {} if kwargs_lasso is None else dict(kwargs_lasso)
         n_signals = signals.shape[0]
 
         # First iteration outside:
@@ -669,12 +672,8 @@ class DictionarySpams:
         limits=None,
         loss_func='match',
         normed=True,
-        kwargs_minimize={
-            'method': 'bounded',
-            'bounds': (-2,1),
-            'options': {'maxiter': 100, 'xatol': 0.04}
-        },
-        kwargs_lasso={},
+        kwargs_minimize=None,
+        kwargs_lasso=None,
         verbose=False
     ):
         """Find the best reconstruction of a signal w.r.t. a reference.
@@ -739,6 +738,18 @@ class DictionarySpams:
             optimized reconstruction and the reference.
 
         """
+        if kwargs_minimize is None:
+            kwargs_minimize = {
+                'method': 'bounded',
+                'bounds': (-2, 1),
+                'options': {'maxiter': 100, 'xatol': 0.04}
+            }
+        else:
+            kwargs_minimize = dict(kwargs_minimize)
+            if 'options' in kwargs_minimize:
+                kwargs_minimize['options'] = dict(kwargs_minimize['options'])
+        kwargs_lasso = {} if kwargs_lasso is None else dict(kwargs_lasso)
+
         # Trim strain and reference if limits are specified.
         sl = slice(None) if limits is None else slice(*limits)
         reference_ = reference[sl]
