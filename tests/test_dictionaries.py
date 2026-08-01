@@ -194,3 +194,64 @@ def test_trained_lrsdl_round_trip_preserves_fitted_state_and_predictions(
     np.testing.assert_allclose(
         restored_losses, losses, rtol=0, atol=1e-12
     )
+
+
+def test_load_supports_unversioned_spams_state(tmp_path, capsys):
+    """Restore the orientation and missing defaults of a legacy SPAMS archive."""
+    components = SPAMS_INITIAL * 0.5
+    legacy_state = {
+        "dict_init": np.asfortranarray(SPAMS_INITIAL.T),
+        "components": np.asfortranarray(components.T),
+        "model": None,
+        "a_length": 2,
+        "d_size": 3,
+        "lambda1": 0.1,
+        "batch_size": 2,
+        "n_iter": 2,
+        "t_train": 0.25,
+        "trained": True,
+        "n_train": 6,
+        "mode_traindl": 0,
+        "mode_lasso": 2,
+        "identifier": "legacy",
+    }
+    destination = tmp_path / "legacy-spams.npz"
+    np.savez(destination, **legacy_state)
+
+    restored = dictionaries.load(destination)
+
+    assert capsys.readouterr().out == ""
+    assert isinstance(restored, dictionaries.DictionarySpams)
+    np.testing.assert_array_equal(restored.dict_init, SPAMS_INITIAL)
+    np.testing.assert_array_equal(restored.components, components)
+    assert restored.dict_init.flags.c_contiguous
+    assert restored.components.flags.c_contiguous
+    assert restored.modeD_traindl == 0
+
+
+@pytest.mark.integration
+@pytest.mark.regression
+def test_load_supports_existing_unversioned_lrsdl_reference(data_dir, capsys):
+    """Load and use the trusted trained LRSDL archive from the legacy format."""
+    model = dictionaries.load(
+        data_dir / "_dictionary_lrsdl" / "LRSDL_reference_model.npz"
+    )
+
+    assert capsys.readouterr().out == ""
+    assert isinstance(model, dictionaries.DictionaryLRSDL)
+    assert isinstance(model.lambd, float)
+    assert isinstance(model.lambd2, float)
+    assert isinstance(model.eta, float)
+    assert isinstance(model.k, int)
+    assert isinstance(model.k0, int)
+    assert isinstance(model.updateX_iters, int)
+    assert isinstance(model.updateD_iters, int)
+    assert isinstance(model.D_range, list)
+    assert isinstance(model.Y_range, list)
+    assert model.D.shape == (15, 8)
+    assert model.D0.shape == (15, 4)
+
+    predictions, losses = model.predict(model.Y[:2], with_losses=True)
+    assert predictions.shape == (2,)
+    assert losses.shape == (2,)
+    assert np.all(np.isfinite(losses))
