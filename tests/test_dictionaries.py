@@ -15,6 +15,16 @@ SPAMS_SIGNAL_POOL = np.array(
         [0.1, 1.0, 0.3, 0.9, 0.5, 0.7],
     ]
 )
+SPAMS_TRAINING_PATCHES = np.array(
+    [
+        [1.0, 0.0],
+        [0.0, 1.0],
+        [0.8, 0.2],
+        [0.2, 0.8],
+        [0.6, 0.4],
+        [0.4, 0.6],
+    ]
+)
 
 
 def _make_spams(initialisation):
@@ -89,3 +99,33 @@ def test_untrained_spams_round_trip_preserves_initialised_state(
     assert restored.n_iter == 2
     assert restored.n_train is None
     assert restored.t_train is None
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("initialisation", ["explicit", "signal_pool"])
+def test_trained_spams_round_trip_preserves_usable_continuation_state(
+    tmp_path, initialisation
+):
+    """Preserve real SPAMS training state and use it for a warm start."""
+    model = _make_spams(initialisation)
+    model.train(SPAMS_TRAINING_PATCHES, verbose=False, threads=1)
+
+    restored = _round_trip(
+        model, tmp_path / f"spams-trained-{initialisation}.npz"
+    )
+
+    assert restored.trained is True
+    assert restored.n_train == len(SPAMS_TRAINING_PATCHES)
+    assert restored.t_train > 0
+    assert restored.model.keys() == {"A", "B", "iter"}
+
+    previous_iterations = restored.n_iter
+    restored.train(
+        SPAMS_TRAINING_PATCHES,
+        n_iter=1,
+        warm_start=True,
+        verbose=False,
+        threads=1,
+    )
+    assert restored.n_iter == previous_iterations + 1
+    assert restored.model["iter"] == previous_iterations + 1
