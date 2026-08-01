@@ -120,5 +120,21 @@ def test_match_zero_signal_is_zero():
     assert estimators.match(zeros, zeros, window="boxcar") == 0.0
 
 
+
+
+@pytest.mark.parametrize(
+    "function, x, y",
+    [
+        (estimators.inner_product_weighted, np.ones(4), np.ones(5)),
+        (estimators.match, np.ones(4), np.ones(5)),
+        (estimators.inner_product_weighted, np.ones(4, dtype=complex), np.ones(4)),
+        (estimators.match, np.ones(4, dtype=complex), np.ones(4)),
+    ],
+)
+def test_frequency_metrics_reject_invalid_inputs(function, x, y):
+    with pytest.raises(ValueError):
+        function(x, y, at=1, window="boxcar")
+
+
 def test_find_merger_returns_largest_absolute_sample():
     assert estimators.find_merger(np.array([1.0, -4.0, 3.0])) == 1
