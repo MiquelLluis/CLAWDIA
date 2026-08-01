@@ -44,7 +44,6 @@ def load(file):
         # For backwards compatibility with versions previous to v0.4,
         # transpose it from Fortran to C order.
         if is_legacy and dict_init.flags.f_contiguous:
-            print('dict_init')
             dict_init = dict_init.T
         
         dico = DictionarySpams(dict_init=dict_init)
@@ -71,12 +70,6 @@ def load(file):
 
         setattr(dico, key, value)
     
-    # In case of loading older instances in which this attribute
-    # didn't exist, it is set to the default of spams.trainDL.
-    # This way it should produce the same results as before.
-    if isinstance(dico, DictionarySpams) and not hasattr(dico, 'modeD_traindl'):
-        dico.modeD_traindl = 0
-
     return dico
 
 
