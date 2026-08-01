@@ -120,6 +120,19 @@ def test_match_zero_signal_is_zero():
     assert estimators.match(zeros, zeros, window="boxcar") == 0.0
 
 
+def test_snr_matches_known_bin_centred_signal(bin_centred_sinusoid):
+    signal, sample_rate, amplitude = bin_centred_sinusoid
+    dt = 1 / sample_rate
+    frequencies = np.fft.rfftfreq(len(signal), dt)
+    psd_level = 2.0
+    psd = np.vstack([frequencies, np.full_like(frequencies, psd_level)])
+    duration = len(signal) / sample_rate
+    expected = amplitude * np.sqrt(duration / psd_level)
+
+    actual = estimators.snr(
+        signal, psd=psd, at=dt, window=np.ones(len(signal))
+    )
+    assert actual == pytest.approx(expected, rel=5e-12, abs=5e-12)
 
 
 @pytest.mark.parametrize(
