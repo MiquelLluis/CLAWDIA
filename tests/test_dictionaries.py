@@ -1,0 +1,91 @@
+import copy
+
+import numpy as np
+import pytest
+
+from clawdia import dictionaries
+
+
+SPAMS_INITIAL = np.array(
+    [[1.0, 0.0], [0.0, 1.0], [2**-0.5, 2**-0.5]]
+)
+SPAMS_SIGNAL_POOL = np.array(
+    [
+        [1.0, 0.2, 0.8, 0.4, 0.6, 0.3],
+        [0.1, 1.0, 0.3, 0.9, 0.5, 0.7],
+    ]
+)
+
+
+def _make_spams(initialisation):
+    kwargs = {
+        "lambda1": 0.1,
+        "batch_size": 2,
+        "n_iter": 2,
+        "identifier": f"round-trip-{initialisation}",
+    }
+    if initialisation == "explicit":
+        return dictionaries.DictionarySpams(
+            dict_init=SPAMS_INITIAL.copy(),
+            **kwargs,
+        )
+    return dictionaries.DictionarySpams(
+        signal_pool=SPAMS_SIGNAL_POOL.copy(),
+        a_length=2,
+        d_size=3,
+        random_state=17,
+        **kwargs,
+    )
+
+
+def _assert_state_value_equal(expected, actual):
+    assert type(actual) is type(expected)
+    if isinstance(expected, np.ndarray):
+        assert actual.shape == expected.shape
+        assert actual.dtype == expected.dtype
+        assert actual.flags.c_contiguous == expected.flags.c_contiguous
+        assert actual.flags.f_contiguous == expected.flags.f_contiguous
+        np.testing.assert_array_equal(actual, expected)
+    elif isinstance(expected, dict):
+        assert actual.keys() == expected.keys()
+        for key in expected:
+            _assert_state_value_equal(expected[key], actual[key])
+    elif isinstance(expected, (list, tuple)):
+        assert len(actual) == len(expected)
+        for expected_item, actual_item in zip(expected, actual):
+            _assert_state_value_equal(expected_item, actual_item)
+    else:
+        assert actual == expected
+
+
+def _assert_attribute_state_equal(expected, actual):
+    assert actual.keys() == expected.keys()
+    for attribute in expected:
+        _assert_state_value_equal(expected[attribute], actual[attribute])
+
+
+def _round_trip(model, destination):
+    before_save = copy.deepcopy(vars(model))
+    dictionaries.save(destination, model)
+    _assert_attribute_state_equal(before_save, vars(model))
+
+    restored = dictionaries.load(destination)
+    assert type(restored) is type(model)
+    _assert_attribute_state_equal(vars(model), vars(restored))
+    return restored
+
+
+@pytest.mark.parametrize("initialisation", ["explicit", "signal_pool"])
+def test_untrained_spams_round_trip_preserves_initialised_state(
+    tmp_path, initialisation
+):
+    """Preserve untrained SPAMS state from both supported initialisation paths."""
+    model = _make_spams(initialisation)
+    restored = _round_trip(model, tmp_path / f"spams-{initialisation}.npz")
+
+    assert restored.trained is False
+    assert restored.model is None
+    assert restored.lambda1 == 0.1
+    assert restored.n_iter == 2
+    assert restored.n_train is None
+    assert restored.t_train is None
