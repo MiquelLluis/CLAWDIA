@@ -20,6 +20,24 @@ def test_l2_normalise_in_place_by_axis():
     )
 
 
+def test_confusion_percent_int_uses_largest_remainder_and_stable_ties():
+    counts = np.array([[1, 1, 1], [1, 2, 3], [0, 0, 0]])
+    expected = np.array([[34, 33, 33], [17, 33, 50], [0, 0, 0]])
+    percentages = lib.confusion_percent_int(counts)
+
+    np.testing.assert_array_equal(percentages, expected)
+    np.testing.assert_array_equal(percentages.sum(axis=1), [100, 100, 0])
+
+
+@pytest.mark.parametrize(
+    "counts",
+    [np.ones(3), np.array([[1, -1]])],
+)
+def test_confusion_percent_int_rejects_invalid_counts(counts):
+    with pytest.raises(ValueError):
+        lib.confusion_percent_int(counts)
+
+
 def test_extract_patches_returns_exact_multisignal_windows():
     signals = np.arange(12, dtype=np.float64).reshape(2, 6)
     patches = lib.extract_patches(signals, patch_size=3, step=2)
