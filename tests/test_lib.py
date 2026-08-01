@@ -38,6 +38,31 @@ def test_confusion_percent_int_rejects_invalid_counts(counts):
         lib.confusion_percent_int(counts)
 
 
+def test_semibool_bisect_finds_known_boundary():
+    result = lib.semibool_bisect(
+        lambda x: 1.0 if x <= 2.0 else 0.0,
+        0.0,
+        4.0,
+        xtol=1e-10,
+        rtol=1e-12,
+    )
+
+    assert result["converged"]
+    assert 0 <= 2.0 - result["x"] <= 2e-10
+    assert result["f"] == 1.0
+
+
+def test_semibool_bisect_reports_nonconvergence_and_bad_boundary():
+    result = lib.semibool_bisect(
+        lambda x: 1.0 if x <= 2.0 else 0.0, 0.0, 4.0, maxiter=1
+    )
+    assert not result["converged"]
+    assert result["niters"] == 1
+
+    with pytest.raises(lib.BoundaryError):
+        lib.semibool_bisect(lambda x: x + 1, 0.0, 4.0)
+
+
 def test_extract_patches_returns_exact_multisignal_windows():
     signals = np.arange(12, dtype=np.float64).reshape(2, 6)
     patches = lib.extract_patches(signals, patch_size=3, step=2)
