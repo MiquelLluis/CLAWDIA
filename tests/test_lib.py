@@ -12,6 +12,14 @@ def test_abs_normalise_in_place_by_axis():
     np.testing.assert_array_equal(values, [[0.0, -1.0, 0.5], [0.0, 0.0, 0.0]])
 
 
+def test_l2_normalise_in_place_by_axis():
+    values = np.array([[3.0, 4.0], [0.0, 0.0]])
+    lib.l2_normalise(values, axis=1)
+    np.testing.assert_allclose(
+        values, [[0.6, 0.8], [0.0, 0.0]], rtol=1e-12, atol=1e-12
+    )
+
+
 def test_extract_patches_returns_exact_multisignal_windows():
     signals = np.arange(12, dtype=np.float64).reshape(2, 6)
     patches = lib.extract_patches(signals, patch_size=3, step=2)
