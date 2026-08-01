@@ -28,3 +28,19 @@ def test_structural_similarity_identity_symmetry_and_derived_metrics():
         -estimators.ssim(x, y), abs=1e-12
     )
 
+
+def test_softmax_is_stable_and_respects_axis():
+    values = np.array([[1000.0, 1001.0], [-1000.0, -999.0]])
+    probabilities = estimators.softmax(values, axis=1)
+    expected_row = np.array([1, np.e]) / (1 + np.e)
+
+    np.testing.assert_allclose(
+        probabilities,
+        np.vstack([expected_row, expected_row]),
+        rtol=1e-12,
+        atol=1e-12,
+    )
+    np.testing.assert_allclose(
+        probabilities.sum(axis=1), 1.0, rtol=1e-12, atol=1e-12
+    )
+
