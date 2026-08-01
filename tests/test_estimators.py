@@ -44,3 +44,33 @@ def test_softmax_is_stable_and_respects_axis():
         probabilities.sum(axis=1), 1.0, rtol=1e-12, atol=1e-12
     )
 
+
+@pytest.fixture
+def bin_centred_sinusoid():
+    n_samples = 128
+    sample_rate = 128.0
+    amplitude = 0.25
+    time = np.arange(n_samples) / sample_rate
+    signal = amplitude * np.sin(2 * np.pi * 8 * time)
+    return signal, sample_rate, amplitude
+
+
+def test_weighted_inner_product_matches_bin_centred_fft_result(
+    bin_centred_sinusoid,
+):
+    signal, sample_rate, amplitude = bin_centred_sinusoid
+    dt = 1 / sample_rate
+    expected = sample_rate * len(signal) * amplitude**2
+
+    actual = estimators.inner_product_weighted(
+        signal, signal, at=dt, window="boxcar"
+    )
+    assert actual == pytest.approx(expected, rel=5e-12, abs=5e-12)
+
+    frequencies = np.fft.rfftfreq(len(signal), dt)
+    flat_psd = np.vstack([frequencies, np.full_like(frequencies, 2.0)])
+    weighted = estimators.inner_product_weighted(
+        signal, signal, at=dt, psd=flat_psd, window="boxcar"
+    )
+    assert weighted == pytest.approx(expected / 2, rel=5e-12, abs=5e-12)
+
