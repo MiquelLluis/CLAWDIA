@@ -25,6 +25,15 @@ SPAMS_TRAINING_PATCHES = np.array(
         [0.4, 0.6],
     ]
 )
+LRSDL_TRAINING_SIGNALS = np.array(
+    [
+        [1.0, 0.0, 0.5, 0.0, 0.25, 0.0],
+        [0.8, 0.0, 0.4, 0.0, 0.2, 0.0],
+        [0.0, 1.0, 0.0, 0.5, 0.0, 0.25],
+        [0.0, 0.8, 0.0, 0.4, 0.0, 0.2],
+    ]
+)
+LRSDL_TRAINING_LABELS = np.array([1, 1, 2, 2])
 
 
 def _make_spams(initialisation):
@@ -45,6 +54,18 @@ def _make_spams(initialisation):
         d_size=3,
         random_state=17,
         **kwargs,
+    )
+
+
+def _make_lrsdl(k0):
+    return dictionaries.DictionaryLRSDL(
+        lambd=0.02,
+        lambd2=0.03,
+        eta=0.0002,
+        k=1,
+        k0=k0,
+        updateX_iters=2,
+        updateD_iters=2,
     )
 
 
@@ -129,3 +150,47 @@ def test_trained_spams_round_trip_preserves_usable_continuation_state(
     )
     assert restored.n_iter == previous_iterations + 1
     assert restored.model["iter"] == previous_iterations + 1
+
+
+@pytest.mark.parametrize("k0", [0, 1])
+def test_untrained_lrsdl_round_trip_preserves_initialised_state(tmp_path, k0):
+    """Preserve LRSDL parameters before fitting, with and without shared atoms."""
+    model = _make_lrsdl(k0)
+    restored = _round_trip(model, tmp_path / f"lrsdl-k0-{k0}.npz")
+
+    assert restored.t_train is None
+    for attribute in ("D", "D0", "X", "X0", "Y", "D_range", "Y_range"):
+        assert getattr(restored, attribute) is None
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("k0", [0, 1])
+def test_trained_lrsdl_round_trip_preserves_fitted_state_and_predictions(
+    tmp_path, k0
+):
+    """Preserve fitted LRSDL state and predictions for both dictionary forms."""
+    model = _make_lrsdl(k0)
+    model.fit(
+        LRSDL_TRAINING_SIGNALS,
+        y_true=LRSDL_TRAINING_LABELS,
+        l_atoms=2,
+        iterations=1,
+        step=2,
+        random_seed=7,
+    )
+    predictions, losses = model.predict(
+        LRSDL_TRAINING_SIGNALS, with_losses=True
+    )
+
+    restored = _round_trip(model, tmp_path / f"lrsdl-trained-k0-{k0}.npz")
+    restored_predictions, restored_losses = restored.predict(
+        LRSDL_TRAINING_SIGNALS, with_losses=True
+    )
+
+    assert restored.t_train > 0
+    assert isinstance(restored.D_range, list)
+    assert isinstance(restored.Y_range, list)
+    np.testing.assert_array_equal(restored_predictions, predictions)
+    np.testing.assert_allclose(
+        restored_losses, losses, rtol=0, atol=1e-12
+    )
