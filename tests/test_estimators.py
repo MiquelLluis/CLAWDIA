@@ -74,3 +74,25 @@ def test_weighted_inner_product_matches_bin_centred_fft_result(
     )
     assert weighted == pytest.approx(expected / 2, rel=5e-12, abs=5e-12)
 
+
+def test_overlap_has_expected_scale_sign_and_orthogonality(
+    bin_centred_sinusoid,
+):
+    signal, sample_rate, _ = bin_centred_sinusoid
+    dt = 1 / sample_rate
+    time = np.arange(len(signal)) / sample_rate
+    orthogonal = np.sin(2 * np.pi * 9 * time)
+
+    assert estimators.overlap(
+        signal, signal, at=dt, window="boxcar"
+    ) == pytest.approx(1.0, abs=5e-12)
+    assert estimators.overlap(
+        signal, -signal, at=dt, window="boxcar"
+    ) == pytest.approx(-1.0, abs=5e-12)
+    assert estimators.overlap(
+        signal, orthogonal, at=dt, window="boxcar"
+    ) == pytest.approx(0.0, abs=5e-12)
+    assert estimators.doverlap(
+        signal, signal, at=dt, window="boxcar"
+    ) == pytest.approx(0.0, abs=5e-12)
+
