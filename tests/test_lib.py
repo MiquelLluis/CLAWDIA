@@ -187,4 +187,20 @@ def test_extract_patches_rejects_over_extraction():
         )
 
 
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+def test_reconstruct_from_patches_is_exact_overlap_add(dtype):
+    signal = np.arange(9, dtype=dtype)
+    patches = lib.extract_patches(signal, patch_size=5, step=2)
+    reconstructed = lib.reconstruct_from_patches_1d(patches, step=2)
 
+    np.testing.assert_allclose(reconstructed, signal, rtol=1e-12, atol=1e-12)
+    assert reconstructed.dtype == dtype
+
+
+@pytest.mark.parametrize(
+    "patches, step",
+    [(np.empty((0, 3)), 1), (np.ones((2, 3)), 0), (np.ones((2, 3)), 4)],
+)
+def test_reconstruct_from_patches_rejects_invalid_geometry(patches, step):
+    with pytest.raises(ValueError):
+        lib.reconstruct_from_patches_1d(patches, step)
