@@ -97,6 +97,22 @@ def test_overlap_has_expected_scale_sign_and_orthogonality(
     ) == pytest.approx(0.0, abs=5e-12)
 
 
+def test_match_recovers_cyclic_lag_and_imatch_preserves_it():
+    signal = np.zeros(64)
+    signal[10] = 1.0
+    shifted = np.roll(signal, 7)
+
+    match, lag = estimators.match(
+        signal, shifted, at=0.25, window="boxcar", return_lag=True
+    )
+    mismatch, mismatch_lag = estimators.imatch(
+        signal, shifted, at=0.25, window="boxcar", return_lag=True
+    )
+
+    assert match == pytest.approx(1.0, abs=5e-12)
+    assert lag == (-7, -1.75)
+    assert mismatch == pytest.approx(0.0, abs=5e-12)
+    assert mismatch_lag == lag
 
 
 def test_match_zero_signal_is_zero():
