@@ -96,3 +96,7 @@ def test_overlap_has_expected_scale_sign_and_orthogonality(
         signal, signal, at=dt, window="boxcar"
     ) == pytest.approx(0.0, abs=5e-12)
 
+
+
+def test_find_merger_returns_largest_absolute_sample():
+    assert estimators.find_merger(np.array([1.0, -4.0, 3.0])) == 1
