@@ -18,10 +18,16 @@ __all__ = ['DictionarySpams', 'DictionaryLRSDL', 'load', 'save']
 
 
 def load(file):
-    dico_raw = dict(np.load(file, allow_pickle=True))
+    """Load a saved CLAWDIA dictionary and restore its public state."""
+    with np.load(file, allow_pickle=True) as archive:
+        dico_raw = {
+            key: value.item()
+            if isinstance(value, np.ndarray) and value.ndim == 0
+            else value
+            for key, value in archive.items()
+        }
+
     format_version = dico_raw.pop('_clawdia_format_version', None)
-    if isinstance(format_version, np.ndarray) and format_version.ndim == 0:
-        format_version = format_version.item()
     is_legacy = format_version is None
 
     # Initialise the correct dictionary instance.
@@ -46,15 +52,22 @@ def load(file):
 
     # Restore the state of the dictionary
     for key, value in dico_raw.items():
-        # Restore all 0d-array to their former types
-        if value.ndim == 0:
-            value = value.item()
-        
         # For backwards compatibility with versions previous to v0.4,
         # transpose all dictionary components from Fortran to C order.
-        elif is_legacy and value.ndim == 2 and value.flags.f_contiguous:
-            print(f"Transposing matrix '{key}'.")
+        if (
+            is_legacy
+            and isinstance(value, np.ndarray)
+            and value.ndim == 2
+            and value.flags.f_contiguous
+        ):
             value = value.T
+
+        if (
+            isinstance(dico, DictionaryLRSDL)
+            and key in {'D_range', 'Y_range'}
+            and isinstance(value, np.ndarray)
+        ):
+            value = value.tolist()
 
         setattr(dico, key, value)
     

@@ -875,10 +875,8 @@ class DictionarySpams:
     def save(self, file):
         """Save the current state of the DictionarySpams object to a file.
 
-        This method saves all attributes of the object as a `.npz` file. 
-        If the object has not been trained, certain attributes (`lambda1`, 
-        `n_train`, and `t_train`) are removed to avoid potential issues when 
-        reloading the state.
+        This method saves all initialized or trained attributes of the object
+        as a `.npz` file.
 
         Parameters
         ----------
@@ -890,15 +888,6 @@ class DictionarySpams:
 
         """
         vars_ = vars(self).copy()
-        to_remove = []
-
-        if not self.trained:
-            # To avoid silent bugs in the future
-            to_remove += ['lambda1', 'n_train', 't_train']
-
-        for attr in to_remove:
-            vars_.pop(attr)
-
         vars_['_clawdia_format_version'] = 1
         np.savez(file, **vars_)
 
