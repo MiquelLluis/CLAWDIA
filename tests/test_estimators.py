@@ -12,3 +12,19 @@ def test_elementwise_error_metrics_have_known_values():
     assert estimators.medse(x, y) == pytest.approx(1.0)
     assert estimators.residual(x, y) == pytest.approx(np.sqrt(5))
 
+
+def test_structural_similarity_identity_symmetry_and_derived_metrics():
+    x = np.linspace(-0.5, 0.5, 32)
+    y = x**3
+
+    assert estimators.ssim(x, x) == pytest.approx(1.0, abs=1e-12)
+    assert estimators.ssim(x, y) == pytest.approx(
+        estimators.ssim(y, x), abs=1e-12
+    )
+    assert estimators.dssim(x, y) == pytest.approx(
+        (1 - estimators.ssim(x, y)) / 2, abs=1e-12
+    )
+    assert estimators.issim(x, y) == pytest.approx(
+        -estimators.ssim(x, y), abs=1e-12
+    )
+
