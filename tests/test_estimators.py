@@ -98,5 +98,11 @@ def test_overlap_has_expected_scale_sign_and_orthogonality(
 
 
 
+
+def test_match_zero_signal_is_zero():
+    zeros = np.zeros(32)
+    assert estimators.match(zeros, zeros, window="boxcar") == 0.0
+
+
 def test_find_merger_returns_largest_absolute_sample():
     assert estimators.find_merger(np.array([1.0, -4.0, 3.0])) == 1
