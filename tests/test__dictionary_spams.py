@@ -5,117 +5,51 @@ import pytest
 
 import clawdia
 from clawdia._dictionary_spams import DictionarySpams
+from clawdia.dictionaries import DictionarySpams
 
 
-#------------------------------------------------------------------------------
-# LOAD DATA
-
-@pytest.fixture(scope='module')
-def file_clean():
-    return np.load('tests/data/strains_clean.npz')
-@pytest.fixture(scope='module')
-def strains_clean(file_clean):
-    return file_clean['strains']
-@pytest.fixture(scope='module')
-def wave_pos_clean(file_clean):
-    return file_clean['wave_pos']
+@pytest.fixture(scope="module")
+def clean_data(data_dir):
+    with np.load(data_dir / "strains_clean.npz") as data:
+        return data["strains"], data["wave_pos"]
 
 
-@pytest.fixture
-def components_init():
-    return np.load('tests/data/_dictionary_spams/dico_spams_initial.npy')
-@pytest.fixture(scope='module')
-def components_trained():
-    return np.load('tests/data/_dictionary_spams/dico_spams_trained.npy')
+@pytest.fixture(scope="module")
+def initial_components(data_dir):
+    return np.load(data_dir / "_dictionary_spams" / "dico_spams_initial.npy")
 
 
-@pytest.fixture(scope='module')
-def reconstructions_basic():
-    return np.load('tests/data/_dictionary_spams/reconstructions_A.npz')
-@pytest.fixture(scope='module')
-def reconstructions_input(reconstructions_basic):
-    return reconstructions_basic['input']
-@pytest.fixture(scope='module')
-def reconstructions_target(reconstructions_basic):
-    return reconstructions_basic['target_reconstructions']
-@pytest.fixture(scope='module')
-def reconstructions_code_target(reconstructions_basic):
-    return reconstructions_basic['target_codes']
-    
-
-@pytest.fixture
-def reconstructions_iterative():
-    return np.load('tests/data/_dictionary_spams/reconstructions_iterative.npz')
-@pytest.fixture
-def reconstructions_iterative_input(reconstructions_iterative):
-    return reconstructions_iterative['input']
-@pytest.fixture
-def reconstructions_iterative_target(reconstructions_iterative):
-    return reconstructions_iterative['target_reconstructions']
-@pytest.fixture
-def reconstructions_iterative_residuals_target(reconstructions_iterative):
-    return reconstructions_iterative['target_residuals']
-@pytest.fixture
-def reconstructions_iterative_iters_target(reconstructions_iterative):
-    return reconstructions_iterative['target_iters']
+@pytest.fixture(scope="module")
+def trained_components(data_dir):
+    return np.load(data_dir / "_dictionary_spams" / "dico_spams_trained.npy")
 
 
-@pytest.fixture
-def target_reconstruct_margin_constrained():
-    return np.load('tests/data/_dictionary_spams/reconstruct_auto.npz', allow_pickle=True)
-
-
-@pytest.fixture
-def target_optimum_lambda():
-    return np.load('tests/data/_dictionary_spams/optimum_reconstruct.npz')
-
-
-
-#------------------------------------------------------------------------------
-# COMPUTE DICTIONARIES
-
-@pytest.fixture(scope='module')
-def dico_initial(strains_clean, wave_pos_clean):
+@pytest.fixture(scope="module")
+def initial_dictionary(clean_data):
+    signals, limits = clean_data
     return DictionarySpams(
-        signal_pool=strains_clean,
-        wave_pos=wave_pos_clean,
+        signal_pool=signals,
+        wave_pos=limits,
         a_length=64,
         d_size=80,
         lambda1=0.1,
         batch_size=1,
-        identifier='Test dictionary',
+        identifier="Test dictionary",
         l2_normed=True,
         allow_allzeros=False,
         patch_min=16,
-        random_state=42
+        random_state=42,
     )
 
 
-@pytest.fixture(scope='module')
-def dico_trained(dico_initial, strains_clean, wave_pos_clean, components_trained):
-    training_patches = clawdia.lib.extract_patches(
-        strains_clean,
-        patch_size=64,
-        limits=wave_pos_clean,
-        n_patches=100,
-        random_state=84,
-        l2_normed=True,
-        allow_allzeros=False
-    )
-    dico = dico_initial.copy()
-    dico.train(
-        training_patches,
-        n_iter=1000,
-        verbose=False,
-        threads=1
-    )
-    # Ensure the trained atoms are the same. This is necessary because
-    # the training patches are also randomized inside `spams.trainDL`, which
-    # uses a platform-dependent random number generator.
-    dico.components = components_trained.copy()
-
-    return dico
-
+@pytest.fixture(scope="module")
+def trained_dictionary(initial_components, trained_components):
+    model = DictionarySpams(
+        dict_init=initial_components.copy(),
+        lambda1=0.1,
+        batch_size=1,
+        identifier="Test dictionary",
+        trained=True,
 
 
 #------------------------------------------------------------------------------
