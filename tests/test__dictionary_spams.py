@@ -50,6 +50,11 @@ def trained_dictionary(initial_components, trained_components):
         batch_size=1,
         identifier="Test dictionary",
         trained=True,
+        n_iter=1000,
+        n_train=100,
+    )
+    model.components = trained_components.copy()
+    return model
 
 
 @pytest.mark.regression
