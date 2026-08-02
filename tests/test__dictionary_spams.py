@@ -399,35 +399,138 @@ def test_loss_optimised_handles_nondivisible_cropped_interval(
     )
 
 
+@pytest.mark.regression
+def test_realistic_single_batch_and_minibatch_reconstruction(
+    trained_dictionary, data_dir
+):
+    with np.load(
+        data_dir / "_dictionary_spams" / "reconstructions_A.npz"
+    ) as data:
+        signals = data["input"]
+        expected = data["target_reconstructions"]
+        expected_codes = data["target_codes"]
+
+    reconstructions = []
+    codes = []
+    for signal in signals:
+        reconstruction, code = trained_dictionary.reconstruct(
+            signal,
+            sc_lambda=0.5,
+            step=2,
+            normed=True,
+            with_code=True,
+        )
+        reconstructions.append(reconstruction)
+        codes.append(code.toarray())
+
+    np.testing.assert_allclose(
+        reconstructions, expected, rtol=1e-9, atol=1e-11
+    )
+    np.testing.assert_allclose(codes, expected_codes, rtol=1e-9, atol=1e-11)
+
+    batch = trained_dictionary.reconstruct_batch(
+        signals, 0.5, step=2, normed=True, verbose=False
+    )
+    minibatch = trained_dictionary.reconstruct_minibatch(
+        signals,
+        sc_lambda=0.5,
+        step=2,
+        batchsize=2,
+        normed=True,
+        verbose=False,
+    )
+    np.testing.assert_allclose(batch, expected, rtol=1e-9, atol=1e-11)
+    np.testing.assert_allclose(minibatch, expected, rtol=1e-9, atol=1e-11)
+
+
+@pytest.mark.regression
+def test_realistic_iterative_reconstruction(trained_dictionary, data_dir):
+    with np.load(
+        data_dir / "_dictionary_spams" / "reconstructions_iterative.npz"
+    ) as data:
+        signals = data["input"]
+        expected_reconstruction = data["target_reconstructions"]
+        expected_residual = data["target_residuals"]
+        expected_iterations = data["target_iters"]
+
+    reconstruction, residual, iterations = trained_dictionary.reconstruct_iterative(
+        signals,
+        sc_lambda=0.7,
+        step=2,
+        batchsize=2,
+        max_iter=1000,
+        threshold=0.01,
+        normed=True,
+        full_output=True,
+        verbose=False,
+    )
+    # The first full minibatch remains a valid dependency regression. The final
+    # row in the committed baseline encoded the old remainder-batch bug, which
+    # silently re-enabled window normalisation.
+    np.testing.assert_allclose(
+        reconstruction[:2],
+        expected_reconstruction[:2],
+        rtol=1e-9,
+        atol=1e-11,
+    )
+    np.testing.assert_allclose(
+        residual[:2], expected_residual[:2], rtol=1e-9, atol=1e-11
+    )
+    np.testing.assert_array_equal(iterations[:2], expected_iterations[:2])
+    assert reconstruction.shape == signals.shape
+    assert residual.shape == signals.shape
+    assert np.all(np.isfinite(reconstruction[2]))
+    assert np.all(np.isfinite(residual[2]))
+    assert iterations[2] <= 1000
+    assert np.linalg.norm(residual[2]) <= np.linalg.norm(signals[2])
+
+
+@pytest.mark.regression
+def test_realistic_margin_boundary_retains_legacy_prefix(
+    trained_dictionary, data_dir
+):
+    with np.load(
+        data_dir / "_dictionary_spams" / "reconstruct_auto.npz",
+        allow_pickle=True,
+    ) as data:
+        signal = data["input"]
+        legacy_reconstruction = data["reconstruction"]
+        legacy_code = data["code"]
+        legacy_result = data["result"].item()
+
+    reconstruction, code, result = (
+        trained_dictionary.reconstruct_margin_constrained(
+            signal,
+            margin=100,
+            lambda_lims=(0.01, 10),
+            step=4,
+            normed=True,
+            full_output=True,
+        )
+    )
+
+    assert reconstruction.shape == signal.shape
+    np.testing.assert_allclose(
+        reconstruction[:3208],
+        legacy_reconstruction[:3208],
+        rtol=1e-9,
+        atol=1e-11,
+    )
+    np.testing.assert_allclose(
+        code.toarray()[:, : legacy_code.shape[1]],
+        legacy_code,
+        rtol=1e-9,
+        atol=1e-11,
+    )
+    assert result["x"] == pytest.approx(legacy_result["x"], abs=1e-12)
+
+
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
 def test_copy(dico, request):
     dico = request.getfixturevalue(dico)
     dico_copy = dico.copy()
     np.testing.assert_array_equal(dico.components, dico_copy.components)
     np.testing.assert_array_equal(dico.dict_init, dico_copy.dict_init)
-
-
-def test_reconstruct(dico_trained, reconstructions_input,
-                     reconstructions_target, reconstructions_code_target):
-    reconstructions = []
-    codes = []
-
-    for i, x in enumerate(reconstructions_input):
-        rec, code = dico_trained.reconstruct(
-            x,
-            sc_lambda=0.5,
-            step=2,
-            normed=True,
-            with_code=True
-        )
-        reconstructions.append(rec)
-        codes.append(code.toarray())
-
-    reconstructions = np.array(reconstructions)
-    codes = np.array(codes)
-
-    np.testing.assert_array_almost_equal(reconstructions, reconstructions_target, decimal=9)
-    np.testing.assert_array_almost_equal(codes, reconstructions_code_target, decimal=9)
 
 
 def test_reset(dico_initial, dico_trained):
