@@ -138,6 +138,33 @@ def test_identity_dictionary_has_analytical_soft_threshold_solution(
     )
 
 
+def test_reconstruction_preserves_nondivisible_signal_length(identity_dictionary):
+    signal = np.array([1.0, 0.0, 0.5, 0.0, -0.25, 0.0, 0.0])
+    reconstruction = identity_dictionary.reconstruct(
+        signal, sc_lambda=0.0, step=2, normed=False
+    )
+
+    assert reconstruction.shape == signal.shape
+    np.testing.assert_allclose(
+        reconstruction, signal, rtol=1e-9, atol=1e-11
+    )
+
+
+def test_reconstruction_normalisation_and_zero_signal(identity_dictionary):
+    signal = np.array([2.0, 0.0, 0.0, 0.0])
+    reconstruction = identity_dictionary.reconstruct(
+        signal, sc_lambda=0.25, normed=True
+    )
+    np.testing.assert_allclose(
+        reconstruction, [1.0, 0.0, 0.0, 0.0], rtol=1e-9, atol=1e-11
+    )
+
+    zeros = identity_dictionary.reconstruct(
+        np.zeros(4), sc_lambda=0.25, normed=True
+    )
+    np.testing.assert_array_equal(zeros, 0.0)
+
+
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
 def test_copy(dico, request):
     dico = request.getfixturevalue(dico)
