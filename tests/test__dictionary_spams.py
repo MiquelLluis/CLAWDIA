@@ -247,6 +247,27 @@ def test_iterative_reconstruction_conserves_signal(identity_dictionary):
     assert np.linalg.norm(residual) <= np.linalg.norm(signals)
 
 
+def test_margin_constrained_reconstruction_finds_suppression_boundary(
+    identity_dictionary,
+):
+    signal = np.array([1.0, 0.0, 0.0, 0.0])
+    reconstruction, code, result = (
+        identity_dictionary.reconstruct_margin_constrained(
+            signal,
+            margin=4,
+            lambda_lims=(0.1, 2.0),
+            normed=False,
+            full_output=True,
+        )
+    )
+
+    assert reconstruction.shape == signal.shape
+    assert code is not None
+    assert result["converged"]
+    assert result["x"] == pytest.approx(1.0, abs=2e-10)
+    assert np.linalg.norm(reconstruction) < 1e-9
+
+
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
 def test_copy(dico, request):
     dico = request.getfixturevalue(dico)
@@ -276,23 +297,6 @@ def test_reconstruct(dico_trained, reconstructions_input,
 
     np.testing.assert_array_almost_equal(reconstructions, reconstructions_target, decimal=9)
     np.testing.assert_array_almost_equal(codes, reconstructions_code_target, decimal=9)
-
-
-def test_reconstruct_margin_constrained(dico_trained, target_reconstruct_margin_constrained):
-    strain_input = target_reconstruct_margin_constrained['input']
-    reconstruction, code, result = dico_trained.reconstruct_margin_constrained(
-        strain_input,
-        zero_marg=100,
-        lambda_lims=(0.01, 10),
-        step=4,
-        normed=True,
-        full_output=True
-    )
-    code = code.toarray()
-
-    np.testing.assert_array_almost_equal(reconstruction, target_reconstruct_margin_constrained['reconstruction'], decimal=9)
-    np.testing.assert_array_almost_equal(code, target_reconstruct_margin_constrained['code'], decimal=9)
-    assert result == pytest.approx(target_reconstruct_margin_constrained['result'].item())
 
 
 def test_optimum_lambda(dico_trained, target_optimum_lambda):
