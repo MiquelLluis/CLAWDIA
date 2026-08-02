@@ -164,6 +164,39 @@ def test_reconstruction_normalisation_and_zero_signal(identity_dictionary):
     np.testing.assert_array_equal(zeros, 0.0)
 
 
+def test_batch_and_partial_minibatch_equal_individual_reconstruction(
+    identity_dictionary,
+):
+    signals = np.array(
+        [
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [0.5, 0.5, 0.0, 0.0],
+        ]
+    )
+    expected = np.vstack(
+        [
+            identity_dictionary.reconstruct(x, 0.2, normed=False)
+            for x in signals
+        ]
+    )
+    batch = identity_dictionary.reconstruct_batch(
+        signals, 0.2, normed=False, verbose=False
+    )
+    minibatch = identity_dictionary.reconstruct_minibatch(
+        signals,
+        sc_lambda=0.2,
+        batchsize=2,
+        normed=False,
+        verbose=False,
+    )
+
+    np.testing.assert_allclose(batch, expected, rtol=1e-9, atol=1e-11)
+    np.testing.assert_allclose(minibatch, expected, rtol=1e-9, atol=1e-11)
+
+
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
 def test_copy(dico, request):
     dico = request.getfixturevalue(dico)
@@ -193,32 +226,6 @@ def test_reconstruct(dico_trained, reconstructions_input,
 
     np.testing.assert_array_almost_equal(reconstructions, reconstructions_target, decimal=9)
     np.testing.assert_array_almost_equal(codes, reconstructions_code_target, decimal=9)
-
-
-def test_reconstruct_batch(dico_trained, reconstructions_input, reconstructions_target):
-    reconstructions = dico_trained.reconstruct_batch(
-        reconstructions_input,
-        sc_lambda=0.5,
-        step=2,
-        normed=True,
-        verbose=False
-    )
-    
-    np.testing.assert_array_almost_equal(reconstructions, reconstructions_target, decimal=9)
-
-
-def test_reconstruct_minibatch(dico_trained, reconstructions_input, reconstructions_target):
-    reconstructions = dico_trained.reconstruct_minibatch(
-        reconstructions_input,
-        sc_lambda=0.5,
-        step=2,
-        batchsize=2,
-        normed=True,
-        normed_windows=True,
-        verbose=False
-    )
-    
-    np.testing.assert_array_almost_equal(reconstructions, reconstructions_target, decimal=9)
 
 
 def test_reconstruct_iterative_minibatch(dico_trained, reconstructions_iterative_input,
