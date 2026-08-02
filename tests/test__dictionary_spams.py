@@ -525,20 +525,20 @@ def test_realistic_margin_boundary_retains_legacy_prefix(
     assert result["x"] == pytest.approx(legacy_result["x"], abs=1e-12)
 
 
-@pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
-def test_copy(dico, request):
-    dico = request.getfixturevalue(dico)
-    dico_copy = dico.copy()
-    np.testing.assert_array_equal(dico.components, dico_copy.components)
-    np.testing.assert_array_equal(dico.dict_init, dico_copy.dict_init)
+def test_copy_and_reset_restore_initial_components(
+    trained_dictionary, initial_components
+):
+    copied = trained_dictionary.copy()
+    assert copied is not trained_dictionary
+    np.testing.assert_array_equal(copied.components, trained_dictionary.components)
+
+    copied.reset()
+    np.testing.assert_array_equal(copied.components, initial_components)
+    assert not copied.trained
+    assert copied.n_train is None
+    assert copied.t_train is None
 
 
-def test_reset(dico_initial, dico_trained):
-    dico = dico_trained.copy()
-    dico.reset()
-
-    np.testing.assert_array_equal(dico.components, dico_initial.components)
-    np.testing.assert_array_equal(dico.dict_init, dico_initial.dict_init)
-    assert not dico.trained
-    assert dico.n_train is None
-    assert dico.t_train is None
+def test_reconstruct_rejects_non_array(identity_dictionary):
+    with pytest.raises(TypeError, match="numpy array"):
+        identity_dictionary.reconstruct([1.0, 0.0, 0.0, 0.0], 0.1)
