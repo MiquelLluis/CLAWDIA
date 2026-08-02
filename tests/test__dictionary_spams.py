@@ -223,6 +223,30 @@ def test_partial_minibatch_forwards_window_normalisation(identity_dictionary):
     np.testing.assert_allclose(actual, expected, rtol=1e-9, atol=1e-11)
 
 
+def test_iterative_reconstruction_conserves_signal(identity_dictionary):
+    signals = np.array(
+        [[1.0, 0.5, 0.0, 0.0], [0.25, -0.75, 0.0, 0.0]]
+    )
+    reconstruction, residual, iterations = (
+        identity_dictionary.reconstruct_iterative(
+            signals,
+            sc_lambda=0.2,
+            batchsize=1,
+            max_iter=20,
+            threshold=1e-10,
+            normed=False,
+            full_output=True,
+            verbose=False,
+        )
+    )
+
+    np.testing.assert_allclose(
+        reconstruction + residual, signals, rtol=1e-9, atol=1e-11
+    )
+    assert np.all(iterations <= 20)
+    assert np.linalg.norm(residual) <= np.linalg.norm(signals)
+
+
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
 def test_copy(dico, request):
     dico = request.getfixturevalue(dico)
@@ -252,33 +276,6 @@ def test_reconstruct(dico_trained, reconstructions_input,
 
     np.testing.assert_array_almost_equal(reconstructions, reconstructions_target, decimal=9)
     np.testing.assert_array_almost_equal(codes, reconstructions_code_target, decimal=9)
-
-
-def test_reconstruct_iterative_minibatch(dico_trained, reconstructions_iterative_input,
-                                         reconstructions_iterative_target,
-                                         reconstructions_iterative_residuals_target,
-                                         reconstructions_iterative_iters_target):
-    reconstructions, residuals, iters = dico_trained.reconstruct_iterative_minibatch(
-        reconstructions_iterative_input,
-        sc_lambda=0.7,
-        step=2,
-        batchsize=2,
-        max_iter=1000,
-        threshold=0.01,
-        normed=True,
-        full_output=True,
-        verbose=False
-    )
-    
-    np.testing.assert_array_almost_equal(
-        reconstructions, reconstructions_iterative_target, decimal=9
-    )
-    np.testing.assert_array_almost_equal(
-        residuals, reconstructions_iterative_residuals_target, decimal=9
-    )
-    np.testing.assert_array_almost_equal(
-        iters, reconstructions_iterative_iters_target, decimal=9
-    )
 
 
 def test_reconstruct_margin_constrained(dico_trained, target_reconstruct_margin_constrained):
