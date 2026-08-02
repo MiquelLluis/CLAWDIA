@@ -52,11 +52,22 @@ def trained_dictionary(initial_components, trained_components):
         trained=True,
 
 
-#------------------------------------------------------------------------------
-# TESTS
-
-def test___init__(dico_initial, components_init):
-    np.testing.assert_array_almost_equal(dico_initial.components, components_init, decimal=9)
+@pytest.mark.regression
+def test_seeded_initial_dictionary_matches_reference(
+    initial_dictionary, initial_components
+):
+    np.testing.assert_allclose(
+        initial_dictionary.components,
+        initial_components,
+        rtol=1e-9,
+        atol=1e-11,
+    )
+    np.testing.assert_allclose(
+        np.linalg.norm(initial_dictionary.components, axis=1),
+        1.0,
+        rtol=1e-12,
+        atol=1e-12,
+    )
 
 
 @pytest.mark.skipif(not sys.platform.startswith('linux'), reason='random reproducibility of SPAM only guaranteed on Linux')
