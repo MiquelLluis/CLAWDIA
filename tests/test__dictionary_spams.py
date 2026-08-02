@@ -4,7 +4,6 @@ import numpy as np
 import pytest
 
 from clawdia import lib
-from clawdia._dictionary_spams import DictionarySpams
 from clawdia.dictionaries import DictionarySpams
 
 
