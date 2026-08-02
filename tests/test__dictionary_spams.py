@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import pytest
 
+import clawdia._dictionary_spams as dictionary_spams_module
 from clawdia import lib
 from clawdia.dictionaries import DictionarySpams
 
@@ -268,6 +269,136 @@ def test_margin_constrained_reconstruction_finds_suppression_boundary(
     assert np.linalg.norm(reconstruction) < 1e-9
 
 
+def test_loss_optimised_reconstruction_has_known_lambda(identity_dictionary):
+    signal = np.array([1.0, 0.0, 0.0, 0.0])
+    reference = np.array([0.6, 0.0, 0.0, 0.0])
+
+    def squared_error(x, y):
+        return float(np.mean((x - y) ** 2))
+
+    reconstruction, optimum, loss = (
+        identity_dictionary.reconstruct_loss_optimised(
+            signal,
+            reference=reference,
+            loss_func=squared_error,
+            normed=False,
+            kwargs_minimize={
+                "method": "bounded",
+                "bounds": (np.log10(0.05), np.log10(0.9)),
+                "options": {"xatol": 1e-7},
+            },
+        )
+    )
+
+    assert optimum == pytest.approx(0.4, rel=1e-5)
+    np.testing.assert_allclose(
+        reconstruction, reference, rtol=1e-5, atol=1e-7
+    )
+    assert loss == pytest.approx(squared_error(reconstruction, reference))
+
+
+def test_loss_optimised_reuses_best_evaluation_when_last_is_worse(
+    identity_dictionary, monkeypatch
+):
+    signal = np.array([1.0, 0.0, 0.0, 0.0])
+    reference = np.array([0.6, 0.0, 0.0, 0.0])
+    optimum_log = np.log10(0.4)
+    calls = []
+    reconstruct = identity_dictionary.reconstruct
+
+    def recording_reconstruct(signal_, sc_lambda, **kwargs):
+        calls.append(sc_lambda)
+        return reconstruct(signal_, sc_lambda, **kwargs)
+
+    def minimise_with_worse_last_evaluation(cost_function, **kwargs):
+        optimum_loss = cost_function(optimum_log)
+        cost_function(np.log10(0.8))
+        return {"x": optimum_log, "fun": optimum_loss, "success": True}
+
+    monkeypatch.setattr(identity_dictionary, "reconstruct", recording_reconstruct)
+    monkeypatch.setattr(
+        dictionary_spams_module.scipy.optimize,
+        "minimize_scalar",
+        minimise_with_worse_last_evaluation,
+    )
+
+    reconstruction, optimum, loss = (
+        identity_dictionary.reconstruct_loss_optimised(
+            signal,
+            reference=reference,
+            loss_func=lambda x, y: float(np.mean((x - y) ** 2)),
+            normed=False,
+        )
+    )
+
+    np.testing.assert_allclose(
+        reconstruction, reference, rtol=1e-9, atol=1e-11
+    )
+    assert optimum == pytest.approx(0.4)
+    assert loss == pytest.approx(0.0, abs=1e-20)
+    np.testing.assert_allclose(calls, [0.4, 0.8], rtol=1e-12, atol=1e-12)
+
+
+@pytest.mark.parametrize("loss_function", ["match", "overlap", "ssim"])
+def test_loss_optimised_documented_metrics_recover_identical_shape(
+    identity_dictionary, loss_function
+):
+    signal = np.array([0.0, 1.0, 0.0, 0.0])
+    reconstruction, optimum, loss = (
+        identity_dictionary.reconstruct_loss_optimised(
+            signal,
+            reference=signal,
+            loss_func=loss_function,
+            normed=True,
+            kwargs_minimize={
+                "method": "bounded",
+                "bounds": (np.log10(0.01), np.log10(0.5)),
+                "options": {"xatol": 1e-5},
+            },
+        )
+    )
+
+    assert reconstruction.shape == signal.shape
+    assert 0.01 <= optimum <= 0.5
+    assert loss == pytest.approx(0.0, abs=1e-10)
+
+
+def test_loss_optimised_handles_nondivisible_cropped_interval(
+    identity_dictionary,
+):
+    signal = np.array([0.0, 1.0, 0.0, 0.5, 0.0, -0.25, 0.0])
+    reference = 0.7 * signal
+    limits = (1, 6)
+
+    def squared_error(x, y):
+        return float(np.mean((x - y) ** 2))
+
+    reconstruction, optimum, loss = (
+        identity_dictionary.reconstruct_loss_optimised(
+            signal,
+            reference=reference,
+            limits=limits,
+            step=2,
+            loss_func=squared_error,
+            normed=False,
+            kwargs_minimize={
+                "method": "bounded",
+                "bounds": (np.log10(0.01), np.log10(0.9)),
+                "options": {"xatol": 1e-6},
+            },
+        )
+    )
+    cropped = identity_dictionary.reconstruct(
+        signal[slice(*limits)], optimum, step=2, normed=False
+    )
+
+    assert reconstruction.shape == signal.shape
+    assert cropped.shape == reference[slice(*limits)].shape
+    assert loss == pytest.approx(
+        squared_error(cropped, reference[slice(*limits)]), rel=1e-12, abs=1e-12
+    )
+
+
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
 def test_copy(dico, request):
     dico = request.getfixturevalue(dico)
@@ -297,26 +428,6 @@ def test_reconstruct(dico_trained, reconstructions_input,
 
     np.testing.assert_array_almost_equal(reconstructions, reconstructions_target, decimal=9)
     np.testing.assert_array_almost_equal(codes, reconstructions_code_target, decimal=9)
-
-
-def test_optimum_lambda(dico_trained, target_optimum_lambda):
-    strain_input = target_optimum_lambda['input']
-    strain_ref = target_optimum_lambda['reference']
-    strain_limits = target_optimum_lambda['limits']
-
-    rec, l_opt, loss = dico_trained.reconstruct_optimum_lambda(
-        strain_input,
-        reference=strain_ref,
-        kwargs_minimize={},
-        kwargs_lasso={},
-        step=2,
-        limits=strain_limits,
-        normed=True
-    )
-
-    np.testing.assert_array_almost_equal(rec, target_optimum_lambda['reconstruction'], decimal=9)
-    assert l_opt == pytest.approx(target_optimum_lambda['l_opt'].item())
-    assert loss == pytest.approx(target_optimum_lambda['loss'].item())
 
 
 def test_reset(dico_initial, dico_trained):
