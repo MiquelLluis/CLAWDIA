@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import pytest
 
-import clawdia
+from clawdia import lib
 from clawdia._dictionary_spams import DictionarySpams
 from clawdia.dictionaries import DictionarySpams
 
@@ -75,57 +75,50 @@ def test_seeded_initial_dictionary_matches_reference(
     )
 
 
-@pytest.mark.skipif(not sys.platform.startswith('linux'), reason='random reproducibility of SPAM only guaranteed on Linux')
-def test_train(dico_initial, strains_clean, wave_pos_clean, components_trained):
-    training_patches = clawdia.lib.extract_patches(
-        strains_clean,
+@pytest.mark.integration
+@pytest.mark.regression
+@pytest.mark.skipif(
+    not sys.platform.startswith("linux"),
+    reason="the committed SPAMS training reference is Linux-specific",
+)
+def test_training_and_warm_start_match_reference(
+    initial_dictionary, clean_data, trained_components, data_dir
+):
+    signals, limits = clean_data
+    patches = lib.extract_patches(
+        signals,
         patch_size=64,
-        limits=wave_pos_clean,
+        limits=limits,
         n_patches=100,
         random_state=84,
         l2_normed=True,
-        allow_allzeros=False
+        allow_allzeros=False,
     )
-    dico = dico_initial.copy()
-    dico.train(
-        training_patches,
-        n_iter=1000,
-        verbose=False,
-        threads=1
+    model = initial_dictionary.copy()
+    model.train(patches, n_iter=1000, verbose=False, threads=1)
+
+    assert model.trained
+    assert model.n_train == 100
+    assert model.n_iter == 1000
+    assert model.t_train > 0
+    np.testing.assert_allclose(
+        model.components, trained_components, rtol=1e-9, atol=1e-11
     )
 
-    np.testing.assert_array_almost_equal(dico.components, components_trained, decimal=9)
-
-
-@pytest.mark.skipif(not sys.platform.startswith('linux'), reason='random reproducibility of SPAM only guaranteed on Linux')
-def test_train_warm(dico_initial, strains_clean, wave_pos_clean):
-    training_patches = clawdia.lib.extract_patches(
-        strains_clean,
-        patch_size=64,
-        limits=wave_pos_clean,
-        n_patches=100,
-        random_state=84,
-        l2_normed=True,
-        allow_allzeros=False
-    )
-    dico = dico_initial.copy()
-    dico.train(
-        training_patches,
-        n_iter=1000,
-        verbose=False,
-        threads=1
-    )
-    dico.train(
-        training_patches,
+    model.train(
+        patches,
         warm_start=True,
         n_iter=500,
         verbose=False,
-        threads=1
+        threads=1,
     )
-
-    target_components = np.load('tests/data/_dictionary_spams/dico_spams_trained_warm.npy')
-
-    np.testing.assert_array_almost_equal(dico.components, target_components, decimal=9)
+    warm_reference = np.load(
+        data_dir / "_dictionary_spams" / "dico_spams_trained_warm.npy"
+    )
+    assert model.n_iter == 1500
+    np.testing.assert_allclose(
+        model.components, warm_reference, rtol=1e-9, atol=1e-11
+    )
 
 
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
