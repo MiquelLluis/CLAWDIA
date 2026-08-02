@@ -197,6 +197,32 @@ def test_batch_and_partial_minibatch_equal_individual_reconstruction(
     np.testing.assert_allclose(minibatch, expected, rtol=1e-9, atol=1e-11)
 
 
+def test_partial_minibatch_forwards_window_normalisation(identity_dictionary):
+    signals = np.array(
+        [
+            [2.0, 0.0, 0.0, 0.0],
+            [0.0, 3.0, 0.0, 0.0],
+            [0.0, 0.0, 4.0, 0.0],
+        ]
+    )
+    expected = identity_dictionary.reconstruct_batch(
+        signals,
+        0.25,
+        normed=False,
+        normed_windows=False,
+        verbose=False,
+    )
+    actual = identity_dictionary.reconstruct_minibatch(
+        signals,
+        sc_lambda=0.25,
+        batchsize=2,
+        normed=False,
+        normed_windows=False,
+        verbose=False,
+    )
+    np.testing.assert_allclose(actual, expected, rtol=1e-9, atol=1e-11)
+
+
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
 def test_copy(dico, request):
     dico = request.getfixturevalue(dico)
