@@ -121,6 +121,23 @@ def test_training_and_warm_start_match_reference(
     )
 
 
+def test_identity_dictionary_has_analytical_soft_threshold_solution(
+    identity_dictionary,
+):
+    """Verify exact LASSO soft-thresholding with an identity dictionary."""
+    signal = np.array([1.0, 0.0, 0.0, 0.0])
+    reconstruction = identity_dictionary.reconstruct(
+        signal, sc_lambda=0.25, normed=False
+    )
+    expected = np.array([0.75, 0.0, 0.0, 0.0])
+    nrmse = np.linalg.norm(reconstruction - expected) / np.linalg.norm(expected)
+
+    assert nrmse < 1e-9
+    np.testing.assert_allclose(
+        reconstruction, expected, rtol=1e-9, atol=1e-11
+    )
+
+
 @pytest.mark.parametrize('dico', ['dico_initial', 'dico_trained'])
 def test_copy(dico, request):
     dico = request.getfixturevalue(dico)
