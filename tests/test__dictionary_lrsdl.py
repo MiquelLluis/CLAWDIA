@@ -18,8 +18,8 @@ def reference_population():
         frequency = rng.uniform(2, 5)
         signals[i] *= np.sin(frequency * 2 * np.pi * times)
     for i in range(samples_per_class, n_samples):
-        rng.uniform(5, 8)
-        signals[i] *= np.sin(5 * 2 * np.pi * times)
+        frequency = rng.uniform(5, 8)
+        signals[i] *= np.sin(frequency * 2 * np.pi * times)
     labels = np.repeat([1, 2], samples_per_class)
     return signals, labels
 

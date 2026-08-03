@@ -234,7 +234,7 @@ def test_load_supports_unversioned_spams_state(tmp_path, capsys):
 def test_load_supports_existing_unversioned_lrsdl_reference(data_dir, capsys):
     """Load and use the trusted trained LRSDL archive from the legacy format."""
     model = dictionaries.load(
-        data_dir / "_dictionary_lrsdl" / "LRSDL_reference_model.npz"
+        data_dir / "_dictionary_lrsdl" / "LRSDL_reference_model_legacy.npz"
     )
 
     assert capsys.readouterr().out == ""

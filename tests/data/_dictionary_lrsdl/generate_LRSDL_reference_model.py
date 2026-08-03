@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import numpy as np
-from sklearn.metrics import f1_score
 
 from clawdia.dictionaries import DictionaryLRSDL
 
@@ -18,9 +17,11 @@ def generate_reference_model():
     step = 20
     rng = np.random.default_rng(1048596)
 
+    # WARNING: next time use a new RNG state for each `gen_population` call to
+    # facilitate the reproduction of specific parts in tests.
     X, y_true = gen_population(ns, nf, spc, rng)
 
-    # Train model
+    # Validate model
     dico = DictionaryLRSDL(
         lambd=0.01, lambd2=0.01, eta=0.0001,
         k=4, k0=4, updateX_iters=100, updateD_iters=100
@@ -32,18 +33,22 @@ def generate_reference_model():
     print(dico)
 
     # Train model
+    # WARNING: next time use a new RNG state for each `gen_population` call to
+    # facilitate the reproduction of specific parts in tests.
     X, y_true = gen_population(ns, nf, spc, rng)
     y_pred = dico.predict(X, threshold=0, offset=0, with_losses=False)
-    f1 = f1_score(y_true=y_true, y_pred=y_pred, average='binary')
+    accuracy = np.mean(y_pred == y_true)
 
-    print(f"F1 score TRAIN: {f1:.3f}")
+    print(f"Accuracy VALIDATION: {accuracy:.3f}")
 
     # Test model
+    # WARNING: next time use a new RNG state for each `gen_population` call to
+    # facilitate the reproduction of specific parts in tests.
     X, y_true = gen_population(ns, nf, spc, rng)
     y_pred, losses = dico.predict(X, threshold=0, offset=0, with_losses=True)
-    f1 = f1_score(y_true=y_true, y_pred=y_pred, average='binary')
+    accuracy = np.mean(y_pred == y_true)
 
-    print(f"F1 score TEST:  {f1:.3f}")
+    print(f"Accuracy TEST:       {accuracy:.3f}")
     
     
     f_model = REFERENCE_DIR / "LRSDL_reference_model.npz"
@@ -61,7 +66,7 @@ def gen_population(ns, nf, spc, rng):
         X[i] *= np.sin(f * 2*np.pi * np.linspace(0, 1, nf))
     for i in range(spc, ns):
         f = rng.uniform(5, 8)
-        X[i] *= np.sin(5 * 2*np.pi * np.linspace(0, 1, nf))
+        X[i] *= np.sin(f * 2*np.pi * np.linspace(0, 1, nf))
     
     y_true = np.array([1]*spc + [2]*spc)
     return X, y_true
