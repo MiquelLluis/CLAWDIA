@@ -1,86 +1,57 @@
 import numpy as np
 import pytest
 
-import clawdia
+from clawdia import dictionaries
 from clawdia.dictionaries import DictionaryLRSDL
 
 
-# -----------------------------------------------------------------------------
-# Fixtures with module scope
-# -----------------------------------------------------------------------------
-
 @pytest.fixture(scope="module")
-def default_model_params():
-    """Shared parameters for all tests using default model configuration."""
-    return {
-        'lambd': 0.01,
-        'lambd2': 0.01,
-        'eta': 0.0001,
-        'k': 4,
-        'k0': 4,
-        'updateX_iters': 100,
-        'updateD_iters': 100
-    }
+def reference_population():
+    n_samples = 100
+    n_features = 20
+    samples_per_class = n_samples // 2
+    rng = np.random.default_rng(1048596)
+    times = np.linspace(0, 1, n_features)
 
-
-@pytest.fixture(scope="module")
-def reproducibility_data():
-    """Fixed dataset for reproducibility testing (module-scoped)."""
-    ns = 100  # samples (signals)
-    nf = 20   # features
-    spc = ns // 2  # samples per class
-    rng = np.random.default_rng(1048596)  # Fixed seed for reproducibility
-
-    X = np.ones((ns, nf), dtype=float)
-    for i in range(spc):
-        f = rng.uniform(2, 5)
-        X[i] *= np.sin(f * 2*np.pi * np.linspace(0, 1, nf))
-    for i in range(spc, ns):
-        f = rng.uniform(5, 8)
-        X[i] *= np.sin(5 * 2*np.pi * np.linspace(0, 1, nf))
-    y_true = np.array([1]*spc + [2]*spc)
-
-    return X, y_true
+    signals = np.ones((n_samples, n_features), dtype=float)
+    for i in range(samples_per_class):
+        frequency = rng.uniform(2, 5)
+        signals[i] *= np.sin(frequency * 2 * np.pi * times)
+    for i in range(samples_per_class, n_samples):
+        rng.uniform(5, 8)
+        signals[i] *= np.sin(5 * 2 * np.pi * times)
+    labels = np.repeat([1, 2], samples_per_class)
+    return signals, labels
 
 
 @pytest.fixture(scope="module")
-def training_config():
-    """Fixed training parameters for reproducibility tests."""
-    return {
-        'l_atoms': 15,
-        'iterations': 100,
-        'random_seed': 1048596,
-        'step': 20,
-        'threshold': 0
-    }
+def reference_model(data_dir):
+    return dictionaries.load(
+        data_dir / "_dictionary_lrsdl" / "LRSDL_reference_model.npz"
+    )
 
-
-@pytest.fixture(scope="module")
-def reference_model():
-    """Pre-trained reference model for comparison (module-scoped)."""
-    dico = clawdia.dictionaries.load('tests/data/_dictionary_lrsdl/LRSDL_reference_model.npz')
-    
-    return dico
-
-
-@pytest.fixture(scope="module")
-def trained_model(default_model_params, reproducibility_data, training_config):
-    """Fixture to initialise and train a dictionary model for reuse in tests."""
-    X, y_true = reproducibility_data
-    model = DictionaryLRSDL(**default_model_params)
-    model.fit(X, y_true=y_true, **training_config)
-    
-    return model  # Return the trained model
-
-
-# -----------------------------------------------------------------------------
-# Reusable model fixtures
-# -----------------------------------------------------------------------------
 
 @pytest.fixture
-def default_model(default_model_params):
-    """Fresh model instance for each test (function-scoped)."""
-    return DictionaryLRSDL(**default_model_params)
+def controlled_model():
+    model = DictionaryLRSDL(lambd=0.01, k=1, k0=0)
+    model.D = np.eye(2)
+    model.D0 = np.empty((2, 0))
+    model.D_range = np.array([0, 1, 2])
+    model.num_classes = 2
+    return model
+
+
+def small_training_data():
+    signals = np.array(
+        [
+            [1.0, 0.0, 0.5, 0.0, 0.25, 0.0],
+            [0.8, 0.0, 0.4, 0.0, 0.2, 0.0],
+            [0.0, 1.0, 0.0, 0.5, 0.0, 0.25],
+            [0.0, 0.8, 0.0, 0.4, 0.0, 0.2],
+        ]
+    )
+    labels = np.array([1, 1, 2, 2])
+    return signals, labels
 
 
 # -----------------------------------------------------------------------------
