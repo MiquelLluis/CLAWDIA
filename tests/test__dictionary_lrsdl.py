@@ -55,19 +55,6 @@ def small_training_data():
 
 
 # -----------------------------------------------------------------------------
-# Core functionality tests
-# -----------------------------------------------------------------------------
-
-def test_reproducibility(reference_model, trained_model):
-    """Verify training produces identical results to precomputed reference."""
-    # Compare dictionary atoms
-    assert np.allclose(trained_model.D, reference_model.D, atol=1e-6), (
-        "Class-specific dictionary differs from reference")
-    assert np.allclose(trained_model.D0, reference_model.D0, atol=1e-6), (
-        "Shared dictionary differs from reference")
-
-
-# -----------------------------------------------------------------------------
 # Parameterized input validation
 # -----------------------------------------------------------------------------
 
@@ -129,3 +116,77 @@ def test_post_training_attributes(trained_model):
     assert trained_model.D.shape[1] == trained_model.k * n_classes
     assert trained_model.D0.shape[1] == trained_model.k0
     assert hasattr(trained_model, 'X') and trained_model.X is not None
+
+
+@pytest.mark.integration
+@pytest.mark.regression
+def test_seeded_training_matches_reference_model(
+    reference_population, reference_model
+):
+    signals, labels = reference_population
+    model = DictionaryLRSDL(
+        lambd=0.01,
+        lambd2=0.01,
+        eta=0.0001,
+        k=4,
+        k0=4,
+        updateX_iters=100,
+        updateD_iters=100,
+    )
+    with pytest.warns(RuntimeWarning, match="last 5 bins"):
+        model.fit(
+            signals,
+            y_true=labels,
+            l_atoms=15,
+            iterations=100,
+            random_seed=1048596,
+            step=20,
+            threshold=0,
+        )
+
+    assert model.t_train > 0
+    np.testing.assert_allclose(model.D, reference_model.D, rtol=0, atol=1e-6)
+    np.testing.assert_allclose(model.D0, reference_model.D0, rtol=0, atol=1e-6)
+
+
+@pytest.mark.integration
+@pytest.mark.regression
+def test_reference_model_classifies_separated_frequency_population(
+    reference_model, data_dir
+):
+    """Reproduce the reference script's third seeded population and predictions."""
+    rng = np.random.default_rng(1048596)
+    n_samples = 100
+    n_features = 20
+    samples_per_class = 50
+    times = np.linspace(0, 1, n_features)
+
+    def generate():
+        signals = np.ones((n_samples, n_features), dtype=float)
+        for i in range(samples_per_class):
+            frequency = rng.uniform(2, 5)
+            signals[i] *= np.sin(frequency * 2 * np.pi * times)
+        for i in range(samples_per_class, n_samples):
+            frequency = rng.uniform(5, 8)
+            signals[i] *= np.sin(frequency * 2 * np.pi * times)
+        return signals
+
+    # The reference script generated training and validation populations before
+    # recording predictions for the third population from the same RNG instance.
+    generate()
+    generate()
+    test_signals = generate()
+    original = test_signals.copy()
+    labels = np.repeat([1, 2], samples_per_class)
+    expected = np.loadtxt(
+        data_dir / "_dictionary_lrsdl" / "LRSDL_reference_model_test.txt"
+    )
+
+    predictions, losses = reference_model.predict(
+        test_signals, with_losses=True
+    )
+
+    assert np.mean(predictions == labels) >= 0.95
+    np.testing.assert_array_equal(predictions, expected[:, 0])
+    np.testing.assert_allclose(losses, expected[:, 1], rtol=1e-12, atol=1e-12)
+    np.testing.assert_array_equal(test_signals, original)
