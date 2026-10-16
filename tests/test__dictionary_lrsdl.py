@@ -75,20 +75,44 @@ def test_fit_validates_labels(labels, error):
     with pytest.raises(error):
         model.fit(signals, y_true=labels, l_atoms=2, iterations=1, step=2)
 
-def test_window_generation(reproducibility_data, default_model):
-    """Verify window extraction logic with different step sizes."""
-    X, y_true = reproducibility_data
-    l_atoms = 15
-    
-    # Test non-overlapping windows
-    default_model.fit(X, y_true=y_true, l_atoms=l_atoms, step=l_atoms, iterations=1)
-    expected_windows = (X.shape[1] - l_atoms) // l_atoms + 1
-    assert default_model.Y.shape[1] == expected_windows * X.shape[0]
 
-    # Test overlapping windows
-    default_model.fit(X, y_true=y_true, l_atoms=l_atoms, step=5, iterations=1)
-    expected_windows = (X.shape[1] - l_atoms) // 5 + 1
-    assert default_model.Y.shape[1] == expected_windows * X.shape[0]
+def test_fit_validates_signal_shape_and_atom_length():
+    model = DictionaryLRSDL(k=1, k0=0)
+    with pytest.raises(ValueError, match="2d-array"):
+        model.fit(
+            np.ones(4),
+            y_true=np.array([1]),
+            l_atoms=2,
+            iterations=1,
+        )
+    with pytest.raises(ValueError, match="at least 'l_atoms'"):
+        model.fit(
+            np.ones((2, 2)),
+            y_true=np.array([1, 1]),
+            l_atoms=3,
+            iterations=1,
+        )
+
+
+def test_fit_extracts_exact_windows_and_labels():
+    signals, labels = small_training_data()
+    model = DictionaryLRSDL(
+        k=1, k0=0, updateX_iters=2, updateD_iters=2
+    )
+    model.fit(
+        signals,
+        y_true=labels,
+        l_atoms=2,
+        iterations=1,
+        step=2,
+        random_seed=7,
+    )
+
+    expected = np.vstack(
+        [signal.reshape(3, 2) for signal in signals]
+    )
+    np.testing.assert_array_equal(model.Y.T, expected)
+    np.testing.assert_array_equal(model.Y_range, [0, 6, 12])
 
 
 def test_threshold_filtering(reproducibility_data, default_model, training_config):
