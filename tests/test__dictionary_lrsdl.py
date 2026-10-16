@@ -54,26 +54,26 @@ def small_training_data():
     return signals, labels
 
 
-# -----------------------------------------------------------------------------
-# Parameterized input validation
-# -----------------------------------------------------------------------------
-
-@pytest.mark.parametrize("invalid_y_true", [
-    [1, 1, 2],  # List instead of ndarray
-    np.array([1.5, 2.0, 1.0]),  # Float labels
-    np.array([0, 0, 1])  # Labels starting at 0
-], ids=["list_labels", "float_labels", "zero_based_labels"])
-def test_fit_input_validation(invalid_y_true, default_model):
-    """Verify proper error handling for invalid y_true configurations."""
-    X = np.random.randn(len(invalid_y_true), 20)
-    
-    with pytest.raises((TypeError, ValueError)):
-        default_model.fit(X, y_true=invalid_y_true, l_atoms=20, iterations=10)
-
-
-# -----------------------------------------------------------------------------
-# Windowing & filtering tests
-# -----------------------------------------------------------------------------
+@pytest.mark.parametrize(
+    "labels, error",
+    [
+        # Not NDArray:
+        ([1, 1, 2, 2], TypeError),
+        # Not integer:
+        (np.array([1.0, 1.0, 2.0, 2.0]), TypeError),
+        # Label not starting at 1:
+        (np.array([0, 0, 1, 1]), ValueError),
+        # Labels not consecutive:
+        (np.array([1, 1, 3, 3]), ValueError),
+        # Less labels than samples:
+        (np.array([1, 2, 2]), ValueError),
+    ],
+)
+def test_fit_validates_labels(labels, error):
+    signals, _ = small_training_data()
+    model = DictionaryLRSDL(k=1, k0=0)
+    with pytest.raises(error):
+        model.fit(signals, y_true=labels, l_atoms=2, iterations=1, step=2)
 
 def test_window_generation(reproducibility_data, default_model):
     """Verify window extraction logic with different step sizes."""
