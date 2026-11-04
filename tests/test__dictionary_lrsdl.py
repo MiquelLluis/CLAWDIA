@@ -115,18 +115,47 @@ def test_fit_extracts_exact_windows_and_labels():
     np.testing.assert_array_equal(model.Y_range, [0, 6, 12])
 
 
-def test_threshold_filtering(reproducibility_data, default_model, training_config):
-    """Verify threshold-based filtering removes low-energy windows."""
-    X, y_true = reproducibility_data
+def test_threshold_filtering_retains_only_relative_high_energy_windows():
+    signals = np.array(
+        [[1.0, 0.0, 0.1, 0.0], [0.0, 1.0, 0.0, 0.1]]
+    )
+    labels = np.array([1, 2])
+    model = DictionaryLRSDL(k=1, k0=0)
+    model.fit(
+        signals,
+        y_true=labels,
+        l_atoms=2,
+        iterations=1,
+        step=2,
+        threshold=0.5,
+        random_seed=3,
+    )
+    # Each signal has window norms [1.0, 0.1]; a relative threshold of
+    # 0.5 therefore retains only the first window from each signal.
+    np.testing.assert_array_equal(model.Y.T, [[1.0, 0.0], [0.0, 1.0]])
 
-    # Set threshold to maximum to trigger the exception
-    training_config_copy = training_config.copy()
-    training_config_copy['threshold'] = 1
-    
-    with pytest.raises(ValueError) as excinfo:
-        default_model.fit(X, y_true=y_true, **training_config_copy)
-    
-    assert "not enough training samples" in str(excinfo.value)
+
+def test_threshold_filtering_reports_effective_class_shortage(
+    reference_population,
+):
+    signals, labels = reference_population
+    model = DictionaryLRSDL(k=4, k0=4)
+    # A 15-sample window with step 20 leaves the final 5 samples unused. With
+    # threshold=1, the strict relative cutoff rejects every extracted window,
+    # leaving class 1 with no samples from which to learn its four atoms.
+    with pytest.warns(RuntimeWarning, match="last 5 bins"):
+        with pytest.raises(
+            ValueError,
+            match=r"class 1 has 0 < k=4",
+        ):
+            model.fit(
+                signals,
+                y_true=labels,
+                l_atoms=15,
+                iterations=1,
+                step=20,
+                threshold=1,
+            )
 
 
 # -----------------------------------------------------------------------------
