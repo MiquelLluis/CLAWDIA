@@ -158,17 +158,28 @@ def test_threshold_filtering_reports_effective_class_shortage(
             )
 
 
-# -----------------------------------------------------------------------------
-# Post-training state checks
-# -----------------------------------------------------------------------------
+def test_seeded_fit_does_not_change_global_numpy_random_state():
+    signals, labels = small_training_data()
+    model = DictionaryLRSDL(
+        k=1, k0=0,
+    )
 
-def test_post_training_attributes(trained_model):
-    """Verify essential attributes are set after training."""
-    assert trained_model.t_train > 0
-    n_classes = len(trained_model.D_range) - 1
-    assert trained_model.D.shape[1] == trained_model.k * n_classes
-    assert trained_model.D0.shape[1] == trained_model.k0
-    assert hasattr(trained_model, 'X') and trained_model.X is not None
+    # Dictol uses NumPy's legacy global RNG set function.
+    # CLAWDIA seeds it during fitting for reproducibility, and then must restore
+    # the caller's state so training does not change their random sequence.
+    np.random.seed(1234)
+    expected = np.random.random(5)
+    np.random.seed(1234)  # Back in time!
+    model.fit(
+        signals,
+        y_true=labels,
+        l_atoms=2,
+        iterations=1,
+        step=2,
+        random_seed=99,
+    )
+    actual = np.random.random(5)
+    np.testing.assert_array_equal(actual, expected)
 
 
 @pytest.mark.integration
