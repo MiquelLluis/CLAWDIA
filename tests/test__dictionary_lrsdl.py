@@ -182,6 +182,23 @@ def test_seeded_fit_does_not_change_global_numpy_random_state():
     np.testing.assert_array_equal(actual, expected)
 
 
+def test_predict_classifies_controlled_atoms_and_does_not_mutate_input(
+    controlled_model,
+):
+    # Non-unit vectors could lead to accidental in-place normalisation. This
+    # prevents future changes from dropping the copy and silently modifying input
+    # data, which could produce incorrect results that are not noticed immediately.
+    signals = np.array([[9, 2, 0], [9, 0, 3]], dtype=float)
+    original = signals.copy()
+
+    predictions, losses = controlled_model.predict(
+        signals, offset=1, with_losses=True
+    )
+
+    np.testing.assert_array_equal(predictions, [1, 2])
+    assert losses.shape == (2,)
+    assert np.all(np.isfinite(losses))
+    np.testing.assert_array_equal(signals, original)
 @pytest.mark.integration
 @pytest.mark.regression
 def test_seeded_training_matches_reference_model(
