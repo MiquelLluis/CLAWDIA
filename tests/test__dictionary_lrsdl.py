@@ -97,7 +97,7 @@ def test_fit_validates_signal_shape_and_atom_length():
 def test_fit_extracts_exact_windows_and_labels():
     signals, labels = small_training_data()
     model = DictionaryLRSDL(
-        k=1, k0=0, updateX_iters=2, updateD_iters=2
+        k=1, k0=0,
     )
     model.fit(
         signals,
@@ -182,9 +182,7 @@ def test_seeded_training_matches_reference_model(
         lambd2=0.01,
         eta=0.0001,
         k=4,
-        k0=4,
-        updateX_iters=100,
-        updateD_iters=100,
+        k0=4
     )
     with pytest.warns(RuntimeWarning, match="last 5 bins"):
         model.fit(
