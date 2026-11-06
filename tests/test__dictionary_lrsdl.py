@@ -199,6 +199,19 @@ def test_predict_classifies_controlled_atoms_and_does_not_mutate_input(
     assert losses.shape == (2,)
     assert np.all(np.isfinite(losses))
     np.testing.assert_array_equal(signals, original)
+
+
+def test_predict_threshold_marks_unknown_class(controlled_model):
+    # At the time of writing this test, a signal is marked as unknown only when
+    # setting a threshold value different from zero and the model's loss falls
+    # above it. Therefore we recreate such conditions by choosing an ad-hoc
+    # threshold value that will render all predictions unknown.
+    signals = np.eye(2)
+    _, losses = controlled_model.predict(signals, with_losses=True)
+    threshold = np.nextafter(losses.min(), 0)
+    predictions = controlled_model.predict(signals, threshold=threshold)
+    np.testing.assert_array_equal(predictions, [-1, -1])
+
 @pytest.mark.integration
 @pytest.mark.regression
 def test_seeded_training_matches_reference_model(
