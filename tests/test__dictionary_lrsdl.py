@@ -212,6 +212,24 @@ def test_predict_threshold_marks_unknown_class(controlled_model):
     predictions = controlled_model.predict(signals, threshold=threshold)
     np.testing.assert_array_equal(predictions, [-1, -1])
 
+
+@pytest.mark.parametrize(
+    "signals, kwargs, message",
+    [
+        # Check several known errors are raised.
+        (np.ones(2), {}, "2d-array"),
+        (np.ones((1, 1)), {}, "enough samples"),
+        (np.zeros((1, 2)), {}, "non-zero L2 norm"),
+        (np.ones((1, 2)), {"offset": -1}, "non-negative"),
+    ],
+)
+def test_predict_rejects_invalid_inputs(
+    controlled_model, signals, kwargs, message
+):
+    with pytest.raises((ValueError, RuntimeError), match=message):
+        controlled_model.predict(signals, **kwargs)
+
+
 @pytest.mark.integration
 @pytest.mark.regression
 def test_seeded_training_matches_reference_model(
