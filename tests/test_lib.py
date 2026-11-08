@@ -141,6 +141,25 @@ def test_extract_patches_consecutive_limits_count_all_windows_across_signals(
         lib.extract_patches(
             signals, patch_size=4, limits=limits, patch_min=3, n_patches=8
         )
+
+
+@pytest.mark.parametrize("limits", [None, [[0, 7]]], ids=["without-limits", "full-signal-limits"])
+def test_extract_patches_consecutive_limits_keep_last_nonzero_window(limits):
+    """The only nonzero window is still recovered.
+    
+    Check it with and without explicit limtis.
+    """
+    signal = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0])
+    patches = lib.extract_patches(
+        signal,
+        patch_size=4,
+        limits=limits,
+        patch_min=4,
+        allow_allzeros=False,
+    )
+    np.testing.assert_array_equal(patches, [[0.0, 0.0, 0.0, 1.0]])
+
+
 def test_extract_patches_consecutive_truncates_with_warning():
     signal = np.arange(8, dtype=float)
     with pytest.warns(RuntimeWarning, match="last 1 bins"):
