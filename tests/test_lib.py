@@ -107,6 +107,40 @@ def test_extract_patches_consecutive_limits_select_windows_with_required_overlap
     np.testing.assert_array_equal(patches, expected)
 
 
+@pytest.mark.parametrize("n_patches", [None, 7], ids=["automatic", "explicit"])
+def test_extract_patches_consecutive_limits_count_all_windows_across_signals(
+    n_patches,
+):
+    """Return all seven eligible windows consecutively across two signals.
+
+    Check `n_patches` with both None and a request to the maximum select
+    consecutive extraction.
+    
+    Also verify the rejection of requests above it.
+    """
+    signals = np.vstack([np.arange(7), 100 + np.arange(7)]).astype(float)
+    limits = np.array([[2, 6], [0, 7]])
+    expected = np.array(
+        [
+            [1, 2, 3, 4],
+            [2, 3, 4, 5],
+            [3, 4, 5, 6],
+            [100, 101, 102, 103],
+            [101, 102, 103, 104],
+            [102, 103, 104, 105],
+            [103, 104, 105, 106],
+        ],
+        dtype=float,
+    )
+    patches = lib.extract_patches(
+        signals, patch_size=4, limits=limits, patch_min=3, n_patches=n_patches
+    )
+    np.testing.assert_array_equal(patches, expected)
+
+    with pytest.raises(ValueError, match="maximum number of patches"):
+        lib.extract_patches(
+            signals, patch_size=4, limits=limits, patch_min=3, n_patches=8
+        )
 def test_extract_patches_consecutive_truncates_with_warning():
     signal = np.arange(8, dtype=float)
     with pytest.warns(RuntimeWarning, match="last 1 bins"):
