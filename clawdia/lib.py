@@ -388,14 +388,15 @@ def extract_patches(
         max_patches = 0
         for p0, p1 in limits:
             p0 += patch_min - patch_size
-            p1 -= patch_min
+            # The last eligible start is included, so use an exclusive stop.
+            p1 -= patch_min - 1
             if p0 < 0:
                 p0 = 0
-            if p1 + patch_size >= l_signals:
-                p1 = l_signals - patch_size
+            if p1 > l_signals - patch_size + 1:
+                p1 = l_signals - patch_size + 1
             
             window_limits.append((p0, p1))
-            max_patches += max(0, int(np.ceil((p1-p0)/step)))
+            max_patches += len(range(p0, p1, step))
 
     if n_patches is None:
         n_patches = max_patches

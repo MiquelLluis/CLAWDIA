@@ -73,15 +73,38 @@ def test_extract_patches_returns_exact_multisignal_windows():
     assert patches.dtype == signals.dtype
 
 
-def test_extract_patches_limits_select_windows_with_required_overlap():
-    signal = np.arange(7, dtype=float)[None, :]
+@pytest.mark.parametrize(
+    "length, limits, patch_min, step, expected_starts",
+    [
+        # Since the signal length is fixed, I only need to specify the expected
+        # start value of each extracted patch.
+        pytest.param(7, [[2, 6]], 3, 1, [1, 2, 3], id="partial-overlap"),
+        pytest.param(7, [[2, 6]], 4, 1, [2], id="full-overlap-single-window"),  # patch_min == patch_size
+        pytest.param(7, [[0, 3]], 2, 1, [0, 1], id="left-signal-boundary"),
+        pytest.param(7, [[4, 7]], 2, 1, [2, 3], id="right-signal-boundary"),
+        pytest.param(7, [[0, 7]], 4, 1, [0, 1, 2, 3], id="full-signal-limits"),
+        pytest.param(4, [[0, 4]], 4, 1, [0], id="patch-equals-signal"),
+        pytest.param(7, [[3, 4]], 1, 1, [0, 1, 2, 3], id="one-sample-overlap"),
+        pytest.param(7, [[2, 6]], 3, 2, [1, 3], id="last-start-on-stride-grid"),
+        pytest.param(7, [[2, 6]], 3, 3, [1], id="last-start-off-stride-grid"),
+    ],
+)
+def test_extract_patches_limits_select_windows_with_required_overlap(
+        length, limits, patch_min, step, expected_starts
+    ):
+    """Include every window meeting the minimum overlap."""
+    signal = np.arange(length, dtype=float)[None, :]
     patches = lib.extract_patches(
         signal,
         patch_size=4,
-        limits=np.array([[2, 6]]),
-        patch_min=3,
+        limits=limits,
+        patch_min=patch_min,
+        step=step,
     )
-    np.testing.assert_array_equal(patches, [[1, 2, 3, 4], [2, 3, 4, 5]])
+    expected = np.array(
+        [np.arange(start, start + 4, dtype=float) for start in expected_starts]
+    )
+    np.testing.assert_array_equal(patches, expected)
 
 
 def test_extract_patches_truncates_with_warning():
