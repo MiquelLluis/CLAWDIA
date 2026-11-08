@@ -63,7 +63,7 @@ def test_semibool_bisect_reports_nonconvergence_and_bad_boundary():
         lib.semibool_bisect(lambda x: x + 1, 0.0, 4.0)
 
 
-def test_extract_patches_returns_exact_multisignal_windows():
+def test_extract_patches_consecutive_returns_exact_multisignal_windows():
     signals = np.arange(12, dtype=np.float64).reshape(2, 6)
     patches = lib.extract_patches(signals, patch_size=3, step=2)
     expected = np.array(
@@ -89,10 +89,10 @@ def test_extract_patches_returns_exact_multisignal_windows():
         pytest.param(7, [[2, 6]], 3, 3, [1], id="last-start-off-stride-grid"),
     ],
 )
-def test_extract_patches_limits_select_windows_with_required_overlap(
+def test_extract_patches_consecutive_limits_select_windows_with_required_overlap(
         length, limits, patch_min, step, expected_starts
     ):
-    """Include every window meeting the minimum overlap."""
+    """Extract all eligible windows consecutively at the requested step."""
     signal = np.arange(length, dtype=float)[None, :]
     patches = lib.extract_patches(
         signal,
@@ -107,7 +107,7 @@ def test_extract_patches_limits_select_windows_with_required_overlap(
     np.testing.assert_array_equal(patches, expected)
 
 
-def test_extract_patches_truncates_with_warning():
+def test_extract_patches_consecutive_truncates_with_warning():
     signal = np.arange(8, dtype=float)
     with pytest.warns(RuntimeWarning, match="last 1 bins"):
         patches = lib.extract_patches(signal, patch_size=3, step=2)
@@ -116,7 +116,7 @@ def test_extract_patches_truncates_with_warning():
     )
 
 
-def test_extract_patches_padding_covers_last_sample_exactly():
+def test_extract_patches_consecutive_padding_covers_last_sample_exactly():
     signal = np.arange(8, dtype=float)
     patches = lib.extract_patches(
         signal, patch_size=3, step=2, allow_padding=True
@@ -126,14 +126,15 @@ def test_extract_patches_padding_covers_last_sample_exactly():
     )
 
 
-def test_extract_patches_padding_supports_short_signals():
+def test_extract_patches_consecutive_padding_supports_short_signals():
     patches = lib.extract_patches(
         np.array([2.0, 3.0]), patch_size=4, allow_padding=True
     )
     np.testing.assert_array_equal(patches, [[2.0, 3.0, 0.0, 0.0]])
 
 
-def test_random_patch_extraction_is_seeded():
+def test_extract_patches_random_is_seeded():
+    """A below-maximum request selects reproducible random patches."""
     signal = np.arange(20, dtype=float)
     first = lib.extract_patches(
         signal, patch_size=4, n_patches=5, random_state=42
@@ -144,7 +145,7 @@ def test_random_patch_extraction_is_seeded():
     np.testing.assert_array_equal(first, second)
 
 
-def test_patch_l2_normalisation_and_coefficients_reconstruct_input():
+def test_extract_patches_consecutive_normalisation_is_reversible():
     signal = np.arange(6, dtype=float)
     patches, norms = lib.extract_patches(
         signal,
@@ -164,6 +165,7 @@ def test_patch_l2_normalisation_and_coefficients_reconstruct_input():
 
 
 def test_all_zero_patch_handling():
+    """Normalize zero consecutive patches safely and reject a zero-only random request."""
     zeros = np.zeros(6)
     patches, norms = lib.extract_patches(
         zeros,
