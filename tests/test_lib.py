@@ -202,6 +202,33 @@ def test_extract_patches_consecutive_limits_padding_requires_original_overlap(
     np.testing.assert_array_equal(patches, expected)
 
 
+def test_extract_patches_random_limits_include_last_valid_window(
+        monkeypatch,
+    ):
+    """A below-maximum random request can select the final eligible start.
+
+    This test guards against an off-by-one error fixed in commit
+    22739e28c2fb4b9ef04d51236e32bcdaabbbeb44.
+    We verify that the final valid window can still be drawn for random
+    extraction. To make this deterministic, we replace random selection
+    with a forced choice of the last offered index.
+    """
+    class LastIndexGenerator:
+        def integers(self, low, high):
+            return high - 1
+
+    monkeypatch.setattr(lib.np.random, "Generator", lambda _: LastIndexGenerator())
+
+    patches = lib.extract_patches(
+        np.arange(7, dtype=float),
+        patch_size=4,
+        limits=np.array([[2, 6]]),
+        patch_min=3,
+        n_patches=1,
+    )
+    np.testing.assert_array_equal(patches, [[3, 4, 5, 6]])
+
+
 def test_extract_patches_consecutive_truncates_with_warning():
     signal = np.arange(8, dtype=float)
     with pytest.warns(RuntimeWarning, match="last 1 bins"):
