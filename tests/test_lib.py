@@ -63,6 +63,13 @@ def test_semibool_bisect_reports_nonconvergence_and_bad_boundary():
         lib.semibool_bisect(lambda x: x + 1, 0.0, 4.0)
 
 
+# `extract_patches` combines consecutive and random extraction with limits,
+# overlap requirements, padding, and zero-window filtering. Errors in these
+# interactions can silently omit or select incorrect training data. The broader
+# testing here targets distinct behaviours and known risks, rather than every
+# parameter combination.
+
+
 def test_extract_patches_consecutive_returns_exact_multisignal_windows():
     signals = np.arange(12, dtype=np.float64).reshape(2, 6)
     patches = lib.extract_patches(signals, patch_size=3, step=2)
