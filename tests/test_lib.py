@@ -167,6 +167,41 @@ def test_extract_patches_consecutive_limits_keep_last_nonzero_window(limits):
     np.testing.assert_array_equal(patches, [[0.0, 0.0, 0.0, 1.0]])
 
 
+@pytest.mark.parametrize(
+    "signal, patch_min, step, expected",
+    [
+        # Signal shorter than `patch_size`:
+        pytest.param(
+            [2.0, 3.0], 2, 1, [[2, 3, 0, 0]], id="short-signal"
+        ),
+        # Uneven signal split (needs padding to complete the last patch):
+        pytest.param(
+            [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], 3, 2,
+            [[1, 2, 3, 4], [3, 4, 5, 6], [5, 6, 7, 0]],
+            id="last-padded-window-meets-overlap",
+        ),
+        # Keep discarding patches with less original samples than `patch_min`:
+        pytest.param(
+            [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], 4, 2, [[1, 2, 3, 4], [3, 4, 5, 6]],
+            id="last-padded-window-has-insufficient-overlap",
+        ),
+    ],
+)
+def test_extract_patches_consecutive_limits_padding_requires_original_overlap(
+        signal, patch_min, step, expected
+    ):
+    """Padding can complete a patch but cannot supply in-limit samples."""
+    patches = lib.extract_patches(
+        np.array(signal),
+        patch_size=4,
+        limits=np.array([[0, len(signal)]]),
+        patch_min=patch_min,
+        step=step,
+        allow_padding=True,
+    )
+    np.testing.assert_array_equal(patches, expected)
+
+
 def test_extract_patches_consecutive_truncates_with_warning():
     signal = np.arange(8, dtype=float)
     with pytest.warns(RuntimeWarning, match="last 1 bins"):
