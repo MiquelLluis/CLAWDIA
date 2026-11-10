@@ -57,21 +57,60 @@ def trained_dictionary(initial_components, trained_components):
     return model
 
 
-@pytest.mark.regression
-def test_seeded_initial_dictionary_matches_reference(
-    initial_dictionary, initial_components
-):
-    np.testing.assert_allclose(
-        initial_dictionary.components,
-        initial_components,
-        rtol=1e-9,
-        atol=1e-11,
+@pytest.fixture
+def synthetic_initialisation_pool():
+    signals = np.array(
+        [
+            [100.0, 100.0, 3.0, 4.0, 0.0, 100.0, 100.0],
+            [-100.0, -100.0, 0.0, 5.0, 12.0, -100.0, -100.0],
+        ]
     )
-    np.testing.assert_allclose(
-        np.linalg.norm(initial_dictionary.components, axis=1),
-        1.0,
-        rtol=1e-12,
-        atol=1e-12,
+    limits = np.array([[2, 5], [2, 5]])
+    
+    return signals, limits
+
+
+@pytest.mark.parametrize(
+    "l2_normed, allowed_atoms",
+    [
+        pytest.param(
+            False, [[3, 4], [4, 0], [0, 5], [5, 12]], id="raw-atoms"
+        ),
+        pytest.param(
+            True,
+            [[0.6, 0.8], [1, 0], [0, 1], [5 / 13, 12 / 13]],
+            id="normalised-atoms",
+        ),
+    ],
+)
+def test_signal_pool_initialisation_selects_allowed_atoms_reproducibly(
+    synthetic_initialisation_pool, l2_normed, allowed_atoms
+):
+    """Respect waveform limits, normalization, and the caller's sampling seed."""
+    signals, limits = synthetic_initialisation_pool
+    # Only the four listed windows lie entirely inside the waveform limits.
+    # Sampling three atoms exercises random extraction; repeats are permitted.
+    kwargs = dict(
+        signal_pool=signals,
+        wave_pos=limits,
+        a_length=2,
+        d_size=3,
+        patch_min=2,
+        l2_normed=l2_normed,
+    )
+    model = DictionarySpams(random_state=17, **kwargs)
+    same_seed = DictionarySpams(random_state=17, **kwargs)
+    different_seed = DictionarySpams(random_state=42, **kwargs)
+
+    assert model.components.shape == (3, 2)
+    for atom in model.components:
+        matches = np.all(
+            np.isclose(allowed_atoms, atom, rtol=1e-12, atol=1e-12), axis=1
+        )
+        assert matches.any(), f"Unexpected atom outside the allowed set: {atom}"
+    np.testing.assert_array_equal(model.components, same_seed.components)
+    assert not np.array_equal(
+        model.components, different_seed.components
     )
 
 
