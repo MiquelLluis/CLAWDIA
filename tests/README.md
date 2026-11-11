@@ -12,11 +12,11 @@ through the active Python environment:
 # Entire suite
 python -m pytest -q
 
-# Fast unit suite
-python -m pytest -m "not integration and not regression" -q
+# Default suite
+python -m pytest -m "not integration and not reference" -q
 
-# Integration and regression suite
-python -m pytest -m "integration or regression" -q
+# Integration and reference suite
+python -m pytest -m "integration or reference" -q
 
 # Coverage, including branches
 python -m pytest --cov=clawdia --cov-branch --cov-report=term-missing
@@ -25,22 +25,24 @@ python -m pytest --cov=clawdia --cov-branch --cov-report=term-missing
 
 ## Test categories
 
-Tests without a marker form the **unit suite**. They:
+Tests without an `integration` or `reference` marker form the **default suite**, mostly focused unit/component tests. They:
 - exercise one public function or a small, isolated behaviour using deterministic synthetic data.
 - should be fast.
-- should not require a trained model, external service, or large reference file.
+- should not require an external service or large reference file.
 
 The remaining categories are declared as custom pytest markers in `pyproject.toml`:
 
 | Category | Marker | Purpose |
 | --- | --- | --- |
-| Unit | none | Checks an isolated behaviour against an independently known result or invariant. |
+| Default | none | Checks focused public behaviour against an independently known result or invariant. |
 | Integration | `@pytest.mark.integration` | Check multiple components, an external backend, persistence, or iterative model training together. |
-| Regression | `@pytest.mark.regression` | Compares behaviour with a trusted reference result, often dependency- or platform-sensitive. |
+| Reference | `@pytest.mark.reference` | Compares numerical results with stored, accepted baselines using justified tolerances (golden-master testing). |
 
 These categories are not mutually exclusive:
 - **Integration** describes the scope of the execution;
-- **Regression** describes the source of the expected result.
+- **Reference** describes the source of the expected result.
+
+Reference tests follow the established [golden-master approach](https://approvaltestscpp.readthedocs.io/en/latest/generated_docs/ApprovalTestingConcept.html). They check agreement with accepted results, not independent scientific correctness. Regression protection is a purpose served by all test categories, not a separate marker here. Legacy-file compatibility checks do not need the `reference` marker unless they also compare numerical outputs against stored baselines.
 
 
 ## Suite layout
@@ -69,9 +71,12 @@ The test suite is a work in progress. The following conventions guide new and re
 - Shared fixtures are defined in `conftest.py`.
 - Module-specific fixtures should stay beside the tests that use them.
 - Paths must be derived from `tests/`, not from the process working directory.
+- Prefer synthetic signals and models created at runtime. Use stored numerical baselines in explicitly marked reference tests, sparingly for complete workflows or critical numerical behaviour. Historical archives may also be used for compatibility checks, and realistic input files when synthetic data cannot adequately represent the behaviour under test.
+
+The coupled SPAMS reference set has a [generation script and record](data/_dictionary_spams/README.md).
 
 Files under `tests/data/` are not necessarily scientific ground truth:
-- Each regression fixture should
+- Each reference fixture should
   - have a known origin, and
   - represent an intentional behaviour.
 - Do not regenerate a reference only because a test fails; determine whether
@@ -88,6 +93,6 @@ Generation scripts or notebooks should be kept when they document how a trusted 
 1. Identify the public behaviour and define the expected result independently of the implementation where possible.
 2. Put the test in the module corresponding to that public interface.
 3. Use synthetic data unless committed reference data adds genuine scientific value.
-4. Mark the test only when it meets the integration or regression definition above.
+4. Mark the test only when it meets the integration or reference definition above.
 5. Run the relevant test module, both marker selections, and the complete suite.
 6. Check coverage for untested behaviour, not as a substitute for meaningful assertions.

@@ -1,7 +1,7 @@
 """Generate a coupled set of SPAMS dictionary and reconstruction references.
 
 These references reproduce the numerical behavior expected from the SPAMS
-dictionary for the regression tests. Their inputs are synthetic waveforms,
+dictionary for the reference (golden-master) tests. Their inputs are synthetic waveforms,
 Gaussian, sine-Gaussian, and ring-down waveforms, originally generated in
 ``Data generation (outdated API calls).ipynb``.
 
@@ -42,11 +42,11 @@ Outputs
 Six numerical reference files are written:
 
 dico_spams_initial.npy
-    Initial atoms, the starting state of the fixed regression dictionary.
+    Initial atoms, the starting state of the fixed reference dictionary.
     They are sampled from the clean waveform pool.
 dico_spams_trained.npy
     Atoms after initial training. Used as the training test's expected
-    result and as the dictionary for the reconstruction regression tests.
+    result and as the dictionary for the reconstruction reference tests.
 dico_spams_trained_warm.npy
     Atoms after warm-start training. Used to check the continuation
     from the first trained state.
@@ -70,7 +70,7 @@ arrays before saving them.
 
 LEGACY NOTE: the old notebook ran reconstructions after warm start. Now
 reconstruction references deliberately use the state before warm start,
-matching the regression fixture. The obsolete ``optimum_reconstruct.npz``
+matching the reference fixture. The obsolete ``optimum_reconstruct.npz``
 example is not generated: the current optimized-reconstruction method has
 analytical tests instead.
 """

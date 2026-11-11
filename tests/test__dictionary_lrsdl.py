@@ -231,7 +231,7 @@ def test_predict_rejects_invalid_inputs(
 
 
 @pytest.mark.integration
-@pytest.mark.regression
+@pytest.mark.reference
 def test_seeded_training_matches_reference_model(
     reference_population, reference_model
 ):
@@ -260,7 +260,7 @@ def test_seeded_training_matches_reference_model(
 
 
 @pytest.mark.integration
-@pytest.mark.regression
+@pytest.mark.reference
 def test_reference_model_classifies_separated_frequency_population(
     reference_model, data_dir
 ):

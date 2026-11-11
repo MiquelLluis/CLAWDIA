@@ -9,7 +9,7 @@ from clawdia.dictionaries import DictionarySpams
 
 
 @pytest.fixture(scope="module")
-def regression_signal_pool(data_dir):
+def reference_signal_pool(data_dir):
     with np.load(data_dir / "strains_clean.npz") as data:
         return data["strains"], data["wave_pos"]
 
@@ -25,8 +25,8 @@ def reference_trained_components(data_dir):
 
 
 @pytest.fixture(scope="module")
-def untrained_regression_dictionary(regression_signal_pool):
-    signals, limits = regression_signal_pool
+def untrained_reference_dictionary(reference_signal_pool):
+    signals, limits = reference_signal_pool
     return DictionarySpams(
         signal_pool=signals,
         wave_pos=limits,
@@ -129,17 +129,17 @@ def test_signal_pool_initialisation_selects_allowed_atoms_reproducibly(
 
 
 @pytest.mark.integration
-@pytest.mark.regression
+@pytest.mark.reference
 @pytest.mark.skipif(
     not sys.platform.startswith("linux"),
     reason="the committed SPAMS training reference is Linux-specific",
 )
 def test_training_and_warm_start_match_reference(
-    untrained_regression_dictionary, regression_signal_pool,
+    untrained_reference_dictionary, reference_signal_pool,
     reference_trained_components, data_dir
 ):
-    """Reproduce training and continuation from realistic waveform windows."""
-    signals, limits = regression_signal_pool
+    """Match accepted training and continuation results from synthetic waveforms."""
+    signals, limits = reference_signal_pool
     patches = lib.extract_patches(
         signals,
         patch_size=64,
@@ -149,7 +149,7 @@ def test_training_and_warm_start_match_reference(
         l2_normed=True,
         allow_allzeros=False,
     )
-    model = untrained_regression_dictionary.copy()
+    model = untrained_reference_dictionary.copy()
     model.train(patches, n_iter=1000, verbose=False, threads=1)
 
     assert model.trained
@@ -454,8 +454,8 @@ def test_loss_optimised_handles_nondivisible_cropped_interval(
     )
 
 
-@pytest.mark.regression
-def test_realistic_single_batch_and_minibatch_reconstruction(
+@pytest.mark.reference
+def test_single_batch_and_minibatch_reconstruction_match_reference(
     reference_dictionary, data_dir
 ):
     with np.load(
@@ -500,8 +500,8 @@ def test_realistic_single_batch_and_minibatch_reconstruction(
     np.testing.assert_allclose(minibatch, expected, rtol=1e-9, atol=1e-11)
 
 
-@pytest.mark.regression
-def test_realistic_iterative_reconstruction(reference_dictionary, data_dir):
+@pytest.mark.reference
+def test_iterative_reconstruction_matches_reference(reference_dictionary, data_dir):
     with np.load(
         data_dir / "_dictionary_spams" / "reconstructions_iterative.npz"
     ) as data:
@@ -536,8 +536,8 @@ def test_realistic_iterative_reconstruction(reference_dictionary, data_dir):
     assert residual.shape == signals.shape
 
 
-@pytest.mark.regression
-def test_realistic_margin_constrained_reconstruction(
+@pytest.mark.reference
+def test_margin_constrained_reconstruction_matches_reference(
     reference_dictionary, data_dir
 ):
     with np.load(

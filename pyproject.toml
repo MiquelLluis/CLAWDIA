@@ -45,7 +45,7 @@ testpaths = ["tests"]
 addopts = ["--strict-markers"]
 markers = [
     "integration: exercises multiple CLAWDIA components or iterative training",
-    "regression: compares against committed dependency-sensitive reference data"
+    "reference: compares numerical results against stored, accepted baselines (golden-master tests)"
 ]
 filterwarnings = [
     "error::RuntimeWarning:clawdia\\..*",
