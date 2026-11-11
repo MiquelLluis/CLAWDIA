@@ -1,12 +1,26 @@
 # CLAWDIA test suite
 
-The test suite checks the scientific behaviour of CLAWDIA's public interfaces.
-Coverage is useful, but it is not the acceptance criterion; tests should use controlled inputs and verify a meaningful numerical result, physical invariant, error condition, or preservation of state.
+The test suite aims to protect scientifically meaningful behaviour of CLAWDIA. It is a work in progress, not a guarantee of numerical correctness or complete coverage. The principles below guide its ongoing review and development.
+
+The suite uses [pytest](https://docs.pytest.org/en/stable/) as its testing framework.
+
+
+## Test categories
+
+| Category | Marker | Purpose |
+| --- | --- | --- |
+| Unit (default) | none | Checks focused behaviour using controlled inputs and an independently known answer, invariant, or expected error. |
+| Integration | `@pytest.mark.integration` | Checks interactions between components or workflows. |
+| Reference (golden-master) | `@pytest.mark.reference` | Compares numerical outputs with stored, reviewed and accepted baselines. |
+
+A test may be both integration and reference: integration describes what runs together, while reference describes where the expected result comes from. The unmarked suite mostly contains focused unit/component tests.
+
+Reference tests follow the established [golden-master approach](https://en.wikipedia.org/wiki/Characterization_test), also used to characterize existing behaviour. They detect changes from accepted outputs, but do not independently establish scientific correctness.
+
 
 ## Running the tests
 
-Install the test dependencies with `pip install -e '.[test]'`, then run pytest
-through the active Python environment:
+With CLAWDIA and its normal dependencies installed, running the tests only requires `pytest` in the same Python environment, and optionally `pytest-cov` to get coverage information. Run these commands from the repository root:
 
 ```bash
 # Entire suite
@@ -18,81 +32,43 @@ python -m pytest -m "not integration and not reference" -q
 # Integration and reference suite
 python -m pytest -m "integration or reference" -q
 
-# Coverage, including branches
-python -m pytest --cov=clawdia --cov-branch --cov-report=term-missing
+# Coverage (branch coverage is enabled by default in pyproject.toml)
+python -m pytest --cov=clawdia --cov-report=term-missing
 ```
-
-
-## Test categories
-
-Tests without an `integration` or `reference` marker form the **default suite**, mostly focused unit/component tests. They:
-- exercise one public function or a small, isolated behaviour using deterministic synthetic data.
-- should be fast.
-- should not require an external service or large reference file.
-
-The remaining categories are declared as custom pytest markers in `pyproject.toml`:
-
-| Category | Marker | Purpose |
-| --- | --- | --- |
-| Default | none | Checks focused public behaviour against an independently known result or invariant. |
-| Integration | `@pytest.mark.integration` | Check multiple components, an external backend, persistence, or iterative model training together. |
-| Reference | `@pytest.mark.reference` | Compares numerical results with stored, accepted baselines using justified tolerances (golden-master testing). |
-
-These categories are not mutually exclusive:
-- **Integration** describes the scope of the execution;
-- **Reference** describes the source of the expected result.
-
-Reference tests follow the established [golden-master approach](https://approvaltestscpp.readthedocs.io/en/latest/generated_docs/ApprovalTestingConcept.html). They check agreement with accepted results, not independent scientific correctness. Regression protection is a purpose served by all test categories, not a separate marker here. Legacy-file compatibility checks do not need the `reference` marker unless they also compare numerical outputs against stored baselines.
 
 
 ## Suite layout
 
-Test modules mirror the corresponding CLAWDIA modules, and use module-level test functions by default.
-
-Test classes may be introduced where they provide useful grouping or shared setup.
+Test modules mirror the corresponding CLAWDIA modules and use module-level test functions by default. Classes may be used to group related tests, for example those testing the same function.
 
 
 ## Scientific assertions
 
-The test suite is a work in progress. The following conventions guide new and revised tests; they follow the testing guidance of [NumPy](https://numpy.org/devdocs/reference/testing.html), [SciPy](https://docs.scipy.org/doc/scipy/dev/contributor/contributor_toc.html), and [Astropy](https://docs.astropy.org/en/latest/development/testguide.html), adapted to CLAWDIA's numerical signal-processing requirements.
+These are a collection of guiding points based on those documented in [NumPy](https://numpy.org/devdocs/reference/testing.html), [SciPy](https://docs.scipy.org/doc/scipy/dev/contributor/contributor_toc.html), and [Astropy](https://docs.astropy.org/en/latest/development/testguide.html). *Existing tests are being reviewed against them; they are not all applied uniformly yet.*
 
+- Prioritise important behaviour and known risks over coverage. Avoid trivial assertions and exhaustive parameter combinations without a clear reason. Briefly explain a test's motivation and expected result where they are not obvious.
 - Prefer small deterministic signals with an analytically known or independently defined answer.
-- For reconstructions, verify the output shape as well as an independent accuracy metric or invariant, such as residual conservation.
+- For reconstructions, check more than shape and type: compare with an expected signal or verify a meaningful numerical invariant, such as residual conservation. For reference cases, verify it matches the accepted numerical output up to a justified tolerance.
 - Use `pytest.approx` for approximate Python scalars, `numpy.testing.assert_array_equal` for exact array values, and `numpy.testing.assert_allclose` for approximate arrays.
 - Prefer explicit tolerances. Choose them from the algorithm, input scale, floating-point precision, and expected accumulation error, not to simply make a test pass.
 - Verify relevant shape, dtype, labels, model state, and any sampling metadata exposed by the interface.
 - Cover boundary cases, invalid inputs, and expected warnings or exceptions where relevant.
-- Supply a seed for stochastic algorithms. Where an API must temporarily use NumPy's global random state, verify that the caller's state is preserved.
-- Test through public interfaces; access private internals only when the relevant behaviour cannot be observed through a public result.
+- Keep tests reasonably fast, CPU-only, and independent of external services when possible. Unexpected CLAWDIA `RuntimeWarning`s are treated as errors by the pytest configuration; assert expected ones with `pytest.warns`.
+- Specify a seed for stochastic algorithms. If an API must temporarily use NumPy's global random state, verify that the caller's state is restored after the call.
+- Prioritise public behaviour, while also testing critical private functions directly where useful.
+- When the scientifically expected result is unclear, document the uncertainty; never assume the current output to be correct.
 
 
 ## Fixtures and reference data
 
 - Shared fixtures are defined in `conftest.py`.
-- Module-specific fixtures should stay beside the tests that use them.
+- Module-specific fixtures stay in their test module, preferably after imports and before the tests.
 - Paths must be derived from `tests/`, not from the process working directory.
-- Prefer synthetic signals and models created at runtime. Use stored numerical baselines in explicitly marked reference tests, sparingly for complete workflows or critical numerical behaviour. Historical archives may also be used for compatibility checks, and realistic input files when synthetic data cannot adequately represent the behaviour under test.
+- Prefer synthetic signals and models created at runtime. Use stored numerical baselines in explicitly marked reference tests, sparingly for complete workflows or critical numerical behaviour.
+- For training and persistence workflows, use the intended initialisation and training methods rather than fabricate a trained state. Small explicit dictionaries remain useful for analytical reconstruction tests.
+- Keep the origin, inputs, configuration, and relevant dependency settings of reference data documented. Retain generation scripts or notebooks, including upstream data recipes not yet replaced by a script.
 
-The coupled SPAMS reference set has a [generation script and record](data/_dictionary_spams/README.md).
+> [!CAUTION]
+> Generating new reference data does not validate it. Investigate differences before changing an accepted baseline, and generate candidates separately for review. Never replace references simply to make a failing test pass; changes may come from defects, intentional algorithm changes, dependencies, inputs, configuration, or unsuitable tolerances.
 
-Files under `tests/data/` are not necessarily scientific ground truth:
-- Each reference fixture should
-  - have a known origin, and
-  - represent an intentional behaviour.
-- Do not regenerate a reference only because a test fails; determine whether
-  - the API changed,
-  - the test is obsolete,
-  - a dependency changed numerically, or
-  - the implementation regressed.
-
-Generation scripts or notebooks should be kept when they document how a trusted fixture was produced, even if they require updating before they can be run again.
-
-
-## Adding a test
-
-1. Identify the public behaviour and define the expected result independently of the implementation where possible.
-2. Put the test in the module corresponding to that public interface.
-3. Use synthetic data unless committed reference data adds genuine scientific value.
-4. Mark the test only when it meets the integration or reference definition above.
-5. Run the relevant test module, both marker selections, and the complete suite.
-6. Check coverage for untested behaviour, not as a substitute for meaningful assertions.
+Files under `tests/data/` are not necessarily scientific ground truth. The [SPAMS reference README](data/_dictionary_spams/README.md) describes its accepted baseline set and candidate-generation procedure.
