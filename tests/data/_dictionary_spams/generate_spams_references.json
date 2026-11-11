@@ -1,0 +1,63 @@
+{
+  "injected_signal_indices": [0, 5, 10],
+  "margin_signal_index": 10,
+  "initialisation": {
+    "a_length": 64,
+    "d_size": 80,
+    "lambda1": 0.1,
+    "batch_size": 1,
+    "identifier": "Test dictionary",
+    "l2_normed": true,
+    "allow_allzeros": false,
+    "patch_min": 16,
+    "random_state": 42,
+    "mode_traindl": 0,
+    "modeD_traindl": 0,
+    "mode_lasso": 2
+  },
+  "training_patches": {
+    "patch_size": 64,
+    "n_patches": 100,
+    "random_state": 84,
+    "l2_normed": true,
+    "allow_allzeros": false,
+    "patch_min": 1
+  },
+  "training": {
+    "n_iter": 1000,
+    "verbose": false,
+    "threads": 1
+  },
+  "warm_start": {
+    "n_iter": 500,
+    "warm_start": true,
+    "verbose": false,
+    "threads": 1
+  },
+  "reconstruction": {
+    "sc_lambda": 0.5,
+    "step": 2,
+    "normed": true,
+    "with_code": true,
+    "numThreads": 1
+  },
+  "iterative_reconstruction": {
+    "sc_lambda": 0.7,
+    "step": 2,
+    "batchsize": 2,
+    "max_iter": 1000,
+    "threshold": 0.01,
+    "normed": true,
+    "full_output": true,
+    "verbose": false,
+    "kwargs_lasso": {"numThreads": 1}
+  },
+  "margin_reconstruction": {
+    "margin": 100,
+    "lambda_lims": [0.01, 10],
+    "step": 4,
+    "normed": true,
+    "full_output": true,
+    "kwargs_lasso": {"numThreads": 1}
+  }
+}
