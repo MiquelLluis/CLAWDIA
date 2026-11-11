@@ -583,7 +583,8 @@ class DictionarySpams:
         threshold : float, optional
             Convergence threshold based on the relative change in residuals.
         normed : bool, optional
-            If True, the reconstructed signals are normalised after convergence.
+            If True, the reconstructed signals are normalised to their maximum
+            absolute amplitude after convergence.
         full_output : bool, optional
             If True, returns additional output values (residuals and iteration counts).
         verbose : bool, optional
