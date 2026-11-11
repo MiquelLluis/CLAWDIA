@@ -9,24 +9,24 @@ from clawdia.dictionaries import DictionarySpams
 
 
 @pytest.fixture(scope="module")
-def clean_data(data_dir):
+def regression_signal_pool(data_dir):
     with np.load(data_dir / "strains_clean.npz") as data:
         return data["strains"], data["wave_pos"]
 
 
 @pytest.fixture(scope="module")
-def initial_components(data_dir):
+def reference_initial_components(data_dir):
     return np.load(data_dir / "_dictionary_spams" / "dico_spams_initial.npy")
 
 
 @pytest.fixture(scope="module")
-def trained_components(data_dir):
+def reference_trained_components(data_dir):
     return np.load(data_dir / "_dictionary_spams" / "dico_spams_trained.npy")
 
 
 @pytest.fixture(scope="module")
-def initial_dictionary(clean_data):
-    signals, limits = clean_data
+def untrained_regression_dictionary(regression_signal_pool):
+    signals, limits = regression_signal_pool
     return DictionarySpams(
         signal_pool=signals,
         wave_pos=limits,
@@ -43,9 +43,9 @@ def initial_dictionary(clean_data):
 
 
 @pytest.fixture(scope="module")
-def trained_dictionary(initial_components, trained_components):
+def reference_dictionary(reference_initial_components, reference_trained_components):
     model = DictionarySpams(
-        dict_init=initial_components.copy(),
+        dict_init=reference_initial_components.copy(),
         lambda1=0.1,
         batch_size=1,
         identifier="Test dictionary",
@@ -53,12 +53,26 @@ def trained_dictionary(initial_components, trained_components):
         n_iter=1000,
         n_train=100,
     )
-    model.components = trained_components.copy()
+    model.components = reference_trained_components.copy()
     return model
 
 
 @pytest.fixture
-def synthetic_initialisation_pool():
+def trained_minimal_dictionary():
+    model = DictionarySpams(
+        dict_init=np.array([[1.0, 0.0], [0.0, 1.0], [0.6, 0.8]]),
+        lambda1=0.1,
+        batch_size=2,
+    )
+    patches = np.array(
+        [[1.0, 0.0], [0.0, 1.0], [0.8, 0.2], [0.2, 0.8]]
+    )
+    model.train(patches, n_iter=2, verbose=False, threads=1)
+    return model
+
+
+@pytest.fixture
+def minimal_signal_pool():
     signals = np.array(
         [
             [100.0, 100.0, 3.0, 4.0, 0.0, 100.0, 100.0],
@@ -84,10 +98,10 @@ def synthetic_initialisation_pool():
     ],
 )
 def test_signal_pool_initialisation_selects_allowed_atoms_reproducibly(
-    synthetic_initialisation_pool, l2_normed, allowed_atoms
+    minimal_signal_pool, l2_normed, allowed_atoms
 ):
     """Respect waveform limits, normalization, and the caller's sampling seed."""
-    signals, limits = synthetic_initialisation_pool
+    signals, limits = minimal_signal_pool
     # Only the four listed windows lie entirely inside the waveform limits.
     # Sampling three atoms exercises random extraction; repeats are permitted.
     kwargs = dict(
@@ -121,9 +135,11 @@ def test_signal_pool_initialisation_selects_allowed_atoms_reproducibly(
     reason="the committed SPAMS training reference is Linux-specific",
 )
 def test_training_and_warm_start_match_reference(
-    initial_dictionary, clean_data, trained_components, data_dir
+    untrained_regression_dictionary, regression_signal_pool,
+    reference_trained_components, data_dir
 ):
-    signals, limits = clean_data
+    """Reproduce training and continuation from realistic waveform windows."""
+    signals, limits = regression_signal_pool
     patches = lib.extract_patches(
         signals,
         patch_size=64,
@@ -133,7 +149,7 @@ def test_training_and_warm_start_match_reference(
         l2_normed=True,
         allow_allzeros=False,
     )
-    model = initial_dictionary.copy()
+    model = untrained_regression_dictionary.copy()
     model.train(patches, n_iter=1000, verbose=False, threads=1)
 
     assert model.trained
@@ -141,7 +157,7 @@ def test_training_and_warm_start_match_reference(
     assert model.n_iter == 1000
     assert model.t_train > 0
     np.testing.assert_allclose(
-        model.components, trained_components, rtol=1e-9, atol=1e-11
+        model.components, reference_trained_components, rtol=1e-9, atol=1e-11
     )
 
     model.train(
@@ -440,7 +456,7 @@ def test_loss_optimised_handles_nondivisible_cropped_interval(
 
 @pytest.mark.regression
 def test_realistic_single_batch_and_minibatch_reconstruction(
-    trained_dictionary, data_dir
+    reference_dictionary, data_dir
 ):
     with np.load(
         data_dir / "_dictionary_spams" / "reconstructions_A.npz"
@@ -452,12 +468,13 @@ def test_realistic_single_batch_and_minibatch_reconstruction(
     reconstructions = []
     codes = []
     for signal in signals:
-        reconstruction, code = trained_dictionary.reconstruct(
+        reconstruction, code = reference_dictionary.reconstruct(
             signal,
             sc_lambda=0.5,
             step=2,
             normed=True,
             with_code=True,
+            numThreads=1,
         )
         reconstructions.append(reconstruction)
         codes.append(code.toarray())
@@ -467,23 +484,24 @@ def test_realistic_single_batch_and_minibatch_reconstruction(
     )
     np.testing.assert_allclose(codes, expected_codes, rtol=1e-9, atol=1e-11)
 
-    batch = trained_dictionary.reconstruct_batch(
-        signals, 0.5, step=2, normed=True, verbose=False
+    batch = reference_dictionary.reconstruct_batch(
+        signals, 0.5, step=2, normed=True, verbose=False, numThreads=1
     )
-    minibatch = trained_dictionary.reconstruct_minibatch(
+    minibatch = reference_dictionary.reconstruct_minibatch(
         signals,
         sc_lambda=0.5,
         step=2,
         batchsize=2,
         normed=True,
         verbose=False,
+        numThreads=1,
     )
     np.testing.assert_allclose(batch, expected, rtol=1e-9, atol=1e-11)
     np.testing.assert_allclose(minibatch, expected, rtol=1e-9, atol=1e-11)
 
 
 @pytest.mark.regression
-def test_realistic_iterative_reconstruction(trained_dictionary, data_dir):
+def test_realistic_iterative_reconstruction(reference_dictionary, data_dir):
     with np.load(
         data_dir / "_dictionary_spams" / "reconstructions_iterative.npz"
     ) as data:
@@ -492,7 +510,7 @@ def test_realistic_iterative_reconstruction(trained_dictionary, data_dir):
         expected_residual = data["target_residuals"]
         expected_iterations = data["target_iters"]
 
-    reconstruction, residual, iterations = trained_dictionary.reconstruct_iterative(
+    reconstruction, residual, iterations = reference_dictionary.reconstruct_iterative(
         signals,
         sc_lambda=0.7,
         step=2,
@@ -502,71 +520,70 @@ def test_realistic_iterative_reconstruction(trained_dictionary, data_dir):
         normed=True,
         full_output=True,
         verbose=False,
+        kwargs_lasso={"numThreads": 1},
     )
-    # The first full minibatch remains a valid dependency regression. The final
-    # row in the committed baseline encoded the old remainder-batch bug, which
-    # silently re-enabled window normalisation.
     np.testing.assert_allclose(
-        reconstruction[:2],
-        expected_reconstruction[:2],
+        reconstruction,
+        expected_reconstruction,
         rtol=1e-9,
         atol=1e-11,
     )
     np.testing.assert_allclose(
-        residual[:2], expected_residual[:2], rtol=1e-9, atol=1e-11
+        residual, expected_residual, rtol=1e-9, atol=1e-11
     )
-    np.testing.assert_array_equal(iterations[:2], expected_iterations[:2])
+    np.testing.assert_array_equal(iterations, expected_iterations)
     assert reconstruction.shape == signals.shape
     assert residual.shape == signals.shape
-    assert np.all(np.isfinite(reconstruction[2]))
-    assert np.all(np.isfinite(residual[2]))
-    assert iterations[2] <= 1000
-    assert np.linalg.norm(residual[2]) <= np.linalg.norm(signals[2])
 
 
 @pytest.mark.regression
-def test_realistic_margin_boundary_retains_legacy_prefix(
-    trained_dictionary, data_dir
+def test_realistic_margin_constrained_reconstruction(
+    reference_dictionary, data_dir
 ):
     with np.load(
         data_dir / "_dictionary_spams" / "reconstruct_auto.npz",
         allow_pickle=True,
     ) as data:
         signal = data["input"]
-        legacy_reconstruction = data["reconstruction"]
-        legacy_code = data["code"]
-        legacy_result = data["result"].item()
+        expected_reconstruction = data["reconstruction"]
+        expected_code = data["code"]
+        expected_result = data["result"].item()
 
     reconstruction, code, result = (
-        trained_dictionary.reconstruct_margin_constrained(
+        reference_dictionary.reconstruct_margin_constrained(
             signal,
             margin=100,
             lambda_lims=(0.01, 10),
             step=4,
             normed=True,
             full_output=True,
+            kwargs_lasso={"numThreads": 1},
         )
     )
 
     assert reconstruction.shape == signal.shape
     np.testing.assert_allclose(
-        reconstruction[:3208],
-        legacy_reconstruction[:3208],
+        reconstruction,
+        expected_reconstruction,
         rtol=1e-9,
         atol=1e-11,
     )
     np.testing.assert_allclose(
-        code.toarray()[:, : legacy_code.shape[1]],
-        legacy_code,
+        code.toarray(),
+        expected_code,
         rtol=1e-9,
         atol=1e-11,
     )
-    assert result["x"] == pytest.approx(legacy_result["x"], abs=1e-12)
+    assert result["converged"]
+    assert result["x"] == pytest.approx(expected_result["x"], rel=0, abs=1e-12)
 
 
 def test_copy_and_reset_restore_initial_components(
-    trained_dictionary, initial_components
+    trained_minimal_dictionary,
 ):
+    """Reset a copy of a freshly trained model to its original synthetic atoms."""
+    trained_dictionary = trained_minimal_dictionary
+    initial_components = trained_dictionary.dict_init.copy()
     copied = trained_dictionary.copy()
     assert copied is not trained_dictionary
     np.testing.assert_array_equal(copied.components, trained_dictionary.components)
