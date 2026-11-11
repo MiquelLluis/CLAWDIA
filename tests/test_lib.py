@@ -63,275 +63,276 @@ def test_semibool_bisect_reports_nonconvergence_and_bad_boundary():
         lib.semibool_bisect(lambda x: x + 1, 0.0, 4.0)
 
 
-# `extract_patches` combines consecutive and random extraction with limits,
-# overlap requirements, padding, and zero-window filtering. Errors in these
-# interactions can silently omit or select incorrect training data. The broader
-# testing here targets distinct behaviours and known risks, rather than every
-# parameter combination.
-
-
-def test_extract_patches_consecutive_returns_exact_multisignal_windows():
-    signals = np.arange(12, dtype=np.float64).reshape(2, 6)
-    patches = lib.extract_patches(signals, patch_size=3, step=2)
-    expected = np.array(
-        [[0, 1, 2], [2, 3, 4], [6, 7, 8], [8, 9, 10]], dtype=float
-    )
-    np.testing.assert_array_equal(patches, expected)
-    assert patches.dtype == signals.dtype
-
-
-@pytest.mark.parametrize(
-    "length, limits, patch_min, step, expected_starts",
-    [
-        # Since the signal length is fixed, I only need to specify the expected
-        # start value of each extracted patch.
-        pytest.param(7, [[2, 6]], 3, 1, [1, 2, 3], id="partial-overlap"),
-        pytest.param(7, [[2, 6]], 4, 1, [2], id="full-overlap-single-window"),  # patch_min == patch_size
-        pytest.param(7, [[0, 3]], 2, 1, [0, 1], id="left-signal-boundary"),
-        pytest.param(7, [[4, 7]], 2, 1, [2, 3], id="right-signal-boundary"),
-        pytest.param(7, [[0, 7]], 4, 1, [0, 1, 2, 3], id="full-signal-limits"),
-        pytest.param(4, [[0, 4]], 4, 1, [0], id="patch-equals-signal"),
-        pytest.param(7, [[3, 4]], 1, 1, [0, 1, 2, 3], id="one-sample-overlap"),
-        pytest.param(7, [[2, 6]], 3, 2, [1, 3], id="last-start-on-stride-grid"),
-        pytest.param(7, [[2, 6]], 3, 3, [1], id="last-start-off-stride-grid"),
-    ],
-)
-def test_extract_patches_consecutive_limits_select_windows_with_required_overlap(
-        length, limits, patch_min, step, expected_starts
-    ):
-    """Extract all eligible windows consecutively at the requested step."""
-    signal = np.arange(length, dtype=float)[None, :]
-    patches = lib.extract_patches(
-        signal,
-        patch_size=4,
-        limits=limits,
-        patch_min=patch_min,
-        step=step,
-    )
-    expected = np.array(
-        [np.arange(start, start + 4, dtype=float) for start in expected_starts]
-    )
-    np.testing.assert_array_equal(patches, expected)
-
-
-@pytest.mark.parametrize("n_patches", [None, 7], ids=["automatic", "explicit"])
-def test_extract_patches_consecutive_limits_count_all_windows_across_signals(
-    n_patches,
-):
-    """Return all seven eligible windows consecutively across two signals.
-
-    Check `n_patches` with both None and a request to the maximum select
-    consecutive extraction.
-    
-    Also verify the rejection of requests above it.
+class TestExtractPatches:
     """
-    signals = np.vstack([np.arange(7), 100 + np.arange(7)]).astype(float)
-    limits = np.array([[2, 6], [0, 7]])
-    expected = np.array(
-        [
-            [1, 2, 3, 4],
-            [2, 3, 4, 5],
-            [3, 4, 5, 6],
-            [100, 101, 102, 103],
-            [101, 102, 103, 104],
-            [102, 103, 104, 105],
-            [103, 104, 105, 106],
-        ],
-        dtype=float,
-    )
-    patches = lib.extract_patches(
-        signals, patch_size=4, limits=limits, patch_min=3, n_patches=n_patches
-    )
-    np.testing.assert_array_equal(patches, expected)
-
-    with pytest.raises(ValueError, match="maximum number of patches"):
-        lib.extract_patches(
-            signals, patch_size=4, limits=limits, patch_min=3, n_patches=8
+    `extract_patches` combines consecutive and random extraction with limits,
+    overlap requirements, padding, and zero-window filtering. Errors in these
+    interactions can silently omit or select incorrect training data. The
+    broader testing here targets distinct behaviours and known risks, rather
+    than every parameter combination.
+    """
+    def test_consecutive_returns_exact_multisignal_windows(self):
+        signals = np.arange(12, dtype=np.float64).reshape(2, 6)
+        patches = lib.extract_patches(signals, patch_size=3, step=2)
+        expected = np.array(
+            [[0, 1, 2], [2, 3, 4], [6, 7, 8], [8, 9, 10]], dtype=float
         )
+        np.testing.assert_array_equal(patches, expected)
+        assert patches.dtype == signals.dtype
 
 
-@pytest.mark.parametrize("limits", [None, [[0, 7]]], ids=["without-limits", "full-signal-limits"])
-def test_extract_patches_consecutive_limits_keep_last_nonzero_window(limits):
-    """The only nonzero window is still recovered.
-    
-    Check it with and without explicit limtis.
-    """
-    signal = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0])
-    patches = lib.extract_patches(
-        signal,
-        patch_size=4,
-        limits=limits,
-        patch_min=4,
-        allow_allzeros=False,
+    @pytest.mark.parametrize(
+        "length, limits, patch_min, step, expected_starts",
+        [
+            # Since the signal length is fixed, I only need to specify the expected
+            # start value of each extracted patch.
+            pytest.param(7, [[2, 6]], 3, 1, [1, 2, 3], id="partial-overlap"),
+            pytest.param(7, [[2, 6]], 4, 1, [2], id="full-overlap-single-window"),  # patch_min == patch_size
+            pytest.param(7, [[0, 3]], 2, 1, [0, 1], id="left-signal-boundary"),
+            pytest.param(7, [[4, 7]], 2, 1, [2, 3], id="right-signal-boundary"),
+            pytest.param(7, [[0, 7]], 4, 1, [0, 1, 2, 3], id="full-signal-limits"),
+            pytest.param(4, [[0, 4]], 4, 1, [0], id="patch-equals-signal"),
+            pytest.param(7, [[3, 4]], 1, 1, [0, 1, 2, 3], id="one-sample-overlap"),
+            pytest.param(7, [[2, 6]], 3, 2, [1, 3], id="last-start-on-stride-grid"),
+            pytest.param(7, [[2, 6]], 3, 3, [1], id="last-start-off-stride-grid"),
+        ],
     )
-    np.testing.assert_array_equal(patches, [[0.0, 0.0, 0.0, 1.0]])
+    def test_consecutive_limits_select_windows_with_required_overlap(
+            self, length, limits, patch_min, step, expected_starts
+        ):
+        """Extract all eligible windows consecutively at the requested step."""
+        signal = np.arange(length, dtype=float)[None, :]
+        patches = lib.extract_patches(
+            signal,
+            patch_size=4,
+            limits=limits,
+            patch_min=patch_min,
+            step=step,
+        )
+        expected = np.array(
+            [np.arange(start, start + 4, dtype=float) for start in expected_starts]
+        )
+        np.testing.assert_array_equal(patches, expected)
 
 
-@pytest.mark.parametrize(
-    "signal, patch_min, step, expected",
-    [
-        # Signal shorter than `patch_size`:
-        pytest.param(
-            [2.0, 3.0], 2, 1, [[2, 3, 0, 0]], id="short-signal"
-        ),
-        # Uneven signal split (needs padding to complete the last patch):
-        pytest.param(
-            [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], 3, 2,
-            [[1, 2, 3, 4], [3, 4, 5, 6], [5, 6, 7, 0]],
-            id="last-padded-window-meets-overlap",
-        ),
-        # Keep discarding patches with less original samples than `patch_min`:
-        pytest.param(
-            [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], 4, 2, [[1, 2, 3, 4], [3, 4, 5, 6]],
-            id="last-padded-window-has-insufficient-overlap",
-        ),
-    ],
-)
-def test_extract_patches_consecutive_limits_padding_requires_original_overlap(
-        signal, patch_min, step, expected
+    @pytest.mark.parametrize("n_patches", [None, 7], ids=["automatic", "explicit"])
+    def test_consecutive_limits_count_all_windows_across_signals(
+        self, n_patches,
     ):
-    """Padding can complete a patch but cannot supply in-limit samples."""
-    patches = lib.extract_patches(
-        np.array(signal),
-        patch_size=4,
-        limits=np.array([[0, len(signal)]]),
-        patch_min=patch_min,
-        step=step,
-        allow_padding=True,
-    )
-    np.testing.assert_array_equal(patches, expected)
+        """Return all seven eligible windows consecutively across two signals.
+
+        Check `n_patches` with both None and a request to the maximum select
+        consecutive extraction.
+        
+        Also verify the rejection of requests above it.
+        """
+        signals = np.vstack([np.arange(7), 100 + np.arange(7)]).astype(float)
+        limits = np.array([[2, 6], [0, 7]])
+        expected = np.array(
+            [
+                [1, 2, 3, 4],
+                [2, 3, 4, 5],
+                [3, 4, 5, 6],
+                [100, 101, 102, 103],
+                [101, 102, 103, 104],
+                [102, 103, 104, 105],
+                [103, 104, 105, 106],
+            ],
+            dtype=float,
+        )
+        patches = lib.extract_patches(
+            signals, patch_size=4, limits=limits, patch_min=3, n_patches=n_patches
+        )
+        np.testing.assert_array_equal(patches, expected)
+
+        with pytest.raises(ValueError, match="maximum number of patches"):
+            lib.extract_patches(
+                signals, patch_size=4, limits=limits, patch_min=3, n_patches=8
+            )
 
 
-def test_extract_patches_random_limits_include_last_valid_window(
-        monkeypatch,
-    ):
-    """A below-maximum random request can select the final eligible start.
-
-    This test guards against an off-by-one error fixed in commit
-    22739e28c2fb4b9ef04d51236e32bcdaabbbeb44.
-    We verify that the final valid window can still be drawn for random
-    extraction. To make this deterministic, we replace random selection
-    with a forced choice of the last offered index.
-    """
-    class LastIndexGenerator:
-        def integers(self, low, high):
-            return high - 1
-
-    monkeypatch.setattr(lib.np.random, "Generator", lambda _: LastIndexGenerator())
-
-    patches = lib.extract_patches(
-        np.arange(7, dtype=float),
-        patch_size=4,
-        limits=np.array([[2, 6]]),
-        patch_min=3,
-        n_patches=1,
-    )
-    np.testing.assert_array_equal(patches, [[3, 4, 5, 6]])
-
-
-def test_extract_patches_consecutive_truncates_with_warning():
-    signal = np.arange(8, dtype=float)
-    with pytest.warns(RuntimeWarning, match="last 1 bins"):
-        patches = lib.extract_patches(signal, patch_size=3, step=2)
-    np.testing.assert_array_equal(
-        patches, [[0, 1, 2], [2, 3, 4], [4, 5, 6]]
-    )
-
-
-def test_extract_patches_consecutive_padding_covers_last_sample_exactly():
-    signal = np.arange(8, dtype=float)
-    patches = lib.extract_patches(
-        signal, patch_size=3, step=2, allow_padding=True
-    )
-    np.testing.assert_array_equal(
-        patches, [[0, 1, 2], [2, 3, 4], [4, 5, 6], [6, 7, 0]]
-    )
-
-
-def test_extract_patches_consecutive_padding_supports_short_signals():
-    patches = lib.extract_patches(
-        np.array([2.0, 3.0]), patch_size=4, allow_padding=True
-    )
-    np.testing.assert_array_equal(patches, [[2.0, 3.0, 0.0, 0.0]])
-
-
-def test_extract_patches_random_is_seeded():
-    """A below-maximum request selects reproducible random patches."""
-    signal = np.arange(20, dtype=float)
-    first = lib.extract_patches(
-        signal, patch_size=4, n_patches=5, random_state=42
-    )
-    second = lib.extract_patches(
-        signal, patch_size=4, n_patches=5, random_state=42
-    )
-    np.testing.assert_array_equal(first, second)
-
-
-def test_extract_patches_consecutive_normalisation_is_reversible():
-    signal = np.arange(6, dtype=float)
-    patches, norms = lib.extract_patches(
-        signal,
-        patch_size=3,
-        l2_normed=True,
-        return_norm_coefs=True,
-    )
-    raw = lib.extract_patches(signal, patch_size=3)
-
-    assert np.issubdtype(patches.dtype, np.floating)
-    np.testing.assert_allclose(
-        np.linalg.norm(patches[1:], axis=1), 1.0, rtol=1e-12, atol=1e-12
-    )
-    np.testing.assert_allclose(
-        patches * norms[:, None], raw, rtol=1e-12, atol=1e-12
-    )
-
-
-def test_all_zero_patch_handling():
-    """Normalize zero consecutive patches safely and reject a zero-only random request."""
-    zeros = np.zeros(6)
-    patches, norms = lib.extract_patches(
-        zeros,
-        patch_size=3,
-        l2_normed=True,
-        return_norm_coefs=True,
-    )
-    np.testing.assert_array_equal(patches, 0)
-    np.testing.assert_array_equal(norms, 0)
-
-    with pytest.raises(ValueError, match="contains only zeros"):
-        lib.extract_patches(
-            zeros,
-            patch_size=3,
-            n_patches=1,
+    @pytest.mark.parametrize("limits", [None, [[0, 7]]], ids=["without-limits", "full-signal-limits"])
+    def test_consecutive_limits_keep_last_nonzero_window(self, limits):
+        """The only nonzero window is still recovered.
+        
+        Check it with and without explicit limtis.
+        """
+        signal = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0])
+        patches = lib.extract_patches(
+            signal,
+            patch_size=4,
+            limits=limits,
+            patch_min=4,
             allow_allzeros=False,
         )
+        np.testing.assert_array_equal(patches, [[0.0, 0.0, 0.0, 1.0]])
 
 
-@pytest.mark.parametrize(
-    "signal, kwargs, error",
-    [
-        (np.zeros((2, 2, 2)), {"patch_size": 2}, ValueError),
-        (np.arange(4), {"patch_size": 0}, ValueError),
-        (np.arange(4), {"patch_size": 5}, ValueError),
-        (np.arange(4), {"patch_size": 2, "step": 0}, ValueError),
-        (np.arange(4), {"patch_size": 2, "n_patches": -1}, ValueError),
-        (
-            np.arange(4),
-            {"patch_size": 2, "limits": np.array([[0, 2], [2, 4]])},
-            ValueError,
-        ),
-    ],
-)
-def test_extract_patches_rejects_invalid_geometry(signal, kwargs, error):
-    with pytest.raises(error):
-        lib.extract_patches(signal, **kwargs)
-
-
-def test_extract_patches_rejects_over_extraction():
-    with pytest.raises(ValueError, match="maximum number of patches"):
-        lib.extract_patches(
-            np.arange(4, dtype=float), patch_size=2, n_patches=4
+    @pytest.mark.parametrize(
+        "signal, patch_min, step, expected",
+        [
+            # Signal shorter than `patch_size`:
+            pytest.param(
+                [2.0, 3.0], 2, 1, [[2, 3, 0, 0]], id="short-signal"
+            ),
+            # Uneven signal split (needs padding to complete the last patch):
+            pytest.param(
+                [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], 3, 2,
+                [[1, 2, 3, 4], [3, 4, 5, 6], [5, 6, 7, 0]],
+                id="last-padded-window-meets-overlap",
+            ),
+            # Keep discarding patches with less original samples than `patch_min`:
+            pytest.param(
+                [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], 4, 2, [[1, 2, 3, 4], [3, 4, 5, 6]],
+                id="last-padded-window-has-insufficient-overlap",
+            ),
+        ],
+    )
+    def test_consecutive_limits_padding_requires_original_overlap(
+            self, signal, patch_min, step, expected
+        ):
+        """Padding can complete a patch but cannot supply in-limit samples."""
+        patches = lib.extract_patches(
+            np.array(signal),
+            patch_size=4,
+            limits=np.array([[0, len(signal)]]),
+            patch_min=patch_min,
+            step=step,
+            allow_padding=True,
         )
+        np.testing.assert_array_equal(patches, expected)
+
+
+    def test_random_limits_include_last_valid_window(
+            self, monkeypatch,
+        ):
+        """A below-maximum random request can select the final eligible start.
+
+        This test guards against an off-by-one error fixed in commit
+        22739e28c2fb4b9ef04d51236e32bcdaabbbeb44.
+        We verify that the final valid window can still be drawn for random
+        extraction. To make this deterministic, we replace random selection
+        with a forced choice of the last offered index.
+        """
+        class LastIndexGenerator:
+            def integers(self, low, high):
+                return high - 1
+
+        monkeypatch.setattr(lib.np.random, "Generator", lambda _: LastIndexGenerator())
+
+        patches = lib.extract_patches(
+            np.arange(7, dtype=float),
+            patch_size=4,
+            limits=np.array([[2, 6]]),
+            patch_min=3,
+            n_patches=1,
+        )
+        np.testing.assert_array_equal(patches, [[3, 4, 5, 6]])
+
+
+    def test_consecutive_truncates_with_warning(self):
+        signal = np.arange(8, dtype=float)
+        with pytest.warns(RuntimeWarning, match="last 1 bins"):
+            patches = lib.extract_patches(signal, patch_size=3, step=2)
+        np.testing.assert_array_equal(
+            patches, [[0, 1, 2], [2, 3, 4], [4, 5, 6]]
+        )
+
+
+    def test_consecutive_padding_covers_last_sample_exactly(self):
+        signal = np.arange(8, dtype=float)
+        patches = lib.extract_patches(
+            signal, patch_size=3, step=2, allow_padding=True
+        )
+        np.testing.assert_array_equal(
+            patches, [[0, 1, 2], [2, 3, 4], [4, 5, 6], [6, 7, 0]]
+        )
+
+
+    def test_consecutive_padding_supports_short_signals(self):
+        patches = lib.extract_patches(
+            np.array([2.0, 3.0]), patch_size=4, allow_padding=True
+        )
+        np.testing.assert_array_equal(patches, [[2.0, 3.0, 0.0, 0.0]])
+
+
+    def test_random_is_seeded(self):
+        """A below-maximum request selects reproducible random patches."""
+        signal = np.arange(20, dtype=float)
+        first = lib.extract_patches(
+            signal, patch_size=4, n_patches=5, random_state=42
+        )
+        second = lib.extract_patches(
+            signal, patch_size=4, n_patches=5, random_state=42
+        )
+        np.testing.assert_array_equal(first, second)
+
+
+    def test_consecutive_normalisation_is_reversible(self):
+        signal = np.arange(6, dtype=float)
+        patches, norms = lib.extract_patches(
+            signal,
+            patch_size=3,
+            l2_normed=True,
+            return_norm_coefs=True,
+        )
+        raw = lib.extract_patches(signal, patch_size=3)
+
+        assert np.issubdtype(patches.dtype, np.floating)
+        np.testing.assert_allclose(
+            np.linalg.norm(patches[1:], axis=1), 1.0, rtol=1e-12, atol=1e-12
+        )
+        np.testing.assert_allclose(
+            patches * norms[:, None], raw, rtol=1e-12, atol=1e-12
+        )
+
+
+    def test_all_zero_patch_handling(self):
+        """Normalize zero consecutive patches safely and reject a zero-only random request."""
+        zeros = np.zeros(6)
+        patches, norms = lib.extract_patches(
+            zeros,
+            patch_size=3,
+            l2_normed=True,
+            return_norm_coefs=True,
+        )
+        np.testing.assert_array_equal(patches, 0)
+        np.testing.assert_array_equal(norms, 0)
+
+        with pytest.raises(ValueError, match="contains only zeros"):
+            lib.extract_patches(
+                zeros,
+                patch_size=3,
+                n_patches=1,
+                allow_allzeros=False,
+            )
+
+
+    @pytest.mark.parametrize(
+        "signal, kwargs, error",
+        [
+            (np.zeros((2, 2, 2)), {"patch_size": 2}, ValueError),
+            (np.arange(4), {"patch_size": 0}, ValueError),
+            (np.arange(4), {"patch_size": 5}, ValueError),
+            (np.arange(4), {"patch_size": 2, "step": 0}, ValueError),
+            (np.arange(4), {"patch_size": 2, "n_patches": -1}, ValueError),
+            (
+                np.arange(4),
+                {"patch_size": 2, "limits": np.array([[0, 2], [2, 4]])},
+                ValueError,
+            ),
+        ],
+    )
+    def test_rejects_invalid_geometry(self, signal, kwargs, error):
+        with pytest.raises(error):
+            lib.extract_patches(signal, **kwargs)
+
+
+    def test_rejects_over_extraction(self):
+        with pytest.raises(ValueError, match="maximum number of patches"):
+            lib.extract_patches(
+                np.arange(4, dtype=float), patch_size=2, n_patches=4
+            )
 
 
 @pytest.mark.parametrize("dtype", [np.float32, np.float64])

@@ -8,6 +8,10 @@ from clawdia import lib
 from clawdia.dictionaries import DictionarySpams
 
 
+#------------------------------------------------------------------------------
+# FIXTURES
+#------------------------------------------------------------------------------
+
 @pytest.fixture(scope="module")
 def reference_signal_pool(data_dir):
     with np.load(data_dir / "strains_clean.npz") as data:
@@ -83,6 +87,10 @@ def minimal_signal_pool():
     
     return signals, limits
 
+
+#------------------------------------------------------------------------------
+# TESTS
+#------------------------------------------------------------------------------
 
 @pytest.mark.parametrize(
     "l2_normed, allowed_atoms",
