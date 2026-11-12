@@ -9,7 +9,7 @@ import pytest
 from clawdia.pipeline import Pipeline
 
 
-class RecordingDenoiser:
+class DenoiserLog:
     """Record denoising calls and add a visible offset instead of denoising."""
 
     def __init__(self, atom_length=2):
@@ -21,7 +21,7 @@ class RecordingDenoiser:
         return signals + 10
 
 
-class RecordingClassifier:
+class ClassifierLog:
     """Record classification calls and return fixed labels and optional losses."""
 
     def __init__(self, atom_length=3):
@@ -42,8 +42,8 @@ def test_pipeline_forwards_orientation_parameters_and_return_options(
     with_losses, with_preprocessed
 ):
     """Check forwarded arguments and all four combinations of optional outputs."""
-    denoiser = RecordingDenoiser()
-    classifier = RecordingClassifier()
+    denoiser = DenoiserLog()
+    classifier = ClassifierLog()
     pipeline = Pipeline(
         dico_den=denoiser,
         dico_den_params={"sc_lambda": 0.2},
@@ -93,8 +93,8 @@ def test_pipeline_rejects_longer_denoising_atoms():
     # establish that the real dictionaries' atom lengths are compared correctly.
     with pytest.raises(ValueError, match="must be shorter"):
         Pipeline(
-            dico_den=RecordingDenoiser(atom_length=4),
+            dico_den=DenoiserLog(atom_length=4),
             dico_den_params={},
-            dico_clas=RecordingClassifier(atom_length=3),
+            dico_clas=ClassifierLog(atom_length=3),
             dico_clas_params={},
         )
