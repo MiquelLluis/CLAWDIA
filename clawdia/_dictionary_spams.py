@@ -118,6 +118,11 @@ class DictionarySpams:
         If both `dict_init` and `signal_pool` are provided, `dict_init` takes
         precedence and `signal_pool`-related arguments are ignored.
 
+        CLAWDIA stores dictionary atoms as rows, with shape
+        ``(d_size, a_length)``, in C-contiguous arrays. SPAMS stores atoms as
+        columns, with shape ``(a_length, d_size)``, in Fortran-contiguous arrays.
+        This class handles the conversion internally by transposing the arrays.
+
         Parameters
         ----------
         dict_init : ndarray of shape (d_size, a_length), optional
