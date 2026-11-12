@@ -133,6 +133,12 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
         PSD to weight the overlap, will be linearly interpolated to the right frequencies.
         psd[0] = frequencies
         psd[1] = psd samples
+
+    Notes
+    -----
+    Currently uses unscaled NumPy FFT coefficients. With the same PSD, window,
+    and included frequency bins, ``(x|x)`` equals ``snr(x, ...)**2 / at**2``.
+    The physical normalisation and DC/Nyquist weighting remain to be reviewed.
     
     References
     ----------
@@ -152,6 +158,7 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
     hx = np.fft.rfft(x * w_array)
     hy = np.fft.rfft(y * w_array)
     ff = np.fft.rfftfreq(ns, d=at)
+    af = ff[1]
 
     if psd is not None:
         # Lowest and highest frequency cut-off taken from the given psd
@@ -162,8 +169,6 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
         hx = hx[i_min:i_max]
         hy = hy[i_min:i_max]
         ff = ff[i_min:i_max]
-    
-    af = ff[1]
     
     # Compute (x|y)
     if psd is None:
