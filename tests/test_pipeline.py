@@ -10,7 +10,13 @@ from clawdia.pipeline import Pipeline
 
 
 class DenoiserLog:
-    """Record denoising calls and add a visible offset instead of denoising."""
+    """Log denoising calls and add a visible offset instead of denoising.
+
+    Four dummy atoms, length two by default, follow DictionarySpams' row-atom
+    layout. Their count exceeds the classifier's default atom length, exposing
+    confusion between atom count and length. Only their shape is used; adding
+    10 makes preprocessing visible without simulating denoising.
+    """
 
     def __init__(self, atom_length=2):
         self.components = np.zeros((4, atom_length))
@@ -22,7 +28,12 @@ class DenoiserLog:
 
 
 class ClassifierLog:
-    """Record classification calls and return fixed labels and optional losses."""
+    """Log classification calls and return fixed labels and optional losses.
+
+    Two dummy atoms, length three by default, follow LRSDL's column-atom
+    layout; only their shape is used. The chosen arbitrary outputs identify
+    what the pipeline should return unchanged.
+    """
 
     def __init__(self, atom_length=3):
         self.D = np.zeros((atom_length, 2))
@@ -60,20 +71,17 @@ def test_pipeline_forwards_orientation_parameters_and_return_options(
     )
 
     denoiser_input, denoiser_kwargs = denoiser.calls[0]
-    # This preserves the current transposition, not a verified model contract.
+    # Both public model methods expect one signal per row.
     np.testing.assert_array_equal(denoiser_input, strains)
     assert denoiser_kwargs == {"normed": True, "sc_lambda": 0.2}
 
-    # Adding 10 reveals whether preprocessing reaches the classifier, but is
-    # insensitive to signal orientation and therefore misses the row-axis bug.
+    # Adding 10 makes preprocessing visible.
     expected_preprocessed = strains + 10
     classifier_input, recorded_losses, classifier_kwargs = classifier.calls[0]
     np.testing.assert_array_equal(classifier_input, expected_preprocessed)
     assert recorded_losses is with_losses
     assert classifier_kwargs == {"threshold": 0.4}
 
-    # Predictions alone are an array; optional losses and preprocessed signals
-    # are returned alongside them in a tuple, in that order.
     if not with_losses and not with_preprocessed:
         np.testing.assert_array_equal(result, np.arange(4))
     else:
@@ -88,9 +96,7 @@ def test_pipeline_forwards_orientation_parameters_and_return_options(
 
 
 def test_pipeline_rejects_longer_denoising_atoms():
-    """Check constructor rejection with a nominally longer denoising atom."""
-    # This shares the stand-in's incorrect SPAMS layout, so it does not yet
-    # establish that the real dictionaries' atom lengths are compared correctly.
+    """Reject denoising atoms of length four against classifier atoms of length three."""
     with pytest.raises(ValueError, match="must be shorter"):
         Pipeline(
             dico_den=DenoiserLog(atom_length=4),
