@@ -21,7 +21,7 @@ class Pipeline:
     
     """
     def __init__(self, *, dico_den, dico_den_params, dico_clas, dico_clas_params):
-        if dico_den.components.shape[0] > dico_clas.D.shape[0]:
+        if dico_den.components.shape[1] > dico_clas.D.shape[0]:
             raise ValueError(
                 "the length of the atoms of the denoising dictionary must be shorter"
                 " or equal to the length of the atoms of the classification dictionary"
@@ -44,7 +44,7 @@ class Pipeline:
 
     def _preprocess(self, strains):
         # Denoise + norm
-        pps = self.dico_den.reconstruct_minibatch(strains.T, normed=True, **self.dico_den_params).T
+        pps = self.dico_den.reconstruct_minibatch(strains, normed=True, **self.dico_den_params)
         return pps
 
     def _predict(self, strains, with_losses=False):

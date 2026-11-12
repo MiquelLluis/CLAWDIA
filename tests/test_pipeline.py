@@ -13,8 +13,7 @@ class RecordingDenoiser:
     """Record denoising calls and add a visible offset instead of denoising."""
 
     def __init__(self, atom_length=2):
-        # Known mismatch: real SPAMS components store atoms as rows, not columns.
-        self.components = np.zeros((atom_length, 3))
+        self.components = np.zeros((4, atom_length))
         self.calls = []
 
     def reconstruct_minibatch(self, signals, **kwargs):
@@ -62,7 +61,7 @@ def test_pipeline_forwards_orientation_parameters_and_return_options(
 
     denoiser_input, denoiser_kwargs = denoiser.calls[0]
     # This preserves the current transposition, not a verified model contract.
-    np.testing.assert_array_equal(denoiser_input, strains.T)
+    np.testing.assert_array_equal(denoiser_input, strains)
     assert denoiser_kwargs == {"normed": True, "sc_lambda": 0.2}
 
     # Adding 10 reveals whether preprocessing reaches the classifier, but is
