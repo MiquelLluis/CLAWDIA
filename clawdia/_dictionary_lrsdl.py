@@ -8,6 +8,11 @@ from . import lib
 class DictionaryLRSDL(dictol.LRSDL.LRSDL):
     """Interface for the Low-Rank Shared Dictionary Learning class.
 
+    Unlike DictionarySpams, ``D`` and ``D0`` retain Dictol's column-atom layout,
+    with shape ``(atom_length, number_of_atoms)``, because this class inherits
+    its training implementation. This axis convention does not imply Fortran
+    memory order; Dictol does not require Fortran-contiguous inputs.
+
     Attributes
     ----------
     t_train : float
