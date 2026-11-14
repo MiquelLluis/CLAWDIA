@@ -249,115 +249,173 @@ def doverlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     return (1 - overlap(x, y, at=at, psd=psd, window=window)) / 2
 
 
-def match(x, y, *, at=1, psd=None, window=('tukey', 0.5), return_lag=False):
-    """Time/phase–maximised match between two (whitened) signals.
+def match(x, y, *, at=1, psd=None, window=('tukey', 0.5), return_lag=False) -> float | tuple[float, tuple[float, float]]:
+    """Cyclic time/phase-maximised match between two real-valued signals.
 
-    This computes the PSD-weighted, normalised inner product maximised over
-    a cyclic time shift (lag) and over phase (by taking the absolute value).
+    Computes the PSD-weighted, normalised complex positive-frequency
+    correlation, maximised over integer-sample cyclic time shifts. Its
+    magnitude analytically maximises over an arbitrary global phase rotation
+    of the positive-frequency components (with conjugate rotation of negative
+    frequencies to keep the time-domain signals real).
 
-    TODO: The values don't seem to match exactly PyCBC's `match` function. Check.
+    The comparison uses the windowed signals over the selected frequency band.
+    0 Hz and Nyquist (for even lengths) are excluded from both the
+    correlation and the norms.
+
+    The continuous definition whose discrete approximation is computed is:
+
+        M(x,y) = max_τϕ 〈x|y(τ,ϕ)〉 / D,       D = √(〈x|x〉 * 〈y|y〉)
+
+    Here y(τ,ϕ) is y delayed by τ and phase-rotated by ϕ. With X(f) and Y(f)
+    denoting the Fourier transforms of the windowed signals, we define the
+    PSD-weighted cross-spectrum and its complex positive-frequency correlation:
+
+        P_xy(f) = X(f) Y*(f) / S_n(f)
+        C_xy(τ) = 4 ∫_[f_min,f_max] P_xy(f) exp(+2πifτ) df
+
+    At each fixed lag τ, phase can be maximised analytically:
+
+        max_ϕ 〈x | y(τ,ϕ)〉 = |C_xy(τ)|    ⟶    M(x,y) = max_τ |C_xy(τ)| / D
+
+    In code, ``cross_spectrum`` contains the normalised discrete spectral
+    coefficients after cancelling common factors. The resulting ``cc[j]``
+    approximates ``C_xy(j * at) / D``; the time search uses cyclic sample lags.
 
     Parameters
     ----------
-    x, y : ndarray
-        Signals to compare (same length).
-    at : float
-        Sample time step (seconds).
-    psd : 2d-array, optional
-        If given, weights the frequency-domain inner product; linearly
-        interpolated to FFT frequencies. psd[0]=freqs, psd[1]=PSD samples.
-        If None, the signal is assumed to be whitened, and therefore `at` can
-        be left `at=1` since it cancels out.
-    window : str | tuple, optional
-        Any scipy.signal window spec; applied equally to x and y.
+    x, y : array_like
+        One-dimensional, real-valued signals of the same length (at least 3).
+    at : float, optional
+        Sample time step in seconds; must be positive. It only sets the
+        frequency/lag scales when `psd` is None.
+    psd : array_like, shape (2, M), optional
+        If given, weights the frequency-domain inner product. The first row
+        contains strictly increasing frequencies in Hz, the second row the
+        one-sided PSD samples. The PSD is linearly interpolated onto the FFT
+        frequencies, and only the PSD's frequency range is used. PSD values
+        must be positive and finite at the included FFT frequencies.
+        If None, flat frequency weighting is used (appropriate for signals
+        consistently whitened using the same PSD).
+    window : str | tuple | None, optional
+        A scipy.signal window specification, applied equally to x and y
+        before the FFT. If None, do not window. Windowing changes the signals
+        being compared and can affect shift invariance.
     return_lag : bool, optional
-        If True, also return (lag_samples, lag_seconds) at which the maximum
-        match is attained (cyclic correlation notion).
+        If True, also return (lag_samples, lag_seconds) at the maximum.
+        Positive lag means delaying y: y_lag[j] = y[(j - lag) % n].
 
     Returns
     -------
     m : float
-        Match in [0, 1].
+        Discrete cyclic match in [0, 1] (up to floating-point roundoff).
+        Returns 0 if the analysed band is empty or either signal has zero
+        norm in that band; the lag is then set to 0 by convention.
     (k, tau) : tuple[int, float], optional
-        Index lag and time lag in seconds (only if return_lag=True).
+        Signed cyclic lag and its value in seconds (only if return_lag=True).
+
+    Notes
+    -----
+    The time maximisation is restricted to integer-sample cyclic shifts.
+    No sub-sample interpolation or linear (zero-padded) correlation is used.
     """
     x = np.asarray(x)
     y = np.asarray(y)
 
-    n = len(x)
-    if n != len(y):
+    if x.ndim != 1 or y.ndim != 1:
+        raise ValueError("'x' and 'y' must be one-dimensional")
+    n = x.size
+    if n != y.size:
         raise ValueError("both 'x' and 'y' must be of the same length")
+    if n < 3:
+        raise ValueError("signals must have at least 3 samples")
     if not np.isrealobj(x) or not np.isrealobj(y):
         raise ValueError("inputs must be real-valued")
+    x = np.asarray(x, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+    if not np.all(np.isfinite(x)) or not np.all(np.isfinite(y)):
+        raise ValueError("inputs must contain only finite values")
+    try:
+        at = float(at)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("'at' must be a positive finite number") from exc
+    if not np.isfinite(at) or at <= 0:
+        raise ValueError("'at' must be a positive finite number")
 
-    # Window and FFT
-    w = sp.signal.windows.get_window(window, n)
-    Xf = np.fft.rfft(x * w)
-    Yf = np.fft.rfft(y * w)
+    # Apply the same window before computing both Fourier transforms.
+    if window is not None:
+        w = sp.signal.windows.get_window(window, n)
+        x = x * w
+        y = y * w
+    Xf = np.fft.rfft(x)
+    Yf = np.fft.rfft(y)
     ff = np.fft.rfftfreq(n, d=at)
 
-    # Optional band-limit from PSD
+    # Only positive frequencies.
+    # For even n, the final rfft bin is the (real-valued) Nyquist bin.
+    # Exclude 0 Hz and Nyquist from the correlation and norms.
+    i_min, i_max = 1, (n + 1) // 2  # upper bound is exclusive
+
     if psd is not None:
-        f_min, f_max = psd[0][[0, -1]]
-        i_min = np.searchsorted(ff, f_min, side='left')
-        i_max = np.searchsorted(ff, f_max, side='right')
-    else:
-        i_min, i_max = 0, Xf.size
-    if i_max - i_min <= 0:
+        psd = np.asarray(psd, dtype=np.float64)
+        if psd.ndim != 2 or psd.shape[0] != 2 or psd.shape[1] < 2:
+            raise ValueError("'psd' must have shape (2, M), with M >= 2")
+        psd_freqs, psd_values = psd
+        if (not np.all(np.isfinite(psd))
+                or psd_freqs[0] < 0
+                or np.any(np.diff(psd_freqs) <= 0)
+                or np.any(psd_values < 0)):
+            raise ValueError("PSD frequencies must increase, and PSD values "
+                             "must be finite and non-negative")
+        # Restrict frequency bounds to PSD's available range:
+        i_min = max(i_min, int(np.searchsorted(ff, psd_freqs[0], side='left')))
+        i_max = min(i_max, int(np.searchsorted(ff, psd_freqs[-1], side='right')))
+
+    if i_max <= i_min:
         return (0.0, (0, 0.0)) if return_lag else 0.0
 
-    df = ff[1] - ff[0] if ff.size > 1 else 1.0 / (n * at)
-
-    # Weighting (flat for whitened data)
+    # Flat weighting for whitened signals; otherwise interpolate the PSD.
     if psd is None:
         W_band = 1.0
     else:
-        psd_interp = sp.interpolate.interp1d(*psd, bounds_error=True)(ff[i_min:i_max])
+        psd_interp = np.interp(ff[i_min:i_max], psd_freqs, psd_values)
+        if np.any(~np.isfinite(psd_interp)) or np.any(psd_interp <= 0):
+            raise ValueError("PSD must be finite and strictly positive "
+                             "at the included FFT frequencies")
         W_band = 1.0 / psd_interp
 
+    # X's and Y's spectral points to be included.
     Xb = Xf[i_min:i_max]
     Yb = Yf[i_min:i_max]
 
-    # Norms <x|x>, <y|y> (on the band)
-    nx = 4.0 * df * np.sum((Xb * Xb.conj() * W_band).real)
-    ny = 4.0 * df * np.sum((Yb * Yb.conj() * W_band).real)
-    denom = np.sqrt(nx * ny)
-    if not np.isfinite(denom) or denom == 0.0:
+    # Compute the denominator: √(〈x|x〉 * 〈y|y〉), up to common factors.
+    # The common 4*df factor cancels from correlation and both norms.
+    nx = np.sum(np.abs(Xb)**2 * W_band)  # ~ 〈x|x〉
+    ny = np.sum(np.abs(Yb)**2 * W_band)  # ~ 〈y|y〉
+    if nx == 0.0 or ny == 0.0:
         return (0.0, (0, 0.0)) if return_lag else 0.0
+    denominator = np.sqrt(nx) * np.sqrt(ny)
+    if not np.isfinite(denominator) or denominator == 0.0:
+        raise ValueError("non-finite PSD-weighted signal norm")
 
-    # Cross-spectrum on the band
-    Xcross_band = (Xb * Yb.conj()) * W_band
+    # Normalised positive-frequency cross-spectrum.
+    cross_spectrum = np.zeros(n, dtype=np.complex128)
+    cross_spectrum[i_min:i_max] = (Xb * Yb.conj()) * W_band / denominator
 
-    # ---- Correct one-sided scaling for irfft ----
-    Z = np.zeros(n // 2 + 1, dtype=np.complex128)
-    Z[i_min:i_max] = (4.0 * df / denom) * Xcross_band
-
-    # Halve all interior bins; keep DC (0) and Nyquist (if present) unhalved
-    weights = np.full_like(Z, 0.5, dtype=np.float64)
-    weights[0] = 1.0
-    if n % 2 == 0:
-        weights[-1] = 1.0
-    Z *= weights
-    # ---------------------------------------------
-
-    # Correlation vs cyclic lag (irfft has 1/n)
-    cc = np.fft.irfft(Z, n=n) * n
-
+    # Undo the IFFT's 1/n factor to obtain cc[j], approximating C_xy(j * at) / D.
+    cc = np.fft.ifft(cross_spectrum) * n
     k = int(np.argmax(np.abs(cc)))
     m = float(np.abs(cc[k]))
-    # tiny numerical guard
-    if 1.0 < m < 1.0 + 1e-10:
+    if 1.0 < m < 1.0 + 1e-10:  # guard for numerical roundoff only
         m = 1.0
 
     if return_lag:
-        # map to signed lag
         k_signed = k if k <= n // 2 else k - n
-        tau = k_signed * at
-        return m, (k_signed, tau)
+        return m, (k_signed, k_signed * at)
     return m
 
 
-def imatch(x, y, *, at=1, psd=None, window=('tukey', 0.5), return_lag=False):
+def imatch(x, y, *, at=1, psd=None, window=('tukey', 0.5), return_lag=False
+        ) -> float | tuple[float, tuple[float, float]]:
     """Shorthand for `1 - match()`."""
     result = match(
         x, y, at=at, psd=psd, window=window, return_lag=return_lag
