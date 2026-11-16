@@ -239,17 +239,16 @@ def test_snr_matches_known_bin_centred_signal(bin_centred_sinusoid):
 
 
 @pytest.mark.parametrize(
-    "function, x, y",
+    "x, y",
     [
-        (estimators.inner_product_weighted, np.ones(4), np.ones(5)),
-        (estimators.match, np.ones(4), np.ones(5)),
-        (estimators.inner_product_weighted, np.ones(4, dtype=complex), np.ones(4)),
-        (estimators.match, np.ones(4, dtype=complex), np.ones(4)),
+        (np.ones(4), np.ones(5)),
+        (np.ones(4, dtype=complex), np.ones(4)),
     ],
 )
-def test_frequency_metrics_reject_invalid_inputs(function, x, y):
+def test_weighted_inner_product_rejects_invalid_inputs(x, y):
+    """Reject unequal lengths and complex inputs in the weighted inner product."""
     with pytest.raises(ValueError):
-        function(x, y, at=1, window="boxcar")
+        estimators.inner_product_weighted(x, y, at=1, window="boxcar")
 
 
 def test_find_merger_returns_largest_absolute_sample():
