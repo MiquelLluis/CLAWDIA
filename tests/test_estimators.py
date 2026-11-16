@@ -97,27 +97,130 @@ def test_overlap_has_expected_scale_sign_and_orthogonality(
     ) == pytest.approx(0.0, abs=5e-12)
 
 
-def test_match_recovers_cyclic_lag_and_imatch_preserves_it():
-    signal = np.zeros(64)
-    signal[10] = 1.0
-    shifted = np.roll(signal, 7)
+class TestMatch:
+    """Check the match AND the corresponding imatch loss."""
 
-    match, lag = estimators.match(
-        signal, shifted, at=0.25, window="boxcar", return_lag=True
+    def test_recovers_cyclic_lag_and_imatch_preserves_it(self):
+        """Recover a seven-sample delay and preserve it in the loss wrapper.
+
+        The pulse [1, 0, -1] has 0 Hz and Nyquist components, keeping this
+        check independent of the unresolved weighting of those special bins.
+        With a 0.25-second sample interval, the aligning lag is -1.75 seconds.
+        """
+        signal = np.zeros(64)
+        signal[10] = 1.0
+        signal[12] = -1.0
+        shifted = np.roll(signal, 7)  # cyclic lag in samples
+
+        match, lag = estimators.match(
+            signal, shifted, at=0.25, window="boxcar", return_lag=True
+        )
+        mismatch, mismatch_lag = estimators.imatch(
+            signal, shifted, at=0.25, window="boxcar", return_lag=True
+        )
+
+        assert match == pytest.approx(1.0, rel=0, abs=5e-12)
+        assert lag == (-7, -1.75)
+        assert mismatch == pytest.approx(0.0, rel=0, abs=5e-12)
+        assert mismatch_lag == lag
+
+    @pytest.mark.parametrize(
+        "phase",
+        [
+            pytest.param(np.pi / 2, id="quadrature"),
+            pytest.param(0.37, id="nonquadrature"),
+        ],
     )
-    mismatch, mismatch_lag = estimators.imatch(
-        signal, shifted, at=0.25, window="boxcar", return_lag=True
+    def test_single_tone_is_invariant_to_phase(self, phase):
+        """Recognise real sinusoids different only by a global phase.
+
+        Ten samples per period make a 90-degree rotation a 2.5-sample shift,
+        so an integer-lag search alone cannot align it exactly. A second phase
+        also checks that maximisation is not restricted to quadrature rotations.
+        """
+        theta = 2 * np.pi * np.arange(10) / 10
+        signal = np.sin(theta)
+        rotated = np.sin(theta + phase)
+
+        match = estimators.match(signal, rotated, window="boxcar")
+
+        assert match == pytest.approx(1.0, rel=0, abs=5e-12)
+
+    @pytest.mark.parametrize("n_samples", [127, 128], ids=["odd", "even"])
+    def test_global_phase_and_cyclic_lag_with_weighted_tones(self, n_samples):
+        """Recover a delayed, phase-rotated two-tone signal under PSD weighting.
+
+        Both tones receive the same phase rotation, not the frequency-dependent
+        rotation of a time shift. Their bins (3 and 8) have a difference coprime
+        to either signal length, giving a unique aligning integer lag of -7.
+        The PSD gives the tones different positive weights, but they still
+        represent the same waveform up to phase, delay, and amplitude scaling.
+        Both odd and even lengths yield real-FFT spectrums.
+        """
+        dt = 1 / n_samples
+        theta = 2 * np.pi * np.arange(n_samples) / n_samples
+        phase = 0.7
+        signal = np.sin(3 * theta) + 0.5 * np.sin(8 * theta)
+        rotated = np.sin(3 * theta + phase) + 0.5 * np.sin(8 * theta + phase)
+        shifted = 2.5 * np.roll(rotated, 7)
+        psd = np.array([[1.0, 10.0], [2.0, 11.0]])
+
+        match, lag = estimators.match(
+            signal, shifted, at=dt, psd=psd, window="boxcar", return_lag=True
+        )
+        mismatch, mismatch_lag = estimators.imatch(
+            signal, shifted, at=dt, psd=psd, window="boxcar", return_lag=True
+        )
+
+        assert match == pytest.approx(1.0, rel=0, abs=5e-12)
+        assert lag[0] == -7
+        assert lag[1] == pytest.approx(-7 * dt, rel=0, abs=1e-12)
+        assert mismatch == pytest.approx(0.0, rel=0, abs=5e-12)
+        assert mismatch_lag == lag
+
+    @pytest.mark.parametrize("phase", [0.0, 0.7], ids=["aligned", "rotated"])
+    def test_phase_invariance_does_not_hide_missing_frequency_content(self, phase):
+        """Preserve the known imperfect match when one of two tones is missing.
+
+        Equal-amplitude tones at 3 and 8 Hz have weighted powers proportional
+        to 1/4 and 1/9 under this PSD (when linearly interpolated).
+        A template containing only the 3 Hz tone must therefore match by
+            sqrt((1/4) / (1/4 + 1/9)) = sqrt(9/13),
+        whatever its global phase is. This also checks normalisation after phase
+        maximisation: removing phase disagreement must not hide any missing
+        spectral content.
+        """
+        theta = 2 * np.pi * np.arange(128) / 128
+        signal = np.sin(3 * theta) + np.sin(8 * theta)
+        template = np.sin(3 * theta + phase)
+        psd = np.array(
+            [ 
+                [1.0, 10.0],  # frequencies
+                [2.0, 11.0]   # PSD values
+            ]
+        )  # lin. interp:  S(3) = 4,  S(8) = 9
+
+        match = estimators.match(
+            signal, template, at=1 / 128, psd=psd, window="boxcar"
+        )
+
+        assert match == pytest.approx(np.sqrt(9 / 13), rel=0, abs=5e-12)
+
+    def test_zero_signal_is_zero(self):
+        zeros = np.zeros(32)
+        assert estimators.match(zeros, zeros, window="boxcar") == 0.0
+
+    @pytest.mark.parametrize(
+        "x, y",
+        [
+            pytest.param(np.ones(4), np.ones(5), id="unequal-lengths"),
+            pytest.param(np.ones(4, dtype=complex), np.ones(4), id="complex-input"),
+        ],
     )
-
-    assert match == pytest.approx(1.0, abs=5e-12)
-    assert lag == (-7, -1.75)
-    assert mismatch == pytest.approx(0.0, abs=5e-12)
-    assert mismatch_lag == lag
-
-
-def test_match_zero_signal_is_zero():
-    zeros = np.zeros(32)
-    assert estimators.match(zeros, zeros, window="boxcar") == 0.0
+    def test_rejects_invalid_inputs(self, x, y):
+        """Reject unequal lengths and complex waveforms under the real-input API."""
+        with pytest.raises(ValueError):
+            estimators.match(x, y, at=1, window="boxcar")
 
 
 def test_snr_matches_known_bin_centred_signal(bin_centred_sinusoid):
