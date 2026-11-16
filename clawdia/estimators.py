@@ -249,7 +249,7 @@ def doverlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     return (1 - overlap(x, y, at=at, psd=psd, window=window)) / 2
 
 
-def match(x, y, *, at=1, psd=None, window=('tukey', 0.5), return_lag=False) -> float | tuple[float, tuple[float, float]]:
+def match(x, y, *, at=1.0, psd=None, window=('tukey', 0.5), return_lag=False) -> float | tuple[float, tuple[float, float]]:
     """Cyclic time/phase-maximised match between two real-valued signals.
 
     Computes the PSD-weighted, normalised complex positive-frequency
@@ -414,7 +414,7 @@ def match(x, y, *, at=1, psd=None, window=('tukey', 0.5), return_lag=False) -> f
     return m
 
 
-def imatch(x, y, *, at=1, psd=None, window=('tukey', 0.5), return_lag=False
+def imatch(x, y, *, at=1.0, psd=None, window=('tukey', 0.5), return_lag=False
         ) -> float | tuple[float, tuple[float, float]]:
     """Shorthand for `1 - match()`."""
     result = match(
