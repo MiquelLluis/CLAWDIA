@@ -75,7 +75,7 @@ class TestInnerProductWeighted:
         # where X is the full FFT.
         #
         # Only the positive/negative tone bins are nonzero, with equal magnitude:
-        #   N/2 * A**2/2 = 1/N * 2*|X[k0]|**2   =>   |X[k0]|**2 = N**2/4 * A**2.
+        #   N/2 * A**2 = 1/N * 2*|X[k0]|**2   =>   |X[k0]|**2 = N**2/4 * A**2.
         #
         # The rFFT retains just the positive tone bin. With unit PSD, the
         # implemented self-inner-product is
