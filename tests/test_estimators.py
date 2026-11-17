@@ -3,6 +3,10 @@ import pytest
 
 from clawdia import estimators
 
+# Conservative roundoff tolerance for short float64 FFT-based cases.
+# This is a practical test tolerance, not a general error bound.
+FFT_TOL = 5e-12
+
 
 @pytest.fixture
 def bin_centred_sinusoid():
@@ -87,8 +91,7 @@ class TestInnerProductWeighted:
 
 
 def test_overlap_has_expected_scale_sign_and_orthogonality(
-    bin_centred_sinusoid,
-):
+        bin_centred_sinusoid):
     signal, sample_rate, _ = bin_centred_sinusoid
     dt = 1 / sample_rate
     time = np.arange(len(signal)) / sample_rate
@@ -96,16 +99,16 @@ def test_overlap_has_expected_scale_sign_and_orthogonality(
 
     assert estimators.overlap(
         signal, signal, at=dt, window="boxcar"
-    ) == pytest.approx(1.0, abs=5e-12)
+    ) == pytest.approx(1.0, rel=0, abs=FFT_TOL)
     assert estimators.overlap(
         signal, -signal, at=dt, window="boxcar"
-    ) == pytest.approx(-1.0, abs=5e-12)
+    ) == pytest.approx(-1.0, rel=0, abs=FFT_TOL)
     assert estimators.overlap(
         signal, orthogonal, at=dt, window="boxcar"
-    ) == pytest.approx(0.0, abs=5e-12)
+    ) == pytest.approx(0.0, rel=0, abs=FFT_TOL)
     assert estimators.doverlap(
         signal, signal, at=dt, window="boxcar"
-    ) == pytest.approx(0.0, abs=5e-12)
+    ) == pytest.approx(0.0, rel=0, abs=FFT_TOL)
 
 
 class TestMatch:
@@ -130,9 +133,9 @@ class TestMatch:
             signal, shifted, at=0.25, window="boxcar", return_lag=True
         )
 
-        assert match == pytest.approx(1.0, rel=0, abs=5e-12)
+        assert match == pytest.approx(1.0, rel=0, abs=FFT_TOL)
         assert lag == (-7, -1.75)
-        assert mismatch == pytest.approx(0.0, rel=0, abs=5e-12)
+        assert mismatch == pytest.approx(0.0, rel=0, abs=FFT_TOL)
         assert mismatch_lag == lag
 
     @pytest.mark.parametrize(
@@ -155,7 +158,7 @@ class TestMatch:
 
         match = estimators.match(signal, rotated, window="boxcar")
 
-        assert match == pytest.approx(1.0, rel=0, abs=5e-12)
+        assert match == pytest.approx(1.0, rel=0, abs=FFT_TOL)
 
     @pytest.mark.parametrize("n_samples", [127, 128], ids=["odd", "even"])
     def test_global_phase_and_cyclic_lag_with_weighted_tones(self, n_samples):
@@ -183,10 +186,10 @@ class TestMatch:
             signal, shifted, at=dt, psd=psd, window="boxcar", return_lag=True
         )
 
-        assert match == pytest.approx(1.0, rel=0, abs=5e-12)
+        assert match == pytest.approx(1.0, rel=0, abs=FFT_TOL)
         assert lag[0] == -7
         assert lag[1] == pytest.approx(-7 * dt, rel=0, abs=1e-12)
-        assert mismatch == pytest.approx(0.0, rel=0, abs=5e-12)
+        assert mismatch == pytest.approx(0.0, rel=0, abs=FFT_TOL)
         assert mismatch_lag == lag
 
     @pytest.mark.parametrize("phase", [0.0, 0.7], ids=["aligned", "rotated"])
@@ -215,7 +218,7 @@ class TestMatch:
             signal, template, at=1 / 128, psd=psd, window="boxcar"
         )
 
-        assert match == pytest.approx(np.sqrt(9 / 13), rel=0, abs=5e-12)
+        assert match == pytest.approx(np.sqrt(9 / 13), rel=0, abs=FFT_TOL)
 
     def test_zero_signal_is_zero(self):
         zeros = np.zeros(32)
@@ -246,7 +249,7 @@ def test_snr_matches_known_bin_centred_signal(bin_centred_sinusoid):
     actual = estimators.snr(
         signal, psd=psd, at=dt, window=np.ones(len(signal))
     )
-    assert actual == pytest.approx(expected, rel=5e-12, abs=5e-12)
+    assert actual == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
 
 
 def test_find_merger_returns_largest_absolute_sample():
