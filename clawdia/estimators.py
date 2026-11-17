@@ -446,7 +446,16 @@ def imatch(x, y, *, at=1.0, psd=None, window=('tukey', 0.5), return_lag=False
 
 
 def snr(strain, *, psd, at, window=('tukey',0.5)):
-    """Signal to Noise Ratio."""
+    """Optimal signal-to-noise ratio of the windowed strain.
+
+    The zero-frequency (0 Hz) bin and, for even signal lengths, the Nyquist
+    bin are excluded after windowing.
+    The lower PSD cutoff is inclusive and the upper cutoff is exclusive.
+    Returns 0 if the analysed band contains no usable bins.
+
+    With the same PSD, window, and included bins, the squared SNR equals
+    ``inner_product_weighted(strain, strain, ...)``.
+    """
     # rFFT
     strain = np.asarray(strain)
     ns = len(strain)
@@ -456,14 +465,15 @@ def snr(strain, *, psd, at, window=('tukey',0.5)):
         window = np.asarray(window)
     hh = np.fft.rfft(strain * window)
     ff = np.fft.rfftfreq(ns, d=at)
-    af = ff[1]
+    af = ff[1]  # Frequency spacing
 
-    # Lowest and highest frequency cut-off taken from the given psd
+    # Lowest and highest frequency cut-offs taken from the given psd.
     f_min, f_max = psd[0][[0,-1]]
-    i_min = np.argmin(ff < f_min)
-    i_max = np.argmin(ff < f_max)
-    if i_max == 0:
-        i_max = len(hh)
+    i_min = max(1, np.searchsorted(ff, f_min, side='left'))  # Exclude the 0 Hz bin
+    i_max = min((ns + 1) // 2, np.searchsorted(ff, f_max, side='left'))  # Exclude Nyquist
+    if i_max <= i_min:
+        return 0.0
+
     hh = hh[i_min:i_max]
     ff = ff[i_min:i_max]
 
