@@ -148,9 +148,9 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
     if ns != len(y):
         raise ValueError("both 'x' and 'y' must be of the same length")
     if not np.isrealobj(x):
-        raise ValueError(f"'x' cannot be complex")
+        raise ValueError("'x' cannot be complex")
     if not np.isrealobj(y):
-        raise ValueError(f"'y' cannot be complex")
+        raise ValueError("'y' cannot be complex")
     
     w_array = sp.signal.windows.get_window(window, ns)
     
