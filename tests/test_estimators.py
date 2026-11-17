@@ -61,21 +61,42 @@ def test_softmax_is_stable_and_respects_axis():
 
 class TestInnerProductWeighted:
     def test_matches_bin_centred_fft_result(self, bin_centred_sinusoid):
+        """Check the raw-FFT self-inner-product with unit and constant PSDs."""
         signal, sample_rate, amplitude = bin_centred_sinusoid
         dt = 1 / sample_rate
+
+        # Let N be the sample count, A the amplitude, and fs the sample rate.
+        # This bin-centred sine contains whole cycles, so
+        #   sum(x**2) = N/2 * A**2.
+        #
+        # Parseval's identity for NumPy's unscaled forward FFT gives
+        #   sum(x**2) = 1/N * sum(|X[k]|**2),
+        # where X is the full FFT.
+        #
+        # Only the positive/negative tone bins are nonzero, with equal magnitude:
+        #   N/2 * A**2/2 = 1/N * 2*|X[k0]|**2   =>   |X[k0]|**2 = N**2/4 * A**2.
+        #
+        # The rFFT retains just the positive tone bin. With unit PSD, the
+        # implemented self-inner-product is
+        #   <X|X> = 4*df * |X[k0]|**2.
+        # Since df = fs/N, this becomes
+        #   <X|X> = fs * N * A**2.
         expected = sample_rate * len(signal) * amplitude**2
 
+        # A boxcar preserves the tone; omitting the PSD gives unit weighting.
         actual = estimators.inner_product_weighted(
             signal, signal, at=dt, window="boxcar"
         )
-        assert actual == pytest.approx(expected, rel=5e-12, abs=5e-12)
+        assert actual == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
 
+        # A full-band PSD of 2 retains all bins and halves the inner product.
         frequencies = np.fft.rfftfreq(len(signal), dt)
         flat_psd = np.vstack([frequencies, np.full_like(frequencies, 2.0)])
         weighted = estimators.inner_product_weighted(
             signal, signal, at=dt, psd=flat_psd, window="boxcar"
         )
-        assert weighted == pytest.approx(expected / 2, rel=5e-12, abs=5e-12)
+        assert weighted == pytest.approx(expected / 2, rel=FFT_TOL, abs=FFT_TOL)
+
 
     @pytest.mark.parametrize(
         "x, y",
