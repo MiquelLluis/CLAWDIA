@@ -98,6 +98,40 @@ class TestInnerProductWeighted:
         )
         assert weighted == pytest.approx(expected / 2, rel=FFT_TOL, abs=FFT_TOL)
 
+    @pytest.mark.parametrize(
+        # At the sampling rate of 128 Hz, these lengths give frequency spacings
+        # of 1 and 2 Hz. Both representations contain an integer number of
+        # periods of the original 8 Hz tone.
+        "n_samples", [128, 64], ids=["1-Hz-spacing", "2-Hz-spacing"]
+    )
+    def test_cropping_preserves_frequency_spacing(self, bin_centred_8hz_sinusoid, n_samples):
+        """Preserve the inner product when restricting the PSD range.
+
+        Regression: the frequency step was previously taken from ff[1] after
+        cropping, mistaking the second retained frequency for the FFT bin
+        spacing. This incorrectly changed the inner product when the PSD range
+        changed, even though all signal power remained inside both ranges.
+        The full and restricted ranges must give the same inner product using
+        the original bin spacing.
+        """
+        signal, sample_rate, amplitude = bin_centred_8hz_sinusoid
+        signal = signal[:n_samples]
+        dt = 1 / sample_rate
+
+        full_psd = np.array([[0.0, sample_rate/2], [2.0, 2.0]])
+        cropped_psd = np.array([[6.0, 10.0], [2.0, 2.0]])
+
+        full = estimators.inner_product_weighted(
+            signal, signal, at=dt, psd=full_psd, window="boxcar"
+        )
+        cropped = estimators.inner_product_weighted(
+            signal, signal, at=dt, psd=cropped_psd, window="boxcar"
+        )
+
+        # The tone is strictly inside both bands, so its weighted power is equal.
+        expected = sample_rate * n_samples * amplitude**2 / 2
+        assert full == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
+        assert cropped == pytest.approx(full, rel=FFT_TOL, abs=FFT_TOL)
 
     @pytest.mark.parametrize(
         "x, y",
