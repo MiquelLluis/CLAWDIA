@@ -136,9 +136,15 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
 
     Notes
     -----
-    Currently uses unscaled NumPy FFT coefficients. With the same PSD, window,
-    and included frequency bins, ``(x|x)`` equals ``snr(x, ...)**2 / at**2``.
-    The physical normalisation and DC/Nyquist weighting remain to be reviewed.
+    Fourier coefficients are scaled by the sample interval ``at``.
+    With a physical one-sided noise PSD, the inner product is dimensionless.
+    With the same PSD, window, and included frequency bins, ``(x|x)`` equals
+    ``snr(x, ...)**2``.
+
+    The 0 Hz bin and, for even signal lengths, the Nyquist bin are excluded
+    after windowing. For odd lengths, the final rFFT bin is below Nyquist and
+    is retained. 
+    Returns 0 if no usable bins lie in the analysed band.
     
     References
     ----------
@@ -154,21 +160,27 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
     
     w_array = sp.signal.windows.get_window(window, ns)
     
-    # rFFT
-    hx = np.fft.rfft(x * w_array)
-    hy = np.fft.rfft(y * w_array)
+    hx = at * np.fft.rfft(x * w_array)
+    hy = at * np.fft.rfft(y * w_array)
     ff = np.fft.rfftfreq(ns, d=at)
-    af = ff[1]
+    af = ff[1]  # Frequency spacing
+
+    # Exclude 0 Hz and the even-length Nyquist bin, retaining the odd-length
+    # final positive-frequency bin. The upper index is excluded.
+    i_min, i_max = 1, (ns + 1) // 2
 
     if psd is not None:
         # Lowest and highest frequency cut-off taken from the given psd
         f_min, f_max = psd[0][[0,-1]]
-        i_min = np.searchsorted(ff, f_min, side='left')
-        i_max = np.searchsorted(ff, f_max, side='right')
-        
-        hx = hx[i_min:i_max]
-        hy = hy[i_min:i_max]
-        ff = ff[i_min:i_max]
+        i_min = max(i_min, np.searchsorted(ff, f_min, side='left'))
+        i_max = min(i_max, np.searchsorted(ff, f_max, side='right'))
+
+    if i_max <= i_min:
+        return 0.0
+
+    hx = hx[i_min:i_max]
+    hy = hy[i_min:i_max]
+    ff = ff[i_min:i_max]
     
     # Compute (x|y)
     if psd is None:
@@ -204,6 +216,12 @@ def overlap(x, y, *, at=1, psd=None, window=('tukey', 0.5)):
 
             psd[0] = frequencies
             psd[1] = psd samples
+
+    Notes
+    -----
+    Uses the same frequency band as ``inner_product_weighted``: the
+    zero-frequency bin and the even-length Nyquist bin are excluded after
+    windowing. Returns 0 if either signal has zero norm in that band.
     
     References
     ----------
@@ -260,7 +278,8 @@ def match(x, y, *, at=1.0, psd=None, window=('tukey', 0.5), return_lag=False) ->
 
     The comparison uses the windowed signals over the selected frequency band.
     0 Hz and Nyquist (for even lengths) are excluded from both the
-    correlation and the norms.
+    correlation and the norms. For odd lengths, the final rFFT bin is retained.
+    Exclusion is applied after windowing, without subtracting the input means.
 
     The continuous definition whose discrete approximation is computed is:
 

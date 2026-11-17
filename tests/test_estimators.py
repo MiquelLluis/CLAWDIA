@@ -62,7 +62,7 @@ def test_softmax_is_stable_and_respects_axis():
 
 class TestInnerProductWeighted:
     def test_matches_bin_centred_fft_result(self, bin_centred_8hz_sinusoid):
-        """Check the raw-FFT self-inner-product with unit and constant PSDs."""
+        """Check the physical self-inner-product with unit and constant PSDs."""
         signal, sample_rate, amplitude = bin_centred_8hz_sinusoid
         dt = 1 / sample_rate
 
@@ -77,12 +77,11 @@ class TestInnerProductWeighted:
         # Only the positive/negative tone bins are nonzero, with equal magnitude:
         #   N/2 * A**2 = 1/N * 2*|X[k0]|**2   =>   |X[k0]|**2 = N**2/4 * A**2.
         #
-        # The rFFT retains just the positive tone bin. With unit PSD, the
-        # implemented self-inner-product is
-        #   <X|X> = 4*df * |X[k0]|**2.
-        # Since df = fs/N, this becomes
-        #   <X|X> = fs * N * A**2.
-        expected = sample_rate * len(signal) * amplitude**2
+        # The rFFT retains just the positive tone bin. With unit PSD:
+        #   (x|x) = 4*df * dt**2 * |X[k0]|**2.
+        # Since df = fs/N and dt = 1/fs, this becomes
+        #   (x|x) = (N/fs) * A**2 = duration * A**2.
+        expected = len(signal) / sample_rate * amplitude**2
 
         # A boxcar preserves the tone; omitting the PSD gives unit weighting.
         actual = estimators.inner_product_weighted(
@@ -129,7 +128,7 @@ class TestInnerProductWeighted:
         )
 
         # The tone is strictly inside both bands, so its weighted power is equal.
-        expected = sample_rate * n_samples * amplitude**2 / 2
+        expected = n_samples / sample_rate * amplitude**2 / 2
         assert full == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
         assert cropped == pytest.approx(full, rel=FFT_TOL, abs=FFT_TOL)
 
@@ -173,8 +172,8 @@ class TestMatch:
     def test_recovers_cyclic_lag_and_imatch_preserves_it(self):
         """Recover a seven-sample delay and preserve it in the loss wrapper.
 
-        The pulse [1, 0, -1] has 0 Hz and Nyquist components, keeping this
-        check independent of the unresolved weighting of those special bins.
+        The pulse [1, 0, -1] has zero Fourier coefficients at 0 Hz and Nyquist,
+        so both excluded bins are already absent from the signal.
         With a 0.25-second sample interval, the aligning lag is -1.75 seconds.
         """
         signal = np.zeros(64)
