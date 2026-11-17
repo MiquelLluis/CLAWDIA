@@ -9,7 +9,8 @@ FFT_TOL = 5e-12
 
 
 @pytest.fixture
-def bin_centred_sinusoid():
+def bin_centred_8hz_sinusoid():
+    """Centered sinusoidal tone of 8 Hz with sampling rate of 128 Hz."""
     n_samples = 128
     sample_rate = 128.0
     amplitude = 0.25
@@ -60,9 +61,9 @@ def test_softmax_is_stable_and_respects_axis():
 
 
 class TestInnerProductWeighted:
-    def test_matches_bin_centred_fft_result(self, bin_centred_sinusoid):
+    def test_matches_bin_centred_fft_result(self, bin_centred_8hz_sinusoid):
         """Check the raw-FFT self-inner-product with unit and constant PSDs."""
-        signal, sample_rate, amplitude = bin_centred_sinusoid
+        signal, sample_rate, amplitude = bin_centred_8hz_sinusoid
         dt = 1 / sample_rate
 
         # Let N be the sample count, A the amplitude, and fs the sample rate.
@@ -112,8 +113,8 @@ class TestInnerProductWeighted:
 
 
 def test_overlap_has_expected_scale_sign_and_orthogonality(
-        bin_centred_sinusoid):
-    signal, sample_rate, _ = bin_centred_sinusoid
+        bin_centred_8hz_sinusoid):
+    signal, sample_rate, _ = bin_centred_8hz_sinusoid
     dt = 1 / sample_rate
     time = np.arange(len(signal)) / sample_rate
     orthogonal = np.sin(2 * np.pi * 9 * time)
@@ -258,8 +259,8 @@ class TestMatch:
             estimators.match(x, y, at=1, window="boxcar")
 
 
-def test_snr_matches_known_bin_centred_signal(bin_centred_sinusoid):
-    signal, sample_rate, amplitude = bin_centred_sinusoid
+def test_snr_matches_known_bin_centred_signal(bin_centred_8hz_sinusoid):
+    signal, sample_rate, amplitude = bin_centred_8hz_sinusoid
     dt = 1 / sample_rate
     frequencies = np.fft.rfftfreq(len(signal), dt)
     psd_level = 2.0
