@@ -4,6 +4,16 @@ import pytest
 from clawdia import estimators
 
 
+@pytest.fixture
+def bin_centred_sinusoid():
+    n_samples = 128
+    sample_rate = 128.0
+    amplitude = 0.25
+    time = np.arange(n_samples) / sample_rate
+    signal = amplitude * np.sin(2 * np.pi * 8 * time)
+    return signal, sample_rate, amplitude
+
+
 def test_elementwise_error_metrics_have_known_values():
     x = np.array([1.0, 2.0, 3.0])
     y = np.ones(3)
@@ -45,34 +55,35 @@ def test_softmax_is_stable_and_respects_axis():
     )
 
 
-@pytest.fixture
-def bin_centred_sinusoid():
-    n_samples = 128
-    sample_rate = 128.0
-    amplitude = 0.25
-    time = np.arange(n_samples) / sample_rate
-    signal = amplitude * np.sin(2 * np.pi * 8 * time)
-    return signal, sample_rate, amplitude
+class TestInnerProductWeighted:
+    def test_matches_bin_centred_fft_result(self, bin_centred_sinusoid):
+        signal, sample_rate, amplitude = bin_centred_sinusoid
+        dt = 1 / sample_rate
+        expected = sample_rate * len(signal) * amplitude**2
 
+        actual = estimators.inner_product_weighted(
+            signal, signal, at=dt, window="boxcar"
+        )
+        assert actual == pytest.approx(expected, rel=5e-12, abs=5e-12)
 
-def test_weighted_inner_product_matches_bin_centred_fft_result(
-    bin_centred_sinusoid,
-):
-    signal, sample_rate, amplitude = bin_centred_sinusoid
-    dt = 1 / sample_rate
-    expected = sample_rate * len(signal) * amplitude**2
+        frequencies = np.fft.rfftfreq(len(signal), dt)
+        flat_psd = np.vstack([frequencies, np.full_like(frequencies, 2.0)])
+        weighted = estimators.inner_product_weighted(
+            signal, signal, at=dt, psd=flat_psd, window="boxcar"
+        )
+        assert weighted == pytest.approx(expected / 2, rel=5e-12, abs=5e-12)
 
-    actual = estimators.inner_product_weighted(
-        signal, signal, at=dt, window="boxcar"
+    @pytest.mark.parametrize(
+        "x, y",
+        [
+            (np.ones(4), np.ones(5)),
+            (np.ones(4, dtype=complex), np.ones(4)),
+        ],
     )
-    assert actual == pytest.approx(expected, rel=5e-12, abs=5e-12)
-
-    frequencies = np.fft.rfftfreq(len(signal), dt)
-    flat_psd = np.vstack([frequencies, np.full_like(frequencies, 2.0)])
-    weighted = estimators.inner_product_weighted(
-        signal, signal, at=dt, psd=flat_psd, window="boxcar"
-    )
-    assert weighted == pytest.approx(expected / 2, rel=5e-12, abs=5e-12)
+    def test_rejects_invalid_inputs(self, x, y):
+        """Reject unequal lengths and complex inputs."""
+        with pytest.raises(ValueError):
+            estimators.inner_product_weighted(x, y, at=1, window="boxcar")
 
 
 def test_overlap_has_expected_scale_sign_and_orthogonality(
@@ -236,19 +247,6 @@ def test_snr_matches_known_bin_centred_signal(bin_centred_sinusoid):
         signal, psd=psd, at=dt, window=np.ones(len(signal))
     )
     assert actual == pytest.approx(expected, rel=5e-12, abs=5e-12)
-
-
-@pytest.mark.parametrize(
-    "x, y",
-    [
-        (np.ones(4), np.ones(5)),
-        (np.ones(4, dtype=complex), np.ones(4)),
-    ],
-)
-def test_weighted_inner_product_rejects_invalid_inputs(x, y):
-    """Reject unequal lengths and complex inputs in the weighted inner product."""
-    with pytest.raises(ValueError):
-        estimators.inner_product_weighted(x, y, at=1, window="boxcar")
 
 
 def test_find_merger_returns_largest_absolute_sample():
