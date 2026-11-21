@@ -576,4 +576,4 @@ def find_merger(h: np.ndarray) -> int:
     make much difference.
     
     """
-    return np.argmax(np.abs(h))
+    return int(np.argmax(np.abs(h)))
