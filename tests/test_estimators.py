@@ -274,18 +274,17 @@ class TestMatchAndImatch:
 
     @pytest.mark.parametrize("n_samples", [127, 128], ids=["odd", "even"])
     def test_recovers_weighted_phase_and_cyclic_lag(self, n_samples):
-        """Recover a delayed, phase-rotated two-tone signal under PSD weighting.
+        """Recover a perfect match and the lag after rotating and delaying two tones.
 
-        Both tones receive the same phase rotation, not the frequency-dependent
-        rotation of a time shift. Their bins (3 and 8) have a difference coprime
-        to either signal length, giving a unique aligning integer lag of -7.
-        The PSD gives the tones different positive weights, but they still
-        represent the same waveform up to phase, delay, and amplitude scaling.
-        Both odd and even lengths yield real-FFT spectrums.
+        First add the same phase angle to both tones, then delay the whole
+        signal and scale its amplitude. The PSD weights the tones differently,
+        but the match should still be 1, and imatch should return 0 with the
+        same aligning lag.
         """
         dt = 1 / n_samples
         theta = 2 * np.pi * np.arange(n_samples) / n_samples
         phase = 0.7
+        
         signal = np.sin(3 * theta) + 0.5 * np.sin(8 * theta)
         rotated = np.sin(3 * theta + phase) + 0.5 * np.sin(8 * theta + phase)
         shifted = 2.5 * np.roll(rotated, 7)
@@ -307,6 +306,7 @@ class TestMatchAndImatch:
 
 class TestSnr:
     def test_matches_known_bin_centred_signal(self, bin_centred_8hz_sinusoid):
+        """Recover the analytical SNR from tone amplitude, duration, and PSD."""
         signal, sample_rate, amplitude = bin_centred_8hz_sinusoid
         dt = 1 / sample_rate
         frequencies = np.fft.rfftfreq(len(signal), dt)
