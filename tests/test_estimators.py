@@ -155,24 +155,36 @@ class TestInnerProductWeighted:
             estimators.inner_product_weighted(x, y, at=1, window="boxcar")
 
 
-def test_overlap_has_expected_scale_sign_and_orthogonality(
-        bin_centred_8hz_sinusoid):
-    signal, sample_rate, _ = bin_centred_8hz_sinusoid
-    dt = 1 / sample_rate
-    time = np.arange(len(signal)) / sample_rate
-    orthogonal = np.sin(2 * np.pi * 9 * time)
+class TestOverlap:
+    @pytest.mark.parametrize(
+        "signal_scale, orthogonal_scale, expected",
+        [
+            pytest.param(1.0, 0.0, 1.0, id="identical"),
+            pytest.param(3.0, 0.0, 1.0, id="positive-scaling"),
+            pytest.param(-1.0, 0.0, -1.0, id="sign-reversal"),
+            pytest.param(0.0, 1.0, 0.0, id="orthogonal"),
+            pytest.param(1.0, 1.0, 1 / np.sqrt(2), id="equal-power-mixture"),
+        ],
+    )
+    def test_scale_sign_and_orthogonality(
+        self, bin_centred_8hz_sinusoid, signal_scale, orthogonal_scale, expected
+    ):
+        """Check identity, amplitude/sign changes, orthogonality, and equal-power mixing."""
+        signal, sample_rate, amplitude = bin_centred_8hz_sinusoid
+        time = np.arange(len(signal)) / sample_rate
+        orthogonal = amplitude * np.sin(2 * np.pi * 9 * time)
+        other = signal_scale * signal + orthogonal_scale * orthogonal
 
-    assert estimators.overlap(
-        signal, signal, at=dt, window="boxcar"
-    ) == pytest.approx(1.0, rel=0, abs=FFT_TOL)
-    assert estimators.overlap(
-        signal, -signal, at=dt, window="boxcar"
-    ) == pytest.approx(-1.0, rel=0, abs=FFT_TOL)
-    assert estimators.overlap(
-        signal, orthogonal, at=dt, window="boxcar"
-    ) == pytest.approx(0.0, rel=0, abs=FFT_TOL)
+        # Adding an equal-power orthogonal tone gives an overlap of 1/sqrt(2).
+        actual = estimators.overlap(signal, other, at=1/sample_rate, window="boxcar")
+        assert actual == pytest.approx(expected, rel=0, abs=FFT_TOL)
+
+
+def test_doverlap_is_zero_for_identical_signals(bin_centred_8hz_sinusoid):
+    """Identical signals have zero overlap pseudo-distance."""
+    signal, sample_rate, _ = bin_centred_8hz_sinusoid
     assert estimators.doverlap(
-        signal, signal, at=dt, window="boxcar"
+        signal, signal, at=1 / sample_rate, window="boxcar"
     ) == pytest.approx(0.0, rel=0, abs=FFT_TOL)
 
 
