@@ -56,6 +56,24 @@ def flat_noise_psd(request):
     """A flat PSD covering or exceeding the Nyquist limit of 32 Hz signals."""
     return np.array([[0.0, request.param], [2.0, 2.0]])
 
+
+@pytest.fixture(params=[9, 10], ids=["odd", "even"])
+def highest_bin_tone(request):
+    """The highest tone below Nyquist, alone and mixed with an equal-power tone.
+    
+    The sampling rate is determined from the signal's length; the duration of
+    the signal is always 1 second.
+    """
+    n_samples = request.param
+    dt = 1 / n_samples
+    amplitude = 0.25
+    theta = 2 * np.pi * np.arange(n_samples) / n_samples  # [0, ..., 2π)
+    highest_bin = (n_samples - 1) // 2
+    tone = amplitude * np.sin(highest_bin * theta)
+    mixture = tone + amplitude * np.sin(theta)
+    psd = np.array([[0.0, n_samples / 2], [2.0, 2.0]])
+    return tone, mixture, dt, amplitude, psd
+
 #------------------------------------------------------------------------------
 # TESTS
 #------------------------------------------------------------------------------
@@ -207,6 +225,16 @@ class TestInnerProductWeighted:
             excluded_component, excluded_component, at=1 / 32, window="boxcar"
         ) == 0.0
 
+    def test_highest_bin_below_nyquist_is_retained(self, highest_bin_tone):
+        """Keep the highest usable bin for both odd and even signal lengths."""
+        tone, _, dt, amplitude, psd = highest_bin_tone
+        # One second of a bin-centred tone:
+        #   (h|h) = A**2 / PSD
+        for weighting, psd_level in ((None, 1.0), (psd, 2.0)):
+            expected = amplitude**2 / psd_level
+            assert estimators.inner_product_weighted(
+                tone, tone, at=dt, psd=weighting, window="boxcar"
+            ) == pytest.approx(expected, rel=0, abs=FFT_TOL)
 class TestOverlap:
     @pytest.mark.parametrize(
         "signal_scale, orthogonal_scale, expected",
@@ -248,6 +276,13 @@ class TestOverlap:
             excluded_component, excluded_component, window="boxcar"
         ) == 0.0
 
+    def test_highest_bin_below_nyquist_is_retained(self, highest_bin_tone):
+        """Include the highest usable tone in the known equal-power mixture overlap."""
+        tone, mixture, dt, _, psd = highest_bin_tone
+        for weighting in (None, psd):
+            assert estimators.overlap(
+                mixture, tone, at=dt, psd=weighting, window="boxcar"
+            ) == pytest.approx(1 / np.sqrt(2), rel=0, abs=FFT_TOL)
 def test_doverlap_is_zero_for_identical_signals(bin_centred_8hz_sinusoid):
     """Identical signals have zero overlap pseudo-distance."""
     signal, sample_rate, _ = bin_centred_8hz_sinusoid
@@ -341,6 +376,13 @@ class TestMatch:
             excluded_component, excluded_component, window="boxcar", return_lag=True
         ) == (0.0, (0, 0.0))
 
+    def test_highest_bin_below_nyquist_is_retained(self, highest_bin_tone):
+        """Include the highest usable tone in the known equal-power mixture match."""
+        tone, mixture, dt, _, psd = highest_bin_tone
+        for weighting in (None, psd):
+            assert estimators.match(
+                mixture, tone, at=dt, psd=weighting, window="boxcar"
+            ) == pytest.approx(1 / np.sqrt(2), rel=0, abs=FFT_TOL)
 class TestMatchAndImatch:
     """Check that imatch complements match and preserves its reported lag."""
 
@@ -434,5 +476,11 @@ class TestSnr:
             excluded_component, at=1 / 32, psd=psd, window=np.ones(32)
         ) == 0.0
 
+    def test_highest_bin_below_nyquist_is_retained(self, highest_bin_tone):
+        """Keep the highest usable tone's analytical SNR for odd and even lengths."""
+        tone, _, dt, amplitude, psd = highest_bin_tone
+        assert estimators.snr(
+            tone, at=dt, psd=psd, window=np.ones(len(tone))
+        )**2 == pytest.approx(amplitude**2 / 2, rel=0, abs=FFT_TOL)
 def test_find_merger_returns_largest_absolute_sample():
     assert estimators.find_merger(np.array([1.0, -4.0, 3.0])) == 1
