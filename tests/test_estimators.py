@@ -201,6 +201,12 @@ class TestInnerProductWeighted:
             x, y, at=1 / 32, psd=psd, window="boxcar"
         ) == pytest.approx(1.0, rel=0, abs=FFT_TOL)
 
+    def test_signal_with_only_excluded_power_has_zero_norm(self, excluded_component):
+        """Return zero when all signal power lies at 0 Hz or Nyquist."""
+        assert estimators.inner_product_weighted(
+            excluded_component, excluded_component, at=1 / 32, window="boxcar"
+        ) == 0.0
+
 class TestOverlap:
     @pytest.mark.parametrize(
         "signal_scale, orthogonal_scale, expected",
@@ -235,6 +241,12 @@ class TestOverlap:
             assert estimators.overlap(
                 x, y, at=1 / 32, psd=weighting, window="boxcar"
             ) == pytest.approx(1.0, rel=0, abs=FFT_TOL)
+
+    def test_signal_with_only_excluded_power_has_zero_norm(self, excluded_component):
+        """Return zero by convention when excluded power leaves no signal norm."""
+        assert estimators.overlap(
+            excluded_component, excluded_component, window="boxcar"
+        ) == 0.0
 
 def test_doverlap_is_zero_for_identical_signals(bin_centred_8hz_sinusoid):
     """Identical signals have zero overlap pseudo-distance."""
@@ -323,6 +335,12 @@ class TestMatch:
                 x, y, at=1 / 32, psd=weighting, window="boxcar"
             ) == pytest.approx(1.0, rel=0, abs=FFT_TOL)
 
+    def test_signal_with_only_excluded_power_has_zero_norm(self, excluded_component):
+        """Return zero match and lag when all signal power is excluded."""
+        assert estimators.match(
+            excluded_component, excluded_component, window="boxcar", return_lag=True
+        ) == (0.0, (0, 0.0))
+
 class TestMatchAndImatch:
     """Check that imatch complements match and preserves its reported lag."""
 
@@ -408,6 +426,13 @@ class TestSnr:
         assert estimators.snr(
             x, at=1 / 32, psd=psd, window=np.ones(32)
         )**2 == pytest.approx(0.5, rel=0, abs=FFT_TOL)
+
+    def test_signal_with_only_excluded_power_has_zero_norm(self, excluded_component):
+        """Return zero SNR when all signal power lies at 0 Hz or Nyquist."""
+        psd = np.array([[0.0, 16.0], [2.0, 2.0]])
+        assert estimators.snr(
+            excluded_component, at=1 / 32, psd=psd, window=np.ones(32)
+        ) == 0.0
 
 def test_find_merger_returns_largest_absolute_sample():
     assert estimators.find_merger(np.array([1.0, -4.0, 3.0])) == 1
