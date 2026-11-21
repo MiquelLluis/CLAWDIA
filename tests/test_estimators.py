@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+from scipy.signal.windows import get_window
 
 from clawdia import estimators
 
@@ -260,6 +261,24 @@ class TestInnerProductWeighted:
         assert estimators.inner_product_weighted(
             signal, signal, at=1 / 32, psd=empty_band_psd, window="boxcar"
         ) == 0.0
+
+    def test_exclusion_is_applied_after_windowing(self):
+        """Verify that the 0 Hz bin is excluded after windowing.
+
+        A Hann window turns a constant input into a constant part and a
+        cosine. The expected value counts only the cosine. Keeping the 0 Hz
+        bin would count both parts, and subtracting the mean before windowing
+        would erase the input and give zero.
+        """
+        signal = np.ones(8)
+        psd = np.array([[0.0, 4.0], [2.0, 2.0]])
+        # Hann = 0.5 - 0.5*cos(2*pi*j/N). The remaining tone has amplitude
+        # 0.5 and duration 1, so its weighted norm is 0.5**2 / 2.
+        assert estimators.inner_product_weighted(
+            signal, signal, at=1 / 8, psd=psd, window="hann"
+        ) == pytest.approx(0.5**2 / 2, rel=0, abs=FFT_TOL)
+
+
 class TestOverlap:
     @pytest.mark.parametrize(
         "signal_scale, orthogonal_scale, expected",
@@ -465,7 +484,7 @@ class TestMatchAndImatch:
         dt = 1 / n_samples
         theta = 2 * np.pi * np.arange(n_samples) / n_samples
         phase = 0.7
-        
+
         signal = np.sin(3 * theta) + 0.5 * np.sin(8 * theta)
         rotated = np.sin(3 * theta + phase) + 0.5 * np.sin(8 * theta + phase)
         shifted = 2.5 * np.roll(rotated, 7)
@@ -540,5 +559,22 @@ class TestSnr:
         assert estimators.snr(
             signal, at=1 / 32, psd=empty_band_psd, window=np.ones(32)
         ) == 0.0
+
+    def test_exclusion_is_applied_after_windowing(self):
+        """Verify that the 0 Hz bin is excluded after windowing.
+
+        A Hann window turns a constant input into a constant part and a
+        cosine. The expected value counts only the cosine. Keeping the 0 Hz
+        bin would count both parts, and subtracting the mean before windowing
+        would erase the input and give zero.
+        """
+        signal = np.ones(8)
+        psd = np.array([[0.0, 4.0], [2.0, 2.0]])
+        # The periodic Hann window creates a tone of amplitude 0.5 over one
+        # second; its squared SNR with PSD 2 is 0.5**2 / 2.
+        assert estimators.snr(
+            signal, at=1 / 8, psd=psd, window=get_window("hann", len(signal))
+        )**2 == pytest.approx(0.5**2 / 2, rel=0, abs=FFT_TOL)
+
 def test_find_merger_returns_largest_absolute_sample():
     assert estimators.find_merger(np.array([1.0, -4.0, 3.0])) == 1
