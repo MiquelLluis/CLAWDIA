@@ -72,7 +72,9 @@ def highest_bin_tone(request):
     highest_bin = (n_samples - 1) // 2
     tone = amplitude * np.sin(highest_bin * theta)
     mixture = tone + amplitude * np.sin(theta)
-    psd = np.array([[0.0, n_samples / 2], [2.0, 2.0]])
+    # With 1 Hz bin spacing, end one bin past the highest usable tone so
+    # the exclusive upper index retains it for both signal lengths.
+    psd = np.array([[0.0, highest_bin+1], [2.0, 2.0]])
     return tone, mixture, dt, amplitude, psd
 
 
@@ -575,6 +577,45 @@ class TestSnr:
         assert estimators.snr(
             signal, at=1 / 8, psd=psd, window=get_window("hann", len(signal))
         )**2 == pytest.approx(0.5**2 / 2, rel=0, abs=FFT_TOL)
+
+
+
+@pytest.mark.parametrize(
+    "upper_cutoff, upper_tone_retained",
+    [
+        pytest.param(8.0, False, id="on-tone-bin"),
+        pytest.param(8.5, False, id="between-bins"),
+        pytest.param(9.0, True, id="on-next-bin"),
+    ],
+)
+def test_estimators_follow_pycbc_upper_cutoff(
+    bin_centred_8hz_sinusoid, upper_cutoff, upper_tone_retained
+):
+    """Apply the same exclusive upper bin index to all frequency estimators."""
+    upper_tone, sample_rate, amplitude = bin_centred_8hz_sinusoid
+    dt = 1 / sample_rate
+    time = np.arange(len(upper_tone)) * dt
+    lower_tone = amplitude * np.sin(2 * np.pi * 4 * time)
+    mixture = lower_tone + upper_tone
+    psd = np.array([[0.0, upper_cutoff], [2.0, 2.0]])
+
+    # Each tone contributes A**2 / 2 over this one-second window.
+    n_retained = 1 + upper_tone_retained
+    expected_power = n_retained * amplitude**2 / 2
+    expected_similarity = 1 / np.sqrt(n_retained)
+
+    inner = estimators.inner_product_weighted(
+        mixture, mixture, at=dt, psd=psd, window="boxcar"
+    )
+    snr = estimators.snr(mixture, at=dt, psd=psd, window=np.ones(len(mixture)))
+    overlap = estimators.overlap(mixture, lower_tone, at=dt, psd=psd, window="boxcar")
+    match = estimators.match(mixture, lower_tone, at=dt, psd=psd, window="boxcar")
+
+    assert inner == pytest.approx(expected_power, rel=0, abs=FFT_TOL)
+    assert snr**2 == pytest.approx(expected_power, rel=0, abs=FFT_TOL)
+    assert overlap == pytest.approx(expected_similarity, rel=0, abs=FFT_TOL)
+    assert match == pytest.approx(expected_similarity, rel=0, abs=FFT_TOL)
+
 
 def test_find_merger_returns_largest_absolute_sample():
     assert estimators.find_merger(np.array([1.0, -4.0, 3.0])) == 1

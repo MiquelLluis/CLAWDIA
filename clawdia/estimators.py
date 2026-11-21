@@ -119,6 +119,16 @@ def softmax(x, axis=None):
     return sp.special.softmax(x, axis=axis)
 
 
+def _psd_bin_bounds(ff, n_samples, f_min, f_max):
+    """Select the FFT bins for a supplied PSD band."""
+    # Begin at the first usable bin covered by the PSD interpolation grid.
+    start = max(1, int(np.searchsorted(ff, f_min, side='left')))
+    # PyCBC truncates the upper cutoff to a bin index and uses it as the
+    # exclusive slice stop. Also exclude the Nyquist bin for even lengths.
+    stop = min((n_samples + 1) // 2, int(f_max / ff[1]))
+    return start, stop
+
+
 def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
     """Compute the weighted inner product (x|y) between two signals.
     
@@ -143,8 +153,10 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
     ``snr(x, ...)**2``.
 
     The 0 Hz bin and, for even signal lengths, the Nyquist bin are excluded
-    after windowing. For odd lengths, the final rFFT bin is below Nyquist and
-    is retained. 
+    after windowing. The last rFFT bin for odd lengths is eligible for inclusion.
+    When a PSD is supplied, the first eligible bin at or above its lower bound
+    is included. Following PyCBC, the upper bound is rounded down to a bin
+    index and used as the exclusive slice stop.
     Returns 0 if no usable bins lie in the analysed band.
     
     References
@@ -173,8 +185,7 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
     if psd is not None:
         # Lowest and highest frequency cut-off taken from the given psd
         f_min, f_max = psd[0][[0,-1]]
-        i_min = max(i_min, np.searchsorted(ff, f_min, side='left'))
-        i_max = min(i_max, np.searchsorted(ff, f_max, side='right'))
+        i_min, i_max = _psd_bin_bounds(ff, ns, f_min, f_max)
 
     if i_max <= i_min:
         return 0.0
@@ -323,7 +334,8 @@ def match(
 
     The comparison uses the windowed signals over the selected frequency band.
     0 Hz and Nyquist (for even lengths) are excluded from both the
-    correlation and the norms. For odd lengths, the final rFFT bin is retained.
+    correlation and the norms. The final rFFT bin for odd lengths is eligible
+    for inclusion.
     Exclusion is applied after windowing, without subtracting the input means.
 
     The continuous definition whose discrete approximation is computed is:
@@ -356,8 +368,9 @@ def match(
         If given, weights the frequency-domain inner product. The first row
         contains strictly increasing frequencies in Hz, the second row the
         one-sided PSD samples. The PSD is linearly interpolated onto the FFT
-        frequencies, and only the PSD's frequency range is used. PSD values
-        must be positive and finite at the included FFT frequencies.
+        frequencies. The PSD bounds select the same bins as in
+        ``inner_product_weighted``. PSD values must be positive and finite at
+        the included FFT frequencies.
         If None, flat frequency weighting is used (appropriate for signals
         consistently whitened using the same PSD).
     window : str | tuple | float | None, optional
@@ -432,8 +445,7 @@ def match(
             raise ValueError("PSD frequencies must increase, and PSD values "
                              "must be finite and non-negative")
         # Restrict frequency bounds to PSD's available range:
-        i_min = max(i_min, int(np.searchsorted(ff, psd_freqs[0], side='left')))
-        i_max = min(i_max, int(np.searchsorted(ff, psd_freqs[-1], side='right')))
+        i_min, i_max = _psd_bin_bounds(ff, n, psd_freqs[0], psd_freqs[-1])
 
         if i_max <= i_min:
             return (0.0, (0, 0.0)) if return_lag else 0.0
@@ -533,7 +545,8 @@ def snr(strain, *, psd, at, window=('tukey',0.5)):
 
     The zero-frequency (0 Hz) bin and, for even signal lengths, the Nyquist
     bin are excluded after windowing.
-    The lower PSD cutoff is inclusive and the upper cutoff is exclusive.
+    The PSD bounds select the same bins as in ``inner_product_weighted``,
+    including PyCBC's downward rounding of the exclusive upper bin index.
     Returns 0 if the analysed band contains no usable bins.
 
     With the same PSD, window, and included bins, the squared SNR equals
@@ -552,8 +565,7 @@ def snr(strain, *, psd, at, window=('tukey',0.5)):
 
     # Lowest and highest frequency cut-offs taken from the given psd.
     f_min, f_max = psd[0][[0,-1]]
-    i_min = max(1, np.searchsorted(ff, f_min, side='left'))  # Exclude the 0 Hz bin
-    i_max = min((ns + 1) // 2, np.searchsorted(ff, f_max, side='left'))  # Exclude Nyquist
+    i_min, i_max = _psd_bin_bounds(ff, ns, f_min, f_max)
     if i_max <= i_min:
         return 0.0
 
