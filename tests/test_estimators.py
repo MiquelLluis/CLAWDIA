@@ -579,6 +579,27 @@ class TestSnr:
         )**2 == pytest.approx(0.5**2 / 2, rel=0, abs=FFT_TOL)
 
 
+@pytest.mark.parametrize("sample_rate", [64.0, 128.0], ids=["64-Hz", "128-Hz"])
+@pytest.mark.parametrize(
+    "window", ["boxcar", ("tukey", 0.5)], ids=["boxcar", "tukey"]
+)
+def test_self_inner_product_equals_snr_squared(sample_rate, window):
+    """Check (h|h) = SNR squared across sample rates and windows."""
+    dt = 1 / sample_rate
+    time = np.arange(128) * dt
+    signal = 0.25 * np.sin(2 * np.pi * 8 * time)
+    # The PSD is interpolated onto the FFT grid at both sample rates.
+    psd = np.array([[5.75, 10.25], [2.0, 6.0]])
+
+    inner = estimators.inner_product_weighted(
+        signal, signal, at=dt, psd=psd, window=window
+    )
+    snr = estimators.snr(
+        signal, at=dt, psd=psd, window=get_window(window, len(signal))
+    )
+
+    assert inner == pytest.approx(snr**2, rel=FFT_TOL, abs=FFT_TOL)
+
 
 @pytest.mark.parametrize(
     "upper_cutoff, upper_tone_retained",
