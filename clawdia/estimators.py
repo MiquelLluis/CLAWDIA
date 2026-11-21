@@ -6,11 +6,12 @@ metrics, such as mean squared error, structural similarity index, overlaps,
 signal-to-noise ratios, and others. While some functions are specifically designed for 
 gravitational-wave signal analysis, they can also be applied to broader signal-processing 
 contexts.
-
 """
+from typing import Literal, overload
+
 import numpy as np
 import scipy as sp
-
+from numpy.typing import ArrayLike
 
 
 def mse(x, y):
@@ -267,7 +268,39 @@ def doverlap(x, y, *, at, psd=None, window=('tukey', 0.5)):
     return (1 - overlap(x, y, at=at, psd=psd, window=window)) / 2
 
 
-def match(x, y, *, at=1.0, psd=None, window=('tukey', 0.5), return_lag=False) -> float | tuple[float, tuple[float, float]]:
+@overload
+def match(
+    x: ArrayLike,
+    y: ArrayLike,
+    *,
+    at: float = ...,
+    psd: ArrayLike | None = ...,
+    window: str | tuple | float | None = ...,
+    return_lag: Literal[False] = False
+) -> float: ...
+
+
+@overload
+def match(
+    x: ArrayLike,
+    y: ArrayLike,
+    *,
+    at: float = ...,
+    psd: ArrayLike | None = ...,
+    window: str | tuple | float | None = ...,
+    return_lag: Literal[True]
+) -> tuple[float, tuple[int, float]]: ...
+
+
+def match(
+    x: ArrayLike,
+    y: ArrayLike,
+    *,
+    at: float = 1.0,
+    psd: ArrayLike | None = None,
+    window: str | tuple | float | None = ('tukey', 0.5),
+    return_lag: bool = False
+) -> float | tuple[float, tuple[int, float]]:
     """Cyclic time/phase-maximised match between two real-valued signals.
 
     Computes the PSD-weighted, normalised complex positive-frequency
@@ -315,7 +348,7 @@ def match(x, y, *, at=1.0, psd=None, window=('tukey', 0.5), return_lag=False) ->
         must be positive and finite at the included FFT frequencies.
         If None, flat frequency weighting is used (appropriate for signals
         consistently whitened using the same PSD).
-    window : str | tuple | None, optional
+    window : str | tuple | float | None, optional
         A scipy.signal window specification, applied equally to x and y
         before the FFT. If None, do not window. Windowing changes the signals
         being compared and can affect shift invariance.
@@ -433,13 +466,44 @@ def match(x, y, *, at=1.0, psd=None, window=('tukey', 0.5), return_lag=False) ->
     return m
 
 
-def imatch(x, y, *, at=1.0, psd=None, window=('tukey', 0.5), return_lag=False
-        ) -> float | tuple[float, tuple[float, float]]:
-    """Shorthand for `1 - match()`."""
+@overload
+def imatch(
+    x: ArrayLike,
+    y: ArrayLike,
+    *,
+    at: float = ...,
+    psd: ArrayLike | None = ...,
+    window: str | tuple | float | None = ...,
+    return_lag: Literal[False] = False
+) -> float: ...
+
+
+@overload
+def imatch(
+    x: ArrayLike,
+    y: ArrayLike,
+    *,
+    at: float = ...,
+    psd: ArrayLike | None = ...,
+    window: str | tuple | float | None = ...,
+    return_lag: Literal[True]
+) -> tuple[float, tuple[int, float]]: ...
+
+
+def imatch(
+    x: ArrayLike,
+    y: ArrayLike,
+    *,
+    at: float = 1.0,
+    psd: ArrayLike | None = None,
+    window: str | tuple | float | None = ('tukey', 0.5),
+    return_lag: bool = False
+) -> float | tuple[float, tuple[int, float]]:
+    """Return one minus `match`, preserving its lag when requested."""
     result = match(
         x, y, at=at, psd=psd, window=window, return_lag=return_lag
     )
-    if return_lag:
+    if isinstance(result, tuple):
         value, lag = result
         return 1 - value, lag
     return 1 - result
