@@ -193,7 +193,7 @@ def inner_product_weighted(x, y, *, at, psd=None, window='hann'):
     return inner
 
 
-def overlap(x, y, *, at=1, psd=None, window=('tukey', 0.5)):
+def overlap(x, y, *, at=1.0, psd=None, window=('tukey', 0.5)):
     """Compute the Overlap between two signals:
         O = (x|y) / sqrt((x|x) · (y|y))
 
