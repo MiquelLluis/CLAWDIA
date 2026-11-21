@@ -292,6 +292,18 @@ def match(
 ) -> tuple[float, tuple[int, float]]: ...
 
 
+@overload
+def match(
+    x: ArrayLike,
+    y: ArrayLike,
+    *,
+    at: float = ...,
+    psd: ArrayLike | None = ...,
+    window: str | tuple | float | None = ...,
+    return_lag: bool
+) -> float | tuple[float, tuple[int, float]]: ...
+
+
 def match(
     x: ArrayLike,
     y: ArrayLike,
@@ -487,6 +499,18 @@ def imatch(
 ) -> tuple[float, tuple[int, float]]: ...
 
 
+@overload
+def imatch(
+    x: ArrayLike,
+    y: ArrayLike,
+    *,
+    at: float = ...,
+    psd: ArrayLike | None = ...,
+    window: str | tuple | float | None = ...,
+    return_lag: bool
+) -> float | tuple[float, tuple[int, float]]: ...
+
+
 def imatch(
     x: ArrayLike,
     y: ArrayLike,
@@ -497,9 +521,7 @@ def imatch(
     return_lag: bool = False
 ) -> float | tuple[float, tuple[int, float]]:
     """Return one minus `match`, preserving its lag when requested."""
-    result = match(
-        x, y, at=at, psd=psd, window=window, return_lag=return_lag
-    )
+    result = match(x, y, at=at, psd=psd, window=window, return_lag=return_lag)
     if isinstance(result, tuple):
         value, lag = result
         return 1 - value, lag
