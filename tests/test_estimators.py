@@ -23,6 +23,38 @@ def bin_centred_8hz_sinusoid():
     return signal, sample_rate, amplitude
 
 
+@pytest.fixture(params=["constant", "nyquist"])
+def excluded_component(request):
+    """A 32-sample signal with power only at 0 Hz or Nyquist.
+    
+    - constant: [1.0,  1.0, 1.0,  1.0, ...]
+    - nyquist:  [1.0, -1.0, 1.0, -1.0, ...]
+    """
+    if request.param == "constant":
+        return np.ones(32)
+    return (-1.0)**np.arange(32)
+
+
+@pytest.fixture
+def contaminated_signals(excluded_component):
+    """Two 32 Hz signals containing the same 8 Hz tone at amplitudes 1 and 2.
+    
+    All combinations, accounting for both from `excluded_component`:
+    - x constant: [ 8,  9,  8,  7, ...]
+    - x nyquist:  [ 8, -7,  8, -9, ...]
+    - y constant: [-3, -1, -3, -5, ...]
+    - y nyquist:  [-3,  5, -3,  1, ...]
+    """
+    tone = np.tile([0.0, 1.0, 0.0, -1.0], 8)  # 32 samples
+    x = tone + 8 * excluded_component
+    y = 2 * tone - 3 * excluded_component
+    return x, y
+
+
+@pytest.fixture(params=[16.0, 24.0], ids=["at-nyquist", "beyond-nyquist"])
+def flat_noise_psd(request):
+    """A flat PSD covering or exceeding the Nyquist limit of 32 Hz signals."""
+    return np.array([[0.0, request.param], [2.0, 2.0]])
 
 #------------------------------------------------------------------------------
 # TESTS
@@ -154,6 +186,20 @@ class TestInnerProductWeighted:
         with pytest.raises(ValueError):
             estimators.inner_product_weighted(x, y, at=1, window="boxcar")
 
+    def test_excluded_components_do_not_affect_interior_tone(
+        self, contaminated_signals, flat_noise_psd
+    ):
+        """Ignore 0 Hz and Nyquist power in weighted and unweighted cross-products."""
+        x, y = contaminated_signals
+        psd = flat_noise_psd
+        # One second of a unit-amplitude tone has unit-PSD norm 1. The second
+        # tone has twice the amplitude; a PSD of 2 halves the cross-product.
+        assert estimators.inner_product_weighted(
+            x, y, at=1 / 32, window="boxcar"
+        ) == pytest.approx(2.0, rel=0, abs=FFT_TOL)
+        assert estimators.inner_product_weighted(
+            x, y, at=1 / 32, psd=psd, window="boxcar"
+        ) == pytest.approx(1.0, rel=0, abs=FFT_TOL)
 
 class TestOverlap:
     @pytest.mark.parametrize(
@@ -179,6 +225,16 @@ class TestOverlap:
         actual = estimators.overlap(signal, other, at=1/sample_rate, window="boxcar")
         assert actual == pytest.approx(expected, rel=0, abs=FFT_TOL)
 
+    def test_excluded_components_do_not_affect_interior_tone(
+        self, contaminated_signals, flat_noise_psd
+    ):
+        """Ignore 0 Hz and Nyquist power when normalising the overlap."""
+        x, y = contaminated_signals
+        psd = flat_noise_psd
+        for weighting in (None, psd):
+            assert estimators.overlap(
+                x, y, at=1 / 32, psd=weighting, window="boxcar"
+            ) == pytest.approx(1.0, rel=0, abs=FFT_TOL)
 
 def test_doverlap_is_zero_for_identical_signals(bin_centred_8hz_sinusoid):
     """Identical signals have zero overlap pseudo-distance."""
@@ -256,6 +312,16 @@ class TestMatch:
         with pytest.raises(ValueError):
             estimators.match(x, y, at=1, window="boxcar")
 
+    def test_excluded_components_do_not_affect_interior_tone(
+        self, contaminated_signals, flat_noise_psd
+    ):
+        """Ignore 0 Hz and Nyquist power in the correlation and normalisation."""
+        x, y = contaminated_signals
+        psd = flat_noise_psd
+        for weighting in (None, psd):
+            assert estimators.match(
+                x, y, at=1 / 32, psd=weighting, window="boxcar"
+            ) == pytest.approx(1.0, rel=0, abs=FFT_TOL)
 
 class TestMatchAndImatch:
     """Check that imatch complements match and preserves its reported lag."""
@@ -332,6 +398,16 @@ class TestSnr:
         )
         assert actual == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
 
+    def test_excluded_components_do_not_affect_interior_tone(
+        self, contaminated_signals, flat_noise_psd
+    ):
+        """Ignore 0 Hz and Nyquist power in the signal norm."""
+        x, _ = contaminated_signals
+        psd = flat_noise_psd
+        # One second of a unit-amplitude tone with PSD 2 gives SNR squared 1/2.
+        assert estimators.snr(
+            x, at=1 / 32, psd=psd, window=np.ones(32)
+        )**2 == pytest.approx(0.5, rel=0, abs=FFT_TOL)
 
 def test_find_merger_returns_largest_absolute_sample():
     assert estimators.find_merger(np.array([1.0, -4.0, 3.0])) == 1
