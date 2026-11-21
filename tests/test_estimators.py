@@ -235,6 +235,14 @@ class TestInnerProductWeighted:
             assert estimators.inner_product_weighted(
                 tone, tone, at=dt, psd=weighting, window="boxcar"
             ) == pytest.approx(expected, rel=0, abs=FFT_TOL)
+
+    def test_zero_psd_at_excluded_bins_is_not_used(self, contaminated_signals):
+        """Avoid dividing by PSD zeros at the excluded frequencies."""
+        signal, _ = contaminated_signals
+        psd = np.array([[0.0, 8.0, 16.0], [0.0, 2.0, 0.0]])
+        assert estimators.inner_product_weighted(
+            signal, signal, at=1 / 32, psd=psd, window="boxcar"
+        ) == pytest.approx(0.5, rel=0, abs=FFT_TOL)
 class TestOverlap:
     @pytest.mark.parametrize(
         "signal_scale, orthogonal_scale, expected",
@@ -482,5 +490,13 @@ class TestSnr:
         assert estimators.snr(
             tone, at=dt, psd=psd, window=np.ones(len(tone))
         )**2 == pytest.approx(amplitude**2 / 2, rel=0, abs=FFT_TOL)
+
+    def test_zero_psd_at_excluded_bins_is_not_used(self, contaminated_signals):
+        """Avoid dividing by PSD zeros at the excluded frequencies."""
+        signal, _ = contaminated_signals
+        psd = np.array([[0.0, 8.0, 16.0], [0.0, 2.0, 0.0]])
+        assert estimators.snr(
+            signal, at=1 / 32, psd=psd, window=np.ones(32)
+        )**2 == pytest.approx(0.5, rel=0, abs=FFT_TOL)
 def test_find_merger_returns_largest_absolute_sample():
     assert estimators.find_merger(np.array([1.0, -4.0, 3.0])) == 1
