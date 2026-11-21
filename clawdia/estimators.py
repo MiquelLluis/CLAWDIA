@@ -407,6 +407,7 @@ def match(
     # Exclude 0 Hz and Nyquist from the correlation and norms.
     i_min, i_max = 1, (n + 1) // 2  # upper bound is exclusive
 
+    W_band = 1.0
     if psd is not None:
         psd = np.asarray(psd, dtype=np.float64)
         if psd.ndim != 2 or psd.shape[0] != 2 or psd.shape[1] < 2:
@@ -422,13 +423,9 @@ def match(
         i_min = max(i_min, int(np.searchsorted(ff, psd_freqs[0], side='left')))
         i_max = min(i_max, int(np.searchsorted(ff, psd_freqs[-1], side='right')))
 
-    if i_max <= i_min:
-        return (0.0, (0, 0.0)) if return_lag else 0.0
+        if i_max <= i_min:
+            return (0.0, (0, 0.0)) if return_lag else 0.0
 
-    # Flat weighting for whitened signals; otherwise interpolate the PSD.
-    if psd is None:
-        W_band = 1.0
-    else:
         psd_interp = np.interp(ff[i_min:i_max], psd_freqs, psd_values)
         if np.any(~np.isfinite(psd_interp)) or np.any(psd_interp <= 0):
             raise ValueError("PSD must be finite and strictly positive "
