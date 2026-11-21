@@ -228,6 +228,7 @@ class TestMatch:
         assert match == pytest.approx(np.sqrt(9 / 13), rel=0, abs=FFT_TOL)
 
     def test_zero_signal_is_zero(self):
+        """Check that a zero norm does not produce NaN during normalisation."""
         zeros = np.zeros(32)
         assert estimators.match(zeros, zeros, window="boxcar") == 0.0
 
@@ -245,7 +246,7 @@ class TestMatch:
 
 
 class TestMatchAndImatch:
-    """Check the match AND the corresponding imatch loss."""
+    """Check that imatch complements match and preserves its reported lag."""
 
     def test_recovers_cyclic_lag(self):
         """Recover a seven-sample delay and preserve it in the loss wrapper.
