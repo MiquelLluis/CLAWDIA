@@ -74,6 +74,16 @@ def highest_bin_tone(request):
     psd = np.array([[0.0, n_samples / 2], [2.0, 2.0]])
     return tone, mixture, dt, amplitude, psd
 
+
+@pytest.fixture(
+    params=[(0.0, 0.5), (15.5, 16.0), (16.0, 20.0), (20.0, 24.0)],
+    ids=["zero-frequency-only", "nyquist-only", "nyquist-and-above", "above-nyquist"],
+)
+def empty_band_psd(request):
+    """A PSD band containing no usable bins for 32 samples at 32 Hz."""
+    return np.array([request.param, [2.0, 2.0]])
+
+
 #------------------------------------------------------------------------------
 # TESTS
 #------------------------------------------------------------------------------
@@ -243,6 +253,13 @@ class TestInnerProductWeighted:
         assert estimators.inner_product_weighted(
             signal, signal, at=1 / 32, psd=psd, window="boxcar"
         ) == pytest.approx(0.5, rel=0, abs=FFT_TOL)
+
+    def test_band_without_usable_bins_is_zero(self, empty_band_psd):
+        """Return zero when the PSD band contains no usable FFT bins."""
+        signal = np.arange(32, dtype=float)
+        assert estimators.inner_product_weighted(
+            signal, signal, at=1 / 32, psd=empty_band_psd, window="boxcar"
+        ) == 0.0
 class TestOverlap:
     @pytest.mark.parametrize(
         "signal_scale, orthogonal_scale, expected",
@@ -291,6 +308,15 @@ class TestOverlap:
             assert estimators.overlap(
                 mixture, tone, at=dt, psd=weighting, window="boxcar"
             ) == pytest.approx(1 / np.sqrt(2), rel=0, abs=FFT_TOL)
+
+    def test_band_without_usable_bins_is_zero(self, empty_band_psd):
+        """Return zero by convention when the PSD band contains no usable bins."""
+        signal = np.arange(32, dtype=float)
+        assert estimators.overlap(
+            signal, signal, at=1 / 32, psd=empty_band_psd, window="boxcar"
+        ) == 0.0
+
+
 def test_doverlap_is_zero_for_identical_signals(bin_centred_8hz_sinusoid):
     """Identical signals have zero overlap pseudo-distance."""
     signal, sample_rate, _ = bin_centred_8hz_sinusoid
@@ -391,6 +417,15 @@ class TestMatch:
             assert estimators.match(
                 mixture, tone, at=dt, psd=weighting, window="boxcar"
             ) == pytest.approx(1 / np.sqrt(2), rel=0, abs=FFT_TOL)
+
+    def test_band_without_usable_bins_is_zero(self, empty_band_psd):
+        """Return zero match and lag when the PSD band contains no usable bins."""
+        signal = np.arange(32, dtype=float)
+        assert estimators.match(
+            signal, signal, at=1 / 32, psd=empty_band_psd, window="boxcar", return_lag=True
+        ) == (0.0, (0, 0.0))
+
+
 class TestMatchAndImatch:
     """Check that imatch complements match and preserves its reported lag."""
 
@@ -498,5 +533,12 @@ class TestSnr:
         assert estimators.snr(
             signal, at=1 / 32, psd=psd, window=np.ones(32)
         )**2 == pytest.approx(0.5, rel=0, abs=FFT_TOL)
+
+    def test_band_without_usable_bins_is_zero(self, empty_band_psd):
+        """Return zero SNR when the PSD band contains no usable FFT bins."""
+        signal = np.arange(32, dtype=float)
+        assert estimators.snr(
+            signal, at=1 / 32, psd=empty_band_psd, window=np.ones(32)
+        ) == 0.0
 def test_find_merger_returns_largest_absolute_sample():
     assert estimators.find_merger(np.array([1.0, -4.0, 3.0])) == 1
