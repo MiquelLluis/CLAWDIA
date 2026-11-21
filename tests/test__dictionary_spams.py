@@ -7,7 +7,6 @@ import clawdia._dictionary_spams as dictionary_spams_module
 from clawdia import lib
 from clawdia.dictionaries import DictionarySpams
 
-
 #------------------------------------------------------------------------------
 # FIXTURES
 #------------------------------------------------------------------------------
@@ -112,14 +111,14 @@ def test_signal_pool_initialisation_selects_allowed_atoms_reproducibly(
     signals, limits = minimal_signal_pool
     # Only the four listed windows lie entirely inside the waveform limits.
     # Sampling three atoms exercises random extraction; repeats are permitted.
-    kwargs = dict(
-        signal_pool=signals,
-        wave_pos=limits,
-        a_length=2,
-        d_size=3,
-        patch_min=2,
-        l2_normed=l2_normed,
-    )
+    kwargs = {
+        "signal_pool": signals,
+        "wave_pos": limits,
+        "a_length": 2,
+        "d_size": 3,
+        "patch_min": 2,
+        "l2_normed": l2_normed,
+    }
     model = DictionarySpams(random_state=17, **kwargs)
     same_seed = DictionarySpams(random_state=17, **kwargs)
     different_seed = DictionarySpams(random_state=42, **kwargs)
