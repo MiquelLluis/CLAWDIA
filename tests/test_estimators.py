@@ -8,15 +8,25 @@ from clawdia import estimators
 FFT_TOL = 5e-12
 
 
+#------------------------------------------------------------------------------
+# FIXTURES
+#------------------------------------------------------------------------------
+
 @pytest.fixture
 def bin_centred_8hz_sinusoid():
-    """Centered sinusoidal tone of 8 Hz with sampling rate of 128 Hz."""
+    """Centered sinusoidal tone of 8 Hz with 128 Hz of sampling rate."""
     n_samples = 128
     sample_rate = 128.0
     amplitude = 0.25
     time = np.arange(n_samples) / sample_rate
     signal = amplitude * np.sin(2 * np.pi * 8 * time)
     return signal, sample_rate, amplitude
+
+
+
+#------------------------------------------------------------------------------
+# TESTS
+#------------------------------------------------------------------------------
 
 
 def test_elementwise_error_metrics_have_known_values():
@@ -167,32 +177,6 @@ def test_overlap_has_expected_scale_sign_and_orthogonality(
 
 
 class TestMatch:
-    """Check the match AND the corresponding imatch loss."""
-
-    def test_recovers_cyclic_lag_and_imatch_preserves_it(self):
-        """Recover a seven-sample delay and preserve it in the loss wrapper.
-
-        The pulse [1, 0, -1] has zero Fourier coefficients at 0 Hz and Nyquist,
-        so both excluded bins are already absent from the signal.
-        With a 0.25-second sample interval, the aligning lag is -1.75 seconds.
-        """
-        signal = np.zeros(64)
-        signal[10] = 1.0
-        signal[12] = -1.0
-        shifted = np.roll(signal, 7)  # cyclic lag in samples
-
-        match, lag = estimators.match(
-            signal, shifted, at=0.25, window="boxcar", return_lag=True
-        )
-        mismatch, mismatch_lag = estimators.imatch(
-            signal, shifted, at=0.25, window="boxcar", return_lag=True
-        )
-
-        assert match == pytest.approx(1.0, rel=0, abs=FFT_TOL)
-        assert lag == (-7, -1.75)
-        assert mismatch == pytest.approx(0.0, rel=0, abs=FFT_TOL)
-        assert mismatch_lag == lag
-
     @pytest.mark.parametrize(
         "phase",
         [
@@ -214,38 +198,6 @@ class TestMatch:
         match = estimators.match(signal, rotated, window="boxcar")
 
         assert match == pytest.approx(1.0, rel=0, abs=FFT_TOL)
-
-    @pytest.mark.parametrize("n_samples", [127, 128], ids=["odd", "even"])
-    def test_global_phase_and_cyclic_lag_with_weighted_tones(self, n_samples):
-        """Recover a delayed, phase-rotated two-tone signal under PSD weighting.
-
-        Both tones receive the same phase rotation, not the frequency-dependent
-        rotation of a time shift. Their bins (3 and 8) have a difference coprime
-        to either signal length, giving a unique aligning integer lag of -7.
-        The PSD gives the tones different positive weights, but they still
-        represent the same waveform up to phase, delay, and amplitude scaling.
-        Both odd and even lengths yield real-FFT spectrums.
-        """
-        dt = 1 / n_samples
-        theta = 2 * np.pi * np.arange(n_samples) / n_samples
-        phase = 0.7
-        signal = np.sin(3 * theta) + 0.5 * np.sin(8 * theta)
-        rotated = np.sin(3 * theta + phase) + 0.5 * np.sin(8 * theta + phase)
-        shifted = 2.5 * np.roll(rotated, 7)
-        psd = np.array([[1.0, 10.0], [2.0, 11.0]])
-
-        match, lag = estimators.match(
-            signal, shifted, at=dt, psd=psd, window="boxcar", return_lag=True
-        )
-        mismatch, mismatch_lag = estimators.imatch(
-            signal, shifted, at=dt, psd=psd, window="boxcar", return_lag=True
-        )
-
-        assert match == pytest.approx(1.0, rel=0, abs=FFT_TOL)
-        assert lag[0] == -7
-        assert lag[1] == pytest.approx(-7 * dt, rel=0, abs=1e-12)
-        assert mismatch == pytest.approx(0.0, rel=0, abs=FFT_TOL)
-        assert mismatch_lag == lag
 
     @pytest.mark.parametrize("phase", [0.0, 0.7], ids=["aligned", "rotated"])
     def test_phase_invariance_does_not_hide_missing_frequency_content(self, phase):
@@ -292,19 +244,80 @@ class TestMatch:
             estimators.match(x, y, at=1, window="boxcar")
 
 
-def test_snr_matches_known_bin_centred_signal(bin_centred_8hz_sinusoid):
-    signal, sample_rate, amplitude = bin_centred_8hz_sinusoid
-    dt = 1 / sample_rate
-    frequencies = np.fft.rfftfreq(len(signal), dt)
-    psd_level = 2.0
-    psd = np.vstack([frequencies, np.full_like(frequencies, psd_level)])
-    duration = len(signal) / sample_rate
-    expected = amplitude * np.sqrt(duration / psd_level)
+class TestMatchAndImatch:
+    """Check the match AND the corresponding imatch loss."""
 
-    actual = estimators.snr(
-        signal, psd=psd, at=dt, window=np.ones(len(signal))
-    )
-    assert actual == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
+    def test_recovers_cyclic_lag(self):
+        """Recover a seven-sample delay and preserve it in the loss wrapper.
+
+        The pulse [1, 0, -1] has zero Fourier coefficients at 0 Hz and Nyquist,
+        so both excluded bins are already absent from the signal.
+        With a 0.25-second sample interval, the aligning lag is -1.75 seconds.
+        """
+        signal = np.zeros(64)
+        signal[10] = 1.0
+        signal[12] = -1.0
+        shifted = np.roll(signal, 7)  # cyclic lag in samples
+
+        match, lag = estimators.match(
+            signal, shifted, at=0.25, window="boxcar", return_lag=True
+        )
+        mismatch, mismatch_lag = estimators.imatch(
+            signal, shifted, at=0.25, window="boxcar", return_lag=True
+        )
+
+        assert match == pytest.approx(1.0, rel=0, abs=FFT_TOL)
+        assert lag == (-7, -1.75)
+        assert mismatch == pytest.approx(0.0, rel=0, abs=FFT_TOL)
+        assert mismatch_lag == lag
+
+    @pytest.mark.parametrize("n_samples", [127, 128], ids=["odd", "even"])
+    def test_recovers_weighted_phase_and_cyclic_lag(self, n_samples):
+        """Recover a delayed, phase-rotated two-tone signal under PSD weighting.
+
+        Both tones receive the same phase rotation, not the frequency-dependent
+        rotation of a time shift. Their bins (3 and 8) have a difference coprime
+        to either signal length, giving a unique aligning integer lag of -7.
+        The PSD gives the tones different positive weights, but they still
+        represent the same waveform up to phase, delay, and amplitude scaling.
+        Both odd and even lengths yield real-FFT spectrums.
+        """
+        dt = 1 / n_samples
+        theta = 2 * np.pi * np.arange(n_samples) / n_samples
+        phase = 0.7
+        signal = np.sin(3 * theta) + 0.5 * np.sin(8 * theta)
+        rotated = np.sin(3 * theta + phase) + 0.5 * np.sin(8 * theta + phase)
+        shifted = 2.5 * np.roll(rotated, 7)
+        psd = np.array([[1.0, 10.0], [2.0, 11.0]])
+
+        match, lag = estimators.match(
+            signal, shifted, at=dt, psd=psd, window="boxcar", return_lag=True
+        )
+        mismatch, mismatch_lag = estimators.imatch(
+            signal, shifted, at=dt, psd=psd, window="boxcar", return_lag=True
+        )
+
+        assert match == pytest.approx(1.0, rel=0, abs=FFT_TOL)
+        assert lag[0] == -7
+        assert lag[1] == pytest.approx(-7 * dt, rel=0, abs=1e-12)
+        assert mismatch == pytest.approx(0.0, rel=0, abs=FFT_TOL)
+        assert mismatch_lag == lag
+
+
+class TestSnr:
+    def test_matches_known_bin_centred_signal(self, bin_centred_8hz_sinusoid):
+        signal, sample_rate, amplitude = bin_centred_8hz_sinusoid
+        dt = 1 / sample_rate
+        frequencies = np.fft.rfftfreq(len(signal), dt)
+        psd_level = 2.0
+        psd = np.vstack([frequencies, np.full_like(frequencies, psd_level)])
+        duration = len(signal) / sample_rate
+        expected = amplitude * np.sqrt(duration / psd_level)
+
+        actual = estimators.snr(
+            signal, psd=psd, at=dt, window=np.ones(len(signal))
+        )
+        assert actual == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
 
 
 def test_find_merger_returns_largest_absolute_sample():
