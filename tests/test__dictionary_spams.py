@@ -178,7 +178,7 @@ def test_training_and_warm_start_match_reference(
     assert model.n_iter == 1000
     assert model.t_train > 0
     np.testing.assert_allclose(
-        model.components, reference_trained_components, rtol=1e-9, atol=1e-11
+        model.components, reference_trained_components, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
     )
 
     model.train(
@@ -193,7 +193,7 @@ def test_training_and_warm_start_match_reference(
     )
     assert model.n_iter == 1500
     np.testing.assert_allclose(
-        model.components, warm_reference, rtol=1e-9, atol=1e-11
+        model.components, warm_reference, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
     )
 
 
@@ -297,7 +297,7 @@ def test_partial_minibatch_forwards_window_normalisation(identity_dictionary):
         normed_windows=False,
         verbose=False,
     )
-    np.testing.assert_allclose(actual, expected, rtol=1e-9, atol=1e-11)
+    np.testing.assert_allclose(actual, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL)
 
 
 def test_iterative_reconstruction_conserves_signal(identity_dictionary):
