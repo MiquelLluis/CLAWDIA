@@ -56,7 +56,9 @@ def untrained_reference_dictionary(reference_signal_pool):
 
 
 @pytest.fixture(scope="module")
-def reference_dictionary(reference_initial_components, reference_trained_components):
+def trained_reference_dictionary(
+    reference_initial_components, reference_trained_components
+):
     model = DictionarySpams(
         dict_init=reference_initial_components.copy(),
         lambda1=0.1,
@@ -85,7 +87,7 @@ def trained_minimal_dictionary():
 
 
 @pytest.fixture
-def minimal_signal_pool():
+def signal_pool_with_waveform_limits():
     """Two signals with large samples outside their waveform limits."""
     signals = np.array(
         [
@@ -117,10 +119,10 @@ def minimal_signal_pool():
     ],
 )
 def test_signal_pool_initialisation_selects_allowed_atoms_reproducibly(
-    minimal_signal_pool, l2_normed, allowed_atoms
+    signal_pool_with_waveform_limits, l2_normed, allowed_atoms
 ):
     """Respect waveform limits, normalization, and the caller's sampling seed."""
-    signals, limits = minimal_signal_pool
+    signals, limits = signal_pool_with_waveform_limits
     # Only the four listed windows lie entirely inside the waveform limits.
     # Sampling three atoms exercises random extraction; repeats are permitted.
     kwargs = {
