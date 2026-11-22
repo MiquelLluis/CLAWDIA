@@ -20,17 +20,20 @@ SPAMS_ATOL = 1e-11
 
 @pytest.fixture(scope="module")
 def reference_signal_pool(data_dir):
+    """Clean Gaussian, sine-Gaussian, and ring-down waveforms with sample limits."""
     with np.load(data_dir / "strains_clean.npz") as data:
         return data["strains"], data["wave_pos"]
 
 
 @pytest.fixture(scope="module")
 def reference_initial_components(data_dir):
+    """Atoms sampled from the clean waveform pool."""
     return np.load(data_dir / "_dictionary_spams" / "dico_spams_initial.npy")
 
 
 @pytest.fixture(scope="module")
 def reference_trained_components(data_dir):
+    """Atoms after the first training run, before warm-start continuation."""
     return np.load(data_dir / "_dictionary_spams" / "dico_spams_trained.npy")
 
 
@@ -83,6 +86,7 @@ def trained_minimal_dictionary():
 
 @pytest.fixture
 def minimal_signal_pool():
+    """Two signals with large samples outside their waveform limits."""
     signals = np.array(
         [
             [100.0, 100.0, 3.0, 4.0, 0.0, 100.0, 100.0],
@@ -90,13 +94,14 @@ def minimal_signal_pool():
         ]
     )
     limits = np.array([[2, 5], [2, 5]])
-    
+
     return signals, limits
 
 
 #------------------------------------------------------------------------------
 # TESTS
 #------------------------------------------------------------------------------
+
 
 @pytest.mark.parametrize(
     "l2_normed, allowed_atoms",
