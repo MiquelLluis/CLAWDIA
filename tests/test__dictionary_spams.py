@@ -7,6 +7,13 @@ import clawdia._dictionary_spams as dictionary_spams_module
 from clawdia import lib
 from clawdia.dictionaries import DictionarySpams
 
+# In the current analytical cases, the largest local error was 1e-10 at an
+# expected value of 1, and expected zeros were exact (Linux x86_64, Python
+# 3.11.9, NumPy 1.26.4, spams-bin 2.6.12).
+# The exact values are empirical estimations.
+SPAMS_RTOL = 1e-9
+SPAMS_ATOL = 1e-11
+
 #------------------------------------------------------------------------------
 # FIXTURES
 #------------------------------------------------------------------------------
