@@ -197,81 +197,130 @@ def test_training_and_warm_start_match_reference(
     )
 
 
-def test_identity_dictionary_has_analytical_soft_threshold_solution(
-    identity_dictionary,
-):
-    """Verify exact LASSO soft-thresholding with an identity dictionary."""
-    signal = np.array([1.0, 0.0, 0.0, 0.0])
-    reconstruction = identity_dictionary.reconstruct(
-        signal, sc_lambda=0.25, normed=False
-    )
-    expected = np.array([0.75, 0.0, 0.0, 0.0])
-    nrmse = np.linalg.norm(reconstruction - expected) / np.linalg.norm(expected)
+class TestReconstruct:
+    def test_identity_dictionary_soft_thresholds(self, identity_dictionary):
+        """Verify exact LASSO soft-thresholding with an identity dictionary."""
+        signal = np.array([1.0, 0.0, 0.0, 0.0])
+        reconstruction = identity_dictionary.reconstruct(
+            signal, sc_lambda=0.25, normed=False
+        )
+        expected = np.array([0.75, 0.0, 0.0, 0.0])
+        nrmse = np.linalg.norm(reconstruction - expected) / np.linalg.norm(expected)
 
-    assert nrmse < 1e-9
-    np.testing.assert_allclose(
-        reconstruction, expected, rtol=1e-9, atol=1e-11
-    )
+        assert nrmse < 1e-9
+        np.testing.assert_allclose(
+            reconstruction, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+        )
+
+    def test_preserves_nondivisible_signal_length(self, identity_dictionary):
+        signal = np.array([1.0, 0.0, 0.5, 0.0, -0.25, 0.0, 0.0])
+        reconstruction = identity_dictionary.reconstruct(
+            signal, sc_lambda=0.0, step=2, normed=False
+        )
+
+        assert reconstruction.shape == signal.shape
+        np.testing.assert_allclose(
+            reconstruction, signal, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+        )
+
+    def test_normalises_nonzero_output_and_preserves_zeros(self, identity_dictionary):
+        signal = np.array([2.0, 0.0, 0.0, 0.0])
+        reconstruction = identity_dictionary.reconstruct(
+            signal, sc_lambda=0.25, normed=True
+        )
+        np.testing.assert_allclose(
+            reconstruction, [1.0, 0.0, 0.0, 0.0], rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+        )
+
+        zeros = identity_dictionary.reconstruct(
+            np.zeros(4), sc_lambda=0.25, normed=True
+        )
+        np.testing.assert_array_equal(zeros, 0.0)
+
+    def test_rejects_non_array(self, identity_dictionary):
+        with pytest.raises(TypeError, match="numpy array"):
+            identity_dictionary.reconstruct([1.0, 0.0, 0.0, 0.0], 0.1)
 
 
-def test_reconstruction_preserves_nondivisible_signal_length(identity_dictionary):
-    signal = np.array([1.0, 0.0, 0.5, 0.0, -0.25, 0.0, 0.0])
-    reconstruction = identity_dictionary.reconstruct(
-        signal, sc_lambda=0.0, step=2, normed=False
-    )
+class TestBatchAndMinibatchReconstruction:
+    def test_agree_with_individual_reconstruction(self, identity_dictionary):
+        signals = np.array(
+            [
+                [1.0, 0.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0, 0.0],
+                [0.0, 0.0, 1.0, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+                [0.5, 0.5, 0.0, 0.0],
+            ]
+        )
+        expected = np.vstack(
+            [
+                identity_dictionary.reconstruct(x, 0.2, normed=False)
+                for x in signals
+            ]
+        )
+        batch = identity_dictionary.reconstruct_batch(
+            signals, 0.2, normed=False, verbose=False
+        )
+        minibatch = identity_dictionary.reconstruct_minibatch(
+            signals,
+            sc_lambda=0.2,
+            batchsize=2,
+            normed=False,
+            verbose=False,
+        )
 
-    assert reconstruction.shape == signal.shape
-    np.testing.assert_allclose(
-        reconstruction, signal, rtol=1e-9, atol=1e-11
-    )
+        np.testing.assert_allclose(batch, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL)
+        np.testing.assert_allclose(
+            minibatch, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+        )
 
+    @pytest.mark.reference
+    def test_match_reference(self, trained_reference_dictionary, data_dir):
+        with np.load(
+            data_dir / "_dictionary_spams" / "reconstructions_A.npz"
+        ) as data:
+            signals = data["input"]
+            expected = data["target_reconstructions"]
+            expected_codes = data["target_codes"]
 
-def test_reconstruction_normalisation_and_zero_signal(identity_dictionary):
-    signal = np.array([2.0, 0.0, 0.0, 0.0])
-    reconstruction = identity_dictionary.reconstruct(
-        signal, sc_lambda=0.25, normed=True
-    )
-    np.testing.assert_allclose(
-        reconstruction, [1.0, 0.0, 0.0, 0.0], rtol=1e-9, atol=1e-11
-    )
+        reconstructions = []
+        codes = []
+        for signal in signals:
+            reconstruction, code = trained_reference_dictionary.reconstruct(
+                signal,
+                sc_lambda=0.5,
+                step=2,
+                normed=True,
+                with_code=True,
+                numThreads=1,
+            )
+            reconstructions.append(reconstruction)
+            codes.append(code.toarray())
 
-    zeros = identity_dictionary.reconstruct(
-        np.zeros(4), sc_lambda=0.25, normed=True
-    )
-    np.testing.assert_array_equal(zeros, 0.0)
+        np.testing.assert_allclose(
+            reconstructions, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+        )
+        np.testing.assert_allclose(
+            codes, expected_codes, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+        )
 
-
-def test_batch_and_partial_minibatch_equal_individual_reconstruction(
-    identity_dictionary,
-):
-    signals = np.array(
-        [
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-            [0.5, 0.5, 0.0, 0.0],
-        ]
-    )
-    expected = np.vstack(
-        [
-            identity_dictionary.reconstruct(x, 0.2, normed=False)
-            for x in signals
-        ]
-    )
-    batch = identity_dictionary.reconstruct_batch(
-        signals, 0.2, normed=False, verbose=False
-    )
-    minibatch = identity_dictionary.reconstruct_minibatch(
-        signals,
-        sc_lambda=0.2,
-        batchsize=2,
-        normed=False,
-        verbose=False,
-    )
-
-    np.testing.assert_allclose(batch, expected, rtol=1e-9, atol=1e-11)
-    np.testing.assert_allclose(minibatch, expected, rtol=1e-9, atol=1e-11)
+        batch = trained_reference_dictionary.reconstruct_batch(
+            signals, 0.5, step=2, normed=True, verbose=False, numThreads=1
+        )
+        minibatch = trained_reference_dictionary.reconstruct_minibatch(
+            signals,
+            sc_lambda=0.5,
+            step=2,
+            batchsize=2,
+            normed=True,
+            verbose=False,
+            numThreads=1,
+        )
+        np.testing.assert_allclose(batch, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL)
+        np.testing.assert_allclose(
+            minibatch, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+        )
 
 
 def test_partial_minibatch_forwards_window_normalisation(identity_dictionary):
@@ -300,303 +349,249 @@ def test_partial_minibatch_forwards_window_normalisation(identity_dictionary):
     np.testing.assert_allclose(actual, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL)
 
 
-def test_iterative_reconstruction_conserves_signal(identity_dictionary):
-    signals = np.array(
-        [[1.0, 0.5, 0.0, 0.0], [0.25, -0.75, 0.0, 0.0]]
-    )
-    reconstruction, residual, iterations = (
-        identity_dictionary.reconstruct_iterative(
-            signals,
-            sc_lambda=0.2,
-            batchsize=1,
-            max_iter=20,
-            threshold=1e-10,
-            normed=False,
-            full_output=True,
-            verbose=False,
+class TestReconstructMarginConstrained:
+    def test_finds_suppression_boundary(self, identity_dictionary):
+        signal = np.array([1.0, 0.0, 0.0, 0.0])
+        reconstruction, code, result = (
+            identity_dictionary.reconstruct_margin_constrained(
+                signal,
+                margin=4,
+                lambda_lims=(0.1, 2.0),
+                normed=False,
+                full_output=True,
+            )
         )
-    )
 
-    np.testing.assert_allclose(
-        reconstruction + residual, signals, rtol=1e-9, atol=1e-11
-    )
-    assert np.all(iterations <= 20)
-    assert np.linalg.norm(residual) <= np.linalg.norm(signals)
+        assert reconstruction.shape == signal.shape
+        assert code is not None
+        assert result["converged"]
+        assert result["x"] == pytest.approx(1.0, abs=2e-10)
+        assert np.linalg.norm(reconstruction) < 1e-9
 
+    @pytest.mark.reference
+    def test_matches_reference(self, trained_reference_dictionary, data_dir):
+        with np.load(
+            data_dir / "_dictionary_spams" / "reconstruct_auto.npz",
+            allow_pickle=True,
+        ) as data:
+            signal = data["input"]
+            expected_reconstruction = data["reconstruction"]
+            expected_code = data["code"]
+            expected_result = data["result"].item()
 
-def test_margin_constrained_reconstruction_finds_suppression_boundary(
-    identity_dictionary,
-):
-    signal = np.array([1.0, 0.0, 0.0, 0.0])
-    reconstruction, code, result = (
-        identity_dictionary.reconstruct_margin_constrained(
-            signal,
-            margin=4,
-            lambda_lims=(0.1, 2.0),
-            normed=False,
-            full_output=True,
+        reconstruction, code, result = (
+            trained_reference_dictionary.reconstruct_margin_constrained(
+                signal,
+                margin=100,
+                lambda_lims=(0.01, 10),
+                step=4,
+                normed=True,
+                full_output=True,
+                kwargs_lasso={"numThreads": 1},
+            )
         )
-    )
 
-    assert reconstruction.shape == signal.shape
-    assert code is not None
-    assert result["converged"]
-    assert result["x"] == pytest.approx(1.0, abs=2e-10)
-    assert np.linalg.norm(reconstruction) < 1e-9
-
-
-def test_loss_optimised_reconstruction_has_known_lambda(identity_dictionary):
-    signal = np.array([1.0, 0.0, 0.0, 0.0])
-    reference = np.array([0.6, 0.0, 0.0, 0.0])
-
-    def squared_error(x, y):
-        return float(np.mean((x - y) ** 2))
-
-    reconstruction, optimum, loss = (
-        identity_dictionary.reconstruct_loss_optimised(
-            signal,
-            reference=reference,
-            loss_func=squared_error,
-            normed=False,
-            kwargs_minimize={
-                "method": "bounded",
-                "bounds": (np.log10(0.05), np.log10(0.9)),
-                "options": {"xatol": 1e-7},
-            },
+        assert reconstruction.shape == signal.shape
+        np.testing.assert_allclose(
+            reconstruction,
+            expected_reconstruction,
+            rtol=SPAMS_RTOL,
+            atol=SPAMS_ATOL,
         )
-    )
-
-    assert optimum == pytest.approx(0.4, rel=1e-5)
-    np.testing.assert_allclose(
-        reconstruction, reference, rtol=1e-5, atol=1e-7
-    )
-    assert loss == pytest.approx(squared_error(reconstruction, reference))
-
-
-def test_loss_optimised_reuses_best_evaluation_when_last_is_worse(
-    identity_dictionary, monkeypatch
-):
-    signal = np.array([1.0, 0.0, 0.0, 0.0])
-    reference = np.array([0.6, 0.0, 0.0, 0.0])
-    optimum_log = np.log10(0.4)
-    calls = []
-    reconstruct = identity_dictionary.reconstruct
-
-    def recording_reconstruct(signal_, sc_lambda, **kwargs):
-        calls.append(sc_lambda)
-        return reconstruct(signal_, sc_lambda, **kwargs)
-
-    def minimise_with_worse_last_evaluation(cost_function, **kwargs):
-        optimum_loss = cost_function(optimum_log)
-        cost_function(np.log10(0.8))
-        return {"x": optimum_log, "fun": optimum_loss, "success": True}
-
-    monkeypatch.setattr(identity_dictionary, "reconstruct", recording_reconstruct)
-    monkeypatch.setattr(
-        dictionary_spams_module.scipy.optimize,
-        "minimize_scalar",
-        minimise_with_worse_last_evaluation,
-    )
-
-    reconstruction, optimum, loss = (
-        identity_dictionary.reconstruct_loss_optimised(
-            signal,
-            reference=reference,
-            loss_func=lambda x, y: float(np.mean((x - y) ** 2)),
-            normed=False,
+        np.testing.assert_allclose(
+            code.toarray(),
+            expected_code,
+            rtol=SPAMS_RTOL,
+            atol=SPAMS_ATOL,
         )
-    )
-
-    np.testing.assert_allclose(
-        reconstruction, reference, rtol=1e-9, atol=1e-11
-    )
-    assert optimum == pytest.approx(0.4)
-    assert loss == pytest.approx(0.0, abs=1e-20)
-    np.testing.assert_allclose(calls, [0.4, 0.8], rtol=1e-12, atol=1e-12)
+        assert result["converged"]
+        assert result["x"] == pytest.approx(expected_result["x"], rel=0, abs=1e-12)
 
 
-@pytest.mark.parametrize("loss_function", ["match", "overlap", "ssim"])
-def test_loss_optimised_documented_metrics_recover_identical_shape(
-    identity_dictionary, loss_function
-):
-    signal = np.array([0.0, 1.0, 0.0, 0.0])
-    reconstruction, optimum, loss = (
-        identity_dictionary.reconstruct_loss_optimised(
-            signal,
-            reference=signal,
-            loss_func=loss_function,
-            normed=True,
-            kwargs_minimize={
-                "method": "bounded",
-                "bounds": (np.log10(0.01), np.log10(0.5)),
-                "options": {"xatol": 1e-5},
-            },
+class TestReconstructIterative:
+    def test_conserves_signal(self, identity_dictionary):
+        signals = np.array(
+            [[1.0, 0.5, 0.0, 0.0], [0.25, -0.75, 0.0, 0.0]]
         )
-    )
-
-    assert reconstruction.shape == signal.shape
-    assert 0.01 <= optimum <= 0.5
-    assert loss == pytest.approx(0.0, abs=1e-10)
-
-
-def test_loss_optimised_handles_nondivisible_cropped_interval(
-    identity_dictionary,
-):
-    signal = np.array([0.0, 1.0, 0.0, 0.5, 0.0, -0.25, 0.0])
-    reference = 0.7 * signal
-    limits = (1, 6)
-
-    def squared_error(x, y):
-        return float(np.mean((x - y) ** 2))
-
-    reconstruction, optimum, loss = (
-        identity_dictionary.reconstruct_loss_optimised(
-            signal,
-            reference=reference,
-            limits=limits,
-            step=2,
-            loss_func=squared_error,
-            normed=False,
-            kwargs_minimize={
-                "method": "bounded",
-                "bounds": (np.log10(0.01), np.log10(0.9)),
-                "options": {"xatol": 1e-6},
-            },
+        reconstruction, residual, iterations = (
+            identity_dictionary.reconstruct_iterative(
+                signals,
+                sc_lambda=0.2,
+                batchsize=1,
+                max_iter=20,
+                threshold=1e-10,
+                normed=False,
+                full_output=True,
+                verbose=False,
+            )
         )
-    )
-    cropped = identity_dictionary.reconstruct(
-        signal[slice(*limits)], optimum, step=2, normed=False
-    )
 
-    assert reconstruction.shape == signal.shape
-    assert cropped.shape == reference[slice(*limits)].shape
-    assert loss == pytest.approx(
-        squared_error(cropped, reference[slice(*limits)]), rel=1e-12, abs=1e-12
-    )
-
-
-@pytest.mark.reference
-def test_single_batch_and_minibatch_reconstruction_match_reference(
-    reference_dictionary, data_dir
-):
-    with np.load(
-        data_dir / "_dictionary_spams" / "reconstructions_A.npz"
-    ) as data:
-        signals = data["input"]
-        expected = data["target_reconstructions"]
-        expected_codes = data["target_codes"]
-
-    reconstructions = []
-    codes = []
-    for signal in signals:
-        reconstruction, code = reference_dictionary.reconstruct(
-            signal,
-            sc_lambda=0.5,
-            step=2,
-            normed=True,
-            with_code=True,
-            numThreads=1,
+        np.testing.assert_allclose(
+            reconstruction + residual, signals, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
         )
-        reconstructions.append(reconstruction)
-        codes.append(code.toarray())
+        assert np.all(iterations <= 20)
+        assert np.linalg.norm(residual) <= np.linalg.norm(signals)
 
-    np.testing.assert_allclose(
-        reconstructions, expected, rtol=1e-9, atol=1e-11
-    )
-    np.testing.assert_allclose(codes, expected_codes, rtol=1e-9, atol=1e-11)
+    @pytest.mark.reference
+    def test_matches_reference(self, trained_reference_dictionary, data_dir):
+        with np.load(
+            data_dir / "_dictionary_spams" / "reconstructions_iterative.npz"
+        ) as data:
+            signals = data["input"]
+            expected_reconstruction = data["target_reconstructions"]
+            expected_residual = data["target_residuals"]
+            expected_iterations = data["target_iters"]
 
-    batch = reference_dictionary.reconstruct_batch(
-        signals, 0.5, step=2, normed=True, verbose=False, numThreads=1
-    )
-    minibatch = reference_dictionary.reconstruct_minibatch(
-        signals,
-        sc_lambda=0.5,
-        step=2,
-        batchsize=2,
-        normed=True,
-        verbose=False,
-        numThreads=1,
-    )
-    np.testing.assert_allclose(batch, expected, rtol=1e-9, atol=1e-11)
-    np.testing.assert_allclose(minibatch, expected, rtol=1e-9, atol=1e-11)
-
-
-@pytest.mark.reference
-def test_iterative_reconstruction_matches_reference(reference_dictionary, data_dir):
-    with np.load(
-        data_dir / "_dictionary_spams" / "reconstructions_iterative.npz"
-    ) as data:
-        signals = data["input"]
-        expected_reconstruction = data["target_reconstructions"]
-        expected_residual = data["target_residuals"]
-        expected_iterations = data["target_iters"]
-
-    reconstruction, residual, iterations = reference_dictionary.reconstruct_iterative(
-        signals,
-        sc_lambda=0.7,
-        step=2,
-        batchsize=2,
-        max_iter=1000,
-        threshold=0.01,
-        normed=True,
-        full_output=True,
-        verbose=False,
-        kwargs_lasso={"numThreads": 1},
-    )
-    np.testing.assert_allclose(
-        reconstruction,
-        expected_reconstruction,
-        rtol=1e-9,
-        atol=1e-11,
-    )
-    np.testing.assert_allclose(
-        residual, expected_residual, rtol=1e-9, atol=1e-11
-    )
-    np.testing.assert_array_equal(iterations, expected_iterations)
-    assert reconstruction.shape == signals.shape
-    assert residual.shape == signals.shape
-
-
-@pytest.mark.reference
-def test_margin_constrained_reconstruction_matches_reference(
-    reference_dictionary, data_dir
-):
-    with np.load(
-        data_dir / "_dictionary_spams" / "reconstruct_auto.npz",
-        allow_pickle=True,
-    ) as data:
-        signal = data["input"]
-        expected_reconstruction = data["reconstruction"]
-        expected_code = data["code"]
-        expected_result = data["result"].item()
-
-    reconstruction, code, result = (
-        reference_dictionary.reconstruct_margin_constrained(
-            signal,
-            margin=100,
-            lambda_lims=(0.01, 10),
-            step=4,
-            normed=True,
-            full_output=True,
-            kwargs_lasso={"numThreads": 1},
+        reconstruction, residual, iterations = (
+            trained_reference_dictionary.reconstruct_iterative(
+                signals,
+                sc_lambda=0.7,
+                step=2,
+                batchsize=2,
+                max_iter=1000,
+                threshold=0.01,
+                normed=True,
+                full_output=True,
+                verbose=False,
+                kwargs_lasso={"numThreads": 1},
+            )
         )
-    )
+        np.testing.assert_allclose(
+            reconstruction,
+            expected_reconstruction,
+            rtol=SPAMS_RTOL,
+            atol=SPAMS_ATOL,
+        )
+        np.testing.assert_allclose(
+            residual, expected_residual, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+        )
+        np.testing.assert_array_equal(iterations, expected_iterations)
+        assert reconstruction.shape == signals.shape
+        assert residual.shape == signals.shape
 
-    assert reconstruction.shape == signal.shape
-    np.testing.assert_allclose(
-        reconstruction,
-        expected_reconstruction,
-        rtol=1e-9,
-        atol=1e-11,
-    )
-    np.testing.assert_allclose(
-        code.toarray(),
-        expected_code,
-        rtol=1e-9,
-        atol=1e-11,
-    )
-    assert result["converged"]
-    assert result["x"] == pytest.approx(expected_result["x"], rel=0, abs=1e-12)
+
+class TestReconstructLossOptimised:
+    def test_finds_known_lambda(self, identity_dictionary):
+        signal = np.array([1.0, 0.0, 0.0, 0.0])
+        reference = np.array([0.6, 0.0, 0.0, 0.0])
+
+        def squared_error(x, y):
+            return float(np.mean((x - y) ** 2))
+
+        reconstruction, optimum, loss = (
+            identity_dictionary.reconstruct_loss_optimised(
+                signal,
+                reference=reference,
+                loss_func=squared_error,
+                normed=False,
+                kwargs_minimize={
+                    "method": "bounded",
+                    "bounds": (np.log10(0.05), np.log10(0.9)),
+                    "options": {"xatol": 1e-7},
+                },
+            )
+        )
+
+        assert optimum == pytest.approx(0.4, rel=1e-5)
+        np.testing.assert_allclose(
+            reconstruction, reference, rtol=1e-5, atol=1e-7
+        )
+        assert loss == pytest.approx(squared_error(reconstruction, reference))
+
+    def test_reuses_best_evaluation_when_last_is_worse(
+        self, identity_dictionary, monkeypatch
+    ):
+        signal = np.array([1.0, 0.0, 0.0, 0.0])
+        reference = np.array([0.6, 0.0, 0.0, 0.0])
+        optimum_log = np.log10(0.4)
+        calls = []
+        reconstruct = identity_dictionary.reconstruct
+
+        def recording_reconstruct(signal_, sc_lambda, **kwargs):
+            calls.append(sc_lambda)
+            return reconstruct(signal_, sc_lambda, **kwargs)
+
+        def minimise_with_worse_last_evaluation(cost_function, **kwargs):
+            optimum_loss = cost_function(optimum_log)
+            cost_function(np.log10(0.8))
+            return {"x": optimum_log, "fun": optimum_loss, "success": True}
+
+        monkeypatch.setattr(identity_dictionary, "reconstruct", recording_reconstruct)
+        monkeypatch.setattr(
+            dictionary_spams_module.scipy.optimize,
+            "minimize_scalar",
+            minimise_with_worse_last_evaluation,
+        )
+
+        reconstruction, optimum, loss = (
+            identity_dictionary.reconstruct_loss_optimised(
+                signal,
+                reference=reference,
+                loss_func=lambda x, y: float(np.mean((x - y) ** 2)),
+                normed=False,
+            )
+        )
+
+        np.testing.assert_allclose(
+            reconstruction, reference, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+        )
+        assert optimum == pytest.approx(0.4)
+        assert loss == pytest.approx(0.0, abs=1e-20)
+        np.testing.assert_allclose(calls, [0.4, 0.8], rtol=1e-12, atol=1e-12)
+
+    @pytest.mark.parametrize("loss_function", ["match", "overlap", "ssim"])
+    def test_accepts_documented_loss_metrics(self, identity_dictionary, loss_function):
+        signal = np.array([0.0, 1.0, 0.0, 0.0])
+        reconstruction, optimum, loss = (
+            identity_dictionary.reconstruct_loss_optimised(
+                signal,
+                reference=signal,
+                loss_func=loss_function,
+                normed=True,
+                kwargs_minimize={
+                    "method": "bounded",
+                    "bounds": (np.log10(0.01), np.log10(0.5)),
+                    "options": {"xatol": 1e-5},
+                },
+            )
+        )
+
+        assert reconstruction.shape == signal.shape
+        assert 0.01 <= optimum <= 0.5
+        assert loss == pytest.approx(0.0, abs=1e-10)
+
+    def test_handles_nondivisible_cropped_interval(self, identity_dictionary):
+        signal = np.array([0.0, 1.0, 0.0, 0.5, 0.0, -0.25, 0.0])
+        reference = 0.7 * signal
+        limits = (1, 6)
+
+        def squared_error(x, y):
+            return float(np.mean((x - y) ** 2))
+
+        reconstruction, optimum, loss = (
+            identity_dictionary.reconstruct_loss_optimised(
+                signal,
+                reference=reference,
+                limits=limits,
+                step=2,
+                loss_func=squared_error,
+                normed=False,
+                kwargs_minimize={
+                    "method": "bounded",
+                    "bounds": (np.log10(0.01), np.log10(0.9)),
+                    "options": {"xatol": 1e-6},
+                },
+            )
+        )
+        cropped = identity_dictionary.reconstruct(
+            signal[slice(*limits)], optimum, step=2, normed=False
+        )
+
+        assert reconstruction.shape == signal.shape
+        assert cropped.shape == reference[slice(*limits)].shape
+        assert loss == pytest.approx(
+            squared_error(cropped, reference[slice(*limits)]), rel=1e-12, abs=1e-12
+        )
 
 
 def test_copy_and_reset_restore_initial_components(
@@ -614,8 +609,3 @@ def test_copy_and_reset_restore_initial_components(
     assert not copied.trained
     assert copied.n_train is None
     assert copied.t_train is None
-
-
-def test_reconstruct_rejects_non_array(identity_dictionary):
-    with pytest.raises(TypeError, match="numpy array"):
-        identity_dictionary.reconstruct([1.0, 0.0, 0.0, 0.0], 0.1)
