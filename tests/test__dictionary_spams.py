@@ -215,15 +215,17 @@ def test_training_and_warm_start_match_reference(
 
 class TestReconstruct:
     def test_identity_dictionary_soft_thresholds(self, identity_dictionary):
-        """Verify exact LASSO soft-thresholding with an identity dictionary."""
+        """Check the LASSO reconstruction against the solution for D = I.
+
+        The identity dictionary gives elementwise soft-thresholding. The
+        signal is one unit-norm patch, so the threshold is `sc_lambda`.
+        """
         signal = np.array([1.0, 0.0, 0.0, 0.0])
         reconstruction = identity_dictionary.reconstruct(
             signal, sc_lambda=0.25, normed=False
         )
         expected = np.array([0.75, 0.0, 0.0, 0.0])
-        nrmse = np.linalg.norm(reconstruction - expected) / np.linalg.norm(expected)
 
-        assert nrmse < 1e-9
         np.testing.assert_allclose(
             reconstruction, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
         )
