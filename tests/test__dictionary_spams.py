@@ -9,8 +9,10 @@ from clawdia.dictionaries import DictionarySpams
 
 # In the current analytical cases, the largest local error was 1e-10 at an
 # expected value of 1, and expected zeros were exact (Linux x86_64, Python
-# 3.11.9, NumPy 1.26.4, spams-bin 2.6.12).
-# The exact values are empirical estimations.
+# 3.11.13, NumPy 1.26.4, spams-bin 2.6.12).
+# These values are empirical estimations that assume unchanged the
+# underlying SPAMS implementation. If this were to be updated or changed,
+# local errors will need to be measured again.
 SPAMS_RTOL = 1e-9
 SPAMS_ATOL = 1e-11
 
@@ -124,7 +126,7 @@ def test_signal_pool_initialisation_selects_allowed_atoms_reproducibly(
     """Respect waveform limits, normalization, and the caller's sampling seed."""
     signals, limits = signal_pool_with_waveform_limits
     # Only the four listed windows lie entirely inside the waveform limits.
-    # Sampling three atoms exercises random extraction; repeats are permitted.
+    # Sampling three atoms activates random extraction; repeats are permitted.
     kwargs = {
         "signal_pool": signals,
         "wave_pos": limits,
