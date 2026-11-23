@@ -93,7 +93,9 @@ def signal_pool_with_waveform_limits():
     """Two signals with large samples outside their waveform limits."""
     signals = np.array(
         [
-            [100.0, 100.0, 3.0, 4.0, 0.0, 100.0, 100.0],
+            # Allowed segments by the limtis below:
+            #--------------|               |---------------
+            [ 100.0,  100.0, 3.0, 4.0,  0.0,  100.0,  100.0],
             [-100.0, -100.0, 0.0, 5.0, 12.0, -100.0, -100.0],
         ]
     )
@@ -111,11 +113,15 @@ def signal_pool_with_waveform_limits():
     "l2_normed, allowed_atoms",
     [
         pytest.param(
-            False, [[3, 4], [4, 0], [0, 5], [5, 12]], id="raw-atoms"
+            False,
+            [[3, 4], [4, 0],    # From 1st signal
+             [0, 5], [5, 12]],  # From 2nd signal
+            id="raw-atoms"
         ),
         pytest.param(
             True,
-            [[0.6, 0.8], [1, 0], [0, 1], [5 / 13, 12 / 13]],
+            [[0.6, 0.8], [     1,       0],   # From 1st signal
+             [  0,   1], [5 / 13, 12 / 13]],  # From 2nd signal
             id="normalised-atoms",
         ),
     ],
