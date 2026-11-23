@@ -20,6 +20,14 @@ SPAMS_ATOL = 1e-11
 # FIXTURES
 #------------------------------------------------------------------------------
 
+@pytest.fixture
+def identity_dictionary():
+    return DictionarySpams(
+        dict_init=np.eye(4, dtype=float),
+        ignore_completeness=True,
+    )
+
+
 @pytest.fixture(scope="module")
 def reference_signal_pool(data_dir):
     """Clean Gaussian, sine-Gaussian, and ring-down waveforms with sample limits."""
