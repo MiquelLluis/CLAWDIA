@@ -294,6 +294,7 @@ class TestBatchAndMinibatchReconstruction:
     def test_match_reference(
         self, trained_reference_dictionary, spams_reference_config, data_dir
     ):
+        """Compare signals from all three paths and codes from single reconstruction."""
         with np.load(
             data_dir / "_dictionary_spams" / "reconstructions_A.npz"
         ) as data:
@@ -333,6 +334,7 @@ class TestBatchAndMinibatchReconstruction:
 
 
 def test_partial_minibatch_forwards_window_normalisation(identity_dictionary):
+    """Apply the window-normalisation flag even in the final incomplete minibatch."""
     signals = np.array(
         [
             [2.0, 0.0, 0.0, 0.0],
