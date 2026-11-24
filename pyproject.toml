@@ -7,7 +7,7 @@ name = "CLAWDIA"
 version = "0.5.1"
 description = "A Python package for Gravitational-Wave signal analysis via Sparse Dictionary Learning."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10,<3.13"
 license = { text = "MIT" }
 authors = [
     { name = "Miquel Lluís Llorens Monteagudo", email = "miquel.llorens@uv.es" }
@@ -21,10 +21,11 @@ classifiers = [
 dependencies = [
     "dictol>=0.1.0",
     "matplotlib>=3.9.1",
-    "numpy>=1.26.4,<2",
-    "scipy>=1.14.1",
+    "numpy<2",
+    "scipy",
+    "setuptools<82",
     "spams-bin>=2.6.5.4",
-    "tqdm>=4.66.1"
+    "tqdm"
 ]
 
 [project.optional-dependencies]
