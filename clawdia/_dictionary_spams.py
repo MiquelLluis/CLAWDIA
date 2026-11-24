@@ -1,16 +1,14 @@
 import time
-from typing import Any
 import warnings
+from typing import Any
 
 import numpy as np
-from numpy.typing import NDArray
 import scipy.optimize
 import spams
+from numpy.typing import NDArray
 from tqdm import tqdm
 
-from . import estimators
-from . import lib
-
+from . import estimators, lib
 
 # Remove warning from OpenMP, present in older versions of python-spams.
 if not '__version__' in dir(spams) or spams.__version__ <= '2.6.5.4': # pyright: ignore[reportAttributeAccessIssue]
@@ -289,7 +287,7 @@ class DictionarySpams:
             
             lambda1 = self.lambda1
 
-        tic = time.time()
+        tic = time.perf_counter()
         components, model = _train_dl_checked(
             patches.T,            # SPAMS works with Fortran order.
             D=self.components.T,  #
@@ -307,7 +305,7 @@ class DictionarySpams:
         )
         self.components = components.T
         self.model = model
-        tac = time.time()
+        tac = time.perf_counter()
 
         if warm_start:
             if n_iter < 0:

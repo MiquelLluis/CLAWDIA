@@ -1,6 +1,7 @@
+import time
+
 import dictol.LRSDL
 import numpy as np
-from time import time
 
 from . import lib
 
@@ -365,12 +366,12 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
         random_state = np.random.get_state()
         try:
             np.random.seed(random_seed)
-            tic = time()
+            tic = time.perf_counter()
             super().fit(
                 X_filtered.T, y_filtered, iterations=iterations,
                 verbose=verbose, show_after=show_after
             )
-            tac = time()
+            tac = time.perf_counter()
         finally:
             np.random.set_state(random_state)
         
