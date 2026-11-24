@@ -1,3 +1,4 @@
+import json
 import sys
 
 import numpy as np
@@ -29,6 +30,13 @@ def identity_dictionary():
 
 
 @pytest.fixture(scope="module")
+def spams_reference_config(data_dir):
+    path = data_dir / "_dictionary_spams" / "generate_spams_references.json"
+    with path.open(encoding="utf-8") as config:
+        return json.load(config)
+
+
+@pytest.fixture(scope="module")
 def reference_signal_pool(data_dir):
     """Clean Gaussian, sine-Gaussian, and ring-down waveforms with sample limits."""
     with np.load(data_dir / "strains_clean.npz") as data:
@@ -48,35 +56,26 @@ def reference_trained_components(data_dir):
 
 
 @pytest.fixture(scope="module")
-def untrained_reference_dictionary(reference_signal_pool):
+def untrained_reference_dictionary(reference_signal_pool, spams_reference_config):
     signals, limits = reference_signal_pool
     return DictionarySpams(
         signal_pool=signals,
         wave_pos=limits,
-        a_length=64,
-        d_size=80,
-        lambda1=0.1,
-        batch_size=1,
-        identifier="Test dictionary",
-        l2_normed=True,
-        allow_allzeros=False,
-        patch_min=16,
-        random_state=42,
+        **spams_reference_config["initialisation"],
     )
 
 
 @pytest.fixture(scope="module")
 def trained_reference_dictionary(
-    reference_initial_components, reference_trained_components
+    reference_initial_components, reference_trained_components, spams_reference_config
 ):
+    initialisation = spams_reference_config["initialisation"]
     model = DictionarySpams(
         dict_init=reference_initial_components.copy(),
-        lambda1=0.1,
-        batch_size=1,
-        identifier="Test dictionary",
         trained=True,
-        n_iter=1000,
-        n_train=100,
+        n_iter=spams_reference_config["training"]["n_iter"],
+        n_train=spams_reference_config["training_patches"]["n_patches"],
+        **initialisation,
     )
     model.components = reference_trained_components.copy()
     return model
@@ -172,42 +171,36 @@ def test_signal_pool_initialisation_selects_allowed_atoms_reproducibly(
     reason="the committed SPAMS training reference is Linux-specific",
 )
 def test_training_and_warm_start_match_reference(
-    untrained_reference_dictionary, reference_signal_pool,
-    reference_trained_components, data_dir
+    untrained_reference_dictionary,
+    reference_signal_pool,
+    reference_trained_components,
+    spams_reference_config,
+    data_dir,
 ):
     """Match accepted training and continuation results from synthetic waveforms."""
     signals, limits = reference_signal_pool
+    patch_options = spams_reference_config["training_patches"]
+    training_options = spams_reference_config["training"]
+    warm_start_options = spams_reference_config["warm_start"]
     patches = lib.extract_patches(
-        signals,
-        patch_size=64,
-        limits=limits,
-        n_patches=100,
-        random_state=84,
-        l2_normed=True,
-        allow_allzeros=False,
+        signals, limits=limits, **patch_options
     )
     model = untrained_reference_dictionary.copy()
-    model.train(patches, n_iter=1000, verbose=False, threads=1)
+    model.train(patches, **training_options)
 
     assert model.trained
-    assert model.n_train == 100
-    assert model.n_iter == 1000
+    assert model.n_train == patch_options["n_patches"]
+    assert model.n_iter == training_options["n_iter"]
     assert model.t_train > 0
     np.testing.assert_allclose(
         model.components, reference_trained_components, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
     )
 
-    model.train(
-        patches,
-        warm_start=True,
-        n_iter=500,
-        verbose=False,
-        threads=1,
-    )
+    model.train(patches, **warm_start_options)
     warm_reference = np.load(
         data_dir / "_dictionary_spams" / "dico_spams_trained_warm.npy"
     )
-    assert model.n_iter == 1500
+    assert model.n_iter == training_options["n_iter"] + warm_start_options["n_iter"]
     np.testing.assert_allclose(
         model.components, warm_reference, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
     )
@@ -298,7 +291,9 @@ class TestBatchAndMinibatchReconstruction:
         )
 
     @pytest.mark.reference
-    def test_match_reference(self, trained_reference_dictionary, data_dir):
+    def test_match_reference(
+        self, trained_reference_dictionary, spams_reference_config, data_dir
+    ):
         with np.load(
             data_dir / "_dictionary_spams" / "reconstructions_A.npz"
         ) as data:
@@ -306,16 +301,12 @@ class TestBatchAndMinibatchReconstruction:
             expected = data["target_reconstructions"]
             expected_codes = data["target_codes"]
 
+        reconstruction_options = spams_reference_config["reconstruction"]
         reconstructions = []
         codes = []
         for signal in signals:
             reconstruction, code = trained_reference_dictionary.reconstruct(
-                signal,
-                sc_lambda=0.5,
-                step=2,
-                normed=True,
-                with_code=True,
-                numThreads=1,
+                signal, **reconstruction_options
             )
             reconstructions.append(reconstruction)
             codes.append(code.toarray())
@@ -327,17 +318,13 @@ class TestBatchAndMinibatchReconstruction:
             codes, expected_codes, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
         )
 
+        batch_options = reconstruction_options.copy()
+        del batch_options["with_code"]
         batch = trained_reference_dictionary.reconstruct_batch(
-            signals, 0.5, step=2, normed=True, verbose=False, numThreads=1
+            signals, verbose=False, **batch_options
         )
         minibatch = trained_reference_dictionary.reconstruct_minibatch(
-            signals,
-            sc_lambda=0.5,
-            step=2,
-            batchsize=2,
-            normed=True,
-            verbose=False,
-            numThreads=1,
+            signals, batchsize=2, verbose=False, **batch_options
         )
         np.testing.assert_allclose(batch, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL)
         np.testing.assert_allclose(
@@ -373,6 +360,7 @@ def test_partial_minibatch_forwards_window_normalisation(identity_dictionary):
 
 class TestReconstructMarginConstrained:
     def test_finds_suppression_boundary(self, identity_dictionary):
+        """Find the penalty of one that first suppresses the unit impulse."""
         signal = np.array([1.0, 0.0, 0.0, 0.0])
         reconstruction, code, result = (
             identity_dictionary.reconstruct_margin_constrained(
@@ -391,7 +379,9 @@ class TestReconstructMarginConstrained:
         assert np.linalg.norm(reconstruction) < 1e-9
 
     @pytest.mark.reference
-    def test_matches_reference(self, trained_reference_dictionary, data_dir):
+    def test_matches_reference(
+        self, trained_reference_dictionary, spams_reference_config, data_dir
+    ):
         with np.load(
             data_dir / "_dictionary_spams" / "reconstruct_auto.npz",
             allow_pickle=True,
@@ -403,13 +393,7 @@ class TestReconstructMarginConstrained:
 
         reconstruction, code, result = (
             trained_reference_dictionary.reconstruct_margin_constrained(
-                signal,
-                margin=100,
-                lambda_lims=(0.01, 10),
-                step=4,
-                normed=True,
-                full_output=True,
-                kwargs_lasso={"numThreads": 1},
+                signal, **spams_reference_config["margin_reconstruction"]
             )
         )
 
@@ -455,7 +439,9 @@ class TestReconstructIterative:
         assert np.linalg.norm(residual) <= np.linalg.norm(signals)
 
     @pytest.mark.reference
-    def test_matches_reference(self, trained_reference_dictionary, data_dir):
+    def test_matches_reference(
+        self, trained_reference_dictionary, spams_reference_config, data_dir
+    ):
         with np.load(
             data_dir / "_dictionary_spams" / "reconstructions_iterative.npz"
         ) as data:
@@ -466,16 +452,7 @@ class TestReconstructIterative:
 
         reconstruction, residual, iterations = (
             trained_reference_dictionary.reconstruct_iterative(
-                signals,
-                sc_lambda=0.7,
-                step=2,
-                batchsize=2,
-                max_iter=1000,
-                threshold=0.01,
-                normed=True,
-                full_output=True,
-                verbose=False,
-                kwargs_lasso={"numThreads": 1},
+                signals, **spams_reference_config["iterative_reconstruction"]
             )
         )
         np.testing.assert_allclose(
