@@ -231,7 +231,8 @@ class TestReconstruct:
         )
 
     def test_preserves_nondivisible_signal_length(self, identity_dictionary):
-        signal = np.array([1.0, 0.0, 0.5, 0.0, -0.25, 0.0, 0.0])
+        """Recover every input sample when the last window needs padding."""
+        signal = np.array([1.0, 0.0, 0.5, 0.0, -0.25, 0.0, 0.0])  # 7 samples
         reconstruction = identity_dictionary.reconstruct(
             signal, sc_lambda=0.0, step=2, normed=False
         )
@@ -242,6 +243,7 @@ class TestReconstruct:
         )
 
     def test_normalises_nonzero_output_and_preserves_zeros(self, identity_dictionary):
+        """Scale the peak to one and avoid dividing by zero for a zero signal."""
         signal = np.array([2.0, 0.0, 0.0, 0.0])
         reconstruction = identity_dictionary.reconstruct(
             signal, sc_lambda=0.25, normed=True
@@ -256,12 +258,14 @@ class TestReconstruct:
         np.testing.assert_array_equal(zeros, 0.0)
 
     def test_rejects_non_array(self, identity_dictionary):
+        """Raise a type error when the signal is passed as a Python list."""
         with pytest.raises(TypeError, match="numpy array"):
             identity_dictionary.reconstruct([1.0, 0.0, 0.0, 0.0], 0.1)
 
 
 class TestBatchAndMinibatchReconstruction:
     def test_agree_with_individual_reconstruction(self, identity_dictionary):
+        """Check row-wise agreement, including the final incomplete minibatch."""
         signals = np.array(
             [
                 [1.0, 0.0, 0.0, 0.0],
@@ -283,7 +287,7 @@ class TestBatchAndMinibatchReconstruction:
         minibatch = identity_dictionary.reconstruct_minibatch(
             signals,
             sc_lambda=0.2,
-            batchsize=2,
+            batchsize=2,  # 3 minibatches, last one incomplete
             normed=False,
             verbose=False,
         )
