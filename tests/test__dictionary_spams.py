@@ -377,13 +377,16 @@ class TestReconstructMarginConstrained:
         assert reconstruction.shape == signal.shape
         assert code is not None
         assert result["converged"]
-        assert result["x"] == pytest.approx(1.0, abs=2e-10)
+        # The bisection bracket is about 2e-12 here, so `SPAMS_ATOL` leaves
+        # a reasonable enough room for numerical errors.
+        assert result["x"] == pytest.approx(1.0, rel=0, abs=SPAMS_ATOL)
         assert np.linalg.norm(reconstruction) < 1e-9
 
     @pytest.mark.reference
     def test_matches_reference(
         self, trained_reference_dictionary, spams_reference_config, data_dir
     ):
+        """Compare the reconstruction, sparse code, and suppression boundary."""
         with np.load(
             data_dir / "_dictionary_spams" / "reconstruct_auto.npz",
             allow_pickle=True,
@@ -418,6 +421,7 @@ class TestReconstructMarginConstrained:
 
 class TestReconstructIterative:
     def test_conserves_signal(self, identity_dictionary):
+        """Check that the reconstruction and residual sum to the original input."""
         signals = np.array(
             [[1.0, 0.5, 0.0, 0.0], [0.25, -0.75, 0.0, 0.0]]
         )
@@ -444,6 +448,7 @@ class TestReconstructIterative:
     def test_matches_reference(
         self, trained_reference_dictionary, spams_reference_config, data_dir
     ):
+        """Compare the reconstruction, residual, and iteration count for each signal."""
         with np.load(
             data_dir / "_dictionary_spams" / "reconstructions_iterative.npz"
         ) as data:
@@ -473,6 +478,13 @@ class TestReconstructIterative:
 
 class TestReconstructLossOptimised:
     def test_finds_known_lambda(self, identity_dictionary):
+        """Recover the penalty of 0.4 that shrinks a unit peak to 0.6.
+        
+        Like in TestReconstruct.test_identity_dictionary_soft_thresholds, we
+        use the property that the identity dictionary transforms the LASSO
+        minimisation into the elementwise soft-thresholding operator. 
+        The expected lambda is therefore 1 - 0.6 = 0.4 .
+        """
         signal = np.array([1.0, 0.0, 0.0, 0.0])
         reference = np.array([0.6, 0.0, 0.0, 0.0])
 
@@ -493,15 +505,18 @@ class TestReconstructLossOptimised:
             )
         )
 
-        assert optimum == pytest.approx(0.4, rel=1e-5)
+        # `xatol=1e-7` in log10(lambda) corresponds to about 2.3e-7 relative
+        # in lambda. Allow 1e-5 as a reasonable margin.
+        assert optimum == pytest.approx(0.4, rel=1e-5, abs=0)
         np.testing.assert_allclose(
             reconstruction, reference, rtol=1e-5, atol=1e-7
         )
-        assert loss == pytest.approx(squared_error(reconstruction, reference))
+        assert loss == squared_error(reconstruction, reference)
 
     def test_reuses_best_evaluation_when_last_is_worse(
         self, identity_dictionary, monkeypatch
     ):
+        """Return the best reconstruction without evaluating its penalty twice."""
         signal = np.array([1.0, 0.0, 0.0, 0.0])
         reference = np.array([0.6, 0.0, 0.0, 0.0])
         optimum_log = np.log10(0.4)
@@ -512,7 +527,7 @@ class TestReconstructLossOptimised:
             calls.append(sc_lambda)
             return reconstruct(signal_, sc_lambda, **kwargs)
 
-        def minimise_with_worse_last_evaluation(cost_function, **kwargs):
+        def minimise_with_worse_last_evaluation(cost_function, **_):
             optimum_loss = cost_function(optimum_log)
             cost_function(np.log10(0.8))
             return {"x": optimum_log, "fun": optimum_loss, "success": True}
@@ -536,12 +551,15 @@ class TestReconstructLossOptimised:
         np.testing.assert_allclose(
             reconstruction, reference, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
         )
-        assert optimum == pytest.approx(0.4)
-        assert loss == pytest.approx(0.0, abs=1e-20)
+        assert optimum == pytest.approx(0.4, rel=SPAMS_RTOL, abs=SPAMS_ATOL)
+        # The measured SPAMS error of 6e-11 in one sample gives an MSE of
+        # about 9e-22 over four samples. Allow roughly ten times that error.
+        assert loss == pytest.approx(0.0, rel=0, abs=1e-20)
         np.testing.assert_allclose(calls, [0.4, 0.8], rtol=1e-12, atol=1e-12)
 
     @pytest.mark.parametrize("loss_function", ["match", "overlap", "ssim"])
     def test_accepts_documented_loss_metrics(self, identity_dictionary, loss_function):
+        """Check that each named metric gives zero loss for the normalised impulse."""
         signal = np.array([0.0, 1.0, 0.0, 0.0])
         reconstruction, optimum, loss = (
             identity_dictionary.reconstruct_loss_optimised(
@@ -559,10 +577,12 @@ class TestReconstructLossOptimised:
 
         assert reconstruction.shape == signal.shape
         assert 0.01 <= optimum <= 0.5
-        assert loss == pytest.approx(0.0, abs=1e-10)
+        # The normalised impulse gives zero loss, so allow absolute roundoff.
+        assert loss == pytest.approx(0.0, rel=0, abs=SPAMS_ATOL)
 
     def test_handles_nondivisible_cropped_interval(self, identity_dictionary):
-        signal = np.array([0.0, 1.0, 0.0, 0.5, 0.0, -0.25, 0.0])
+        """Evaluate the loss on a crop whose last window needs padding."""
+        signal = np.array([0.0, 1.0, 0.0, 0.5, 0.0, -0.25, 0.0])  # 7 samples
         reference = 0.7 * signal
         limits = (1, 6)
 
@@ -588,6 +608,8 @@ class TestReconstructLossOptimised:
             signal[slice(*limits)], optimum, step=2, normed=False
         )
 
+        # The reconstruction should respect the original length despite the use
+        # of padding internally in all cases, and the loss be consistent.
         assert reconstruction.shape == signal.shape
         assert cropped.shape == reference[slice(*limits)].shape
         assert loss == pytest.approx(
