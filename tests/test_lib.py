@@ -262,15 +262,25 @@ class TestExtractPatches:
 
 
     def test_random_is_seeded(self):
-        """A below-maximum request selects reproducible random patches."""
+        """Use the caller's seed to select reproducible, eligible windows."""
         signal = np.arange(20, dtype=float)
-        first = lib.extract_patches(
-            signal, patch_size=4, n_patches=5, random_state=42
+        patch_size, n_patches = 4, 5
+        first, same_seed, different_seed = (
+            lib.extract_patches(
+                signal, patch_size=patch_size, n_patches=n_patches, random_state=seed
+            )
+            for seed in (42, 42, 17)
         )
-        second = lib.extract_patches(
-            signal, patch_size=4, n_patches=5, random_state=42
-        )
-        np.testing.assert_array_equal(first, second)
+        allowed = {
+            tuple(signal[start:start + patch_size])
+            for start in range(len(signal) - patch_size + 1)
+        }
+
+        for patches in (first, different_seed):
+            assert patches.shape == (n_patches, patch_size)
+            assert all(tuple(patch) in allowed for patch in patches)
+        np.testing.assert_array_equal(first, same_seed)
+        assert not np.array_equal(first, different_seed)
 
 
     def test_consecutive_normalisation_is_reversible(self):
