@@ -305,21 +305,22 @@ class TestExtractPatches:
         )
 
 
-    def test_all_zero_patch_handling(self):
-        """Normalize zero consecutive patches safely and reject a zero-only random request."""
-        zeros = np.zeros(6)
+    def test_consecutive_normalisation_preserves_zero_patches(self):
         patches, norms = lib.extract_patches(
-            zeros,
+            np.zeros(6),
             patch_size=3,
             l2_normed=True,
             return_norm_coefs=True,
         )
-        np.testing.assert_array_equal(patches, 0)
-        np.testing.assert_array_equal(norms, 0)
+        np.testing.assert_array_equal(patches, np.zeros((4, 3)), strict=True)
+        np.testing.assert_array_equal(norms, np.zeros(4), strict=True)
 
+
+    def test_random_excludes_all_zero_patches(self):
+        """Skip ineligible rows and raise when no nonzero patch can be drawn."""
         with pytest.raises(ValueError, match="contains only zeros"):
             lib.extract_patches(
-                zeros,
+                np.zeros(6),
                 patch_size=3,
                 n_patches=1,
                 allow_allzeros=False,
