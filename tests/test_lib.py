@@ -284,21 +284,24 @@ class TestExtractPatches:
 
 
     def test_consecutive_normalisation_is_reversible(self):
-        signal = np.arange(6, dtype=float)
         patches, norms = lib.extract_patches(
-            signal,
+            np.arange(6, dtype=float),
             patch_size=3,
             l2_normed=True,
             return_norm_coefs=True,
         )
-        raw = lib.extract_patches(signal, patch_size=3)
+        expected_raw = np.array(
+            [[0.0, 1.0, 2.0], [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]
+        )
+        expected_norms = np.sqrt([5, 14, 29, 50])
 
         assert np.issubdtype(patches.dtype, np.floating)
         np.testing.assert_allclose(
-            np.linalg.norm(patches[1:], axis=1), 1.0, rtol=1e-12, atol=1e-12
+            np.linalg.norm(patches, axis=1), np.ones(4), rtol=1e-12, atol=1e-12
         )
+        np.testing.assert_allclose(norms, expected_norms, rtol=1e-12, atol=1e-12)
         np.testing.assert_allclose(
-            patches * norms[:, None], raw, rtol=1e-12, atol=1e-12
+            patches * norms[:, None], expected_raw, rtol=1e-12, atol=1e-12
         )
 
 
