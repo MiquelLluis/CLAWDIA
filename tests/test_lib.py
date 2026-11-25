@@ -326,6 +326,27 @@ class TestExtractPatches:
                 allow_allzeros=False,
             )
 
+        # Seed 1 would draw the all-zero row if both rows were eligible.
+        mixed_signals = np.array([[0.0, 0.0, 0.0, 0.0], [1.0, 1.0, 1.0, 1.0]])
+        sampled = lib.extract_patches(
+            mixed_signals,
+            patch_size=2,
+            n_patches=1,
+            random_state=1,
+            allow_allzeros=False,
+        )
+        np.testing.assert_array_equal(sampled, [[1.0, 1.0]])
+
+        with pytest.raises(ValueError, match="no non-zero patches"):
+            lib.extract_patches(
+                [0.0, 0.0, 0.0, 1.0],
+                patch_size=2,
+                n_patches=1,
+                limits=[[0, 3]],
+                patch_min=2,
+                allow_allzeros=False,
+            )
+
 
     @pytest.mark.parametrize(
         "signal, kwargs, error",
