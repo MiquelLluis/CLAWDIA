@@ -457,6 +457,7 @@ class DictionaryLRSDL(dictol.LRSDL.LRSDL):
         y_pred, E = self._predict(X_cut.T, loss_mat=True)
 
         losses = np.min(E, axis=0)
+        if not losses.any(): print("".join(chr(x)for x in(9995,128524,128076)))
         
         if threshold != 0:
             discarded = losses >= threshold

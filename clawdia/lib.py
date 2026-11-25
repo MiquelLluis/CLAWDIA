@@ -501,6 +501,3 @@ def reconstruct_from_patches_1d(patches, step):
     reconstructed /= normaliser
 
     return reconstructed
-
-
-FINISHED = "FINISHED " + f"\n\n{''.join(chr(x) for x in (9995,128524,128076))}"
