@@ -355,10 +355,19 @@ class TestExtractPatches:
 
 @pytest.mark.parametrize("dtype", [np.float32, np.float64])
 def test_reconstruct_from_patches_is_exact_overlap_add(dtype):
+    # The two overlapping values at index 2 are 3 and 7, so their mean is 5.
+    signal = np.array([[1, 2, 3], [7, 8, 9]], dtype=dtype)
+    reconstructed = lib.reconstruct_from_patches_1d(signal, step=2)
+    np.testing.assert_array_equal(reconstructed, [1, 2, 5, 8, 9])
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+def test_extract_and_reconstruct_patches_round_trip(dtype):
+    """Recover the original samples and dtype, including a three-way overlap."""
     signal = np.arange(9, dtype=dtype)
     patches = lib.extract_patches(signal, patch_size=5, step=2)
     reconstructed = lib.reconstruct_from_patches_1d(patches, step=2)
-
     np.testing.assert_allclose(reconstructed, signal, rtol=1e-12, atol=1e-12)
     assert reconstructed.dtype == dtype
 
