@@ -74,11 +74,13 @@ class TestExtractPatches:
     broader testing here targets distinct behaviours and known risks, rather
     than every parameter combination.
     """
-    def test_consecutive_returns_exact_multisignal_windows(self):
+    def test_consecutive_extracts_strided_windows_row_by_row(self):
         signals = np.arange(12, dtype=np.float64).reshape(2, 6)
         patches = lib.extract_patches(signals, patch_size=3, step=2)
         expected = np.array(
-            [[0, 1, 2], [2, 3, 4], [6, 7, 8], [8, 9, 10]], dtype=float
+            [[0, 1, 2], [2, 3, 4],    # First signal
+             [6, 7, 8], [8, 9, 10]],  # Second signal
+            dtype=float
         )
         np.testing.assert_array_equal(patches, expected)
         assert patches.dtype == signals.dtype
@@ -87,8 +89,8 @@ class TestExtractPatches:
     @pytest.mark.parametrize(
         "length, limits, patch_min, step, expected_starts",
         [
-            # Since the signal length is fixed, I only need to specify the expected
-            # start value of each extracted patch.
+            # Since the signal length is fixed, it only needs to be specified
+            # the expected start value of each extracted patch.
             pytest.param(7, [[2, 6]], 3, 1, [1, 2, 3], id="partial-overlap"),
             pytest.param(7, [[2, 6]], 4, 1, [2], id="full-overlap-single-window"),  # patch_min == patch_size
             pytest.param(7, [[0, 3]], 2, 1, [0, 1], id="left-signal-boundary"),
