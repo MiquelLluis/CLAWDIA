@@ -10,12 +10,11 @@ As the CLAWDIA pipeline grows, these functions will be organized into more
 semantically appropriate modules.
 
 """
-from typing import Literal, overload
 import warnings
+from typing import Literal, overload
 
 import numpy as np
 from numpy.typing import NDArray
-
 
 # Default values same as Scipy's `optimize._zeros_py.py` module.
 # Ref: https://github.com/scipy/scipy/blob/v1.15.0/scipy/optimize/_zeros_py.py
@@ -390,10 +389,8 @@ def extract_patches(
             p0 += patch_min - patch_size
             # The last eligible start is included, so use an exclusive stop.
             p1 -= patch_min - 1
-            if p0 < 0:
-                p0 = 0
-            if p1 > l_signals - patch_size + 1:
-                p1 = l_signals - patch_size + 1
+            p0 = max(p0, 0)
+            p1 = min(p1, l_signals - patch_size + 1)
             
             window_limits.append((p0, p1))
             max_patches += len(range(p0, p1, step))
