@@ -288,8 +288,9 @@ def extract_patches(
         False by default.
 
     allow_allzeros: bool, optional
-        When extracting random patches, if False and `l2_normed == True`,
-        generate another random window position until the l2 norm is != 0.
+        If False, exclude all-zero patches. Random extraction samples only
+        from signals with an eligible nonzero window. A request for patches
+        raises ValueError if every eligible window is all zero.
 
     allow_padding: bool, optional
         If True, right-pad signals with zeros so the final patch covers the
@@ -436,9 +437,22 @@ def extract_patches(
             n_patches = patches.shape[0]
     
     # Extract a limited number of patches randomly selected.
-    else:
+    elif n_patches:
+        eligible_signals = range(n_signals)
+        if not allow_allzeros:
+            # The possible windows jointly cover the samples from the first
+            # window's start to the last window's end.
+            eligible_signals = [
+                i for i, (start, stop) in enumerate(window_limits)
+                if start < stop and signals[i, start:stop + patch_size - 1].any()
+            ]
+            if not eligible_signals:
+                raise ValueError(
+                    "no non-zero patches could be extracted with the given "
+                    "signals, limits and parameters (all patches are all-zero)"
+                )
         for k in range(n_patches):
-            i = rng.integers(0, n_signals)
+            i = eligible_signals[rng.integers(0, len(eligible_signals))]
             j = rng.integers(*window_limits[i])
             signal_aux = signals[i, j:j+patch_size]
             if not allow_allzeros:
