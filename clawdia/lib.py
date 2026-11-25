@@ -19,7 +19,7 @@ from numpy.typing import NDArray
 # Default values same as Scipy's `optimize._zeros_py.py` module.
 # Ref: https://github.com/scipy/scipy/blob/v1.15.0/scipy/optimize/_zeros_py.py
 _xtol = 2e-12
-_rtol = 4 * np.finfo(float).eps
+_rtol = 4 * float(np.finfo(float).eps)
 
 
 class BoundaryError(ValueError):
