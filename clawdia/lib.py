@@ -29,7 +29,6 @@ class BoundaryError(ValueError):
     issues with input values exceeding or falling below defined boundaries.
     
     """
-    pass
 
 
 def abs_normalise(array, axis=-1):
@@ -130,7 +129,7 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     rtol : float, optional
         Relative tolerance for the solution. Default is `_rtol`.
     maxiter : int, optional
-        Maximum number of iterations to perform. Default is 100.
+        Maximum number of iterations to perform. Must be positive. Default is 100.
     verbose : bool, optional
         If `True`, prints the progress of each iteration, including the
         evaluation of ``f(x)`` at the midpoint. Default is `False`.
@@ -159,7 +158,7 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
         one endpoint evaluates to ``f(x) = 0``.
     ValueError
         If the function is not continuous or if `a` and `b` are not proper
-        bounds.
+        bounds. Also raised if `maxiter` is less than one.
 
     Notes
     -----
@@ -180,6 +179,9 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
     True
 
     """
+    if maxiter < 1:
+        raise ValueError("`maxiter` must be > 0")
+
     fa = f(a, *args)
     fb = f(b, *args)
     solver_stats = {'funcalls': 2}
@@ -202,14 +204,14 @@ def semibool_bisect(f, a, b, args=(), xtol=_xtol, rtol=_rtol, maxiter=100, verbo
             fa = fm
         if abs(dm) < xtol + rtol*abs(xm):
             solver_stats['converged'] = True
-            solver_stats['niters'] = i+1
+            solver_stats['niters'] = i + 1
             solver_stats['x'] = a  # Last point where f(x) != 0
             solver_stats['f'] = fa
             return solver_stats
 
     # Not converged
     solver_stats['converged'] = False
-    solver_stats['niters'] = i+1
+    solver_stats['niters'] = int(maxiter)
     solver_stats['x'] = a
     solver_stats['f'] = fa
     

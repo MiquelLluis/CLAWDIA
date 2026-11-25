@@ -66,6 +66,12 @@ def test_semibool_bisect_reports_nonconvergence_and_bad_boundary():
         lib.semibool_bisect(lambda x: x + 1, 0.0, 4.0)
 
 
+@pytest.mark.parametrize("maxiter", [0, -1])
+def test_semibool_bisect_rejects_nonpositive_iteration_limit(maxiter):
+    with pytest.raises(ValueError, match="maxiter"):
+        lib.semibool_bisect(lambda x: float(x <= 2.0), 0.0, 4.0, maxiter=maxiter)
+
+
 class TestExtractPatches:
     """
     `extract_patches` combines consecutive and random extraction with limits,
