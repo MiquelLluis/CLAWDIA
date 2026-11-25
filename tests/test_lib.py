@@ -38,18 +38,21 @@ def test_confusion_percent_int_rejects_invalid_counts(counts):
         lib.confusion_percent_int(counts)
 
 
-def test_semibool_bisect_finds_known_boundary():
-    result = lib.semibool_bisect(
-        lambda x: 1.0 if x <= 2.0 else 0.0,
-        0.0,
-        4.0,
-        xtol=1e-10,
-        rtol=1e-12,
-    )
+@pytest.mark.parametrize("nonzero_on_left", [True, False], ids=["left", "right"])
+def test_semibool_bisect_finds_known_boundary(nonzero_on_left):
+    """Approach an off-midpoint boundary from its nonzero side."""
+    boundary = 1.3
+    xtol = 1e-10
+    rtol = 1e-12
+
+    def step_function(x):
+        return float(x <= boundary if nonzero_on_left else x >= boundary)
+
+    result = lib.semibool_bisect(step_function, 0.0, 4.0, xtol=xtol, rtol=rtol)
 
     assert result["converged"]
-    assert 0 <= 2.0 - result["x"] <= 2e-10
-    assert result["f"] == 1.0
+    assert result["x"] == pytest.approx(boundary, rel=0, abs=xtol + rtol * abs(boundary))
+    assert step_function(result["x"]) == result["f"] == 1.0
 
 
 def test_semibool_bisect_reports_nonconvergence_and_bad_boundary():
