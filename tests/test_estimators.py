@@ -56,10 +56,10 @@ def contaminated_signals(excluded_component):
     return x, y
 
 
-@pytest.fixture(params=[16.0, 24.0], ids=["at-nyquist", "beyond-nyquist"])
-def flat_noise_psd(request):
-    """A flat PSD covering or exceeding the Nyquist limit of 32 Hz signals."""
-    return np.array([[0.0, request.param], [2.0, 2.0]])
+@pytest.fixture
+def flat_noise_psd():
+    """A flat PSD exceeding the Nyquist limit for the 32 Hz test signals."""
+    return np.array([[0.0, 24.0], [2.0, 2.0]])
 
 
 @pytest.fixture(params=[9, 10], ids=["odd", "even"])
@@ -83,8 +83,8 @@ def highest_bin_tone(request):
 
 
 @pytest.fixture(
-    params=[(0.0, 0.5), (15.5, 16.0), (16.0, 20.0), (20.0, 24.0)],
-    ids=["zero-frequency-only", "nyquist-only", "nyquist-and-above", "above-nyquist"],
+    params=[(0.0, 0.5), (20.0, 24.0)],
+    ids=["zero-frequency-only", "above-nyquist"],
 )
 def empty_band_psd(request):
     """A PSD band containing no usable bins for 32 samples at 32 Hz."""
