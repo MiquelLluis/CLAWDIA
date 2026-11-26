@@ -133,6 +133,23 @@ def test_softmax_is_stable_and_respects_axis():
     )
 
 
+@pytest.mark.parametrize(
+    "estimator", [estimators.inner_product_weighted, estimators.match],
+    ids=["inner-product", "match"],
+)
+@pytest.mark.parametrize(
+    "x, y",
+    [
+        pytest.param(np.ones(4), np.ones(5), id="unequal-lengths"),
+        pytest.param(np.ones(4, dtype=complex), np.ones(4), id="complex-input"),
+    ],
+)
+def test_frequency_comparisons_reject_incompatible_signals(estimator, x, y):
+    """Reject signals without a common real FFT interpretation."""
+    with pytest.raises(ValueError):
+        estimator(x, y, at=1, window="boxcar")
+
+
 class TestInnerProductWeighted:
     def test_matches_bin_centred_fft_result(self, bin_centred_8hz_sinusoid):
         """Check the physical self-inner-product with unit and constant PSDs."""
@@ -204,18 +221,6 @@ class TestInnerProductWeighted:
         expected = n_samples / sample_rate * amplitude**2 / 2
         assert full == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
         assert cropped == pytest.approx(full, rel=FFT_TOL, abs=FFT_TOL)
-
-    @pytest.mark.parametrize(
-        "x, y",
-        [
-            (np.ones(4), np.ones(5)),
-            (np.ones(4, dtype=complex), np.ones(4)),
-        ],
-    )
-    def test_rejects_invalid_inputs(self, x, y):
-        """Reject unequal lengths and complex inputs."""
-        with pytest.raises(ValueError):
-            estimators.inner_product_weighted(x, y, at=1, window="boxcar")
 
     def test_excluded_components_do_not_affect_interior_tone(
         self, contaminated_signals, flat_noise_psd
@@ -305,6 +310,13 @@ class TestOverlap:
         actual = estimators.overlap(signal, other, at=1/sample_rate, window="boxcar")
         assert actual == pytest.approx(expected, rel=0, abs=FFT_TOL)
 
+    def test_doverlap_is_zero_for_identical_signals(self, bin_centred_8hz_sinusoid):
+        """Identical signals have zero overlap pseudo-distance."""
+        signal, sample_rate, _ = bin_centred_8hz_sinusoid
+        assert estimators.doverlap(
+            signal, signal, at=1 / sample_rate, window="boxcar"
+        ) == pytest.approx(0.0, rel=0, abs=FFT_TOL)
+
     def test_excluded_components_do_not_affect_interior_tone(
         self, contaminated_signals, flat_noise_psd
     ):
@@ -336,14 +348,6 @@ class TestOverlap:
         assert estimators.overlap(
             signal, signal, at=1 / 32, psd=empty_band_psd, window="boxcar"
         ) == 0.0
-
-
-def test_doverlap_is_zero_for_identical_signals(bin_centred_8hz_sinusoid):
-    """Identical signals have zero overlap pseudo-distance."""
-    signal, sample_rate, _ = bin_centred_8hz_sinusoid
-    assert estimators.doverlap(
-        signal, signal, at=1 / sample_rate, window="boxcar"
-    ) == pytest.approx(0.0, rel=0, abs=FFT_TOL)
 
 
 class TestMatch:
@@ -401,18 +405,6 @@ class TestMatch:
         """Check that a zero norm does not produce NaN during normalisation."""
         zeros = np.zeros(32)
         assert estimators.match(zeros, zeros, window="boxcar") == 0.0
-
-    @pytest.mark.parametrize(
-        "x, y",
-        [
-            pytest.param(np.ones(4), np.ones(5), id="unequal-lengths"),
-            pytest.param(np.ones(4, dtype=complex), np.ones(4), id="complex-input"),
-        ],
-    )
-    def test_rejects_invalid_inputs(self, x, y):
-        """Reject unequal lengths and complex waveforms under the real-input API."""
-        with pytest.raises(ValueError):
-            estimators.match(x, y, at=1, window="boxcar")
 
     def test_excluded_components_do_not_affect_interior_tone(
         self, contaminated_signals, flat_noise_psd
