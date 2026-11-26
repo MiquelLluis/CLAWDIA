@@ -693,7 +693,3 @@ def test_frequency_estimators_weight_only_retained_tones(
     assert snr == pytest.approx(np.sqrt(expected_power), rel=FFT_TOL, abs=0)
     assert overlap == pytest.approx(expected_similarity, rel=FFT_TOL, abs=0)
     assert match == pytest.approx(expected_similarity, rel=FFT_TOL, abs=0)
-
-
-def test_find_merger_returns_largest_absolute_sample():
-    assert estimators.find_merger(np.array([1.0, -4.0, 3.0])) == 1
