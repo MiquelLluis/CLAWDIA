@@ -224,10 +224,10 @@ class TestInnerProductWeighted:
         # tone has twice the amplitude; a PSD of 2 halves the cross-product.
         assert estimators.inner_product_weighted(
             x, y, at=1 / 32, window="boxcar"
-        ) == pytest.approx(2.0, rel=0, abs=FFT_TOL)
+        ) == pytest.approx(2.0, rel=FFT_TOL, abs=0)
         assert estimators.inner_product_weighted(
             x, y, at=1 / 32, psd=psd, window="boxcar"
-        ) == pytest.approx(1.0, rel=0, abs=FFT_TOL)
+        ) == pytest.approx(1.0, rel=FFT_TOL, abs=0)
 
     def test_signal_with_only_excluded_power_has_zero_norm(self, excluded_component):
         """Return zero when all signal power lies at 0 Hz or Nyquist."""
@@ -244,7 +244,7 @@ class TestInnerProductWeighted:
             expected = amplitude**2 / psd_level
             assert estimators.inner_product_weighted(
                 tone, tone, at=dt, psd=weighting, window="boxcar"
-            ) == pytest.approx(expected, rel=0, abs=FFT_TOL)
+            ) == pytest.approx(expected, rel=FFT_TOL, abs=0)
 
     def test_zero_psd_at_excluded_bins_is_not_used(self, contaminated_signals):
         """Avoid dividing by PSD zeros at the excluded frequencies."""
@@ -252,7 +252,7 @@ class TestInnerProductWeighted:
         psd = np.array([[0.0, 8.0, 16.0], [0.0, 2.0, 0.0]])
         assert estimators.inner_product_weighted(
             signal, signal, at=1 / 32, psd=psd, window="boxcar"
-        ) == pytest.approx(0.5, rel=0, abs=FFT_TOL)
+        ) == pytest.approx(0.5, rel=FFT_TOL, abs=0)
 
     def test_band_without_usable_bins_is_zero(self, empty_band_psd):
         """Return zero when the PSD band contains no usable FFT bins."""
@@ -275,7 +275,7 @@ class TestInnerProductWeighted:
         # 0.5 and duration 1, so its weighted norm is 0.5**2 / 2.
         assert estimators.inner_product_weighted(
             signal, signal, at=1 / 8, psd=psd, window="hann"
-        ) == pytest.approx(0.5**2 / 2, rel=0, abs=FFT_TOL)
+        ) == pytest.approx(0.5**2 / 2, rel=FFT_TOL, abs=0)
 
 
 class TestOverlap:
@@ -318,7 +318,7 @@ class TestOverlap:
         for weighting in (None, psd):
             assert estimators.overlap(
                 x, y, at=1 / 32, psd=weighting, window="boxcar"
-            ) == pytest.approx(1.0, rel=0, abs=FFT_TOL)
+            ) == pytest.approx(1.0, rel=FFT_TOL, abs=0)
 
     def test_signal_with_only_excluded_power_has_zero_norm(self, excluded_component):
         """Return zero by convention when excluded power leaves no signal norm."""
@@ -332,7 +332,7 @@ class TestOverlap:
         for weighting in (None, psd):
             assert estimators.overlap(
                 mixture, tone, at=dt, psd=weighting, window="boxcar"
-            ) == pytest.approx(1 / np.sqrt(2), rel=0, abs=FFT_TOL)
+            ) == pytest.approx(1 / np.sqrt(2), rel=FFT_TOL, abs=0)
 
     def test_band_without_usable_bins_is_zero(self, empty_band_psd):
         """Return zero by convention when the PSD band contains no usable bins."""
@@ -363,7 +363,7 @@ class TestMatch:
 
         match = estimators.match(signal, rotated, window="boxcar")
 
-        assert match == pytest.approx(1.0, rel=0, abs=FFT_TOL)
+        assert match == pytest.approx(1.0, rel=FFT_TOL, abs=0)
 
     @pytest.mark.parametrize("phase", [0.0, 0.7], ids=["aligned", "rotated"])
     def test_phase_invariance_does_not_hide_missing_frequency_content(self, phase):
@@ -422,7 +422,7 @@ class TestMatch:
         for weighting in (None, psd):
             assert estimators.match(
                 x, y, at=1 / 32, psd=weighting, window="boxcar"
-            ) == pytest.approx(1.0, rel=0, abs=FFT_TOL)
+            ) == pytest.approx(1.0, rel=FFT_TOL, abs=0)
 
     def test_signal_with_only_excluded_power_has_zero_norm(self, excluded_component):
         """Return zero match and lag when all signal power is excluded."""
@@ -436,7 +436,7 @@ class TestMatch:
         for weighting in (None, psd):
             assert estimators.match(
                 mixture, tone, at=dt, psd=weighting, window="boxcar"
-            ) == pytest.approx(1 / np.sqrt(2), rel=0, abs=FFT_TOL)
+            ) == pytest.approx(1 / np.sqrt(2), rel=FFT_TOL, abs=0)
 
     def test_band_without_usable_bins_is_zero(self, empty_band_psd):
         """Return zero match and lag when the PSD band contains no usable bins."""
@@ -468,7 +468,7 @@ class TestMatchAndImatch:
             signal, shifted, at=0.25, window="boxcar", return_lag=True
         )
 
-        assert match == pytest.approx(1.0, rel=0, abs=FFT_TOL)
+        assert match == pytest.approx(1.0, rel=FFT_TOL, abs=0)
         assert lag == (-7, -1.75)
         assert mismatch == pytest.approx(0.0, rel=0, abs=FFT_TOL)
         assert mismatch_lag == lag
@@ -519,7 +519,7 @@ class TestSnr:
         actual = estimators.snr(
             signal, psd=psd, at=dt, window=np.ones(len(signal))
         )
-        assert actual == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
+        assert actual == pytest.approx(expected, rel=FFT_TOL, abs=0)
 
     def test_excluded_components_do_not_affect_interior_tone(
         self, contaminated_signals, flat_noise_psd
@@ -530,7 +530,7 @@ class TestSnr:
         # One second of a unit-amplitude tone with PSD 2 gives SNR squared 1/2.
         assert estimators.snr(
             x, at=1 / 32, psd=psd, window=np.ones(32)
-        )**2 == pytest.approx(0.5, rel=0, abs=FFT_TOL)
+        )**2 == pytest.approx(0.5, rel=FFT_TOL, abs=0)
 
     def test_signal_with_only_excluded_power_has_zero_norm(self, excluded_component):
         """Return zero SNR when all signal power lies at 0 Hz or Nyquist."""
@@ -544,7 +544,7 @@ class TestSnr:
         tone, _, dt, amplitude, psd = highest_bin_tone
         assert estimators.snr(
             tone, at=dt, psd=psd, window=np.ones(len(tone))
-        )**2 == pytest.approx(amplitude**2 / 2, rel=0, abs=FFT_TOL)
+        )**2 == pytest.approx(amplitude**2 / 2, rel=FFT_TOL, abs=0)
 
     def test_zero_psd_at_excluded_bins_is_not_used(self, contaminated_signals):
         """Avoid dividing by PSD zeros at the excluded frequencies."""
@@ -552,7 +552,7 @@ class TestSnr:
         psd = np.array([[0.0, 8.0, 16.0], [0.0, 2.0, 0.0]])
         assert estimators.snr(
             signal, at=1 / 32, psd=psd, window=np.ones(32)
-        )**2 == pytest.approx(0.5, rel=0, abs=FFT_TOL)
+        )**2 == pytest.approx(0.5, rel=FFT_TOL, abs=0)
 
     def test_band_without_usable_bins_is_zero(self, empty_band_psd):
         """Return zero SNR when the PSD band contains no usable FFT bins."""
@@ -575,7 +575,7 @@ class TestSnr:
         # second; its squared SNR with PSD 2 is 0.5**2 / 2.
         assert estimators.snr(
             signal, at=1 / 8, psd=psd, window=get_window("hann", len(signal))
-        )**2 == pytest.approx(0.5**2 / 2, rel=0, abs=FFT_TOL)
+        )**2 == pytest.approx(0.5**2 / 2, rel=FFT_TOL, abs=0)
 
 
 @pytest.mark.parametrize("sample_rate", [64.0, 128.0], ids=["64-Hz", "128-Hz"])
@@ -597,7 +597,7 @@ def test_self_inner_product_equals_snr_squared(sample_rate, window):
         signal, at=dt, psd=psd, window=get_window(window, len(signal))
     )
 
-    assert inner == pytest.approx(snr**2, rel=FFT_TOL, abs=FFT_TOL)
+    assert inner == pytest.approx(snr**2, rel=FFT_TOL, abs=0)
 
 
 @pytest.mark.parametrize(
@@ -631,10 +631,10 @@ def test_estimators_follow_pycbc_upper_cutoff(
     overlap = estimators.overlap(mixture, lower_tone, at=dt, psd=psd, window="boxcar")
     match = estimators.match(mixture, lower_tone, at=dt, psd=psd, window="boxcar")
 
-    assert inner == pytest.approx(expected_power, rel=0, abs=FFT_TOL)
-    assert snr**2 == pytest.approx(expected_power, rel=0, abs=FFT_TOL)
-    assert overlap == pytest.approx(expected_similarity, rel=0, abs=FFT_TOL)
-    assert match == pytest.approx(expected_similarity, rel=0, abs=FFT_TOL)
+    assert inner == pytest.approx(expected_power, rel=FFT_TOL, abs=0)
+    assert snr == pytest.approx(np.sqrt(expected_power), rel=FFT_TOL, abs=0)
+    assert overlap == pytest.approx(expected_similarity, rel=FFT_TOL, abs=0)
+    assert match == pytest.approx(expected_similarity, rel=FFT_TOL, abs=0)
 
 
 def test_find_merger_returns_largest_absolute_sample():
