@@ -398,10 +398,24 @@ class TestMatch:
         assert match == pytest.approx(expected, rel=FFT_TOL, abs=0)
         assert mismatch == pytest.approx(1 - expected, rel=FFT_TOL, abs=0)
 
-    def test_zero_signal_is_zero(self):
-        """Check that a zero norm does not produce NaN during normalisation."""
-        zeros = np.zeros(32)
-        assert estimators.match(zeros, zeros, window="boxcar") == 0.0
+    @pytest.mark.parametrize(
+        "x_has_power, y_has_power",
+        [
+            pytest.param(False, False, id="both-zero"),
+            pytest.param(False, True, id="first-zero"),
+            pytest.param(True, False, id="second-zero"),
+        ],
+    )
+    def test_zero_norm_returns_zero_match_and_lag(self, x_has_power, y_has_power):
+        """Return the documented value and lag when normalisation is undefined."""
+        pulse = np.array([0.0, 1.0, 0.0, -1.0])
+        x = x_has_power * pulse
+        y = y_has_power * pulse
+
+        assert estimators.match(x, y, window="boxcar") == 0.0
+        assert estimators.match(
+            x, y, window="boxcar", return_lag=True
+        ) == (0.0, (0, 0.0))
 
     @pytest.mark.parametrize(
         "x, y, error",
