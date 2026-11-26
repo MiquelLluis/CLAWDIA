@@ -550,18 +550,18 @@ class TestMatchAndImatch:
 
 
 class TestSnr:
-    def test_matches_known_bin_centred_signal(self, bin_centred_8hz_sinusoid):
-        """Recover the analytical SNR from tone amplitude, duration, and PSD."""
+    @pytest.mark.parametrize("scale", [1.0, -3.0], ids=["original", "scaled"])
+    def test_scales_with_signal_amplitude(self, bin_centred_8hz_sinusoid, scale):
+        """Recover the analytical SNR, including under a signed rescaling."""
         signal, sample_rate, amplitude = bin_centred_8hz_sinusoid
         dt = 1 / sample_rate
-        frequencies = np.fft.rfftfreq(len(signal), dt)
         psd_level = 2.0
-        psd = np.vstack([frequencies, np.full_like(frequencies, psd_level)])
+        psd = np.array([[0.0, sample_rate / 2], [psd_level, psd_level]])
         duration = len(signal) / sample_rate
-        expected = amplitude * np.sqrt(duration / psd_level)
+        expected = abs(scale) * amplitude * np.sqrt(duration / psd_level)
 
         actual = estimators.snr(
-            signal, psd=psd, at=dt, window=np.ones(len(signal))
+            scale * signal, psd=psd, at=dt, window=np.ones(len(signal))
         )
         assert actual == pytest.approx(expected, rel=FFT_TOL, abs=0)
 
