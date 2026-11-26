@@ -432,6 +432,21 @@ class TestMatch:
         with pytest.raises(ValueError, match=error):
             estimators.match(x, y, at=1.0, window="boxcar")
 
+    @pytest.mark.parametrize(
+        "dt, psd, error",
+        [
+            pytest.param(0.0, None, "positive finite", id="zero-sampling-interval"),
+            pytest.param(
+                1 / 4, np.array([[0.0, 1.0, 2.0], [1.0, 0.0, 1.0]]),
+                "strictly positive", id="zero-in-band-psd",
+            ),
+        ],
+    )
+    def test_rejects_invalid_sampling_or_in_band_psd(self, dt, psd, error):
+        signal = np.array([0.0, 1.0, 0.0, -1.0])
+        with pytest.raises(ValueError, match=error):
+            estimators.match(signal, signal, at=dt, psd=psd, window="boxcar")
+
     def test_excluded_components_do_not_affect_interior_tone(
         self, contaminated_signals, flat_noise_psd
     ):
