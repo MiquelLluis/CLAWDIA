@@ -507,35 +507,45 @@ class TestMatchAndImatch:
         assert mismatch == pytest.approx(0.0, rel=0, abs=FFT_TOL)
         assert mismatch_lag == lag
 
-    @pytest.mark.parametrize("n_samples", [127, 128], ids=["odd", "even"])
-    def test_recovers_weighted_phase_and_cyclic_lag(self, n_samples):
-        """Recover a perfect match and the lag after rotating and delaying two tones.
-
-        First add the same phase angle to both tones, then delay the whole
-        signal and scale its amplitude. The PSD weights the tones differently,
-        but the match should still be 1, and imatch should return 0 with the
-        same aligning lag.
-        """
+    @pytest.mark.parametrize(
+        "n_samples, shift, extra_amplitude",
+        [
+            pytest.param(127, 7, 0.0, id="delayed-perfect-match"),
+            pytest.param(128, -7, 1.0, id="advanced-imperfect-match"),
+        ],
+    )
+    def test_recovers_weighted_phase_and_cyclic_lag(
+        self, n_samples, shift, extra_amplitude
+    ):
+        """Recover the signed lag despite global phase and missing content."""
         dt = 1 / n_samples
         theta = 2 * np.pi * np.arange(n_samples) / n_samples
         phase = 0.7
 
         signal = np.sin(3 * theta) + 0.5 * np.sin(8 * theta)
+        signal += extra_amplitude * np.sin(5 * theta)
         rotated = np.sin(3 * theta + phase) + 0.5 * np.sin(8 * theta + phase)
-        shifted = 2.5 * np.roll(rotated, 7)
+        template = 2.5 * np.roll(rotated, shift)
         psd = np.array([[1.0, 10.0], [2.0, 11.0]])
 
+        # Each tone contributes amplitude**2 / PSD. The shared 3 Hz and 8 Hz
+        # tones have amplitudes 1 and 0.5, and interpolated PSD values 4 and 9.
+        # The extra 5 Hz tone has PSD 6.
+        shared_power = 1 / 4 + 0.5**2 / 9
+        extra_power = extra_amplitude**2 / 6
+        expected = np.sqrt(shared_power / (shared_power + extra_power))
+
         match, lag = estimators.match(
-            signal, shifted, at=dt, psd=psd, window="boxcar", return_lag=True
+            signal, template, at=dt, psd=psd, window="boxcar", return_lag=True
         )
         mismatch, mismatch_lag = estimators.imatch(
-            signal, shifted, at=dt, psd=psd, window="boxcar", return_lag=True
+            signal, template, at=dt, psd=psd, window="boxcar", return_lag=True
         )
 
-        assert match == pytest.approx(1.0, rel=0, abs=FFT_TOL)
-        assert lag[0] == -7
-        assert lag[1] == pytest.approx(-7 * dt, rel=0, abs=1e-12)
-        assert mismatch == pytest.approx(0.0, rel=0, abs=FFT_TOL)
+        assert match == pytest.approx(expected, rel=FFT_TOL, abs=0)
+        assert lag[0] == -shift
+        assert lag[1] == pytest.approx(-shift / n_samples, rel=FLOAT64_RTOL, abs=0)
+        assert mismatch == pytest.approx(1 - expected, rel=0, abs=FFT_TOL)
         assert mismatch_lag == lag
 
 
