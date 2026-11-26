@@ -128,26 +128,6 @@ def test_structural_similarity_has_known_value_and_is_symmetric():
     assert estimators.issim(x, y) == pytest.approx(-expected, rel=FLOAT64_RTOL, abs=0)
 
 
-@pytest.mark.parametrize(
-    "estimator", [estimators.inner_product_weighted, estimators.match],
-    ids=["inner-product", "match"],
-)
-@pytest.mark.parametrize(
-    "x, y, error",
-    [
-        pytest.param(np.ones(4), np.ones(5), "same length", id="unequal-lengths"),
-        pytest.param(
-            np.ones(4, dtype=complex), np.ones(4), "complex|real-valued",
-            id="complex-input",
-        ),
-    ],
-)
-def test_weighted_inner_product_and_match_reject_invalid_signals(estimator, x, y, error):
-    """Check that unequal lengths and complex inputs raise the expected ValueError."""
-    with pytest.raises(ValueError, match=error):
-        estimator(x, y, at=1.0, window="boxcar")
-
-
 class TestInnerProductWeighted:
     def test_matches_bin_centred_fft_result(self, bin_centred_8hz_sinusoid):
         """Check the physical self-inner-product with unit and constant PSDs."""
@@ -219,6 +199,21 @@ class TestInnerProductWeighted:
         expected = n_samples / sample_rate * amplitude**2 / 2
         assert full == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
         assert cropped == pytest.approx(full, rel=FFT_TOL, abs=FFT_TOL)
+
+    @pytest.mark.parametrize(
+        "x, y, error",
+        [
+            pytest.param(np.ones(4), np.ones(5), "same length", id="unequal-lengths"),
+            pytest.param(
+                np.ones(4, dtype=complex), np.ones(4), "cannot be complex",
+                id="complex-input",
+            ),
+        ],
+    )
+    def test_rejects_invalid_signals(self, x, y, error):
+        """Check the ValueError for unequal signal lengths and complex inputs."""
+        with pytest.raises(ValueError, match=error):
+            estimators.inner_product_weighted(x, y, at=1.0, window="boxcar")
 
     def test_excluded_components_do_not_affect_interior_tone(
         self, contaminated_signals, flat_noise_psd
@@ -403,6 +398,21 @@ class TestMatch:
         """Check that a zero norm does not produce NaN during normalisation."""
         zeros = np.zeros(32)
         assert estimators.match(zeros, zeros, window="boxcar") == 0.0
+
+    @pytest.mark.parametrize(
+        "x, y, error",
+        [
+            pytest.param(np.ones(4), np.ones(5), "same length", id="unequal-lengths"),
+            pytest.param(
+                np.ones(4, dtype=complex), np.ones(4), "must be real-valued",
+                id="complex-input",
+            ),
+        ],
+    )
+    def test_rejects_invalid_signals(self, x, y, error):
+        """Check the ValueError for unequal signal lengths and complex inputs."""
+        with pytest.raises(ValueError, match=error):
+            estimators.match(x, y, at=1.0, window="boxcar")
 
     def test_excluded_components_do_not_affect_interior_tone(
         self, contaminated_signals, flat_noise_psd
