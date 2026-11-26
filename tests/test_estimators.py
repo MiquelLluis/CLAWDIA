@@ -300,12 +300,23 @@ class TestOverlap:
         actual = estimators.overlap(signal, other, at=1/sample_rate, window="boxcar")
         assert actual == pytest.approx(expected, rel=0, abs=FFT_TOL)
 
-    def test_doverlap_is_zero_for_identical_signals(self, bin_centred_8hz_sinusoid):
-        """Identical signals have zero overlap pseudo-distance."""
-        signal, sample_rate, _ = bin_centred_8hz_sinusoid
-        assert estimators.doverlap(
-            signal, signal, at=1 / sample_rate, window="boxcar"
-        ) == pytest.approx(0.0, rel=0, abs=FFT_TOL)
+    def test_weighted_mixture_and_its_pseudo_distance(self, bin_centred_8hz_sinusoid):
+        """Check signed overlap and nonzero pseudo-distance with unequal PSD weights."""
+        signal, sample_rate, amplitude = bin_centred_8hz_sinusoid
+        dt = 1 / sample_rate
+        time = np.arange(len(signal)) * dt
+        mixture = -signal + amplitude * np.sin(2 * np.pi * 9 * time)  # add 9 Hz
+        psd = np.array([[7.0, 10.0], [1.0, 4.0]])
+
+        # Interpolation gives PSDs of 2 and 3 at 8 Hz and 9 Hz. The mixture
+        # shares only the reversed 8 Hz tone, so its overlap is
+        #   -sqrt((1/2) / (1/2 + 1/3)).
+        expected = -np.sqrt(3 / 5)
+        overlap = estimators.overlap(signal, mixture, at=dt, psd=psd, window="boxcar")
+        distance = estimators.doverlap(signal, mixture, at=dt, psd=psd, window="boxcar")
+
+        assert overlap == pytest.approx(expected, rel=FFT_TOL, abs=0)
+        assert distance == pytest.approx((1 - expected) / 2, rel=FFT_TOL, abs=0)
 
     def test_excluded_components_do_not_affect_interior_tone(
         self, contaminated_signals, flat_noise_psd
