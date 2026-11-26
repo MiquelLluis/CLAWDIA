@@ -155,15 +155,14 @@ class TestInnerProductWeighted:
         actual = estimators.inner_product_weighted(
             signal, signal, at=dt, window="boxcar"
         )
-        assert actual == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
+        assert actual == pytest.approx(expected, rel=FFT_TOL, abs=0)
 
-        # A full-band PSD of 2 retains all bins and halves the inner product.
-        frequencies = np.fft.rfftfreq(len(signal), dt)
-        flat_psd = np.vstack([frequencies, np.full_like(frequencies, 2.0)])
+        # A flat PSD of 2 retains the tone and halves the inner product.
+        flat_psd = np.array([[0.0, sample_rate / 2], [2.0, 2.0]])
         weighted = estimators.inner_product_weighted(
             signal, signal, at=dt, psd=flat_psd, window="boxcar"
         )
-        assert weighted == pytest.approx(expected / 2, rel=FFT_TOL, abs=FFT_TOL)
+        assert weighted == pytest.approx(expected / 2, rel=FFT_TOL, abs=0)
 
     @pytest.mark.parametrize(
         # At the sampling rate of 128 Hz, these lengths give frequency spacings
