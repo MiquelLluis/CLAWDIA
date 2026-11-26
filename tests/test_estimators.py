@@ -31,19 +31,19 @@ def bin_centred_8hz_sinusoid():
 @pytest.fixture(params=["constant", "nyquist"])
 def excluded_component(request):
     """A 32-sample signal with power only at 0 Hz or Nyquist.
-    
+
     - constant: [1.0,  1.0, 1.0,  1.0, ...]
     - nyquist:  [1.0, -1.0, 1.0, -1.0, ...]
     """
     if request.param == "constant":
         return np.ones(32)
-    return (-1.0)**np.arange(32)
+    return (-1.0) ** np.arange(32)
 
 
 @pytest.fixture
 def contaminated_signals(excluded_component):
     """Two 32 Hz signals containing the same 8 Hz tone at amplitudes 1 and 2.
-    
+
     All combinations, accounting for both from `excluded_component`:
     - x constant: [ 8,  9,  8,  7, ...]
     - x nyquist:  [ 8, -7,  8, -9, ...]
@@ -65,7 +65,7 @@ def flat_noise_psd(request):
 @pytest.fixture(params=[9, 10], ids=["odd", "even"])
 def highest_bin_tone(request):
     """The highest tone below Nyquist, alone and mixed with an equal-power tone.
-    
+
     The sampling rate is determined from the signal's length; the duration of
     the signal is always 1 second.
     """
@@ -78,7 +78,7 @@ def highest_bin_tone(request):
     mixture = tone + amplitude * np.sin(theta)
     # With 1 Hz bin spacing, end one bin past the highest usable tone so
     # the exclusive upper index retains it for both signal lengths.
-    psd = np.array([[0.0, highest_bin+1], [2.0, 2.0]])
+    psd = np.array([[0.0, highest_bin + 1], [2.0, 2.0]])
     return tone, mixture, dt, amplitude, psd
 
 
@@ -155,7 +155,7 @@ def test_softmax_is_stable_and_respects_axis():
 def test_frequency_comparisons_reject_incompatible_signals(estimator, x, y):
     """Reject signals without a common real FFT interpretation."""
     with pytest.raises(ValueError):
-        estimator(x, y, at=1, window="boxcar")
+        estimator(x, y, at=1.0, window="boxcar")
 
 
 class TestInnerProductWeighted:
@@ -215,7 +215,7 @@ class TestInnerProductWeighted:
         signal = signal[:n_samples]
         dt = 1 / sample_rate
 
-        full_psd = np.array([[0.0, sample_rate/2], [2.0, 2.0]])
+        full_psd = np.array([[0.0, sample_rate / 2], [2.0, 2.0]])
         cropped_psd = np.array([[6.0, 10.0], [2.0, 2.0]])
 
         full = estimators.inner_product_weighted(
