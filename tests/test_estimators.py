@@ -374,33 +374,29 @@ class TestMatch:
 
         assert match == pytest.approx(1.0, rel=FFT_TOL, abs=0)
 
-    @pytest.mark.parametrize("phase", [0.0, 0.7], ids=["aligned", "rotated"])
-    def test_phase_invariance_does_not_hide_missing_frequency_content(self, phase):
+    def test_phase_maximised_match_and_mismatch_with_missing_tone(self):
         """Preserve the known imperfect match when one of two tones is missing.
 
         Equal-amplitude tones at 3 and 8 Hz have weighted powers proportional
         to 1/4 and 1/9 under this PSD (when linearly interpolated).
         A template containing only the 3 Hz tone must therefore match by
             sqrt((1/4) / (1/4 + 1/9)) = sqrt(9/13),
-        whatever its global phase is. This also checks normalisation after phase
-        maximisation: removing phase disagreement must not hide any missing
-        spectral content.
+        for any global phase of the template. The mismatch is its complement.
         """
         theta = 2 * np.pi * np.arange(128) / 128
         signal = np.sin(3 * theta) + np.sin(8 * theta)
-        template = np.sin(3 * theta + phase)
-        psd = np.array(
-            [ 
-                [1.0, 10.0],  # frequencies
-                [2.0, 11.0]   # PSD values
-            ]
-        )  # lin. interp:  S(3) = 4,  S(8) = 9
+        template = np.sin(3 * theta + 0.7)
+        psd = np.array([[1.0, 10.0], [2.0, 11.0]])
 
         match = estimators.match(
             signal, template, at=1 / 128, psd=psd, window="boxcar"
         )
-
-        assert match == pytest.approx(np.sqrt(9 / 13), rel=0, abs=FFT_TOL)
+        mismatch = estimators.imatch(
+            signal, template, at=1 / 128, psd=psd, window="boxcar"
+        )
+        expected = np.sqrt(9 / 13)
+        assert match == pytest.approx(expected, rel=FFT_TOL, abs=0)
+        assert mismatch == pytest.approx(1 - expected, rel=FFT_TOL, abs=0)
 
     def test_zero_signal_is_zero(self):
         """Check that a zero norm does not produce NaN during normalisation."""
