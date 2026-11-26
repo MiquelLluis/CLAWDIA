@@ -108,21 +108,24 @@ def test_elementwise_error_metrics_have_known_values():
     )
 
 
+def test_structural_similarity_has_known_value_and_is_symmetric():
+    x = np.array([-0.02, 0.0, 0.02])
+    y = np.array([0.04, 0.01, 0.01])
 
-def test_structural_similarity_identity_symmetry_and_derived_metrics():
-    x = np.linspace(-0.5, 0.5, 32)
-    y = x**3
+    # By hand, the means are 0 and 0.02, the population variances are
+    # 0.0008/3 and 0.0002, and the covariance is -0.0002.
+    # With C1 = 0.0001 and C2 = 0.0009 for unit data range, SSIM is
+    # (0.0001 / 0.0005) * (0.0005 / (0.0008/3 + 0.0002 + 0.0009))
+    # = (1/5) * (15/41) = 3/41.
+    expected = 3 / 41
 
-    assert estimators.ssim(x, x) == pytest.approx(1.0, abs=1e-12)
-    assert estimators.ssim(x, y) == pytest.approx(
-        estimators.ssim(y, x), abs=1e-12
-    )
+    assert estimators.ssim(x, x) == pytest.approx(1.0, rel=FLOAT64_RTOL, abs=0)
+    assert estimators.ssim(x, y) == pytest.approx(expected, rel=FLOAT64_RTOL, abs=0)
+    assert estimators.ssim(y, x) == pytest.approx(expected, rel=FLOAT64_RTOL, abs=0)
     assert estimators.dssim(x, y) == pytest.approx(
-        (1 - estimators.ssim(x, y)) / 2, abs=1e-12
+        (1 - expected) / 2, rel=FLOAT64_RTOL, abs=0
     )
-    assert estimators.issim(x, y) == pytest.approx(
-        -estimators.ssim(x, y), abs=1e-12
-    )
+    assert estimators.issim(x, y) == pytest.approx(-expected, rel=FLOAT64_RTOL, abs=0)
 
 
 def test_softmax_is_stable_and_respects_axis():
