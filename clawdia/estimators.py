@@ -109,7 +109,7 @@ def issim(x, y):
     return -ssim(x, y)
 
 
-def residual(x, y):
+def residual_l2_norm(x, y):
     """Norm of the difference between 'x' and 'y'."""
     return np.linalg.norm(x - y)
 

@@ -4,9 +4,13 @@ from scipy.signal.windows import get_window
 
 from clawdia import estimators
 
-# Conservative roundoff tolerance for short float64 FFT-based cases.
-# This is a practical test tolerance, not a general error bound.
-FFT_TOL = 5e-12
+# Roughly 45 float64 epsilons for the small direct calculations.
+FLOAT64_RTOL = 1e-14
+
+# The observed relative error and absolute error from zero were below 1e-15
+# in all current FFT-related tests. This tolerance value is well below the
+# error from a missing or misweighted tone.
+FFT_TOL = 1e-13
 
 
 #------------------------------------------------------------------------------
@@ -96,9 +100,13 @@ def test_elementwise_error_metrics_have_known_values():
     x = np.array([1.0, 2.0, 3.0])
     y = np.ones(3)
 
-    assert estimators.mse(x, y) == pytest.approx(5 / 3)
-    assert estimators.medse(x, y) == pytest.approx(1.0)
-    assert estimators.residual(x, y) == pytest.approx(np.sqrt(5))
+    # The squared errors are [0, 1, 4]. Their median is exactly representable.
+    assert estimators.mse(x, y) == pytest.approx(5/3, rel=FLOAT64_RTOL, abs=0)
+    assert estimators.medse(x, y) == 1.0
+    assert estimators.residual_l2_norm(x, y) == pytest.approx(
+        np.sqrt(5), rel=FLOAT64_RTOL, abs=0
+    )
+
 
 
 def test_structural_similarity_identity_symmetry_and_derived_metrics():
