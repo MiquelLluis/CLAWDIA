@@ -645,28 +645,42 @@ def test_self_inner_product_equals_snr_squared(sample_rate, window):
 
 
 @pytest.mark.parametrize(
-    "upper_cutoff, upper_tone_retained",
+    "lower_cutoff, upper_cutoff, upper_tone_retained",
     [
-        pytest.param(8.0, False, id="on-tone-bin"),
-        pytest.param(8.5, False, id="between-bins"),
-        pytest.param(9.0, True, id="on-next-bin"),
+        pytest.param(2.5, 8.0, False, id="upper-on-tone-bin"),
+        pytest.param(2.5, 8.5, False, id="upper-between-bins"),
+        pytest.param(4.0, 9.0, True, id="lower-on-tone-upper-on-next-bin"),
     ],
 )
-def test_estimators_follow_pycbc_upper_cutoff(
-    bin_centred_8hz_sinusoid, upper_cutoff, upper_tone_retained
+def test_frequency_estimators_weight_only_retained_tones(
+    bin_centred_8hz_sinusoid, lower_cutoff, upper_cutoff, upper_tone_retained
 ):
-    """Apply the same exclusive upper bin index to all frequency estimators."""
+    """Check the cutoffs and PSD weights for inner product, SNR, overlap, and match.
+
+    - From 2.5 Hz to 8.0 Hz retain 4 Hz and exclude 8 Hz at the upper cutoff.
+    - From 2.5 Hz to 8.5 Hz retain 4 Hz and exclude 8 Hz after rounding the
+      upper cutoff down to the exclusive bin index, following PyCBC.
+    - From 4.0 Hz to 9.0 Hz retain 4 Hz at the lower cutoff and include 8 Hz.
+
+    Every case excludes the 2 Hz tone below the band. When both higher
+    tones are retained, they contribute with different PSD weights.
+    """
     upper_tone, sample_rate, amplitude = bin_centred_8hz_sinusoid
     dt = 1 / sample_rate
     time = np.arange(len(upper_tone)) * dt
     lower_tone = amplitude * np.sin(2 * np.pi * 4 * time)
-    mixture = lower_tone + upper_tone
-    psd = np.array([[0.0, upper_cutoff], [2.0, 2.0]])
+    rejected_tone = amplitude * np.sin(2 * np.pi * 2 * time)
+    mixture = rejected_tone + lower_tone + upper_tone
+    psd = np.array([[lower_cutoff, upper_cutoff], [lower_cutoff, upper_cutoff]])
 
-    # Each tone contributes A**2 / 2 over this one-second window.
-    n_retained = 1 + upper_tone_retained
-    expected_power = n_retained * amplitude**2 / 2
-    expected_similarity = 1 / np.sqrt(n_retained)
+    # Each retained tone contributes
+    #    duration * A**2 / PSD .
+    # The duration is one second and the interpolated PSD is 4 at 4 Hz and
+    # 8 at 8 Hz.
+    lower_power = amplitude**2 / 4
+    upper_power = amplitude**2 / 8
+    expected_power = lower_power + upper_tone_retained * upper_power
+    expected_similarity = np.sqrt(lower_power / expected_power)
 
     inner = estimators.inner_product_weighted(
         mixture, mixture, at=dt, psd=psd, window="boxcar"
