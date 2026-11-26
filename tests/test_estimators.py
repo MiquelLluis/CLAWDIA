@@ -196,8 +196,8 @@ class TestInnerProductWeighted:
 
         # The tone is strictly inside both bands, so its weighted power is equal.
         expected = n_samples / sample_rate * amplitude**2 / 2
-        assert full == pytest.approx(expected, rel=FFT_TOL, abs=FFT_TOL)
-        assert cropped == pytest.approx(full, rel=FFT_TOL, abs=FFT_TOL)
+        assert full == pytest.approx(expected, rel=FFT_TOL, abs=0)
+        assert cropped == pytest.approx(expected, rel=FFT_TOL, abs=0)
 
     @pytest.mark.parametrize(
         "x, y, error",
