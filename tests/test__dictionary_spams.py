@@ -235,21 +235,6 @@ class TestReconstruct:
             reconstruction, signal, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
         )
 
-    def test_normalises_nonzero_output_and_preserves_zeros(self, identity_dictionary):
-        """Scale the peak to one and avoid dividing by zero for a zero signal."""
-        signal = np.array([2.0, 0.0, 0.0, 0.0])
-        reconstruction = identity_dictionary.reconstruct(
-            signal, sc_lambda=0.25, normed=True
-        )
-        np.testing.assert_allclose(
-            reconstruction, [1.0, 0.0, 0.0, 0.0], rtol=SPAMS_RTOL, atol=SPAMS_ATOL
-        )
-
-        zeros = identity_dictionary.reconstruct(
-            np.zeros(4), sc_lambda=0.25, normed=True
-        )
-        np.testing.assert_array_equal(zeros, 0.0)
-
     def test_rejects_non_array(self, identity_dictionary):
         """Raise a type error when the signal is passed as a Python list."""
         with pytest.raises(TypeError, match="numpy array"):
@@ -289,6 +274,59 @@ class TestBatchAndMinibatchReconstruction:
         np.testing.assert_allclose(
             minibatch, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
         )
+
+    def test_normalises_nonzero_rows_and_preserves_zeros(self, identity_dictionary):
+        """Scale each row by its absolute peak and preserve a zero row exactly."""
+        signal = np.array([1.6, -0.96, 0.72, 0.0])
+        zero_signal = np.zeros_like(signal)
+        signals = np.stack([signal, zero_signal, -2 * signal])
+        # Soft-thresholding the unit patch gives [0.4, -0.08, 0, 0].
+        expected = [[1.0, -0.2, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [-1.0, 0.2, 0.0, 0.0]]
+        options = {"sc_lambda": 0.4, "normed": True}
+        individual = np.stack(
+            [identity_dictionary.reconstruct(row, **options) for row in signals]
+        )
+        batch = identity_dictionary.reconstruct_batch(
+            signals, verbose=False, **options
+        )
+        minibatch = identity_dictionary.reconstruct_minibatch(
+            signals, batchsize=2, verbose=False, **options
+        )
+
+        for reconstruction in (individual, batch, minibatch):
+            np.testing.assert_allclose(
+                reconstruction, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+            )
+            np.testing.assert_array_equal(reconstruction[1], zero_signal)
+
+    def test_partial_minibatch_forwards_window_normalisation(self, identity_dictionary):
+        """Apply raw soft-thresholding even in the final incomplete minibatch."""
+        signals = np.array(
+            [
+                [2.0, 0.0, 0.0, 0.0],
+                [0.0, 3.0, 0.0, 0.0],
+                [0.0, 0.0, 4.0, 0.0],
+            ]
+        )
+        expected = np.array(
+            [
+                [1.75, 0.0, 0.0, 0.0],
+                [0.0, 2.75, 0.0, 0.0],
+                [0.0, 0.0, 3.75, 0.0],
+            ]
+        )
+        options = {"sc_lambda": 0.25, "normed": False, "normed_windows": False}
+        batch = identity_dictionary.reconstruct_batch(
+            signals, verbose=False, **options
+        )
+        minibatch = identity_dictionary.reconstruct_minibatch(
+            signals, batchsize=2, verbose=False, **options
+        )
+
+        for reconstruction in (batch, minibatch):
+            np.testing.assert_allclose(
+                reconstruction, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+            )
 
     @pytest.mark.reference
     def test_match_reference(
@@ -331,33 +369,6 @@ class TestBatchAndMinibatchReconstruction:
         np.testing.assert_allclose(
             minibatch, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
         )
-
-
-def test_partial_minibatch_forwards_window_normalisation(identity_dictionary):
-    """Apply the window-normalisation flag even in the final incomplete minibatch."""
-    signals = np.array(
-        [
-            [2.0, 0.0, 0.0, 0.0],
-            [0.0, 3.0, 0.0, 0.0],
-            [0.0, 0.0, 4.0, 0.0],
-        ]
-    )
-    expected = identity_dictionary.reconstruct_batch(
-        signals,
-        0.25,
-        normed=False,
-        normed_windows=False,
-        verbose=False,
-    )
-    actual = identity_dictionary.reconstruct_minibatch(
-        signals,
-        sc_lambda=0.25,
-        batchsize=2,
-        normed=False,
-        normed_windows=False,
-        verbose=False,
-    )
-    np.testing.assert_allclose(actual, expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL)
 
 
 class TestReconstructMarginConstrained:
