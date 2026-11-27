@@ -1,5 +1,6 @@
 import time
 import warnings
+from copy import deepcopy
 from typing import Any
 
 import numpy as np
@@ -896,42 +897,20 @@ class DictionarySpams:
         np.savez(file, **vars_)
 
     def copy(self):
-        """Return a copy of the dictionary.
-
-        Returns a new instance of the same dictionary with the same values
-        and state.
-
-        Returns
-        -------
-        dico_copy : DictionarySpams
-            A copy of the current dictionary.
-        
-        """
-        dico_copy = DictionarySpams(
-            dict_init=self.components.copy(),
-            model=self.model,
-            lambda1=self.lambda1,
-            batch_size=self.batch_size,
-            identifier=self.identifier,
-            n_iter=self.n_iter,
-            n_train=self.n_train,
-            trained=self.trained,
-            mode_traindl=self.mode_traindl,
-            modeD_traindl=self.modeD_traindl,
-            mode_lasso=self.mode_lasso
-        )
-        if self.trained:
-            # Retain the initial components of the dictionary.
-            dico_copy.dict_init = self.dict_init
-
-        return dico_copy
+        """Return an independent copy of the dictionary and its training state."""
+        return deepcopy(self)
     
     def reset(self):
-        """Reset the dictionary to its initial (untrained) state."""
+        """Restore the initial atoms and clear the training state.
+
+        Keep the current lambda and iteration count as defaults for the next
+        call to :meth:`train`.
+        """
         if self.dict_init is None:
             raise RuntimeError("the initial dictionary is not available")
         
         self.components = self.dict_init
+        self.model = None
         self.trained = False
         self.n_train = None
         self.t_train = None

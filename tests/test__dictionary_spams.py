@@ -628,18 +628,56 @@ class TestReconstructLossOptimised:
         )
 
 
-def test_copy_and_reset_restore_initial_components(
-    trained_minimal_dictionary,
-):
-    """Reset a copy of a freshly trained model to its original synthetic atoms."""
-    trained_dictionary = trained_minimal_dictionary
-    initial_components = trained_dictionary.dict_init.copy()
-    copied = trained_dictionary.copy()
-    assert copied is not trained_dictionary
-    np.testing.assert_array_equal(copied.components, trained_dictionary.components)
+@pytest.mark.integration
+def test_copy_preserves_independent_training_state(trained_minimal_dictionary):
+    """Preserve training metadata and give the copy independent arrays."""
+    model = trained_minimal_dictionary
+    copied = model.copy()
 
-    copied.reset()
-    np.testing.assert_array_equal(copied.components, initial_components)
-    assert not copied.trained
-    assert copied.n_train is None
-    assert copied.t_train is None
+    assert copied is not model
+    assert copied.trained
+    assert copied.n_iter == model.n_iter
+    assert copied.n_train == model.n_train
+    assert copied.t_train == model.t_train
+    assert copied.model is not model.model
+    assert copied.model["iter"] == model.model["iter"]
+    for duplicate, source in (
+        (copied.dict_init, model.dict_init),
+        (copied.components, model.components),
+        (copied.model["A"], model.model["A"]),
+        (copied.model["B"], model.model["B"]),
+    ):
+        np.testing.assert_array_equal(duplicate, source)
+        assert not np.shares_memory(duplicate, source)
+
+
+@pytest.mark.integration
+def test_reset_restores_initial_state_and_allows_fresh_training(
+    minimal_dictionary, minimal_training_patches
+):
+    """Clear continuation state and reproduce the first training run after reset."""
+    model = minimal_dictionary
+    initial_components = model.dict_init.copy()
+    model.train(minimal_training_patches, threads=1)
+    trained_components = model.components.copy()
+    trained_n_iter = model.n_iter
+    trained_backend_arrays = {key: model.model[key].copy() for key in ("A", "B")}
+
+    model.reset()
+    np.testing.assert_array_equal(model.components, initial_components)
+    assert not model.trained
+    assert model.model is None
+    assert model.n_train is None
+    assert model.t_train is None
+
+    model.train(minimal_training_patches, threads=1)
+    assert model.trained
+    assert model.n_iter == model.model["iter"] == trained_n_iter
+    assert model.n_train == len(minimal_training_patches)
+    np.testing.assert_allclose(
+        model.components, trained_components, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+    )
+    for key, expected in trained_backend_arrays.items():
+        np.testing.assert_allclose(
+            model.model[key], expected, rtol=SPAMS_RTOL, atol=SPAMS_ATOL
+        )
