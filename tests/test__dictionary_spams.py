@@ -82,16 +82,28 @@ def trained_reference_dictionary(
 
 
 @pytest.fixture
-def trained_minimal_dictionary():
-    model = DictionarySpams(
+def minimal_dictionary():
+    return DictionarySpams(
         dict_init=np.array([[1.0, 0.0], [0.0, 1.0], [0.6, 0.8]]),
-        lambda1=0.1,
+        lambda1=0.2,
         batch_size=2,
+        n_iter=2,
     )
-    patches = np.array(
-        [[1.0, 0.0], [0.0, 1.0], [0.8, 0.2], [0.2, 0.8]]
-    )
-    model.train(patches, n_iter=2, verbose=False, threads=1)
+
+
+@pytest.fixture
+def minimal_training_patches():
+    return np.array([[1.0, 0.0], [0.0, 1.0], [0.8, 0.2], [0.2, 0.8]])
+
+
+@pytest.fixture
+def trained_minimal_dictionary(minimal_dictionary, minimal_training_patches):
+    """Provide a freshly trained dictionary with usable continuation state."""
+    model = minimal_dictionary
+    model.train(minimal_training_patches, threads=1)
+    assert model.trained
+    assert model.t_train is not None and model.t_train > 0
+    assert model.model is not None and {"A", "B", "iter"} <= model.model.keys()
     return model
 
 
