@@ -177,6 +177,50 @@ def test_signal_pool_initialisation_selects_allowed_atoms_reproducibly(
 
 
 @pytest.mark.integration
+def test_training_improves_held_out_reconstruction(minimal_dictionary):
+    """Check that training improves reconstruction on patches kept out of training.
+
+    Each patch has one positive and one negative sample. The starting
+    dictionary has all its initial atoms with positive values, and therefore
+    needs a combination of atoms to express that pattern. Training can learn an
+    atom with opposite signs and represent the pattern with a single sparse
+    coefficient.
+
+    The initial training should substantially reduce reconstruction error on
+    the held-out patches. Further training with a warm start should preserve
+    that improvement.
+    """
+    model = minimal_dictionary
+    patches = np.array(
+        [
+            [  0.7, -0.7],
+            [  0.8, -0.6],
+            [  0.6, -0.8],
+            [-0.75, 0.65],
+            [-0.65, 0.75],
+            [-0.55, 0.85],
+        ]
+    )
+    held_out = np.array([[0.75, -0.75], [-0.7, 0.8], [0.65, -0.85]])
+
+    def reconstruction_error():
+        reconstructed = model.reconstruct_batch(
+            held_out, sc_lambda=0.2, normed=False, verbose=False, numThreads=1
+        )
+        return np.mean((held_out - reconstructed) ** 2)
+
+    baseline_error = reconstruction_error()
+    model.train(patches, threads=1)
+    # The measured MSE drops from about 0.218 to 0.023. Require at least
+    # a twofold improvement to allow variation across SPAMS builds.
+    assert reconstruction_error() < baseline_error / 2
+
+    model.train(patches, n_iter=2, warm_start=True, threads=1)
+    assert model.n_iter == model.model["iter"] == 4
+    assert reconstruction_error() < baseline_error / 2
+
+
+@pytest.mark.integration
 @pytest.mark.reference
 @pytest.mark.skipif(
     not sys.platform.startswith("linux"),
